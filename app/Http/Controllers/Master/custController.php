@@ -38,7 +38,18 @@ class custController extends Controller
                 ->addColumn('none', function ($data) {
                     return '-';
                 })
-                ->rawColumns(['action','confirmed'])
+                ->editColumn('c_birthday', function ($data) {
+                    return date('d M Y', strtotime($data->c_birthday));
+                })
+                ->editColumn('c_type', function ($data) {
+                    if ($data->c_type == "RT") {
+                        return 'Retail';
+                    }
+                    elseif ($data->c_type == "GR") {
+                        return 'Grosir';
+                    }
+                })
+                ->rawColumns(['action','confirmed','c_birthday'])
                 ->make(true);
     }
 
@@ -65,6 +76,11 @@ class custController extends Controller
     public function simpan_cust(Request $request)
     {
         // dd($request->all());
+        DB::beginTransaction();
+        try {
+        $year = carbon::now()->format('y');
+        $month = carbon::now()->format('m');
+        $date = carbon::now()->format('d');
         $tanggal = date("Y-m-d h:i:s");
 
         $kode = DB::Table('m_customer')->max('c_id');
@@ -74,30 +90,53 @@ class custController extends Controller
         }else{
             $kode += 1;
         }
-
+        $id_cust = 'CUS' . $month . $year . '/' . 'C001' . '/' .  $kode; 
         $data_item = DB::table('m_customer')
                 ->insert([
                     'c_id' => $kode,
-                    'c_code'=> $request->id_cus_ut,
+                    'c_code'=> $id_cust,
                     'c_name'=>$request->nama_cus,
                     'c_type' => $request->tipe_cust,
                     'c_birthday' => date('Y-m-d',strtotime($request->tgl_lahir)),
                     'c_email' => $request->email,
-                    'c_hp' => $request->no_hp,
+                    'c_hp' => '+62'.$request->no_hp,
                     'c_address' => $request->alamat,
+                    'c_class' => $request->c_class,
                     'c_insert'=>$tanggal,
                 ]);
 
-
-        //------------------------//
-
-    return response()->json(['status'=>1]);
+      DB::commit();
+      return response()->json([
+            'status' => 'sukses'
+        ]);
+      } catch (\Exception $e) {
+      DB::rollback();
+      return response()->json([
+          'status' => 'gagal',
+          'data' => $e
+        ]);
+      }
     }
+
     public function hapus_cust(Request $request)
     {
       // dd($request->all());
-      $edit_cust = DB::table('m_customer')->where('c_code','=',$request->id)->delete();
-
+      DB::beginTransaction();
+      try {
+      $edit_cust = DB::table('m_customer')
+        ->where('c_code','=',$request->id)
+        ->delete();
+      DB::commit();
+      return response()->json([
+            'status' => 'sukses'
+        ]);
+      } catch (\Exception $e) {
+      DB::rollback();
+      return response()->json([
+          'status' => 'gagal',
+          'data' => $e
+        ]);
+      }
       return response()->json(['status'=>1]);
     }
     public function edit_cust(Request $request)
@@ -108,6 +147,8 @@ class custController extends Controller
     }
     public function update_cust(Request $request)
     {
+        DB::beginTransaction();
+        try {
         $tanggal = date("Y-m-d h:i:s");
 
         $data_item = DB::table('m_customer')
@@ -121,10 +162,17 @@ class custController extends Controller
                     'c_address' => $request->alamat,
                     'c_update'=>$tanggal,
                 ]);
-
-
-        //------------------------//
-    return response()->json(['status'=>1]);
+      DB::commit();
+      return response()->json([
+            'status' => 'sukses'
+        ]);
+      } catch (\Exception $e) {
+      DB::rollback();
+      return response()->json([
+          'status' => 'gagal',
+          'data' => $e
+        ]);
+      }  
     }
 
     

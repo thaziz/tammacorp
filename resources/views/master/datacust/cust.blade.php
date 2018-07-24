@@ -94,7 +94,6 @@ tr.details td.details-control {
         </div>
       </div>
     </div>
-
 </div>
 @endsection
 
@@ -109,7 +108,7 @@ tr.details td.details-control {
       // Used when bJQueryUI is true
       $.extend($.fn.dataTableExt.oJUIClasses, extensions);
       
-  $('#tbl_customer').DataTable({
+  var tbl_customer = $('#tbl_customer').DataTable({
             processing: true,
             // responsive:true,
             serverSide: true,
@@ -147,28 +146,50 @@ tr.details td.details-control {
                   }
       });
 
+
         function hapus(a) {
-          var parent = $(a).parents('tr');
-          var id = $(parent).find('.d_id').text();
-          console.log(id);
-          $.ajax({
-               type: "get",
-               url: '{{ route('hapus_cust') }}',
-               data: {id},
-               success: function(data){
-                  if (data.status == 1) {
-                      location.reload();
-                  }
-                  
-               },
-               error: function(){
-                iziToast.warning({
-                  icon: 'fa fa-times',
-                  message: 'Terjadi Kesalahan!',
-                });
-               },
-               async: false
-             });  
+          iziToast.show({
+            color: 'red',
+            title: 'Peringatan',
+            message: 'Apakah anda yakin!',
+            position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+            progressBarColor: 'rgb(0, 255, 184)',
+            buttons: [
+              [
+                '<button>Ok</button>',
+                function (instance, toast) {
+                  instance.hide({
+                    transitionOut: 'fadeOutUp'
+                  }, toast);
+                  var parent = $(a).parents('tr');
+                  var id = $(parent).find('.d_id').text();
+                  console.log(id);
+                  $.ajax({
+                       type: "get",
+                       url: '{{ route('hapus_cust') }}',
+                       data: {id},
+                       success: function(response){
+                            if (response.status=='sukses') {
+                              toastr.info('Data berhasil di hapus.');
+                              tbl_customer.ajax.reload();
+                            }else{
+                              toastr.error('Data gagal di simpan.');
+                            }
+                          }
+                       })  
+                }
+              ],
+              [
+                '<button>Close</button>',
+                 function (instance, toast) {
+                  instance.hide({
+                    transitionOut: 'fadeOutUp'
+                  }, toast);
+                }
+              ]
+            ]
+          });
+          
         }
 
 
@@ -191,6 +212,9 @@ tr.details td.details-control {
                async: false
              });  
         }
+
+
+
     
 </script>
 @endsection
