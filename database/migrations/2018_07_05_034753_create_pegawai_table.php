@@ -13,7 +13,7 @@ class CreatePegawaiTable extends Migration
      */
     public function up()
     {
-        Schema::create('m_pegawai', function (Blueprint $table) {
+        Schema::create('m_pegawai_man', function (Blueprint $table) {
             $table->increments('c_id');
             $table->integer('c_id_by_production');
             $table->string('c_code');             
@@ -39,8 +39,7 @@ class CreatePegawaiTable extends Migration
             $table->date('c_tahun_masuk');              
             $table->unsignedInteger('c_divisi_id');                    
             $table->unsignedInteger('c_jabatan_id');                    
-            $table->unsignedInteger('c_shift_id');                    
-            $table->integer('c_production');
+            $table->unsignedInteger('c_shift_id');
             $table->timestamps();
 
             $table->foreign('c_divisi_id')->references('c_id')->on('m_divisi');
@@ -56,6 +55,6 @@ class CreatePegawaiTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('m_pegawai');
+        Schema::dropIfExists('m_pegawai_man');
     }
 }

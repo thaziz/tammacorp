@@ -12,6 +12,12 @@ class DivisiTableSeeder extends Seeder
     public function run()
     {
         DB::table('m_divisi')->insert([
+            'c_id' => '111',
+            'c_divisi' => 'General Manager',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+        DB::table('m_divisi')->insert([
             'c_id' => '1',
             'c_divisi' => 'HRD dan General Affair',
             'created_at' => Carbon::now(),
