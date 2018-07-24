@@ -51,7 +51,6 @@ class barangController extends Controller
 
     public function tambah_barang()
     {
-        
         $satuan  = DB::table('m_satuan')->get();
         $group  = DB::table('m_group')->get();
         return view('master.databarang.tambah_barang',compact('kode','group','satuan'));
@@ -86,7 +85,14 @@ class barangController extends Controller
         //dd($request->all());
         DB::beginTransaction();
         try 
-        {
+        {   
+            /*$anton[] = $this->konvertFloatRp($request->hargaBeli1);
+            $anton[] = $this->konvertFloatRp($request->hargaBeli2);
+            $anton[] = $this->konvertFloatRp($request->hargaBeli3);*/
+           /* $anton[] = str_replace(',', '', $request->hargaBeli1);
+            $anton[] = str_replace(',', '', $request->hargaBeli2);
+            $anton[] = str_replace(',', '', $request->hargaBeli3);
+            dd($anton);*/
             $tanggal = date("Y-m-d h:i:s");
             $data_item = DB::table('m_item')
                         ->insert([
@@ -110,33 +116,22 @@ class barangController extends Controller
             $data_price = DB::table('m_price')
                             ->insert([
                                 'm_pitem' => $get_itemid->i_id,
-                                'm_pbuy1' => $this->konvertRp($request->hargaBeli1),
-                                'm_pbuy2' => $this->konvertRp($request->hargaBeli2),
-                                'm_pbuy3' => $this->konvertRp($request->hargaBeli3),
+                                'm_pbuy1' => str_replace(',', '', $request->hargaBeli1),
+                                'm_pbuy2' => str_replace(',', '', $request->hargaBeli2),
+                                'm_pbuy3' => str_replace(',', '', $request->hargaBeli3),
                                 'm_pcreated' => $tanggal
                             ]);
 
             //-----update/insert d_stock------//
             //cek grup item
-            if ($request->type == "BP") //brg produksi
+            if ($request->type == "BJ") //brg jual
             {
-                $s_comp = '6';
-                $s_position = '6';
+                $s_comp = '2';
+                $s_position = '2';
                 //cek ada tidaknya record pada tabel
                 $rows = DB::table('d_stock')->select('s_id')
-                    ->where('s_comp','6')
-                    ->where('s_position','6')
-                    ->where('s_item',$get_itemid->i_id)
-                    ->exists();
-            }
-            elseif ($request->type == "BJ") //brg jual
-            {
-                $s_comp = '7';
-                $s_position = '7';
-                //cek ada tidaknya record pada tabel
-                $rows = DB::table('d_stock')->select('s_id')
-                    ->where('s_comp','7')
-                    ->where('s_position','7')
+                    ->where('s_comp','2')
+                    ->where('s_position','2')
                     ->where('s_item',$get_itemid->i_id)
                     ->exists();
             }
@@ -172,7 +167,7 @@ class barangController extends Controller
                     's_comp' => $s_comp,
                     's_position' => $s_position,
                     's_item' => $get_itemid->i_id,
-                    's_qty' => '0',
+                    's_qty' => 0,
                     's_qty_min' => $request->min_stock,
                 ]);
             } 
@@ -270,33 +265,21 @@ class barangController extends Controller
             DB::table('m_price')
                 ->where('m_pitem','=',$request->kode_old)                
                 ->update([
-                    'm_pbuy1'=>$this->konvertRp($request->hargaBeli1),
-                    'm_pbuy2'=>$this->konvertRp($request->hargaBeli2),
-                    'm_pbuy3'=>$this->konvertRp($request->hargaBeli3),
+                    'm_pbuy1'=>str_replace(',', '', $request->hargaBeli1),
+                    'm_pbuy2'=>str_replace(',', '', $request->hargaBeli2),
+                    'm_pbuy3'=>str_replace(',', '', $request->hargaBeli3),
                     'm_pupdated'=>$tanggal,
                 ]);
 
             //-------update stok minimum d_stock---------
-            //cek grup item
-            if ($request->type == "BP") //brg produksi
+            if ($request->type == "BJ") //brg jual
             {
-                $s_comp = '6';
-                $s_position = '6';
+                $s_comp = '2';
+                $s_position = '2';
                 //cek ada tidaknya record pada tabel
                 $rows = DB::table('d_stock')->select('s_id')
-                    ->where('s_comp','6')
-                    ->where('s_position','6')
-                    ->where('s_item',$request->kode_old)
-                    ->exists();
-            }
-            elseif ($request->type == "BJ") //brg jual
-            {
-                $s_comp = '7';
-                $s_position = '7';
-                //cek ada tidaknya record pada tabel
-                $rows = DB::table('d_stock')->select('s_id')
-                    ->where('s_comp','7')
-                    ->where('s_position','7')
+                    ->where('s_comp','2')
+                    ->where('s_position','2')
                     ->where('s_item',$request->kode_old)
                     ->exists();
             }
@@ -359,14 +342,8 @@ class barangController extends Controller
         } 
         elseif ($typeBrg->i_type == "BJ") 
         {
-          //$idGroupGdg = '7';
-          $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty_min FROM d_stock where s_item = '$id_item' AND s_comp = '7' AND s_position = '7' limit 1) ,'0') as qtyStokMin"));
-          $stok = $query[0];
-        }
-        elseif ($typeBrg->i_type == "BP") 
-        {
-          //$idGroupGdg = '6';
-          $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty_min FROM d_stock where s_item = '$id_item' AND s_comp = '6' AND s_position = '6' limit 1) ,'0') as qtyStokMin"));
+          //$idGroupGdg = '2';
+          $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty_min FROM d_stock where s_item = '$id_item' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStokMin"));
           $stok = $query[0];
         }
 
