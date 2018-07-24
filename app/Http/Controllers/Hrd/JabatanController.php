@@ -75,7 +75,8 @@ class JabatanController extends Controller
     }
     public function tambahJabatan(Request $request){
         $divisi = DB::table('m_divisi')->get();
-        return view('hrd/datajabatan/tambah_jabatan', ['divisi' => $divisi]);
+        $subdivisi = DB::table('m_sub_divisi')->get();
+        return view('hrd/datajabatan/tambah_jabatan', ['divisi' => $divisi, 'subdivisi' => $subdivisi]);
     }
     public function simpanJabatan(Request $request){
         $input = $request->all();
@@ -86,8 +87,9 @@ class JabatanController extends Controller
     public function editJabatan($id){
         $jabatan = DB::table('m_jabatan')->where('c_id', $id)->first();
         $divisi = DB::table('m_divisi')->get();
+        $subdivisi = DB::table('m_sub_divisi')->get();
         // dd($jabatan);
-        return view('hrd/datajabatan/edit_jabatan', ['jabatan' => $jabatan, 'divisi' => $divisi]);
+        return view('hrd/datajabatan/edit_jabatan', ['jabatan' => $jabatan, 'divisi' => $divisi, 'subdivisi' => $subdivisi]);
     }
     public function updateJabatan(Request $request, $id){
         $input = $request->except('_token', '_method');
