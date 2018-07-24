@@ -25,15 +25,9 @@ class POSRetailController extends Controller
     $month = carbon::now()->format('m');
     $date = carbon::now()->format('d');
     //select max dari um_id dari table d_uangmuka
-    $maxid = DB::Table('m_customer')->select('c_id')->max('c_id');
     $idfatkur = DB::Table('d_sales')->select('s_id')->max('s_id');
     $idreq = DB::table('d_transferitem')->select('ti_id')->max('ti_id');
     //untuk +1 nilai yang ada,, jika kosong maka maxid = 1 , 
-    if ($maxid <= 0 || $maxid <= '') {
-      $maxid  = 1;
-    }else{
-      $maxid += 1;
-    }
     if ($idfatkur <= 0 || $idfatkur <= '') {
       $idfatkur  = 1;
     }else{
@@ -44,12 +38,7 @@ class POSRetailController extends Controller
     }else{
       $idreq += 1;
     }
-    //jika kurang dari 100 maka maxid mimiliki 00 didepannya
-    if ($maxid < 100) {
-      $maxid = '00'.$maxid;
-    }
 
-    $id_cust = 'CUS' . $month . $year . '/' . 'C001' . '/' .  $maxid; 
     $fatkur = 'XX'  . $year . $month . $date . $idfatkur;
     $idreq = 'REQ'  . $year . $month . $date . $idreq;
 
@@ -61,7 +50,7 @@ class POSRetailController extends Controller
 
     $ket = 'create';
 
-    return view('/penjualan/POSretail/index',compact('id_cust','fatkur', 'idreq','stock','dataPayment', 'ket','idfatkur'));
+    return view('/penjualan/POSretail/index',compact('fatkur', 'idreq','stock','dataPayment', 'ket','idfatkur'));
   }
 
   public function edit_sales($id){
@@ -178,8 +167,8 @@ class POSRetailController extends Controller
     } else {
       foreach ($queries as $query) {
         $results[] = [  'id' => $query->c_id, 
-                        'label' => $query->c_name .'  '.$query->c_address, 
-                        'alamat' => $query->c_address.' '.$query->c_hp,
+                        'label' => $query->c_name .', '.$query->c_address, 
+                        'alamat' => $query->c_address.', '.$query->c_hp,
                         'c_class' => $query->c_class ];
       }
     }
@@ -334,9 +323,14 @@ class POSRetailController extends Controller
         'c_type' =>'RT',
         'c_insert' => Carbon::now()
       ]);
+
+    $data = m_customer::where('c_id',$maxid)
+      ->first();
+
     DB::commit();
     return response()->json([
-          'status' => 'sukses'
+          'status' => 'sukses',
+          'customer' => $data,
       ]);
     } catch (\Exception $e) {
     DB::rollback();

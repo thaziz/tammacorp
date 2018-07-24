@@ -2,7 +2,7 @@
          <div class="col-md-6">
            <label class="control-label tebal" for="">Masukan Kode / Nama</label>
               <div class="input-group input-group-sm" style="width: 100%;">
-                  <input type="text" id="namaitem" name="item" readonly class="form-control" onkeyup="uniKeyCode(event)">
+                  <input type="text" id="namaitem" name="item" class="form-control" onkeyup="uniKeyCode(event)">
                   <input type="hidden" id="kode" name="sd_item" class="form-control">
                   <input type="hidden" id="harga" name="sd_sell" class="form-control">
                   <input type="hidden" id="detailnama" name="nama" class="form-control">
@@ -12,7 +12,7 @@
           <div class="col-md-3">
            <label class="control-label tebal" name="qty">Masukan Jumlah</label>
               <div class="input-group input-group-sm" style="width: 100%;">
-                 <input type="number" id="qty" name="qty" readonly class="form-control" onkeyup="setQty()">
+                 <input type="number" id="qty" name="qty" class="form-control" onkeyup="setQty()">
               </div>
           </div>
           <div class="col-md-3">
