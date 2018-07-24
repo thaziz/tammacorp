@@ -46,7 +46,7 @@
 
                             <form method="get" id="form_cust" action="simpan_cust">
                               <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:5px;padding-top:20px; ">
-                                <div class="col-md-2 col-sm-3 col-xs-12"> 
+{{--                                 <div class="col-md-2 col-sm-3 col-xs-12"> 
                                   
                                       <label class="tebal">ID Customer</label>
                                   
@@ -56,11 +56,11 @@
                                       <input type="text" class="form-control input-sm" readonly="true" name="id_cus_ut" value="{{$id_cust}}">
                                       <input type="hidden" name="id_cus_ut" value="{{$id_cust}}">
                                   </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-md-2 col-sm-3 col-xs-12">
                                   
                                     
-                                      <label class="tebal">Nama Customer</label>
+                                      <label class="tebal">Nama Customer<font color="red">*</font></label>
                                   
                                 </div>
                                 <div class="col-md-4 col-sm-9 col-xs-12">
@@ -81,7 +81,7 @@
                                   <div class="form-group">
                                     <div class="input-icon right">
                                       <i class="glyphicon glyphicon-calendar"></i>
-                                      <input type="text" id="tgl_lahir" name="tgl_lahir" class="form-control input-sm datepicker_today" > 
+                                      <input type="text" id="tgl_lahir" name="tgl_lahir" class="form-control input-sm datepicker" > 
                                     </div>                            
                                   </div>
                                 </div>
@@ -112,8 +112,24 @@
                                   <div class="form-group">
                                     
                                       <select name="tipe_cust" id="tipe_cust" class="form-control input-sm">
-                                        <option value="retail">Retail</option>
-                                        <option value="online">Online</option>
+                                        <option value="RT">Retail</option>
+                                        <option value="GR">Online</option>
+                                      </select>
+                                                     
+                                  </div>
+                                </div>
+                                <div class="col-md-2 col-sm-3 col-xs-12">
+                                  
+                                      <label class="tebal">Kelas Customer</label>
+                                  
+                                </div>
+                                <div class="col-md-4 col-sm-9 col-xs-12">
+                                  <div class="form-group">
+                                    
+                                      <select name="c_class" id="c_class" class="form-control input-sm">
+                                        <option value="C">C</option>
+                                        <option value="B">B</option>
+                                        <option value="A">A</option>
                                       </select>
                                                      
                                   </div>
@@ -125,24 +141,23 @@
                                 <div class="col-md-2 col-sm-3 col-xs-12">
                                   
                                     
-                                      <label class="tebal">Nomor HP</label>
+                                      <label class="tebal">Nomor HP<font color="red">*</font></label>
                                   
                                 </div>
-                                <div class="col-md-10 col-sm-9 col-xs-12">
-                                  <div class="form-group">
-                                    <div class="input-icon right">
-                                      <i class="glyphicon glyphicon-earphone"></i>
-                                      <input type="text" id="no_hp" name="no_hp" class="form-control input-sm"  value="{{ old('no_hp') }}">
-                                    </div>                               
+                                <div class="col-md-4 col-sm-9 col-xs-12">
+                                  <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">+62</span>
+                                    <input type="text" id="no_hp" name="no_hp" class="form-control input-sm"  value="{{ old('no_hp') }}">
                                   </div>
                                 </div>
+                                
                                 <div class="col-md-2 col-sm-3 col-xs-12">
                                   
                                     
                                       <label class="tebal">Alamat</label>
                                   
                                 </div>
-                                <div class="col-md-10 col-sm-9 col-xs-12">
+                                <div class="col-md-4 col-sm-9 col-xs-12">
                                   <div class="form-group">
                                     <div class="input-icon right">
                                       <i class="glyphicon glyphicon-home"></i>
@@ -189,26 +204,9 @@
         return false;
       }
 
-      if(tgl_lahir == '' || tgl_lahir == null ){
-
-       toastr.warning('Data Harus tgl lahir Diisi!','Peringatan')
-        return false;
-      }
-
-      if(email == '' || email == null ){
-
-       toastr.warning('Data Harus email Diisi!','Peringatan')
-        return false;
-      }
-
       if(no_hp == '' || no_hp == null ){
 
        toastr.warning('Data Harus no hp Diisi!','Peringatan')
-        return false;
-      }
-
-      if(alamat == '' || alamat == null ){
-        toastr.warning('Data Harus alamat Diisi!','Peringatan')
         return false;
       }
       
@@ -217,7 +215,12 @@
         type:'get',
         data: a,
         success:function(response){
-          window.location = (baseUrl+'/master/datacust/cust')
+          if (response.status=='sukses') {
+            toastr.info('Data berhasil di simpan.');
+            window.location = (baseUrl+'/master/datacust/cust')
+          }else{
+            toastr.error('Data gagal di simpan.');
+          }
         }
       })
 
@@ -232,16 +235,12 @@
       $("#nama_cus").load("/master/datacust/tambah_cust", function(){
       $("#nama_cus").focus();
       });
-      $('.datepicker').datepicker({
-        format: "mm",
-        viewMode: "months",
-        minViewMode: "months"
-      });
-      $('.datepicker2').datepicker({
-        format: "dd/mm/yyyy",
-        
-      });
 
+  $('.datepicker').datepicker({
+    autoclose: true,
+    format:"dd-mm-yyyy",
+    endDate: 'today'
+    });//datepicker("setDate", "0");
 
 </script>
 @endsection                            

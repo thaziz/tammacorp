@@ -46,22 +46,15 @@
 
                             <form method="get" id="form_cust" action="#">
                               <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:5px;padding-top:20px; ">
-                                <div class="col-md-2 col-sm-3 col-xs-12"> 
-                                  
-                                      <label class="tebal">ID Customer</label>
-                                  
-                                </div>
-                                <div class="col-md-4 col-sm-9 col-xs-12">
                                   <div class="form-group">
-                                      <input type="text" class="form-control input-sm" readonly="true" name="id_cus_ut" value="{{ $edit_cust->c_code }}">
+                                      <input type="hidden" class="form-control input-sm" readonly="true" name="id_cus_ut" value="{{ $edit_cust->c_code }}">
                                       <input type="hidden" name="id_cus_ut" value="{{$edit_cust->c_id}}">
                                       <input type="hidden" name="id_cus" value="{{$edit_cust->c_id}}">
                                   </div>
-                                </div>
                                 <div class="col-md-2 col-sm-3 col-xs-12">
                                   
                                     
-                                      <label class="tebal">Nama Customer</label>
+                                      <label class="tebal">Nama Customer<font color="red">*</font></label>
                                   
                                 </div>
                                 <div class="col-md-4 col-sm-9 col-xs-12">
@@ -111,31 +104,63 @@
                                   <div class="form-group">
                                     
                                       <select name="tipe_cust" id="tipe_cust" class="form-control input-sm">
-                                      
-                                            <option value="retail">Retail</option>
-                                            <option value="online">Online</option>
-
+                                      @if ( $edit_cust->c_type  == 'RT')
+                                        <option value="RT" selected="">Retail</option>
+                                        <option value="GR">Online</option>
+                                      @elseif ($edit_cust->c_type  == 'GR')
+                                        <option value="RT">Retail</option>
+                                        <option value="GR" selected="">Online</option>
+                                      @else
+                                        <option value="GR">Online</option>
+                                        <option value="RT">Retail</option>
+                                       @endif
                                       </select>
                                                  
+                                  </div>
+                                </div>
+                                <div class="col-md-2 col-sm-3 col-xs-12">
+                                  
+                                      <label class="tebal">Kelas Customer</label>
+                                  
+                                </div>
+                                <div class="col-md-4 col-sm-9 col-xs-12">
+                                  <div class="form-group">
+                                    
+                                      <select name="c_class" id="c_class" class="form-control input-sm">
+                                        @if ( $edit_cust->c_class  == 'A')
+                                          <option value="C">C</option>
+                                          <option value="B">B</option>
+                                          <option value="A" selected="">A</option>
+                                        @elseif ($edit_cust->c_type  == 'B')
+                                          <option value="C">C</option>
+                                          <option value="B" selected="">B</option>
+                                          <option value="A">A</option>
+                                        @elseif ($edit_cust->c_type  == 'C')
+                                          <option value="C" selected="">C</option>
+                                          <option value="B">B</option>
+                                          <option value="A">A</option>
+                                        @else
+                                          <option value="C">C</option>
+                                          <option value="B">B</option>
+                                          <option value="A">A</option>
+                                        @endif
+                                      </select>
+                                                     
                                   </div>
                                 </div>
                                 <div class="col-md-6 col-sm-0 col-xs-0" style="height: 45px;">
                                   <!-- empty -->
                                 </div>
-
                                 <div class="col-md-2 col-sm-3 col-xs-12">
                                   
                                     
-                                      <label class="tebal">Nomor HP</label>
+                                      <label class="tebal">Nomor HP<font color="red">*</font></label>
                                   
                                 </div>
-                                <div class="col-md-10 col-sm-9 col-xs-12">
-                                  <div class="form-group">
-                                    <div class="input-icon right">
-                                      <i class="glyphicon glyphicon-earphone"></i>
-                                      <input type="text" id="no_hp" name="no_hp" class="form-control input-sm"  value="{{ $edit_cust->c_hp }}">
-                                  
-                                    </div>                               
+                                <div class="col-md-4 col-sm-9 col-xs-12">
+                                  <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">+62</span>
+                                    <input type="text" id="no_hp" name="no_hp" class="form-control input-sm"  value="{{str_replace('+62', '', $edit_cust->c_hp) }}">
                                   </div>
                                 </div>
                                 <div class="col-md-2 col-sm-3 col-xs-12">
@@ -144,12 +169,11 @@
                                       <label class="tebal">Alamat</label>
                                   
                                 </div>
-                                <div class="col-md-10 col-sm-9 col-xs-12">
+                                <div class="col-md-4 col-sm-9 col-xs-12">
                                   <div class="form-group">
                                     <div class="input-icon right">
                                       <i class="glyphicon glyphicon-home"></i>
-                                      <textarea id="alamat" name="alamat" class="form-control input-sm">{{ $edit_cust->c_address}}</textarea>
-                                                           
+                                      <textarea id="alamat" name="alamat" class="form-control input-sm">{{ $edit_cust->c_address}}</textarea>                         
                                     </div>    
                                   </div>
                                 </div>
@@ -191,26 +215,9 @@
         return false;
       }
 
-      if(tgl_lahir == '' || tgl_lahir == null ){
-
-       toastr.warning('Data Harus tgl lahir Diisi!','Peringatan')
-        return false;
-      }
-
-      if(email == '' || email == null ){
-
-       toastr.warning('Data Harus email Diisi!','Peringatan')
-        return false;
-      }
-
       if(no_hp == '' || no_hp == null ){
 
        toastr.warning('Data Harus no hp Diisi!','Peringatan')
-        return false;
-      }
-
-      if(alamat == '' || alamat == null ){
-        toastr.warning('Data Harus alamat Diisi!','Peringatan')
         return false;
       }
 
@@ -219,7 +226,12 @@
         type:'get',
         data: a,
         success:function(response){
-          // window.location = (baseUrl+'/master/datacust/cust')
+         if (response.status=='sukses') {
+            toastr.info('Data berhasil di update.');
+            window.location = (baseUrl+'/master/datacust/cust')
+          }else{
+            toastr.error('Data gagal di simpan.');
+          }
         }
       })
 
