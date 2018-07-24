@@ -36,6 +36,16 @@ Route::post('/hrd/datajabatan/simpan-jabatan', 'Hrd\JabatanController@simpanJaba
 Route::put('/hrd/datajabatan/update-jabatan/{id}', 'Hrd\JabatanController@updateJabatan');
 Route::get('/hrd/datajabatan/tambah-jabatan', 'Hrd\JabatanController@tambahJabatan');
 Route::delete('/hrd/datajabatan/delete-jabatan/{id}', 'Hrd\JabatanController@deleteJabatan');
+//gaji
+Route::get('/hrd/payroll/payroll', 'Hrd\GajiController@payroll');
+Route::get('/hrd/payroll/setting-gaji-man', 'Hrd\GajiController@settingGajiMan');
+Route::get('/hrd/payroll/datatable-gaji-man', 'Hrd\GajiController@gajiManData');
+Route::get('/hrd/payroll/tambah-gaji-man', 'Hrd\GajiController@tambahGajiMan');
+Route::post('/hrd/payroll/simpan-gaji-man', 'Hrd\GajiController@simpanGajiMan');
+Route::get('/hrd/payroll/edit-gaji-man/{id}', 'Hrd\GajiController@editGajiMan');
+Route::put('/hrd/payroll/update-gaji-man/{id}', 'Hrd\GajiController@updateGajiMan');
+Route::delete('/hrd/payroll/delete-gaji-man/{id}', 'Hrd\GajiController@deleteGajiMan');
+
 //surat
 Route::get('/hrd/manajemensurat', 'Hrd\ManajemenSuratController@index');
 Route::get('/hrd/manajemensurat/surat-phk', 'Hrd\ManajemenSuratController@indexPhk');
