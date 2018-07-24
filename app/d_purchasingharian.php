@@ -21,6 +21,7 @@ class d_purchasingharian extends Model
         'd_pcsh_staff',
         'd_pcsh_status',
         'd_pcsh_supid',
+        'd_pcsh_dateconfirm',
         'd_pcsh_created',
         'd_pcsh_updated'
     ];

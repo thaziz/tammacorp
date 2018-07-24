@@ -60,7 +60,8 @@
               <thead>
                 <tr>
                   <th style="text-align: center;" width="5%;">No</th>
-                  <th width="50%;">Kode | Barang</th>
+                  <th width="35%;">Kode | Barang</th>
+                  <th width="15%;">Satuan</th>
                   <th width="15%;">Qty</th>
                   <th width="15%;">Qty Confirm</th>
                   <th width="15%;">Stok Gudang</th>

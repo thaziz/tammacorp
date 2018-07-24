@@ -30,8 +30,8 @@
              
           <ul id="generalTab" class="nav nav-tabs">
             <li class="active"><a href="#index-tab" data-toggle="tab">Daftar Penerimaan</a></li>
-            <!-- <li><a href="#wait-tab" data-toggle="tab" onclick="lihatHistorybyTgl()">Daftar Tunggu</a></li> -->
-            <!-- <li><a href="#finish-tab" data-toggle="tab" onclick="lihatHistorybyTgl()">Daftar Hasil Penerimaan</a></li> -->
+            <li><a href="#wait-tab" data-toggle="tab" onclick="lihatHistorybyTgl()">Daftar Tunggu</a></li>
+            <li><a href="#finish-tab" data-toggle="tab" onclick="lihatHistorybyTgl()">Daftar Hasil Penerimaan</a></li>
           </ul>
 
           <div id="generalTabContent" class="tab-content responsive">
@@ -110,6 +110,7 @@
     //event onchange select option
     $('#head_nota_purchase').change(function() 
     {
+      $('#btn_simpan').attr('disabled', false);
       //remove existing appending row
       $('tr').remove('.tbl_form_row');
       var idPo = $('#head_nota_purchase').val();
@@ -123,7 +124,7 @@
           var totalPembelianNett = data.data_header[0].d_pcs_total_net;
           var totalDisc = parseInt(data.data_header[0].d_pcs_disc_value) + parseInt(data.data_header[0].d_pcs_discount);
           var taxPercent = data.data_header[0].d_pcs_tax_percent;
-          console.log(totalDisc);
+          //console.log(totalDisc);
           $('#head_kode_terima').val(data.code);
           $('#head_staff').val(data.staff.nama);
           $('#head_staff_id').val(data.staff.id);
@@ -142,10 +143,12 @@
           Object.keys(data.data_isi).forEach(function(){
             var hargaTotalItemGross = data.data_isi[key-1].d_pcsdt_total;
             var qtyCost = data.data_isi[key-1].d_pcsdt_qtyconfirm;
+            var qtyTerima = data.data_qty[key-1];
             //harga total per item setelah kena diskon & pajak
             var hargaTotalItemNet = Math.round(parseFloat(hargaTotalItemGross - (hargaTotalItemGross * percentDiscTotalGross/100) + ((hargaTotalItemGross - (hargaTotalItemGross * percentDiscTotalGross/100)) * taxPercent/100)).toFixed(2));
             console.log(hargaTotalItemNet);
             var hargaSatuanItemNet = hargaTotalItemNet/qtyCost;
+            var hargaTotalPerRow = hargaSatuanItemNet * qtyTerima;
             //console.log(hargaSatuanItemNet);
             $('#tabel-modal-terima').append('<tr class="tbl_form_row" id="row'+i+'">'
                             +'<td style="text-align:center">'+key+'</td>'
@@ -153,12 +156,13 @@
                             +'<input type="hidden" value="'+data.data_isi[key-1].i_id+'" name="fieldItemId[]" class="form-control input-sm"/>'
                             +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsdt_id+'" name="fieldIdPurchaseDet[]" class="form-control input-sm"/></td>'
                             +'<td><input type="text" value="'+qtyCost+'" name="fieldQty[]" class="form-control numberinput input-sm field_qty" readonly/></td>'
-                            +'<td><input type="text" value="'+data.data_qty[key-1]+'" name="fieldQtyterima[]" class="form-control numberinput input-sm field_qty_terima" id="'+i+'"/></td>'
+                            +'<td><input type="text" value="'+qtyTerima+'" name="fieldQtyterima[]" class="form-control numberinput input-sm field_qty_terima" id="'+i+'"/>'
+                            +'<input type="hidden" value="'+qtyTerima+'" name="fieldQtyterimaHidden[]" class="form-control numberinput input-sm" id="qtymskhidden_'+i+'"/></td>'
                             +'<td><input type="text" value="'+data.data_isi[key-1].m_sname+'" name="fieldSatuanTxt[]" class="form-control input-sm" readonly/>'
                             +'<input type="hidden" value="'+data.data_isi[key-1].m_sid+'" name="fieldSatuanId[]" class="form-control input-sm" readonly/></td>'
                             +'<td><input type="text" value="'+convertDecimalToRupiah(hargaSatuanItemNet)+'" name="fieldHarga[]" id="cost_'+i+'" class="form-control input-sm field_harga numberinput" readonly/>'
                             +'<input type="hidden" value="'+hargaSatuanItemNet+'" name="fieldHargaRaw[]" id="costRaw_'+i+'" class="form-control input-sm field_harga_raw numberinput" readonly/></td>'
-                            +'<td><input type="text" value="'+convertDecimalToRupiah(hargaTotalItemNet)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem" id="total_'+i+'" readonly/></td>'
+                            +'<td><input type="text" value="'+convertDecimalToRupiah(hargaTotalPerRow)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem" id="total_'+i+'" readonly/></td>'
                             +'<td><input type="text" value="'+data.data_stok[key-1].qtyStok+' '+data.data_satuan[key-1]+'" name="fieldStokTxt[]" class="form-control input-sm" readonly/>'
                             +'<input type="hidden" value="'+data.data_stok[key-1].qtyStok+'" name="fieldStokVal[]" class="form-control input-sm" readonly/></td>'
                             +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm">X</button></td>'
@@ -222,6 +226,7 @@
 
     // fungsi jika modal hidden
     $(".modal").on("hidden.bs.modal", function(){
+      $('#btn_simpan').attr('disabled', true);
       $('tr').remove('.tbl_form_row');
       $('tr').remove('.tbl_modal_detail_row');
       //reset all input txt field
@@ -236,7 +241,7 @@
     $(document).on('focus', '.field_qty_terima',  function(e){
         var qty = $(this).val();
         $(this).val(qty);
-        $('#button_save').attr('disabled', true);
+        $('#btn_simpan').attr('disabled', true);
     });
 
     $(document).on('blur', '.field_qty_terima',  function(e){
@@ -247,7 +252,17 @@
       var totalCost = $('#total_'+getid+'').val(convertDecimalToRupiah(hasilTotal));
       // $(this).val(potonganRp);
       totalNilaiPenerimaan();
-      $('#button_save').attr('disabled', false);
+      $('#btn_simpan').attr('disabled', false);
+    });
+
+    $(document).on('keyup', '.field_qty_terima', function(e) {
+      var val = parseInt($(this).val());
+      var getid = $(this).attr("id");
+      var qtyRemain = $('#qtymskhidden_'+getid+'').val();
+      console.log(getid);
+      if (val > qtyRemain || $(this).val() == "" || val == 0) {
+        $(this).val(qtyRemain);
+      }
     });
 
     /*$('#tampil_data').on('change', function() {

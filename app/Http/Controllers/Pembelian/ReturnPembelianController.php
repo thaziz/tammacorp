@@ -399,7 +399,6 @@ class ReturnPembelianController extends Controller
             'sm_hppnett' => $this->konvertRp($request->fieldHargaTotal[$i]),*/
             'sm_reff' => $request->kodeReturn,
             'sm_insert' => Carbon::now(),
-
         ]);
 
         //update d_stock_mutation qty_used (last qty + qty return) + insert
@@ -822,7 +821,6 @@ class ReturnPembelianController extends Controller
     return $idGroupGdg;
   }
 
-
   public function getStokByType($arrItemType, $arrSatuan, $counter)
   {
     foreach ($arrItemType as $val) 
@@ -838,7 +836,7 @@ class ReturnPembelianController extends Controller
         }
         elseif ($val->i_type == "BJ") //brg jual
         {
-            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '7' AND s_position = '7' limit 1) ,'0') as qtyStok"));
+            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
             $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();
 
             $stok[] = $query[0];

@@ -69,6 +69,8 @@
               </div>
             </div>
 
+            <div id="append-modal-order"></div>
+
           </div>
           
           <div class="table-responsive">

@@ -3,7 +3,7 @@
     <div class="row">
 
       <div class="col-md-2 col-sm-3 col-xs-12">
-        <label class="tebal">Tanggal Rencana</label>
+        <label class="tebal">Tanggal Order</label>
       </div>
 
       <div class="col-md-4 col-sm-6 col-xs-12">
@@ -17,7 +17,7 @@
       </div>
 
       <div class="col-md-3 col-sm-3 col-xs-12" align="center">
-        <button class="btn btn-primary btn-sm btn-flat autoCari" type="button"  onclick="lihatHistorybyTgl()">
+        <button class="btn btn-primary btn-sm btn-flat autoCari" type="button" onclick="lihatHistorybyTgl()">
           <strong>
             <i class="fa fa-search" aria-hidden="true"></i>
           </strong>
@@ -34,6 +34,7 @@
           <option value="wait" class="form-control">Tampilkan Data : Waiting</option>
           <option value="edit" class="form-control">Tampilkan Data : Dapat diedit</option>
           <option value="confirm" class="form-control">Tampilkan Data : Disetujui</option>
+          <option value="received" class="form-control">Tampilkan Data : Diterima</option>
         </select>
       </div>
 
@@ -43,14 +44,14 @@
             <thead>
               <tr>
                 <th class="wd-5p">No</th>
-                <th class="wd-15p">Id Rencana</th>
+                <th class="wd-15p">Id PO</th>
                 <th class="wd-15p">Nama Barang</th>
                 <th class="wd-10p">Satuan</th>
                 <th class="wd-15p">Supplier</th>
                 <th class="wd-10p">Tgl Pemintaan</th>
                 <th class="wd-5p">Qty</th>
-                <th class="wd-10p">Tgl Confirm</th>
-                <th class="wd-5p">Qty Confirm</th>
+                <th class="wd-10p">Tgl Masuk</th>
+                <th class="wd-5p">Qty Masuk</th>
                 <th class="wd-10p">Status</th>
               </tr>
             </thead>

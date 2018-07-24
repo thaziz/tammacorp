@@ -15,6 +15,7 @@ class d_purchasing_dt extends Model
         'd_pcsdt_id',
         'd_pcs_id',
         'i_id',
+        'd_pcsdt_sat',
         'd_pcsdt_idpdt',
         'd_pcsdt_qty',
         'd_pcsdt_price',

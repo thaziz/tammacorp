@@ -56,6 +56,7 @@ Route::delete('/master/datapegawai/delete-pegawai/{id}', 'Master\PegawaiControll
 Route::post('/master/datapegawai/import', 'Master\PegawaiController@importPegawai');
 Route::get('/master/datapegawai/master-import', 'Master\PegawaiController@getFile');
 /*Purchasing*/
+
 //rizky
 //order pembelian
 Route::get('/purchasing/orderpembelian/order', 'Pembelian\OrderPembelianController@order');
@@ -123,8 +124,6 @@ Route::get('/inventory/stockopname/tambah_opname', 'Inventory\OpnameGdgControlle
 Route::get('/inventory/p_returncustomer/cust', 'Inventory\InventoryController@cust');
 Route::get('/inventory/p_hasilproduksi/cari_nota', 'Inventory\InventoryController@cari_nota_produksi'); 
 Route::get('/inventory/p_returncustomer/cari_nota', 'Inventory\InventoryController@cari_nota_cust');
-/*End Inventory*/
-
 //rizky
 //p_hasilproduksi
 Route::get('/inventory/p_hasilproduksi/produksi', 'Inventory\PenerimaanBrgProdController@produksi');
@@ -158,7 +157,9 @@ Route::get('/inventory/p_suplier/cari_nota', 'Inventory\penerimaanbarang_supCont
 Route::get('/inventory/p_suplier/get_data_po', 'Inventory\PenerimaanBrgSupController@get_data_po');
 Route::get('/inventory/p_suplier/list_po', 'Inventory\PenerimaanBrgSupController@list_po');
 Route::get('/inventory/p_suplier/get_tabel_data/{id}', 'Inventory\PenerimaanBrgSupController@get_tabel_data');
+//end rizky
 /*End Inventory*/
+
 /*Produksi*/
 Route::get('/produksi/spk/spk', 'ProduksiController@spk');
 Route::get('/produksi/bahanbaku/baku', 'ProduksiController@baku');
@@ -391,6 +392,9 @@ Route::post('/keuangan/konfirmasipembelian/confirm-order-submit', 'Keuangan\Conf
 Route::get('/keuangan/konfirmasipembelian/get-data-tabel-return', 'Keuangan\ConfrimBeliController@getDataReturnPembelian');
 Route::get('/keuangan/konfirmasipembelian/confirm-return/{id}/{type}', 'Keuangan\ConfrimBeliController@confirmReturnPembelian');
 Route::post('/keuangan/konfirmasipembelian/confirm-return-submit', 'Keuangan\ConfrimBeliController@submitReturnPembelian');
+Route::get('/keuangan/konfirmasipembelian/get-data-tabel-belanjaharian', 'Keuangan\ConfrimBeliController@getDataBelanjaHarian');
+Route::get('/keuangan/konfirmasipembelian/confirm-belanjaharian/{id}/{type}', 'Keuangan\ConfrimBeliController@confirmBelanjaHarian');
+Route::post('/keuangan/konfirmasipembelian/confirm-belanjaharian-submit', 'Keuangan\ConfrimBeliController@submitBelanjaHarian');
 // end rizky
 //mahmud
 Route::get('/produksi/lihatadonan/tabel/{id}/{qty}', 'Keuangan\spkFinancialController@tabelFormula');
