@@ -105,20 +105,6 @@
                           </select>
                         </div>
                       </div>
-                      <div id="produksi" hidden="">
-                        <div class="col-md-2 col-sm-4 col-xs-12">
-                          <label class="tebal">Produksi</label>
-                        </div>
-                        <div class="col-md-4 col-sm-8 col-xs-12">
-                          <div class="form-group">
-                            <select id="" name="c_shift_id" class="form-control input-sm">
-                              <option <?php if($data->c_production == "1"){ echo "selected"; }?>value="1">Produksi 1</option>
-                              <option <?php if($data->c_production == "2"){ echo "selected"; }?>value="2">Produksi 2</option>
-                              <option <?php if($data->c_production == "3"){ echo "selected"; }?>value="3">Produksi 3</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
                       <div class="col-md-2 col-sm-4 col-xs-12">
                         <label class="tebal">Hari Kerja</label>
                       </div>
@@ -154,7 +140,6 @@
                       <div class="col-md-4 col-sm-8 col-xs-12">
                         <div class="form-group">
                           <select id="" name="c_shift_id" class="form-control input-sm">
-                            <option>--pilih shift--</option>
                             <?php foreach($shift as $s){ ?>
                             <?php if($s->c_id == $data->c_shift_id){ ?>
                             <option value="{{ $s->c_id }}" selected="">{{ $s->c_name}}</option>

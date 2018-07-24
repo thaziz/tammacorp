@@ -96,22 +96,7 @@
                           </select>
                         </div>
                       </div>
-                      <div id="produksi" hidden="">
-                        <div class="col-md-2 col-sm-4 col-xs-12">
-                          <label class="tebal">Produksi</label>
-                        </div>
-                        <div class="col-md-4 col-sm-8 col-xs-12">
-                          <div class="form-group">
-                            <select id="" name="c_shift_id" class="form-control input-sm">
-                              <option>--pilih shift--</option>
-                              <option value="1">Produksi1</option>
-                              <option value="2">Produksi2</option>
-                              <option value="3">Produksi3</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-2 col-sm-4 col-xs-12">
+                     <div class="col-md-2 col-sm-4 col-xs-12">
                         <label class="tebal">Hari Kerja</label>
                       </div>
                       <div class="col-md-2 col-sm-8 col-xs-12">
@@ -346,7 +331,7 @@
                     $('select[name="c_jabatan_id"]').empty();
                     $.each(data, function(key, value) {
                       // console.log(value.c_id)
-                      $('select[name="c_jabatan_id"]').append('<option value="'+ value.c_id +'">'+ value.c_posisi +'</option>');
+                      $('select[name="c_jabatan_id"]').append('<option value="'+ value.c_id + "-" + value.c_sub_divisi_id +'">'+ value.c_posisi +'</option>');
                     });
                   }
                 });
