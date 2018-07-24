@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Response;
 use DB;
 use DataTables;
+use Auth;
 use App\d_purchasing;
 use App\d_purchasing_dt;
 
@@ -44,8 +45,9 @@ class OrderPembelianController extends Controller
       }
 
       $codePO = "PO-".date('myd')."-".$kd;
-      $namaStaff = 'Jamilah';
-      return view ('/purchasing/orderpembelian/tambah_order',compact('codePO', 'namaStaff'));
+      $staff['nama'] = Auth::user()->m_name;
+      $staff['id'] = Auth::User()->m_id;
+      return view ('/purchasing/orderpembelian/tambah_order',compact('codePO', 'staff'));
     }
 
     public function getSupplier(Request $request)
@@ -108,7 +110,8 @@ class OrderPembelianController extends Controller
     public function getDataTabelIndex()
     {
         $data = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
-                ->select('d_pcs_date_created','d_pcs_id', 'd_pcsp_id','d_pcs_code','s_company','d_pcs_staff','d_pcs_method','d_pcs_total_net','d_pcs_date_received','d_pcs_status')
+                ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
+                ->select('d_pcs_date_created','d_pcs_id', 'd_pcsp_id','d_pcs_code','s_company','d_pcs_method','d_pcs_total_net','d_pcs_date_received','d_pcs_status','d_mem.m_id','d_mem.m_name')
                 //->where('d_pcs_status', '=', 'FN')
                 ->orderBy('d_pcs_date_created', 'DESC')
                 ->get();
@@ -209,7 +212,8 @@ class OrderPembelianController extends Controller
     public function getDataDetail($id)
     {
         $dataHeader = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
-                ->select('d_purchasing.*', 'd_supplier.s_company', 'd_supplier.s_name')
+                ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
+                ->select('d_purchasing.*', 'd_supplier.s_company', 'd_supplier.s_name','d_mem.m_id','d_mem.m_name')
                 ->where('d_pcs_id', '=', $id)
                 ->orderBy('d_pcs_date_created', 'DESC')
                 ->get();
@@ -242,12 +246,15 @@ class OrderPembelianController extends Controller
         }
 
         $dataIsi = d_purchasing_dt::join('m_item', 'd_purchasing_dt.i_id', '=', 'm_item.i_id')
+                ->join('m_satuan', 'd_purchasing_dt.d_pcsdt_sat', '=', 'm_satuan.m_sid')
                 ->select('d_purchasing_dt.d_pcsdt_id',
                          'd_purchasing_dt.d_pcs_id',
                          'd_purchasing_dt.i_id',
                          'm_item.i_name',
                          'm_item.i_code',
                          'm_item.i_sat1',
+                         'm_satuan.m_sname',
+                         'm_satuan.m_sid',
                          'd_purchasing_dt.d_pcsdt_prevcost',
                          'd_purchasing_dt.d_pcsdt_qty',
                          'd_purchasing_dt.d_pcsdt_price',
@@ -261,37 +268,111 @@ class OrderPembelianController extends Controller
         {
             //cek item type
             $itemType[] = DB::table('m_item')->select('i_type', 'i_id')->where('i_id','=', $val->i_id)->first();
+            //get satuan utama
+            $sat1[] = $val->i_sat1;
         }
 
+        //variabel untuk count array
+        $counter = 0;
         //ambil value stok by item type
-        foreach ($itemType as $val) 
-        { 
-          if ($val->i_type == "BP") //brg produksi
-          {
-              $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '6' AND s_position = '6' limit 1) ,'0') as qtyStok"));
-              $stok[] = $query[0];
-          }
-          elseif ($val->i_type == "BJ") //brg jual
-          {
-              $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '7' AND s_position = '7' limit 1) ,'0') as qtyStok"));
-              $stok[] = $query[0];
-          }
-          elseif ($val->i_type == "BB") //bahan baku
-          {
-              $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '3' AND s_position = '3' limit 1) ,'0') as qtyStok"));
-              $stok[] = $query[0];
-          }
-        }
+        $dataStok = $this->getStokByType($itemType, $sat1, $counter);
         
         return response()->json([
             'status' => 'sukses',
             'header' => $dataHeader,
             'header2' => $data,
             'data_isi' => $dataIsi,
-            'data_stok' => $stok,
+            'data_stok' => $dataStok['val_stok'],
+            'data_satuan' => $dataStok['txt_satuan'],
             'spanTxt' => $spanTxt,
             'spanClass' => $spanClass,
         ]);
+    }
+
+    public function getDataTabelHistory($tgl1, $tgl2, $tampil)
+    {
+        $y = substr($tgl1, -4);
+        $m = substr($tgl1, -7,-5);
+        $d = substr($tgl1,0,2);
+        $tanggal1 = $y.'-'.$m.'-'.$d;
+
+        $y2 = substr($tgl2, -4);
+        $m2 = substr($tgl2, -7,-5);
+        $d2 = substr($tgl2,0,2);
+        $tanggal2 = $y2.'-'.$m2.'-'.$d2;
+
+        if ($tampil == 'wait') {
+          $indexStatus = "WT";
+        }elseif ($tampil == 'edit') {
+          $indexStatus = "DE";
+        }elseif ($tampil == 'confirm') {
+          $indexStatus = "CF";
+        }else{
+          $indexStatus = "RC";
+        }
+
+        $data = DB::table('d_purchasing_dt')
+            ->select('d_purchasing_dt.*', 'd_purchasing.*', 'm_item.i_name', 'd_supplier.s_company', 'm_satuan.m_sname', 'd_terima_pembelian_dt.d_tbdt_qty')
+            ->leftJoin('d_purchasing','d_purchasing_dt.d_pcs_id','=','d_purchasing.d_pcs_id')
+            ->leftJoin('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
+            ->leftJoin('m_item','d_purchasing_dt.i_id','=','m_item.i_id')
+            ->leftJoin('m_satuan','d_purchasing_dt.d_pcsdt_sat','=','m_satuan.m_sid')
+            ->leftJoin('d_terima_pembelian_dt','d_purchasing_dt.d_pcsdt_idpdt','=','d_terima_pembelian_dt.d_tbdt_idpcsdt')
+            ->where('d_purchasing_dt.d_pcsdt_isconfirm','=',"FALSE")
+            ->where('d_purchasing.d_pcs_status','=',$indexStatus)
+            ->whereBetween('d_purchasing.d_pcs_date_created', [$tanggal1, $tanggal2])
+            ->get();
+
+        return DataTables::of($data)
+        ->addIndexColumn()
+        ->editColumn('status', function ($data)
+          {
+          if ($data->d_pcs_status == "WT") 
+          {
+            return '<span class="label label-default">Waiting</span>';
+          }
+          elseif ($data->d_pcs_status == "DE") 
+          {
+            return '<span class="label label-warning">Dapat diedit</span>';
+          }
+          elseif ($data->d_pcs_status == "CF") 
+          {
+            return '<span class="label label-info">Disetujui</span>';
+          }
+          else
+          {
+            return '<span class="label label-success">Disetujui</span>';
+          }
+        })
+        ->editColumn('tglBuat', function ($data) 
+        {
+            if ($data->d_pcs_date_created == null) 
+            {
+                return '-';
+            }
+            else 
+            {
+                return $data->d_pcs_date_created ? with(new Carbon($data->d_pcs_date_created))->format('d M Y') : '';
+            }
+        })
+        ->editColumn('tglTerima', function ($data) 
+        {
+            if ($data->d_pcs_date_received == null) 
+            {
+                return '-';
+            }
+            else 
+            {
+                return $data->d_pcs_date_received ? with(new Carbon($data->d_pcs_date_received))->format('d M Y') : '';
+            }
+        })
+        ->editColumn('qtyTerima', function ($data) 
+        {
+            $qty = ($data->d_tbdt_qty == null) ? '-' : $data->d_tbdt_qty;
+            return $qty;
+        })
+        ->rawColumns(['status'])
+        ->make(true);
     }
 
     public function getEditOrder($id)
@@ -325,7 +406,8 @@ class OrderPembelianController extends Controller
       }
 
       $dataIsi = d_purchasing_dt::join('m_item', 'd_purchasing_dt.i_id', '=', 'm_item.i_id')
-                ->select('d_purchasing_dt.*', 'm_item.*')
+                ->join('m_satuan', 'd_purchasing_dt.d_pcsdt_sat', '=', 'm_satuan.m_sid')
+                ->select('d_purchasing_dt.*', 'm_item.*', 'm_satuan.m_sname', 'm_satuan.m_sid')
                 ->where('d_purchasing_dt.d_pcs_id', '=', $id)
                 ->orderBy('d_purchasing_dt.d_pcsdt_created', 'DESC')
                 ->get();
@@ -334,33 +416,21 @@ class OrderPembelianController extends Controller
       {
         //cek item type
         $itemType[] = DB::table('m_item')->select('i_type', 'i_id')->where('i_id','=', $val->i_id)->first();
+        //get satuan utama
+        $sat1[] = $val->i_sat1;
       }
 
+      //variabel untuk count array
+      $counter = 0;
       //ambil value stok by item type
-      foreach ($itemType as $val) 
-      { 
-        if ($val->i_type == "BP") //brg produksi
-        {
-          $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '6' AND s_position = '6' limit 1) ,'0') as qtyStok"));
-          $stok[] = $query[0];
-        }
-        elseif ($val->i_type == "BJ") //brg jual
-        {
-          $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '7' AND s_position = '7' limit 1) ,'0') as qtyStok"));
-          $stok[] = $query[0];
-        }
-        elseif ($val->i_type == "BB") //bahan baku
-        {
-          $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '3' AND s_position = '3' limit 1) ,'0') as qtyStok"));
-          $stok[] = $query[0];
-        }
-      }
+      $dataStok = $this->getStokByType($itemType, $sat1, $counter);
       
       return response()->json([
         'status' => 'sukses',
         'header' => $dataHeader,
         'data_isi' => $dataIsi,
-        'data_stok' => $stok,
+        'data_stok' => $dataStok['val_stok'],
+        'data_satuan' => $dataStok['txt_satuan'],
         'spanTxt' => $spanTxt,
         'spanClass' => $spanClass
       ]);
@@ -369,8 +439,9 @@ class OrderPembelianController extends Controller
     public function getDataForm($id)
     {
       $dataIsi = DB::table('d_purchasingplan_dt')
-            ->select('d_purchasingplan_dt.*', 'm_item.i_name', 'm_item.i_code', 'm_item.i_sat1', 'm_item.i_id')
+            ->select('d_purchasingplan_dt.*', 'm_item.i_name', 'm_item.i_code', 'm_item.i_sat1', 'm_item.i_id', 'm_satuan.m_sname', 'm_satuan.m_sid')
             ->leftJoin('m_item','d_purchasingplan_dt.d_pcspdt_item','=','m_item.i_id')
+            ->leftJoin('m_satuan','d_purchasingplan_dt.d_pcspdt_sat','=','m_satuan.m_sid')
             ->where('d_purchasingplan_dt.d_pcspdt_idplan', '=', $id)
             ->where('d_purchasingplan_dt.d_pcspdt_ispo', '=', "FALSE")
             ->where('d_purchasingplan_dt.d_pcspdt_isconfirm', '=', "TRUE")
@@ -380,32 +451,20 @@ class OrderPembelianController extends Controller
         {
           //cek item type
           $itemType[] = DB::table('m_item')->select('i_type', 'i_id')->where('i_id','=', $val->i_id)->first();
+          //get satuan utama
+          $sat1[] = $val->i_sat1;
         }
 
+        //variabel untuk count array
+        $counter = 0;
         //ambil value stok by item type
-        foreach ($itemType as $val) 
-        { 
-            if ($val->i_type == "BP") //brg produksi
-            {
-                $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '6' AND s_position = '6' limit 1) ,'0') as qtyStok"));
-                $stok[] = $query[0];
-            }
-            elseif ($val->i_type == "BJ") //brg jual
-            {
-                $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '7' AND s_position = '7' limit 1) ,'0') as qtyStok"));
-                $stok[] = $query[0];
-            }
-            elseif ($val->i_type == "BB") //bahan baku
-            {
-                $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '3' AND s_position = '3' limit 1) ,'0') as qtyStok"));
-                $stok[] = $query[0];
-            }
-        }
-
+        $dataStok = $this->getStokByType($itemType, $sat1, $counter);
+      
         return response()->json([
             'status' => 'sukses',
             'data_isi' => $dataIsi,
-            'data_stok' => $stok,
+            'data_stok' => $dataStok['val_stok'],
+            'data_satuan' => $dataStok['txt_satuan'],
         ]);
     }
 
@@ -427,7 +486,7 @@ class OrderPembelianController extends Controller
           $dataHeader->d_pcsp_id = $request->cariKodePlan;
           $dataHeader->s_id = $request->cariSup;
           $dataHeader->d_pcs_code = $request->kodePo;
-          $dataHeader->d_pcs_staff = $request->namaStaff;
+          $dataHeader->d_pcs_staff = $request->idStaff;
           $dataHeader->d_pcs_method = $request->methodBayar;
           $dataHeader->d_pcs_total_gross = $totalGross;
           $dataHeader->d_pcs_discount = $diskonPotHarga;
@@ -447,7 +506,7 @@ class OrderPembelianController extends Controller
           $dataHeader->d_pcsp_id = $request->cariKodePlan;
           $dataHeader->s_id = $request->cariSup;
           $dataHeader->d_pcs_code = $request->kodePo;
-          $dataHeader->d_pcs_staff = $request->namaStaff;
+          $dataHeader->d_pcs_staff = $request->idStaff;
           $dataHeader->d_pcs_method = $request->methodBayar;
           $dataHeader->d_pcs_total_gross = $totalGross;
           $dataHeader->d_pcs_discount = $diskonPotHarga;
@@ -484,6 +543,8 @@ class OrderPembelianController extends Controller
           $dataIsi = new d_purchasing_dt;
           $dataIsi->d_pcs_id = $lastId;
           $dataIsi->i_id = $request->fieldItemId[$i];
+          $dataIsi->d_pcsdt_sid = $request->cariSup;
+          $dataIsi->d_pcsdt_sat = $request->fieldIdSatuan[$i];
           $dataIsi->d_pcsdt_idpdt = $request->fieldidPlanDt[$i];
           $dataIsi->d_pcsdt_qty = $request->fieldQty[$i];
           $dataIsi->d_pcsdt_price = $this->konvertRp($request->fieldHarga[$i]);
@@ -496,7 +557,7 @@ class OrderPembelianController extends Controller
       DB::commit();
       return response()->json([
             'status' => 'sukses',
-            'pesan' => 'Data Rencana Order Berhasil Disimpan'
+            'pesan' => 'Data Order Pembelian Berhasil Disimpan'
         ]);
       } 
       catch (\Exception $e) 
@@ -529,7 +590,7 @@ class OrderPembelianController extends Controller
         $purchasing->d_pcs_tax_percent = $replaceCharPPN;
         $purchasing->d_pcs_tax_value = ($totalGross - $diskonPotHarga - $discValue) * $replaceCharPPN / 100;
         $purchasing->d_pcs_total_net = $this->konvertRp($request->totalNettEdit);
-        $purchasing->d_pcs_updated = Carbon::now();
+        $purchasing->d_pcs_updated = Carbon::now('Asia/Jakarta');
         $purchasing->save();
         
         //update to table d_purchasing_dt
@@ -539,14 +600,14 @@ class OrderPembelianController extends Controller
           $purchasingdt = d_purchasing_dt::find($request->fieldIdPurchaseDt[$i]);
           $purchasingdt->d_pcsdt_price = $this->konvertRp($request->fieldHarga[$i]);
           $purchasingdt->d_pcsdt_total = $this->konvertRp($request->fieldHargaTotal[$i]);
-          $purchasingdt->d_pcsdt_updated = Carbon::now();
+          $purchasingdt->d_pcsdt_updated = Carbon::now('Asia/Jakarta');
           $purchasingdt->save();
         } 
         
       DB::commit();
       return response()->json([
             'status' => 'sukses',
-            'pesan' => 'Data Rencana PO Berhasil Diupdate'
+            'pesan' => 'Data Order Pembelian Berhasil Diupdate'
         ]);
       } 
       catch (\Exception $e) 
@@ -578,7 +639,7 @@ class OrderPembelianController extends Controller
         DB::commit();
         return response()->json([
             'status' => 'sukses',
-            'pesan' => 'Data Rencana Order Berhasil Dihapus'
+            'pesan' => 'Data Order Pembelian Berhasil Dihapus'
         ]);
       } 
       catch (\Exception $e) 
@@ -595,5 +656,42 @@ class OrderPembelianController extends Controller
     {
         $value = str_replace(['Rp', '\\', '.', ' '], '', $value);
         return (int)str_replace(',', '.', $value);
+    }
+
+    public function getStokByType($arrItemType, $arrSatuan, $counter)
+    {
+      foreach ($arrItemType as $val) 
+      {
+          if ($val->i_type == "BP") //brg produksi
+          {
+              $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '6' AND s_position = '6' limit 1) ,'0') as qtyStok"));
+              $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();
+              
+              $stok[] = $query[0];
+              $satuan[] = $satUtama->m_sname;
+              $counter++;
+          }
+          elseif ($val->i_type == "BJ") //brg jual
+          {
+              $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
+              $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();
+
+              $stok[] = $query[0];
+              $satuan[] = $satUtama->m_sname;
+              $counter++;
+          }
+          elseif ($val->i_type == "BB") //bahan baku
+          {
+              $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '3' AND s_position = '3' limit 1) ,'0') as qtyStok"));
+              $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();
+
+              $stok[] = $query[0];
+              $satuan[] = $satUtama->m_sname;
+              $counter++;
+          }
+      }
+
+      $data = array('val_stok' => $stok, 'txt_satuan' => $satuan);
+      return $data;
     }
 }
