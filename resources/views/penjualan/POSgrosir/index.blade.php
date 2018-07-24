@@ -7,6 +7,7 @@
     <div id="page-wrapper">
         <!--BEGIN TITLE & BREADCRUMB PAGE-->
         <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
+          dfgdgsgsfgsfsdf
 @if ($ket == 'create')
             <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
                 <div class="page-title">Form Entri Penjualan Grosir/Online</div>
