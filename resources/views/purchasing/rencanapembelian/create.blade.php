@@ -83,7 +83,8 @@
 
                                                 <div class="col-md-3 col-sm-12 col-xs-12">
                                                     <div class="form-group">
-                                                        <input type="text" readonly="" class="form-control input-sm" name="namaStaff" value="{{$namaStaff}}">
+                                                        <input type="text" readonly="" class="form-control input-sm" name="namaStaff" value="{{$staff['nama']}}">
+                                                        <input type="hidden" readonly="" class="form-control input-sm" name="idStaff" value="{{$staff['id']}}">
                                                     </div>
                                                 </div>
 
@@ -109,7 +110,7 @@
                                                             <th>Kode | Barang</th>
                                                             <th>Qty</th>
                                                             <th>Satuan</th>
-                                                            <th>Harga Prev / satuan</th>
+                                                            <th>Harga Prev / Satuan utama</th>
                                                             <th>Stok Gudang</th>
                                                             <th style="text-align: center;">Aksi</th>
                                                         </tr>
@@ -257,7 +258,7 @@
                     Object.keys(ui.item.sat).forEach(function(){
                         $('#ip_sat').append($('<option>', { 
                             value: ui.item.sat[key-1],
-                            text : ui.item.sat[key-1]
+                            text : ui.item.satTxt[key-1]
                         }));
                         key++;
                     });
@@ -274,7 +275,8 @@
         var i = randString(5);
         var no = 1;
         $('#add_item').click(function() {
-            var ambilSatuan = $("#ip_sat option:selected").val();
+            var ambilSatuan = $("#ip_sat option:selected").text();
+            var ambilSatuanId = $("#ip_sat option:selected").val();
             $('#ip_sat').empty();
             var ambilIdBarang = $('#ip_item').val();
             var ambilBarang = $('#ip_barang').val();
@@ -292,8 +294,9 @@
                                         +'<td><input type="text" name="fieldIpBarang[]" value="'+ambilBarang+'" id="field_ip_barang" class="form-control" required readonly>'
                                         +'<input type="hidden" name="fieldIpItem[]" value="'+ambilIdBarang+'" id="field_ip_item" class="form-control"></td>'
                                         +'<td><input type="text" name="fieldIpQtyReq[]" value="'+ambilQtyReq+'" id="field_ip_qty_req" class="form-control" required readonly></td>'
-                                        +'<td><input type="text" name="fieldIpQtySat[]" value="'+ambilSatuan+'" id="field_ip_qty_stok" class="form-control" required readonly></td>'
-                                        +'<td><input type="text" name="fieldHargaPrev[]" value="'+ambilHargaPrev+'" id="field_ip_qty_stok" class="form-control" required readonly></td>'
+                                        +'<td><input type="text" name="fieldIpSat[]" value="'+ambilSatuan+'" id="field_ip_sat" class="form-control" required readonly>'
+                                        +'<input type="hidden" name="fieldIpSatid[]" value="'+ambilSatuanId+'" id="field_ip_satid" class="form-control" required></td>'
+                                        +'<td><input type="text" name="fieldHargaPrev[]" value="'+ambilHargaPrev+'" id="field_ip_hargaprev" class="form-control" required readonly></td>'
                                         +'<td><input type="text" name="fieldIpQtyStok[]" value="'+ambilQtyStok+'" id="field_ip_qty_stok" class="form-control" required readonly></td>'
                                         +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button></td>'
                                         +'</tr>');

@@ -38,41 +38,6 @@ class PenerimaanBrgProdController extends Controller
         return view('inventory/p_hasilproduksi/produksi');
     }
 
-    // public function cust()
-    // {
-    //     return view('inventory/p_returncustomer/cust');
-    // }
-
-    // public function barang()
-    // {
-    //     return view('inventory/b_digunakan/barang');
-    // }
-
-    // public function opname()
-    // {
-    //     return view('inventory/stockopname/opname');
-    // }
-    //  public function cari_nota_sup()
-    // {
-    //     return view('inventory/p_suplier/cari_nota');
-    // }
-    // public function cari_nota_produksi()
-    // {
-    //     return view('inventory/p_hasilproduksi/cari_nota');
-    // }
-    // public function cari_nota_cust()
-    // {
-    //     return view('inventory/p_returncustomer/cari_nota');
-    // }
-    // public function tambah_barang()
-    // {
-    //     return view('inventory/b_digunakan/tambah_barang');
-    // }
-    // public function tambah_opname()
-    // {
-    //     return view('inventory/stockopname/tambah_opname');
-    // }
-
     public function get_data_sj(Request $request)
     {
         $formatted_tags = array();

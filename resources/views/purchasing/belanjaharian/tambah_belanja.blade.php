@@ -32,8 +32,6 @@
                   
             <ul id="generalTab" class="nav nav-tabs">
               <li class="active"><a href="#alert-tab" data-toggle="tab">Form Belanja Harian</a></li>
-              <!-- <li><a href="#note-tab" data-toggle="tab">2</a></li>
-              <li><a href="#label-badge-tab" data-toggle="tab">3</a></li> -->
             </ul>
 
             <div id="generalTabContent" class="tab-content responsive" >
@@ -92,9 +90,8 @@
 
                         <div class="col-md-4 col-sm-9 col-xs-12">
                           <div class="form-group">
-                            {{-- <input type="text" readonly="" value="{{ Auth::user()->username }}" class="form-control input-sm">
-                            <input type="hidden" value="{{ Auth::user()->id }}" name=""> --}}
-                            <input type="text" readonly="" class="form-control input-sm" name="namaStaff" value="{{$namaStaff}}">
+                            <input type="text" readonly="" class="form-control input-sm" name="namaStaff" value="{{$staff['nama']}}">
+                            <input type="hidden" readonly="" class="form-control input-sm" name="idStaff" value="{{$staff['id']}}">
                           </div>
                         </div>
 
@@ -151,13 +148,17 @@
                               <td>
                                   {{ csrf_field() }}
                                   <input type="hidden" id="ip_item" class="form-control" value="" name="ipItem">
-                                  <input type="text" id="ip_barang" class="form-control ui-autocomplete-input input-sm" placeholder="Masukkan nama barang" autocomplete="off" name="ipBarang">
+                                  <div class="input-group input-group-sm" style="width: 100%;">
+                                    <input type="text" id="ip_barang" class="form-control ui-autocomplete-input input-sm" placeholder="Masukkan nama barang" autocomplete="off" name="ipBarang">
+                                    <!-- <span class="input-group-btn"><button  type="button" class="btn btn-info btn-sm btn_add_barang" data-toggle="modal" data-target="#modal-barang"><i class="fa fa-plus"></i></button></span> -->
+                                    <span class="input-group-btn"><button  type="button" class="btn btn-info btn-sm btn_add_barang" onclick="tambahMasterBarang()"><i class="fa fa-plus"></i></button></span>
+                                  </div>
                               </td>
                               <td>
                                   <input type="text" id="ip_qty" class="form-control input-sm numberinput" value="" name="ipQty">
                               </td>
                               <td>
-                                  <input type="text" id="ip_satuan" class="form-control input-sm" value="" name="ipSatuan" readonly>
+                                  <select class="form-control input-sm" id="ip_satuan" name="ipSat" style="width: 100%;"></select>
                               </td>
                               <td>
                                   <input type="text" id="ip_harga" class="form-control input-sm" value="" name="ipHarga">
@@ -194,8 +195,11 @@
   <!--END PAGE WRAPPER-->
   <!-- modal-supplier -->
   @include('purchasing.belanjaharian.modal-supplier')
+  <!-- modal-barang -->
+  @include('purchasing.belanjaharian.modal-barang')
 @endsection
 @section("extra_scripts")
+<script src="{{ asset("js/inputmask/inputmask.jquery.js") }}"></script>
 <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
 <script type="text/javascript">
   $(document).ready(function() {
@@ -246,13 +250,22 @@
             select: function(event, ui) {
                 $('#ip_item').val(ui.item.id);
                 $('#ip_barang').val(ui.item.label);
-                $('#ip_satuan').val(ui.item.satuan);
+                //$('#ip_satuan').val(ui.item.satuan);
+                Object.keys(ui.item.sat).forEach(function()
+                {
+                  $('#ip_satuan').append($('<option>', 
+                  { 
+                      value: ui.item.sat[key-1],
+                      text : ui.item.satTxt[key-1]
+                  }));
+                  key++;
+                });
                 $('#ip_harga').val(convertDecimalToRupiah('0.00'));
                 $('#ip_harga_total').val(convertDecimalToRupiah('0.00'));
                 $("input[name='ipQty']").focus();
             }
         });
-        $('#ip_satuan').val("");
+        $('#ip_satuan').empty();
         $('#ip_barang').val("");
         $('#ip_item').val("");
         $('#ip_qty').val("");
@@ -262,17 +275,18 @@
 
     //event focus on input harga
     $(document).on('focus', '#ip_harga',  function(e){
-        var harga = convertToAngka($(this).val());
-        $(this).val(harga);
+        $(this).val("");
+        $('#button_save').attr('disabled', true);
     });
 
     $(document).on('focus', '#total_bayar',  function(e){
-        var bayar = convertToAngka($(this).val());
-        $(this).val(bayar);
+        $(this).val("");
+        $('#button_save').attr('disabled', true);
     });
 
     //event onblur input harga
     $(document).on('blur', '#ip_harga',  function(e){
+      if ($(this).val() == "") { $(this).val(0) };
       var harga = $(this).val();
       var qty = $('#ip_qty').val();
       //hitung nilai harga total
@@ -281,26 +295,37 @@
       //ubah format ke rupiah
       var hargaRp = convertToRupiah($(this).val());
       $(this).val(hargaRp);
-      //totalPembelian();
+      $('#button_save').attr('disabled', false);
+    });
+
+    //event onblur qty
+    $(document).on('blur', '#ip_qty',  function(e){
+      var qty = $(this).val();
+      var harga = convertToAngka($('#ip_harga').val());
+      //hitung nilai harga total
+      var valueHargaTotal = convertToRupiah(qty * harga);
+      $('#ip_harga_total').val(valueHargaTotal);
     });
 
     $(document).on('blur', '#total_bayar',  function(e){
+      if ($(this).val() == "") { $(this).val(0) };
       var valueHargaByr = convertToRupiah($(this).val());
       $(this).val(valueHargaByr);
+      $('#button_save').attr('disabled', false);
     });
 
     var i = randString(5);
     var no = 1;
     $('#add_item').click(function() {
-        var ambilSatuan = $("#ip_sat option:selected").val();
-        $('#ip_sat').empty();
+        var ambilSatuanId = $("#ip_satuan option:selected").val();
+        var ambilSatuanTxt = $("#ip_satuan option:selected").text();
+        $('#ip_satuan').empty();
         var ambilIdBarang = $('#ip_item').val();
         var ambilBarang = $('#ip_barang').val();
         var ambilQty = $('#ip_qty').val();
-        var ambilSatuan = $('#ip_satuan').val();
         var ambilHarga = $('#ip_harga').val();
         var ambilHargaTotal = $('#ip_harga_total').val();
-        if (ambilIdBarang == "" || ambilBarang == "" || ambilQty == "" || ambilSatuan == "" ) 
+        if (ambilIdBarang == "" || ambilBarang == "" || ambilQty == "" || ambilSatuanId == "" ) 
         {
             alert('Terdapat kolom yang kosong, dimohon cek lagi!!');
         }
@@ -311,7 +336,8 @@
                                     +'<td><input type="text" name="fieldIpBarang[]" value="'+ambilBarang+'" id="field_ip_barang" class="form-control" required readonly>'
                                     +'<input type="hidden" name="fieldIpItem[]" value="'+ambilIdBarang+'" id="field_ip_item" class="form-control"></td>'
                                     +'<td><input type="text" name="fieldIpQty[]" value="'+ambilQty+'" id="field_ip_qty" class="form-control" required readonly></td>'
-                                    +'<td><input type="text" name="fieldIpSat[]" value="'+ambilSatuan+'" id="field_ip_sat" class="form-control" required readonly></td>'
+                                    +'<td><input type="text" name="fieldIpSatTxt[]" value="'+ambilSatuanTxt+'" id="field_ip_sat_txt" class="form-control" required readonly>'
+                                    +'<input type="hidden" name="fieldIpSatId[]" value="'+ambilSatuanId+'" id="field_ip_sat_id" class="form-control" required readonly></td>'
                                     +'<td><input type="text" name="fieldIpHarga[]" value="'+ambilHarga+'" id="field_ip_harga" class="form-control" required readonly></td>'
                                     +'<td><input type="text" name="fieldIpHargaTot[]" value="'+ambilHargaTotal+'" id="field_ip_harga_tot" class="form-control hargaTotalItem" required readonly></td>'
                                     +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button></td>'
@@ -339,6 +365,144 @@
     $('input.numberinput').bind('keypress', function (e) {
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
     });
+
+    $('#code_group').change(function(){
+      var id = $(this).val();
+      var bid = $('#code_group').find(':selected').data('val');
+      console.log(id);
+      $.ajax({
+         type: "get",
+         url: '{{ route('kode_barang') }}',
+         data: {id},
+         success: function(data){
+          $('#kode_barang').val(data);
+         
+         },
+         error: function(){
+        
+         },
+         async: false
+      });
+    });
+
+    // fungsi jika modal hidden
+    /*$(".modal").on("hidden.bs.modal", function(){
+      
+    });*/
+
+    //mask money
+    $.fn.maskFunc = function(){
+      $('.currency').inputmask("currency", {
+          radixPoint: ",",
+          groupSeparator: ".",
+          digits: 2,
+          autoGroup: true,
+          prefix: '', //Space after $, this will not truncate the first character.
+          rightAlign: false,
+          oncleared: function () { self.Value(''); }
+      });
+    }
+
+    $(this).maskFunc();
+
+    $('#code_group').change(function(){
+      var id = $(this).val();
+      var bid = $('#code_group').find(':selected').data('val');
+      console.log(id);
+      $.ajax({
+         type: "get",
+         url: '{{ route('kode_barang') }}',
+         data: {id},
+         success: function(data){
+          $('#kode_barang').val(data);
+         
+         },
+         error: function(){
+        
+         },
+         async: false
+      });
+    });
+
+    //event focus on isi_sat3
+    $(document).on('focus', '#isi_sat2',  function(e){
+      $('#isi_sat2').attr('readonly', false);
+      $('#isi_sat3').attr('readonly', false);
+      $('#harga_beli1').val('').attr('readonly', true);
+      $('#harga_beli2').val('');
+      $('#harga_beli3').val('');
+    });
+
+    //event focus on isi_sat3
+    $(document).on('focus', '#isi_sat3',  function(e){
+      $('#isi_sat2').attr('readonly', false);
+      $('#isi_sat3').attr('readonly', false);
+      $('#harga_beli1').val('').attr('readonly', true);
+      $('#harga_beli2').val('');
+      $('#harga_beli3').val('');
+    });
+
+    //event onblur harga isi_sat3
+    $(document).on('blur', '#isi_sat3',  function(e){
+      $('#harga_beli1').attr('readonly', false);
+    });
+
+    //event focus on harga beli1
+    $(document).on('focus', '#harga_beli1',  function(e){
+      $('#isi_sat2').attr('readonly', true);
+      $('#isi_sat3').attr('readonly', true);
+    });
+
+    //event onblur harga beli1
+    $(document).on('blur', '#harga_beli1',  function(e){
+      var harga1 = convertToAngka($(this).val());
+      // console.log(harga1);
+      var isi2 = $('#isi_sat2').val();
+      var isi3 = $('#isi_sat3').val();
+      var harga2 = parseInt(harga1 * isi2);
+      var harga3 = parseInt(harga1 * isi3);
+      // console.log(harga2);
+      // console.log(harga3);
+      $('#harga_beli2').val(harga2);
+      $('#harga_beli3').val(harga3);
+    });
+
+    $('#change_function').on("click", "#save_barang",function(){
+      if(confirm('Simpan Data Barang ?'))
+      {
+        $('#save_barang').text('Menyimpan...'); //change button text
+        $('#save_barang').attr('disabled',true); //set button disable 
+        $.ajax({
+          type: "get",
+          url: '{{ route('simpan_barang') }}',
+          data: $('#form-master-barang').serialize(),
+          success: function(response)
+          {
+            if(response.status == "sukses")
+            {
+              // alert(response.pesan);
+              toastr.success(response.pesan, 'Pemberitahuan');
+              $('#save_barang').text('Simpan Data'); //change button text
+              $('#save_barang').attr('disabled',false); //set button enable
+              $('#modal-barang').modal('hide');
+            }
+            else
+            {
+              toastr.error(response.pesan, 'Pemberitahuan');
+              $('#save_barang').text('Simpan Data'); //change button text
+              $('#save_barang').attr('disabled',false); //set button enable
+              $('#modal-barang').modal('hide');
+            }              
+          },
+          error: function()
+          {
+            toastr.error('Data Tidak Tersimpan!','Pemberitahuan') 
+          },
+          async: false
+        });
+      }
+    });
+
 
   //end jquery
   });
@@ -413,6 +577,65 @@
             }
         });
     }
+  }
+
+  function tambahMasterBarang() 
+  {
+    $('#code_group').empty();
+    $('#satuan_1').empty();
+    $('#satuan_2').empty();
+    $('#satuan_3').empty();
+    $('#code_group').append($('<option>', { value: "", text : "- Pilih Data -" }));
+    $('#satuan_1').append($('<option>', { value: "", text : "- Pilih Data -" }));
+    $('#satuan_2').append($('<option>', { value: "", text : "- Pilih Data -" }));
+    $('#satuan_3').append($('<option>', { value: "", text : "- Pilih Data -" }));
+    $.ajax({
+      url : baseUrl + "/purchasing/belanjaharian/get-data-masterbarang",
+      type: "GET",
+      dataType: "JSON",
+      success: function(data)
+      {
+        var key = 1;
+        var key2 = 1;
+        Object.keys(data.group).forEach(function(){
+          $('#code_group').append($('<option>',
+          {
+            value: data.group[key-1].m_gcode,
+            text : data.group[key-1].m_gname 
+          }));
+
+          key++;
+        });
+
+        Object.keys(data.satuan).forEach(function(){
+          $('#satuan_1').append($('<option>',
+          {
+            value: data.satuan[key2-1].m_sid,
+            text : data.satuan[key2-1].m_sname 
+          }));
+
+          $('#satuan_2').append($('<option>',
+          {
+            value: data.satuan[key2-1].m_sid,
+            text : data.satuan[key2-1].m_sname 
+          }));
+
+          $('#satuan_3').append($('<option>',
+          {
+            value: data.satuan[key2-1].m_sid,
+            text : data.satuan[key2-1].m_sname 
+          }));
+          
+          key2++;
+        });
+
+        $('#modal-barang').modal('show');
+      },
+      error: function (jqXHR, textStatus, errorThrown)
+      {
+          alert('Error get data from ajax');
+      }
+    });
   }
 
   function convertDecimalToRupiah(decimal) 

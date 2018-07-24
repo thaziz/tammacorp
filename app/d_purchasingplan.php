@@ -15,7 +15,7 @@ class d_purchasingplan extends Model
         'd_pcsp_id', 
         'd_pcsp_code', 
         'd_pcsp_sup',
-        'd_pcsp_staff',
+        'd_pcsp_mid',
         'd_pcsp_datecreated',
         'd_pcsp_dateconfirm',
         'd_pcsp_status',

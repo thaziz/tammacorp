@@ -119,18 +119,22 @@ class OrderPembelianController extends Controller
         return DataTables::of($data)
         ->addIndexColumn()
         ->editColumn('status', function ($data)
-        {
+          {
           if ($data->d_pcs_status == "WT") 
           {
-            return '<span class="label label-info">Waiting</span>';
-          }
-          elseif ($data->d_pcs_status == "CF") 
-          {
-            return '<span class="label label-success">Disetujui</span>';
+            return '<span class="label label-default">Waiting</span>';
           }
           elseif ($data->d_pcs_status == "DE") 
           {
-            return '<span class="label label-warning">Dapat Diedit</span>';
+            return '<span class="label label-warning">Dapat diedit</span>';
+          }
+          elseif ($data->d_pcs_status == "CF") 
+          {
+            return '<span class="label label-info">Disetujui</span>';
+          }
+          else
+          {
+            return '<span class="label label-success">Disetujui</span>';
           }
         })
         ->editColumn('tglOrder', function ($data) 
@@ -221,18 +225,23 @@ class OrderPembelianController extends Controller
         $statusLabel = $dataHeader[0]->d_pcs_status;
         if ($statusLabel == "WT") 
         {
-            $spanTxt = 'Waiting';
-            $spanClass = 'label-info';
+          $spanTxt = 'Waiting';
+          $spanClass = 'label-default';
         }
         elseif ($statusLabel == "DE")
         {
-            $spanTxt = 'Dapat Diedit';
-            $spanClass = 'label-warning';
+          $spanTxt = 'Dapat Diedit';
+          $spanClass = 'label-warning';
+        }
+        elseif ($statusLabel == "CF")
+        {
+          $spanTxt = 'Di setujui';
+          $spanClass = 'label-info';
         }
         else
         {
-            $spanTxt = 'Di setujui';
-            $spanClass = 'label-success';
+          $spanTxt = 'Barang telah diterima';
+          $spanClass = 'label-success';
         }
 
         foreach ($dataHeader as $val) 
@@ -302,12 +311,16 @@ class OrderPembelianController extends Controller
         $tanggal2 = $y2.'-'.$m2.'-'.$d2;
 
         if ($tampil == 'wait') {
+          $isConfirm = "FALSE";
           $indexStatus = "WT";
         }elseif ($tampil == 'edit') {
+          $isConfirm = "TRUE";
           $indexStatus = "DE";
         }elseif ($tampil == 'confirm') {
+          $isConfirm = "TRUE";
           $indexStatus = "CF";
-        }else{
+        }else {
+          $isConfirm = "TRUE";
           $indexStatus = "RC";
         }
 
@@ -318,7 +331,7 @@ class OrderPembelianController extends Controller
             ->leftJoin('m_item','d_purchasing_dt.i_id','=','m_item.i_id')
             ->leftJoin('m_satuan','d_purchasing_dt.d_pcsdt_sat','=','m_satuan.m_sid')
             ->leftJoin('d_terima_pembelian_dt','d_purchasing_dt.d_pcsdt_idpdt','=','d_terima_pembelian_dt.d_tbdt_idpcsdt')
-            ->where('d_purchasing_dt.d_pcsdt_isconfirm','=',"FALSE")
+            ->where('d_purchasing_dt.d_pcsdt_isconfirm','=',$isConfirm)
             ->where('d_purchasing.d_pcs_status','=',$indexStatus)
             ->whereBetween('d_purchasing.d_pcs_date_created', [$tanggal1, $tanggal2])
             ->get();
@@ -378,7 +391,8 @@ class OrderPembelianController extends Controller
     public function getEditOrder($id)
     {
       $dataHeader = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
-                ->select('d_purchasing.*', 'd_supplier.s_company', 'd_supplier.s_name')
+                ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
+                ->select('d_purchasing.*', 'd_supplier.s_company', 'd_supplier.s_name', 'd_mem.m_name', 'd_mem.m_id')
                 ->where('d_pcs_id', '=', $id)
                 ->orderBy('d_pcs_date_created', 'DESC')
                 ->get();
@@ -387,7 +401,7 @@ class OrderPembelianController extends Controller
       if ($statusLabel == "WT") 
       {
         $spanTxt = 'Waiting';
-        $spanClass = 'label-info';
+        $spanClass = 'label-default';
       }
       elseif ($statusLabel == "DE")
       {
@@ -397,7 +411,7 @@ class OrderPembelianController extends Controller
       elseif ($statusLabel == "CF")
       {
         $spanTxt = 'Di setujui';
-        $spanClass = 'label-success';
+        $spanClass = 'label-info';
       }
       else
       {
@@ -583,6 +597,7 @@ class OrderPembelianController extends Controller
       try {
         //update to table d_purchasing
         $purchasing = d_purchasing::find($request->idPurchaseEdit);
+        $purchasing->d_pcs_staff = Auth::User()->m_id;
         $purchasing->d_pcs_total_gross = $totalGross;
         $purchasing->d_pcs_discount = $diskonPotHarga;
         $purchasing->d_pcs_disc_percent = $replaceCharDisc;

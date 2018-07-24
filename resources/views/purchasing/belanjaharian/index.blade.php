@@ -91,39 +91,6 @@
       endDate: 'today'
     });//datepicker("setDate", "0");
 
-    /*$('#data').dataTable({
-        "destroy": true,
-        "processing" : true,
-        "serverside" : true,
-        "ajax" : {
-          url: baseUrl + "/purchasing/belanjaharian/get-data-tabel-index",
-          type: 'GET'
-        },
-        "columns" : [
-          {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
-          {"data" : "tglBeli", "width" : "10%"},
-          {"data" : "d_pcsh_staff", "width" : "10%"},
-          {"data" : "d_pcsh_code", "width" : "10%"},
-          {"data" : "d_pcsh_noreff", "width" : "8%"},
-          {"data" : "s_company", "width" : "10%"},
-          {"data" : "hargaTotal", "width" : "10%"},
-          {"data" : "status", "width" : "7%"},
-          {"data" : "action", orderable: false, searchable: false, "width" : "13%"}
-        ],
-        "language": {
-          "searchPlaceholder": "Cari Data",
-          "emptyTable": "Tidak ada data",
-          "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-          "sSearch": '<i class="fa fa-search"></i>',
-          "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-          "infoEmpty": "",
-          "paginate": {
-                "previous": "Sebelumnya",
-                "next": "Selanjutnya",
-             }
-        }
-    });*/
-
     //event focus on input harga
     $(document).on('focus', '.field_harga',  function(e){
         var harga = convertToAngka($(this).val());
@@ -203,7 +170,7 @@
                           +'<td>'+key+'</td>'
                           +'<td>'+data.data_isi[key-1].i_name+'</td>'
                           +'<td>'+data.data_isi[key-1].d_pcshdt_qty+'</td>'
-                          +'<td>'+data.data_isi[key-1].i_sat1+'</td>'
+                          +'<td>'+data.data_isi[key-1].m_sname+'</td>'
                           +'<td>'+convertDecimalToRupiah(data.data_isi[key-1].d_pcshdt_price)+'</td>'
                           +'<td>'+convertDecimalToRupiah(data.data_isi[key-1].d_pcshdt_pricetotal)+'</td>'
                           +'</tr>');
@@ -250,7 +217,8 @@
                             +'<input type="hidden" name="fieldIpIdDetailEdit[]" value="'+data.data_isi[key-1].d_pcshdt_id+'" id="field_ip_detail_edit" class="form-control">'
                             +'<input type="hidden" name="fieldIpItemEdit[]" value="'+data.data_isi[key-1].d_pcshdt_item+'" id="field_ip_item_edit" class="form-control"></td>'
                             +'<td><input type="text" name="fieldIpQtyEdit[]" value="'+data.data_isi[key-1].d_pcshdt_qty+'" id="qty_'+i+'" data-qty="'+i+'" class="form-control field_qty input-sm" required></td>'
-                            +'<td><input type="text" name="fieldIpSatEdit[]" value="'+data.data_isi[key-1].i_sat1+'" id="field_ip_sat_edit" class="form-control input-sm" required readonly></td>'
+                            +'<td><input type="text" name="fieldIpSatTxtEdit[]" value="'+data.data_isi[key-1].m_sname+'" id="field_ip_sat_txt_edit" class="form-control input-sm" required readonly>'
+                            +'<input type="hidden" name="fieldIpSatIdEdit[]" value="'+data.data_isi[key-1].m_sid+'" id="field_ip_sat_id_edit" class="form-control input-sm" required readonly></td>'
                             +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcshdt_price)+'" name="fieldIpHargaEdit[]" id="price_'+i+'" data-price="'+i+'" class="form-control input-sm field_harga numberinput"/></td>'
                             +'<td><input type="text" value="'+convertDecimalToRupiah(data.data_isi[key-1].d_pcshdt_pricetotal)+'" name="fieldIpHargaTotalEdit[]" class="form-control input-sm hargaTotalItem" id="total_'+i+'" readonly/></td>'
                             +'</tr>');

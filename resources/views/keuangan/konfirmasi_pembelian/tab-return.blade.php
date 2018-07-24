@@ -1,5 +1,11 @@
 <div id="return-tab" class="tab-pane fade">
   <div class="row">
+
+  <div class="col-md-12 col-sm-12 col-xs-12" align="right">
+      <button class="btn btn-box-tool btn-sm btn-flat" type="button" id="btn_refresh_index" onclick="refreshTabelReturn()">
+        <i class="fa fa-undo" aria-hidden="true">&nbsp;</i> Refresh
+      </button>
+  </div>
  
   <div class="col-md-12 col-sm-12 col-xs-12">                          
     <div class="table-responsive">

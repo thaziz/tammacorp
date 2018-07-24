@@ -184,7 +184,7 @@
       var getid = $(this).attr("id");
       var qtyReturn = $(this).val();
       //alert(qtyReturn);
-      var cost = convertToAngka($('#cost_'+getid+'').val());
+      var cost = $('#costRaw_'+getid+'').val();
       var hasilTotal = parseInt(qtyReturn * cost);
       var totalCost = $('#total_'+getid+'').val(convertDecimalToRupiah(hasilTotal));
       // $(this).val(potonganRp);
@@ -224,10 +224,10 @@
                           +'<td>'+key+'</td>'
                           +'<td>'+data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name+'</td>'
                           +'<td>'+data.data_isi[key-1].d_pcsrdt_qty+'</td>'
-                          +'<td>'+data.data_isi[key-1].i_sat1+'</td>'
+                          +'<td>'+data.data_isi[key-1].m_sname+'</td>'
                           +'<td>'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_price)+'</td>'
                           +'<td>'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_pricetotal)+'</td>'
-                          +'<td>'+data.data_stok[key-1].qtyStok+'</td>'
+                          +'<td>'+data.data_stok[key-1].qtyStok+' '+data.data_satuan[key-1]+'</td>'
                           +'</tr>');
           key++;  
           i = randString(5);
@@ -281,10 +281,13 @@
                           +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_smdetail+'" name="fieldSmidDetail[]" class="form-control"/>'
                           +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_qty+'" name="fieldQtyLalu[]" class="form-control"/></td>'
                           +'<td><input type="text" value="'+qtyCost+'" name="fieldQty[]" class="form-control field_qty numberinput input-sm" id="'+i+'"/></td>'
-                          +'<td><input type="text" value="'+data.data_isi[key-1].i_sat1+'" name="fieldSatuan[]" class="form-control input-sm" readonly/></td>'
-                          +'<td><input type="text" value="'+convertDecimalToRupiah(hargaSatuanItemNet)+'" name="fieldHarga[]" class="form-control input-sm" id="cost_'+i+'" readonly/></td>'
+                          +'<td><input type="text" value="'+data.data_isi[key-1].m_sname+'" name="fieldSatuanTxt[]" class="form-control input-sm" readonly/>'
+                          +'<input type="hidden" value="'+data.data_isi[key-1].m_sid+'" name="fieldSatuanId[]" class="form-control input-sm" readonly/></td>'
+                          +'<td><input type="text" value="'+convertDecimalToRupiah(hargaSatuanItemNet)+'" name="fieldHarga[]" class="form-control input-sm" id="cost_'+i+'" readonly/>'
+                          +'<input type="hidden" value="'+hargaSatuanItemNet+'" name="fieldHargaRaw[]" id="costRaw_'+i+'" class="form-control input-sm field_harga_raw numberinput" readonly/></td>'
                           +'<td><input type="text" value="'+convertDecimalToRupiah(hargaTotalItemNet)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem" id="total_'+i+'" readonly/></td>'
-                          +'<td><input type="text" value="'+data.data_stok[key-1].qtyStok+'" name="fieldStokItem[]" class="form-control input-sm" readonly/></td>'
+                          +'<td><input type="text" value="'+data.data_stok[key-1].qtyStok+' '+data.data_satuan[key-1]+'" name="fieldStokTxt[]" class="form-control input-sm" readonly/>'
+                          +'<input type="hidden" value="'+data.data_stok[key-1].qtyStok+'" name="fieldStokVal[]" class="form-control input-sm" readonly/></td>'
                           +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm">X</button></td>'
                           +'</tr>');
           i = randString(5);
