@@ -14,13 +14,14 @@ class CreateJabatanTable extends Migration
     public function up()
     {
         Schema::create('m_jabatan', function (Blueprint $table) {
-            $table->integer('c_id')->unsigned();
-            $table->primary('c_id');
+            $table->increments('c_id');
             $table->unsignedInteger('c_divisi_id');
+            $table->unsignedInteger('c_sub_divisi_id');
             $table->string('c_posisi');
             $table->timestamps();
 
             $table->foreign('c_divisi_id')->references('c_id')->on('m_divisi');
+            $table->foreign('c_sub_divisi_id')->references('c_id')->on('m_sub_divisi');
         });
     }
 

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateManajemenSuratsTable extends Migration
+class CreateJabatanProTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class CreateManajemenSuratsTable extends Migration
      */
     public function up()
     {
-        Schema::create('d_phk', function (Blueprint $table) {
-            $table->increments('c_id');
-            $table->string('c_kode');
-            $table->string('c_nama');
-            $table->string('c_tgl_phk');
-            $table->string('c_bulan_terakhir');
-            $table->integer('c_jenis');
+        Schema::create('m_jabatan_pro', function (Blueprint $table) {
+            $table->integer('c_id')->unsigned();
+            $table->primary('c_id');
+            $table->string('c_jabatan_pro');
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ class CreateManajemenSuratsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('d_phk');
+        Schema::dropIfExists('m_jabatan_pro');
     }
 }
