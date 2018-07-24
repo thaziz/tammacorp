@@ -7,7 +7,7 @@ function simpan(){
     url : baseUrl + "/penjualan/POSretail/retail/store",
     type: 'get',
     data: a,
-    success:function(response){
+    success:function(response, customer){
       if (response.status=='sukses') {
       $('#myModal').modal('hide');
         $("input[name='nama_cus']").val('');
@@ -17,10 +17,22 @@ function simpan(){
         $("input[name='class_cust']").val('');
         $("input[name='no_hp']").val('');
         $("textarea[name='alamat']").val('');
-        alert('Data Tersimpan');
-        window.location.href = baseUrl+"/penjualan/POSretail/index";
+        iziToast.success({timeout: 5000, 
+                          position: "topRight",
+                          icon: 'fa fa-chrome', 
+                          title: '', 
+                          message: 'Data customer tersimpan.'});
+        $('.simpanCus').removeAttr('disabled','disabled');
+        $("input[name='s_member']").val(response.customer.c_name);
+        $("input[name='id_cus']").val(response.customer.c_id);
+        $("input[name='sm_alamat']").val(response.customer.c_address+', '+response.customer.c_hp);
+        $("input[name='c-class']").val(response.customer.c_class);
+        $("#nama-customer").attr("disabled", 'true');
+        $("input[name='item']").focus();
       }else{
-        alert('Mohon melengkapi data!!!');
+        iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'Mohon melengkapi data.'});
        $('.simpanCus').removeAttr('disabled','disabled');
       }
     }

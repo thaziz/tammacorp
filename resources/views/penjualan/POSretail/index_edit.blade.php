@@ -6,14 +6,9 @@
                       <form id="save_sform">
                         <div class="col-md-9 col-sm-6 col-xs-12" style="margin-top: 15px;">
                           <label class="control-label tebal" for="nama" >Nama Pelanggan<font color="red">*</font></label>
-                          <div class="input-group input-group-sm" style="width: 100%;">
-                            <input type="text" id="nama-customer" name="s_member" class="form-control" readonly value="{{$edit[0]->c_name}}">
+                          <div class="input-group input-group-sm" style="width: 100%;" ondblclick="document.getElementById('nama-customer').disabled=false;">
+                            <input type="text" id="nama-customer" name="s_member" class="form-control" disabled value="{{$edit[0]->c_name}}">
                             <input type="hidden" id="id_cus" name="id_cus" class="form-control" value="{{$edit[0]->s_customer}}">
-                              <span class="input-group-btn">
-                                <button  type="button" class="btn btn-danger btn-sm" id="c-lock">
-                                  <i class="fa fa-lock"></i>
-                                </button>
-                              </span>
                               <span class="input-group-btn">
                                 <button  type="button" class="btn btn-info btn-sm btn_simpan" data-toggle="modal" data-target="#myModal">
                                     <i class="fa fa-plus"></i>
