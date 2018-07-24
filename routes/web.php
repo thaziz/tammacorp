@@ -35,7 +35,7 @@ Route::get('/hrd/datajabatan/datatable-pegawai/{id}', 'Hrd\JabatanController@peg
 Route::post('/hrd/datajabatan/simpan-jabatan', 'Hrd\JabatanController@simpanJabatan');
 Route::put('/hrd/datajabatan/update-jabatan/{id}', 'Hrd\JabatanController@updateJabatan');
 Route::get('/hrd/datajabatan/tambah-jabatan', 'Hrd\JabatanController@tambahJabatan');
-Route::delete('/hrd/datajabatan/delete-jabatan/{id}', 'Hrd\ManajemenSuratController@deleteJabatan');
+Route::delete('/hrd/datajabatan/delete-jabatan/{id}', 'Hrd\JabatanController@deleteJabatan');
 //surat
 Route::get('/hrd/manajemensurat', 'Hrd\ManajemenSuratController@index');
 Route::get('/hrd/manajemensurat/surat-phk', 'Hrd\ManajemenSuratController@indexPhk');
