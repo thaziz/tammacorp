@@ -53,7 +53,8 @@ class BelanjaHarianController extends Controller
     public function getDataTabelIndex()
     {
       $data = d_purchasingharian::join('d_supplier','d_purchasingharian.d_pcsh_supid','=','d_supplier.s_id')
-              ->select('d_purchasingharian.*', 'd_supplier.s_id', 'd_supplier.s_company')
+              ->join('d_mem','d_purchasingharian.d_pcsh_staff','=','d_mem.m_id')
+              ->select('d_purchasingharian.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_mem.m_name', 'd_mem.m_id')
               ->orderBy('d_pcsh_created', 'DESC')
               ->get();
       //dd($data);    
@@ -141,7 +142,7 @@ class BelanjaHarianController extends Controller
 
     public function tambahMasterSupplier(Request $request)
     {
-      //dd($request->all());
+      dd($request->all());
       DB::beginTransaction();
       try {
         //insert to table d_supplier
@@ -211,14 +212,7 @@ class BelanjaHarianController extends Controller
       {
         foreach ($queries as $val) 
         {
-          //cek type barang
-          if ($val->i_type == "BP") //brg produksi
-          {
-            //ambil stok berdasarkan type barang
-            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '6' AND s_position = '6' limit 1) ,'0') as qtyStok"));
-            $stok = $query[0]->qtyStok;
-          }
-          elseif ($val->i_type == "BJ") //brg jual
+          if ($val->i_type == "BJ") //brg jual
           {
             //ambil stok berdasarkan type barang
             $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
@@ -435,7 +429,7 @@ class BelanjaHarianController extends Controller
         $pharian = d_purchasingharian::find($request->idBelanjaEdit);
         $pharian->d_pcsh_date = date('Y-m-d',strtotime($request->tanggalBeliEdit));
         $pharian->d_pcsh_noreff = $request->noReffEdit;
-        $pharian->d_pcsh_staff = $request->namaStaffEdit;
+        $pharian->d_pcsh_staff = $request->idStaffEdit;
         $pharian->d_pcsh_totalprice = $this->konvertRp($request->totalBiayaEdit);
         $pharian->d_pcsh_totalpaid = $this->konvertRp($request->totalBayarEdit);
         $pharian->d_pcsh_updated = Carbon::now();
@@ -508,7 +502,8 @@ class BelanjaHarianController extends Controller
       $tanggal2 = $y2.'-'.$m2.'-'.$d2;
       
       $data = d_purchasingharian::join('d_supplier','d_purchasingharian.d_pcsh_supid','=','d_supplier.s_id')
-            ->select('d_purchasingharian.*', 'd_supplier.s_id', 'd_supplier.s_company')
+            ->join('d_mem','d_purchasingharian.d_pcsh_staff','=','d_mem.m_id')
+            ->select('d_purchasingharian.*', 'd_supplier.s_id', 'd_supplier.s_company','d_mem.m_name', 'd_mem.m_id')
             ->whereBetween('d_purchasingharian.d_pcsh_date', [$tanggal1, $tanggal2])
             ->orderBy('d_pcsh_created', 'DESC')
             ->get();
