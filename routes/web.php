@@ -35,22 +35,7 @@ Route::get('/hrd/datajabatan/datatable-pegawai/{id}', 'Hrd\JabatanController@peg
 Route::post('/hrd/datajabatan/simpan-jabatan', 'Hrd\JabatanController@simpanJabatan');
 Route::put('/hrd/datajabatan/update-jabatan/{id}', 'Hrd\JabatanController@updateJabatan');
 Route::get('/hrd/datajabatan/tambah-jabatan', 'Hrd\JabatanController@tambahJabatan');
-Route::delete('/hrd/datajabatan/delete-jabatan/{id}', 'Hrd\JabatanController@deleteJabatan');
-//gaji
-Route::get('/hrd/payroll/payroll', 'Hrd\GajiController@payroll');
-Route::get('/hrd/payroll/setting-gaji', 'Hrd\GajiController@settingGajiMan');
-Route::get('/hrd/payroll/datatable-gaji-man', 'Hrd\GajiController@gajiManData');
-Route::get('/hrd/payroll/tambah-gaji-man', 'Hrd\GajiController@tambahGajiMan');
-Route::post('/hrd/payroll/simpan-gaji-man', 'Hrd\GajiController@simpanGajiMan');
-Route::get('/hrd/payroll/edit-gaji-man/{id}', 'Hrd\GajiController@editGajiMan');
-Route::put('/hrd/payroll/update-gaji-man/{id}', 'Hrd\GajiController@updateGajiMan');
-Route::delete('/hrd/payroll/delete-gaji-man/{id}', 'Hrd\GajiController@deleteGajiMan');
-Route::get('/hrd/payroll/datatable-gaji-pro', 'Hrd\GajiController@gajiProData');
-Route::get('/hrd/payroll/tambah-gaji-pro', 'Hrd\GajiController@tambahGajiPro');
-Route::post('/hrd/payroll/simpan-gaji-pro', 'Hrd\GajiController@simpanGajiPro');
-Route::get('/hrd/payroll/edit-gaji-pro/{id}', 'Hrd\GajiController@editGajiPro');
-Route::put('/hrd/payroll/update-gaji-pro/{id}', 'Hrd\GajiController@updateGajiPro');
-Route::delete('/hrd/payroll/delete-gaji-pro/{id}', 'Hrd\GajiController@deleteGajiPro');
+Route::delete('/hrd/datajabatan/delete-jabatan/{id}', 'Hrd\ManajemenSuratController@deleteJabatan');
 //surat
 Route::get('/hrd/manajemensurat', 'Hrd\ManajemenSuratController@index');
 Route::get('/hrd/manajemensurat/surat-phk', 'Hrd\ManajemenSuratController@indexPhk');
@@ -60,14 +45,6 @@ Route::get('/hrd/manajemensurat/edit-phk/{id}', 'Hrd\ManajemenSuratController@ed
 Route::put('/hrd/manajemensurat/update-phk/{id}', 'Hrd\ManajemenSuratController@updatePhk');
 Route::delete('/hrd/manajemensurat/delete-phk/{id}', 'Hrd\ManajemenSuratController@deletePhk');
 //pegawai
-Route::get('/master/datapegawai/datatable-pegawaipro', 'Master\PegawaiController@pegawaiPro');
-Route::get('/master/datapegawai/tambah-pegawai-pro', 'Master\PegawaiController@tambahPegawaiPro');
-Route::post('/master/datapegawai/simpan-pegawai-pro', 'Master\PegawaiController@simpanPegawaiPro');
-Route::get('/master/datapegawai/edit-pegawai-pro/{id}', 'Master\PegawaiController@editPegawaiPro');
-Route::put('/master/datapegawai/update-pegawai-pro/{id}', 'Master\PegawaiController@updatePegawaiPro');
-Route::delete('/master/datapegawai/delete-pegawai-pro/{id}', 'Master\PegawaiController@deletePegawaiPro');
-Route::post('/master/datapegawai/import-pro', 'Master\PegawaiController@importPegawaiPro');
-Route::get('/master/datapegawai/master-import-pro', 'Master\PegawaiController@getFilePro');
 Route::get('/master/datapegawai/pegawai', 'Master\PegawaiController@pegawai')->name('pegawai');
 Route::get('/master/datapegawai/edit-pegawai/{id}', 'Master\PegawaiController@editPegawai');
 Route::put('/master/datapegawai/update-pegawai/{id}', 'Master\PegawaiController@updatePegawai');
@@ -79,7 +56,6 @@ Route::delete('/master/datapegawai/delete-pegawai/{id}', 'Master\PegawaiControll
 Route::post('/master/datapegawai/import', 'Master\PegawaiController@importPegawai');
 Route::get('/master/datapegawai/master-import', 'Master\PegawaiController@getFile');
 /*Purchasing*/
-
 //rizky
 //order pembelian
 Route::get('/purchasing/orderpembelian/order', 'Pembelian\OrderPembelianController@order');
@@ -147,6 +123,8 @@ Route::get('/inventory/stockopname/tambah_opname', 'Inventory\OpnameGdgControlle
 Route::get('/inventory/p_returncustomer/cust', 'Inventory\InventoryController@cust');
 Route::get('/inventory/p_hasilproduksi/cari_nota', 'Inventory\InventoryController@cari_nota_produksi'); 
 Route::get('/inventory/p_returncustomer/cari_nota', 'Inventory\InventoryController@cari_nota_cust');
+/*End Inventory*/
+
 //rizky
 //p_hasilproduksi
 Route::get('/inventory/p_hasilproduksi/produksi', 'Inventory\PenerimaanBrgProdController@produksi');
@@ -180,9 +158,7 @@ Route::get('/inventory/p_suplier/cari_nota', 'Inventory\penerimaanbarang_supCont
 Route::get('/inventory/p_suplier/get_data_po', 'Inventory\PenerimaanBrgSupController@get_data_po');
 Route::get('/inventory/p_suplier/list_po', 'Inventory\PenerimaanBrgSupController@list_po');
 Route::get('/inventory/p_suplier/get_tabel_data/{id}', 'Inventory\PenerimaanBrgSupController@get_tabel_data');
-//end rizky
 /*End Inventory*/
-
 /*Produksi*/
 Route::get('/produksi/spk/spk', 'ProduksiController@spk');
 Route::get('/produksi/bahanbaku/baku', 'ProduksiController@baku');
@@ -301,12 +277,15 @@ Route::get('/penjualan/POSretail/get-tanggaljual/{tgl1}/{tgl2}', 'Penjualan\POSR
 Route::get('/pembayaran/POSretail/pay-methode', 'Penjualan\POSRetailController@PayMethode');
 Route::get('/penjualan/POSretail/setbarcode', 'Penjualan\POSRetailController@setBarcode');
 Route::get('/penjualan/POSretail/stock/table-stock', 'Penjualan\stockController@tableStock');
+//Nota
+Route::get('/penjualan/POSretail/print/{id}', 'Penjualan\POSRetailController@print');
+Route::get('/penjualan/POSretail/print_surat_jalan/{id}', 'Penjualan\POSRetailController@print_surat_jalan');
+Route::get('/penjualan/print_jangan_dibanting/{id}', 'Penjualan\POSGrosirController@print_awas_barang_panas');
 //POSGrosir
 Route::get('/penjualan/POSgrosir/index', 'Penjualan\POSGrosirController@grosir');
 //ferdy
 Route::get('/penjualan/POSgrosir/print/{id}', 'Penjualan\POSGrosirController@print');
-Route::get('/penjualan/POSgrosir/suratjalan', 'Penjualan\POSGrosirController@suratjalan');
-Route::get('/penjualan/POSgrosir/lpacking', 'Penjualan\POSGrosirController@lpacking');
+Route::get('/penjualan/POSgrosir/print_surat_jalan/{id}', 'Penjualan\POSGrosirController@print_surat_jalan');
 //end ferdy
 Route::get('/penjualan/POSgrosir/grosir/store', 'Penjualan\POSGrosirController@store');
 Route::get('/penjualan/POSgrosir/grosir/autocomplete', 'Penjualan\POSGrosirController@autocomplete');
@@ -372,6 +351,9 @@ Route::get('/penjualan/returnpenjualan/tabelpnota/{id}', 'Penjualan\ManajemenRet
 //End
 /*HRD*/
 Route::get('/hrd/manajemenkpipegawai/kpi', 'HrdController@kpi');
+Route::get('/hrd/payroll/payroll', 'HrdController@payroll');
+Route::get('/hrd/payroll/tambah_payroll', 'HrdController@tambah_payroll');
+Route::get('/hrd/payroll/table', 'HrdController@table');
 Route::get('/hrd/recruitment/rekrut', 'HrdController@rekrut');
 Route::get('/hrd/datajabatan/edit_jabatan', 'HrdController@edit_jabatan');
 Route::get('/hrd/dataadministrasi/admin', 'HrdController@admin');
@@ -412,9 +394,6 @@ Route::post('/keuangan/konfirmasipembelian/confirm-order-submit', 'Keuangan\Conf
 Route::get('/keuangan/konfirmasipembelian/get-data-tabel-return', 'Keuangan\ConfrimBeliController@getDataReturnPembelian');
 Route::get('/keuangan/konfirmasipembelian/confirm-return/{id}/{type}', 'Keuangan\ConfrimBeliController@confirmReturnPembelian');
 Route::post('/keuangan/konfirmasipembelian/confirm-return-submit', 'Keuangan\ConfrimBeliController@submitReturnPembelian');
-Route::get('/keuangan/konfirmasipembelian/get-data-tabel-belanjaharian', 'Keuangan\ConfrimBeliController@getDataBelanjaHarian');
-Route::get('/keuangan/konfirmasipembelian/confirm-belanjaharian/{id}/{type}', 'Keuangan\ConfrimBeliController@confirmBelanjaHarian');
-Route::post('/keuangan/konfirmasipembelian/confirm-belanjaharian-submit', 'Keuangan\ConfrimBeliController@submitBelanjaHarian');
 // end rizky
 //mahmud
 Route::get('/produksi/lihatadonan/tabel/{id}/{qty}', 'Keuangan\spkFinancialController@tabelFormula');
