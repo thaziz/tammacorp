@@ -612,7 +612,7 @@
           $('#s_qty').val(ui.item.s_qty);
         }
         $('#qty').val(ui.item.qty);
-        $('#qty').val('1');
+        $('#qty').val('');
         $("input[name='qty']").focus();
         }
       });
