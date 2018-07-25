@@ -39,7 +39,7 @@
               <div class="row">
                 <div class="col-lg-12">
                   <div class="pull-right" style="margin-bottom: 10px;">
-                  <a href="{{ url('hrd/payroll/setting-gaji-man') }}">
+                  <a href="{{ url('hrd/payroll/setting-gaji') }}">
                       <button type="button" class="btn btn-box-tool" title="Tambahkan Data Item">
                         <i class="fa fa-gear" aria-hidden="true">
                           &nbsp;
