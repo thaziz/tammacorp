@@ -634,16 +634,7 @@ class RencanaPembelianController extends Controller
     {
       foreach ($arrItemType as $val) 
       {
-          if ($val->i_type == "BP") //brg produksi
-          {
-              $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '6' AND s_position = '6' limit 1) ,'0') as qtyStok"));
-              $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();
-              
-              $stok[] = $query[0];
-              $satuan[] = $satUtama->m_sname;
-              $counter++;
-          }
-          elseif ($val->i_type == "BJ") //brg jual
+          if ($val->i_type == "BJ") //brg jual
           {
               $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
               $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();

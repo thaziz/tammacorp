@@ -160,7 +160,7 @@
         $('#lblTglBeli').text(data.header2.tanggalBeli);
         $('#lblNoNota').text(data.header[0].d_pcsh_code);
         $('#lblTotalBiaya').text(data.header2.hargaTotalBeli);
-        $('#lblStaff').text(data.header[0].d_pcsh_staff);
+        $('#lblStaff').text(data.header[0].m_name);
         $('#lblNoReff').text(data.header[0].d_pcsh_noreff);
         $('#lblTotalBayar').text(data.header2.hargaTotalBayar);
         $('#lblSupplier').text(data.header[0].s_company);
@@ -203,7 +203,6 @@
         $('#no_nota_edit').val(data.header[0].d_pcsh_code);
         $('#id_belanja_edit').val(data.header[0].d_pcsh_id);
         $('#total_biaya_edit').val(convertDecimalToRupiah(data.header[0].d_pcsh_totalprice));
-        $('#nama_staff_edit').val(data.header[0].d_pcsh_staff);
         $('#no_reff_edit').val(data.header[0].d_pcsh_noreff);
         $('#total_bayar_edit').val(convertDecimalToRupiah(data.header[0].d_pcsh_totalpaid));
         $('#nama_supplier_edit').val(data.header[0].s_company);
@@ -379,7 +378,7 @@
       "columns" : [
         {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
         {"data" : "tglBeli", "width" : "10%"},
-        {"data" : "d_pcsh_staff", "width" : "10%"},
+        {"data" : "m_name", "width" : "10%"},
         {"data" : "d_pcsh_code", "width" : "10%"},
         {"data" : "d_pcsh_noreff", "width" : "8%"},
         {"data" : "s_company", "width" : "10%"},

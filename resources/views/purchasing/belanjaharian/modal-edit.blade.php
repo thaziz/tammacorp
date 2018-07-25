@@ -51,7 +51,8 @@
 
             <div class="col-md-3 col-sm-12 col-xs-12">
               <div class="form-group">
-                <input id="nama_staff_edit" class="form-control input-sm" name="namaStaffEdit" type="text" value="" readonly>
+                <input id="nama_staff_edit" class="form-control input-sm" name="namaStaffEdit" type="text" value="{{Auth::user()->m_name}}" readonly>
+                <input id="id_staff_edit" class="form-control input-sm" name="idStaffEdit" type="hidden" value="{{Auth::user()->m_id}}" readonly>
               </div>
             </div>
 
