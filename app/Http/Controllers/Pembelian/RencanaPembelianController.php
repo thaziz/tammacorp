@@ -369,16 +369,10 @@ class RencanaPembelianController extends Controller
         foreach ($queries as $val) 
         {
           //cek type barang
-          if ($val->i_type == "BP") //brg produksi
+          if ($val->i_type == "BJ") //brg jual
           {
             //ambil stok berdasarkan type barang
-            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '6' AND s_position = '6' limit 1) ,'0') as qtyStok"));
-            $stok = $query[0]->qtyStok;
-          }
-          elseif ($val->i_type == "BJ") //brg jual
-          {
-            //ambil stok berdasarkan type barang
-            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '7' AND s_position = '7' limit 1) ,'0') as qtyStok"));
+            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
             $stok = $query[0]->qtyStok;
           }
           elseif ($val->i_type == "BB") //bahan baku
