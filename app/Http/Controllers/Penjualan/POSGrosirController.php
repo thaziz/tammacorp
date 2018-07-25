@@ -311,9 +311,14 @@ class POSGrosirController extends Controller
             'c_insert' => Carbon::now(),
             'c_update' => $request->c_update
           ]);
+
+    $data = m_customer::where('c_id',$maxid)
+      ->first();
+
     DB::commit();
     return response()->json([
-        'status' => 'sukses'
+        'status' => 'sukses',
+        'customer' => $data,
       ]);
     } catch (\Exception $e) {
     DB::rollback();

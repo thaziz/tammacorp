@@ -4,28 +4,40 @@ function simpan(){
   $('.simpanCus').attr('disabled','disabled');
   var a = $('#save_customer').serialize();
   $.ajax({
-    url : baseUrl + "/penjualan/POSgrosir/grosir/store",
+    url : baseUrl + "/penjualan/POSretail/retail/store",
     type: 'get',
     data: a,
-    success:function(response){
+    success:function(response, customer){
       if (response.status=='sukses') {
       $('#myModal').modal('hide');
         $("input[name='nama_cus']").val('');
         $("input[name='tgl_lahir']").val('');
         $("input[name='email']").val('');
         $("input[name='tipe_cust']").val('');
+        $("input[name='class_cust']").val('');
         $("input[name='no_hp']").val('');
         $("textarea[name='alamat']").val('');
-        alert('Data Tersimpan');
-        window.location.href = baseUrl+"/penjualan/POSgrosir/index";
-        }else{
-        alert('Mohon melengkapi data!!!');
+        iziToast.success({timeout: 5000, 
+                          position: "topRight",
+                          icon: 'fa fa-chrome', 
+                          title: '', 
+                          message: 'Data customer tersimpan.'});
+        $('.simpanCus').removeAttr('disabled','disabled');
+        $("input[name='s_member']").val(response.customer.c_name);
+        $("input[name='id_cus']").val(response.customer.c_id);
+        $("input[name='sm_alamat']").val(response.customer.c_address+', '+response.customer.c_hp);
+        $("input[name='c-class']").val(response.customer.c_class);
+        $("#nama-customer").attr("disabled", 'true');
+        $("input[name='item']").focus();
+      }else{
+        iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'Mohon melengkapi data.'});
        $('.simpanCus').removeAttr('disabled','disabled');
-        }
       }
-    })
+    }
+   })
   }
-
 $("input[name='s_member']").focus();
 
 function sal_save_final(){

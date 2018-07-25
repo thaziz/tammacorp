@@ -7,7 +7,6 @@
     <div id="page-wrapper">
         <!--BEGIN TITLE & BREADCRUMB PAGE-->
         <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
-          dfgdgsgsfgsfsdf
 @if ($ket == 'create')
             <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
                 <div class="page-title">Form Entri Penjualan Grosir/Online</div>
@@ -55,15 +54,6 @@
                           </div>
                           <div class="modal-body">     
                       <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:5px;padding-top:20px; ">
-                        <div class="col-md-4 col-sm-3 col-xs-12"> 
-                          <label class="tebal">ID Pelanggan</label>
-                        </div>
-                        <div class="col-md-8 col-sm-9 col-xs-12">
-                          <div class="form-group">
-                            <input type="text" class="form-control input-sm" readonly="true" name="id_cus_ut" value="{{$id_cust}}">
-                            <input type="hidden" name="id_cus_ut" value="{{$id_cust}}">
-                          </div>
-                        </div>
                         <div class="col-md-4 col-sm-3 col-xs-12">                            
                           <label class="tebal" name="nama_cus">Nama<font color="red">*</font></label>
                         </div>
@@ -181,14 +171,9 @@
                     <form id="save_sform">
                       <div class="col-md-9 col-sm-6 col-xs-12" style="margin-top: 15px;">
                         <label class="control-label tebal" for="nama">Nama Pelanggan<font color="red">*</font></label>
-                          <div class="input-group input-group-sm" style="width: 100%;">
+                          <div class="input-group input-group-sm" style="width: 100%;" ondblclick="document.getElementById('nama-customer').disabled=false;">
                             <input type="text" id="nama-customer" name="s_member" class="form-control"  required>
                             <input type="hidden" id="id_cus" name="id_cus" class="form-control">
-                            <span class="input-group-btn">
-                              <button  type="button" class="btn btn-danger btn-sm" id="c-lock">
-                                <i class="fa fa-lock"></i>
-                              </button>
-                            </span>
                             <span class="input-group-btn">
                               <button  type="button" class="btn btn-info btn-sm btn_simpan" data-toggle="modal" data-target="#myModal">
                                   <i class="fa fa-plus"></i>
@@ -446,14 +431,30 @@
       endDate: 'today'
     });//.datepicker("setDate", "0");
 
-    $( "#nama-customer" ).autocomplete({
-    source: baseUrl+'/penjualan/POSretail/retail/autocomplete',
-    minLength: 1,
-    select: function(event, ui) {
-      $('#id_cus').val(ui.item.id);
-      $('#nama-customer').val(ui.item.label);
-      $('#alamat2').val(ui.item.alamat);
-      $('#c-class').val(ui.item.c_class);
+  $( "#nama-customer" ).autocomplete({
+      source: baseUrl+'/penjualan/POSretail/retail/autocomplete',
+      minLength: 1,
+      select: function(event, ui) {
+        $("#nama-customer").attr("disabled", 'true');
+        $("input[name='item']").focus();
+        $('#id_cus').val(ui.item.id);
+        $('#nama-customer').val(ui.item.label);
+        $('#alamat2').val(ui.item.alamat);
+        $('#c-class').val(ui.item.c_class);
+        }
+    });
+
+    $('#nama-customer').keypress(function(e){
+    var charCode;
+      if ((e.which && e.which == 13)) {
+        charCode = e.which;
+      }else if (window.event) {
+        e = window.event;
+        charCode = e.keyCode;
+      }
+      if ((e.which && e.which == 13)){
+        $("#nama-customer").attr("disabled", 'true');
+        $("input[name='item']").focus();
       }
     });
 
@@ -539,17 +540,15 @@ function lihatDetail(idDetail){
     // customer 
   $( "#nama-customer" ).focus(function(){
       var key = 1;
-      $("#namaitem").attr("readonly",true);
-      $("#qty").attr("readonly",true);
     $( "#nama-customer" ).autocomplete({
-    source: baseUrl+'/penjualan/POSretail/retail/autocomplete',
-    minLength: 1,
-    select: function(event, ui) {
-      $('#id_cus').val(ui.item.id);
-      $('#nama-customer').val(ui.item.label);
-      $('#alamat2').val(ui.item.alamat);
-      $('#c-class').val(ui.item.c_class);
-      }
+      source: baseUrl+'/penjualan/POSretail/retail/autocomplete',
+      minLength: 1,
+      select: function(event, ui) {
+        $('#id_cus').val(ui.item.id);
+        $('#nama-customer').val(ui.item.label);
+        $('#alamat2').val(ui.item.alamat);
+        $('#c-class').val(ui.item.c_class);
+        }
     });
     $("#alamat2").val('');
     $("#nama-customer" ).val('');
@@ -564,6 +563,7 @@ function lihatDetail(idDetail){
     });
     tamp = names;
   });
+
     //namaitem
   $( "#namaitem" ).focus(function(){
         var key = 1;
@@ -584,7 +584,7 @@ function lihatDetail(idDetail){
         }
         $('#qty').val(ui.item.qty);
         $('#i-type').val(ui.item.i_type);
-        $('#qty').val('1');
+        $('#qty').val('');
         $("input[name='qty']").focus();
         }
       });
