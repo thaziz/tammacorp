@@ -45,11 +45,12 @@
                 <th class="wd-5p">No</th>
                 <th class="wd-15p">Id Rencana</th>
                 <th class="wd-15p">Nama Barang</th>
+                <th class="wd-10p">Satuan</th>
                 <th class="wd-15p">Supplier</th>
                 <th class="wd-10p">Tgl Pemintaan</th>
-                <th class="wd-10p">Qty</th>
-                <th class="wd-10p">Tgl Disetujui</th>
-                <th class="wd-10p">Qty Disetujui</th>
+                <th class="wd-5p">Qty</th>
+                <th class="wd-10p">Tgl Confirm</th>
+                <th class="wd-5p">Qty Confirm</th>
                 <th class="wd-10p">Status</th>
               </tr>
             </thead>

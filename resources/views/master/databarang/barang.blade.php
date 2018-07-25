@@ -117,7 +117,7 @@
             { "data": "i_name" },
             { "data": "m_sname" },
             { "data": "m_gname" },
-            { "data": "m_pbuy1" ,render: $.fn.dataTable.render.number( '.', '.', 0, '' )},
+            { "data": "m_pbuy1" ,render: $.fn.dataTable.render.number( '.', '.', 2, '' )},
             { "data": "aksi" },
             ],
             "responsive":true,

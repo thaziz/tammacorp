@@ -63,9 +63,9 @@
                 <tr>
                   <th style="text-align: center;" width="5%;">No</th>
                   <th width="35%;">Kode | Barang</th>
+                  <th width="10%;">Satuan</th>
                   <th width="10%;">Qty</th>
                   <th width="10%;">Qty Confirm</th>
-                  <th width="10%;">Satuan</th>
                   <th width="15%;">Harga prev / satuan</th>
                   <th width="10%;">Stok Gudang</th>
                 </tr>

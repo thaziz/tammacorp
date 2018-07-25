@@ -387,6 +387,7 @@
         format:"dd-mm-yyyy",
         endDate: 'today'
       });
+      
       //event onchange select option
       $('#cari_nota_purchase').change(function() {
         //remove existing appending row
@@ -426,9 +427,10 @@
               var qtyCost = data.data_isi[key-1].d_pcsdt_qtyconfirm;
               //harga total per item setelah kena diskon & pajak
               var hargaTotalItemNet = Math.round(parseFloat(hargaTotalItemGross - (hargaTotalItemGross * percentDiscTotalGross/100) + ((hargaTotalItemGross - (hargaTotalItemGross * percentDiscTotalGross/100)) * taxPercent/100)).toFixed(2));
-              //console.log(hargaTotalItemNet);
+              console.log(hargaTotalItemNet);
               //harga satuan per item setelah kena diskon & pajak
-              var hargaSatuanItemNet = Math.round(parseFloat(hargaTotalItemNet/qtyCost).toFixed(2));
+              //var hargaSatuanItemNet = Math.round(parseFloat(hargaTotalItemNet/qtyCost).toFixed(2));
+              var hargaSatuanItemNet = hargaTotalItemNet/qtyCost;
               //console.log(hargaSatuanItemNet);
               $('#tabel-form-return').append('<tr class="tbl_form_row" id="row'+i+'">'
                               +'<td style="text-align:center">'+key+'</td>'
@@ -436,10 +438,13 @@
                               +'<input type="hidden" value="'+data.data_isi[key-1].i_id+'" name="fieldItemId[]" class="form-control input-sm"/>'
                               +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_id+'" name="fieldIdPcsRtrDet[]" class="form-control input-sm"/></td>'
                               +'<td><input type="text" value="'+qtyCost+'" name="fieldQty[]" class="form-control numberinput input-sm field_qty" id="'+i+'"/></td>'
-                              +'<td><input type="text" value="'+data.data_isi[key-1].i_sat1+'" name="fieldSatuan[]" class="form-control input-sm" readonly/></td>'
-                              +'<td><input type="text" value="'+convertDecimalToRupiah(hargaSatuanItemNet)+'" name="fieldHarga[]" id="cost_'+i+'" class="form-control input-sm field_harga numberinput" readonly/></td>'
+                              +'<td><input type="text" value="'+data.data_isi[key-1].m_sname+'" name="fieldSatuanTxt[]" class="form-control input-sm" readonly/>'
+                              +'<input type="hidden" value="'+data.data_isi[key-1].m_sid+'" name="fieldSatuanId[]" class="form-control input-sm" readonly/></td>'
+                              +'<td><input type="text" value="'+convertDecimalToRupiah(hargaSatuanItemNet)+'" name="fieldHarga[]" id="cost_'+i+'" class="form-control input-sm field_harga numberinput" readonly/>'
+                              +'<input type="hidden" value="'+hargaSatuanItemNet+'" name="fieldHargaRaw[]" id="costRaw_'+i+'" class="form-control input-sm field_harga_raw numberinput" readonly/></td>'
                               +'<td><input type="text" value="'+convertDecimalToRupiah(hargaTotalItemNet)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem" id="total_'+i+'" readonly/></td>'
-                              +'<td><input type="text" value="'+data.data_stok[key-1].qtyStok+'" name="fieldStok[]" class="form-control input-sm" readonly/></td>'
+                              +'<td><input type="text" value="'+data.data_stok[key-1].qtyStok+' '+data.data_satuan[key-1]+'" name="fieldStokTxt[]" class="form-control input-sm" readonly/>'
+                              +'<input type="hidden" value="'+data.data_stok[key-1].qtyStok+'" name="fieldStokVal[]" class="form-control input-sm" readonly/></td>'
                               +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm">X</button></td>'
                               +'</tr>');
               i = randString(5);
@@ -470,10 +475,21 @@
     });
 
     //event onblur input qty
+    /*$(document).on('blur', '.field_qty',  function(e){
+      var getid = $(this).attr("id");
+      var qtyReturn = $(this).val();
+      var cost = convertToAngka($('#costRaw_'+getid+'').val());
+      var hasilTotal = parseInt(qtyReturn * cost);
+      var totalCost = $('#total_'+getid+'').val(convertDecimalToRupiah(hasilTotal));
+      // $(this).val(potonganRp);
+      totalNilaiReturn();
+      $('#button_save').attr('disabled', false);
+    });*/
+
     $(document).on('blur', '.field_qty',  function(e){
       var getid = $(this).attr("id");
       var qtyReturn = $(this).val();
-      var cost = convertToAngka($('#cost_'+getid+'').val());
+      var cost = $('#costRaw_'+getid+'').val();
       var hasilTotal = parseInt(qtyReturn * cost);
       var totalCost = $('#total_'+getid+'').val(convertDecimalToRupiah(hasilTotal));
       // $(this).val(potonganRp);

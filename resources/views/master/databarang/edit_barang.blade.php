@@ -80,7 +80,6 @@
                             <option selected="">- Pilih Dahulu -</option>
                             <option @if ($data_item->i_type == 'BB') selected="" @endif value="BB">BAHAN BAKU</option>
                             <option @if ($data_item->i_type == 'BJ') selected="" @endif value="BJ">BAHAN JUAL</option>
-                            <option @if ($data_item->i_type == 'BP') selected="" @endif value="BP">BAHAN PRODUKSI</option>
                           </select>                               
                         </div>
                       </div>
@@ -208,7 +207,7 @@
 
                       <div class="col-md-3 col-sm-8 col-xs-12">
                         <div class="form-group">
-                          <input type="text" id="harga_beli1" name="hargaBeli1" value="{{ $data_price->m_pbuy1 }}" class="form-control input-sm currency" readonly>                               
+                          <input type="text" id="harga_beli1" name="hargaBeli1" value="{{ $data_price->m_pbuy1 }}" class="form-control input-sm currency">                               
                         </div>
                       </div>
 
@@ -266,7 +265,7 @@
       //mask money
       $.fn.maskFunc = function(){
           $('.currency').inputmask("currency", {
-              radixPoint: ",",
+              radixPoint: ".",
               groupSeparator: ".",
               digits: 2,
               autoGroup: true,
@@ -288,43 +287,27 @@
 
       //event focus on isi_sat3
       $(document).on('focus', '#isi_sat2',  function(e){
-        $('#isi_sat2').attr('readonly', false);
-        $('#isi_sat3').attr('readonly', false);
-        $('#harga_beli1').val('').attr('readonly', true);
+        $('#harga_beli1').val('');
         $('#harga_beli2').val('');
         $('#harga_beli3').val('');
       });
 
       //event focus on isi_sat3
       $(document).on('focus', '#isi_sat3',  function(e){
-        $('#isi_sat2').attr('readonly', false);
-        $('#isi_sat3').attr('readonly', false);
-        $('#harga_beli1').val('').attr('readonly', true);
+        $('#harga_beli1').val('');
         $('#harga_beli2').val('');
         $('#harga_beli3').val('');
       });
 
-      //event onblur harga isi_sat3
-      $(document).on('blur', '#isi_sat3',  function(e){
-        $('#harga_beli1').attr('readonly', false);
-      });
-
-      //event focus on harga beli1
-      $(document).on('focus', '#harga_beli1',  function(e){
-        $('#isi_sat2').attr('readonly', true);
-        $('#isi_sat3').attr('readonly', true);
-      });
-
       //event onblur harga beli1
       $(document).on('blur', '#harga_beli1',  function(e){
-        var harga1 = convertToAngka($(this).val());
+        var harga1 = $(this).val();
+        harga1 = harga1.replace(/,/g, "");
         // console.log(harga1);
         var isi2 = $('#isi_sat2').val();
         var isi3 = $('#isi_sat3').val();
-        var harga2 = parseInt(harga1 * isi2);
-        var harga3 = parseInt(harga1 * isi3);
-        // console.log(harga2);
-        // console.log(harga3);
+        var harga2 = parseFloat(harga1 * isi2);
+        var harga3 = parseFloat(harga1 * isi3);
         $('#harga_beli2').val(harga2);
         $('#harga_beli3').val(harga3);
       });
