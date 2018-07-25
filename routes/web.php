@@ -38,14 +38,19 @@ Route::get('/hrd/datajabatan/tambah-jabatan', 'Hrd\JabatanController@tambahJabat
 Route::delete('/hrd/datajabatan/delete-jabatan/{id}', 'Hrd\JabatanController@deleteJabatan');
 //gaji
 Route::get('/hrd/payroll/payroll', 'Hrd\GajiController@payroll');
-Route::get('/hrd/payroll/setting-gaji-man', 'Hrd\GajiController@settingGajiMan');
+Route::get('/hrd/payroll/setting-gaji', 'Hrd\GajiController@settingGajiMan');
 Route::get('/hrd/payroll/datatable-gaji-man', 'Hrd\GajiController@gajiManData');
 Route::get('/hrd/payroll/tambah-gaji-man', 'Hrd\GajiController@tambahGajiMan');
 Route::post('/hrd/payroll/simpan-gaji-man', 'Hrd\GajiController@simpanGajiMan');
 Route::get('/hrd/payroll/edit-gaji-man/{id}', 'Hrd\GajiController@editGajiMan');
 Route::put('/hrd/payroll/update-gaji-man/{id}', 'Hrd\GajiController@updateGajiMan');
 Route::delete('/hrd/payroll/delete-gaji-man/{id}', 'Hrd\GajiController@deleteGajiMan');
-
+Route::get('/hrd/payroll/datatable-gaji-pro', 'Hrd\GajiController@gajiProData');
+Route::get('/hrd/payroll/tambah-gaji-pro', 'Hrd\GajiController@tambahGajiPro');
+Route::post('/hrd/payroll/simpan-gaji-pro', 'Hrd\GajiController@simpanGajiPro');
+Route::get('/hrd/payroll/edit-gaji-pro/{id}', 'Hrd\GajiController@editGajiPro');
+Route::put('/hrd/payroll/update-gaji-pro/{id}', 'Hrd\GajiController@updateGajiPro');
+Route::delete('/hrd/payroll/delete-gaji-pro/{id}', 'Hrd\GajiController@deleteGajiPro');
 //surat
 Route::get('/hrd/manajemensurat', 'Hrd\ManajemenSuratController@index');
 Route::get('/hrd/manajemensurat/surat-phk', 'Hrd\ManajemenSuratController@indexPhk');
@@ -367,9 +372,6 @@ Route::get('/penjualan/returnpenjualan/tabelpnota/{id}', 'Penjualan\ManajemenRet
 //End
 /*HRD*/
 Route::get('/hrd/manajemenkpipegawai/kpi', 'HrdController@kpi');
-Route::get('/hrd/payroll/payroll', 'HrdController@payroll');
-Route::get('/hrd/payroll/tambah_payroll', 'HrdController@tambah_payroll');
-Route::get('/hrd/payroll/table', 'HrdController@table');
 Route::get('/hrd/recruitment/rekrut', 'HrdController@rekrut');
 Route::get('/hrd/datajabatan/edit_jabatan', 'HrdController@edit_jabatan');
 Route::get('/hrd/dataadministrasi/admin', 'HrdController@admin');
