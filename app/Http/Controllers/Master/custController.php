@@ -158,7 +158,7 @@ class custController extends Controller
                     'c_type' => $request->tipe_cust,
                     'c_birthday' => date('Y-m-d',strtotime($request->tgl_lahir)),
                     'c_email' => $request->email,
-                    'c_hp' => $request->no_hp,
+                    'c_hp' => '+62'.$request->no_hp,
                     'c_address' => $request->alamat,
                     'c_update'=>$tanggal,
                 ]);

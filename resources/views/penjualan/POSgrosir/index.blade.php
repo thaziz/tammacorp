@@ -194,17 +194,18 @@
                           </div>
                       </div>
                       <div class="col-md-9 col-sm-6 col-xs-12" style="margin-top: 15px;">
-                             <label class="control-label tebal" for="alamat">Kelas Pelanggan<font color="red">*</font></label>
-                              <div class="input-group input-group-sm" style="width: 100%;">
-                                <input type="text" id="c-class" readonly name="c-class" class="form-control">  
-                              </div>
-                          </div>                                     
+                        <label class="control-label tebal" for="alamat">Kelas Pelanggan
+                          <font color="red">*</font>
+                        </label>
+                        <div class="input-group input-group-sm" style="width: 100%;">
+                          <input type="text" id="c-class" readonly name="c-class" class="form-control">  
+                        </div>
+                      </div>                                     
                       <div class="col-md-3 col-sm-6 col-xs-12" style="margin-top: 15px;">
-                         <label class="control-label tebal" for="no_faktur" >Nomor Faktur</label>
-                          <div class="input-group input-group-sm" style="width: 100%;">
-                            <input type="text" id="no_faktur" name="s_nota" class="form-control" readonly="true" value="{{$fatkur}}">
-                            <input type="hidden" id="idfatkur" name="s_notaId" class="form-control" readonly="true" value="{{$idfatkur}}">
-                          </div>
+                        <label class="control-label tebal" for="no_faktur" >Jatuh Tempo</label>
+                        <div class="input-group input-group-sm" style="width: 100%;">
+                          <input type="text" id="no_faktur" name="s_nota" class="form-control datepicker3" autocomplete="off"  value="">
+                        </div>
                       </div>
                     </form>
                   </div>
@@ -261,8 +262,10 @@
                 </div>                                       
               </div>
 @else
-                      @include('penjualan.POSgrosir.index_edit')
-
+  @if (count($edit) == 0)
+    @else
+    @include('penjualan.POSgrosir.index_edit')
+  @endif
 @endif                           
                           <!-- div note-tab -->
                           <div id="note-tab" class="tab-pane fade">
@@ -392,24 +395,6 @@
 
     $.extend($.fn.dataTableExt.oJUIClasses, extensions);
 
-    $('#c-lock').click(function(){
-      var data1 = $('#nama-customer').val();
-      var data2 = $('#c-class').val();
-
-      if( data1 == '' || data2 == '' ){
-        alert('Harap mengisi nama pelanggan!');
-      }else{
-        if( $("#nama-customer").attr("readonly") == "readonly"){
-           $("#nama-customer").attr("readonly",false);
-        }else{
-          $("#nama-customer").attr("readonly",true);
-          $("#namaitem").attr("readonly",false);
-          $("#qty").attr("readonly",false);
-          $("#namaitem").focus();
-        }
-      }
-    })
-
     var date = new Date();
     var newdate = new Date(date);
 
@@ -430,17 +415,22 @@
       format:"dd-mm-yyyy",
       endDate: 'today'
     });//.datepicker("setDate", "0");
+    $('.datepicker3').datepicker({
+      autoclose: true,
+      format:"dd-mm-yyyy",
+      endDate: 'today'
+    });//.datepicker("setDate", "0");
 
   $( "#nama-customer" ).autocomplete({
       source: baseUrl+'/penjualan/POSretail/retail/autocomplete',
       minLength: 1,
       select: function(event, ui) {
         $("#nama-customer").attr("disabled", 'true');
-        $("input[name='item']").focus();
         $('#id_cus').val(ui.item.id);
         $('#nama-customer').val(ui.item.label);
         $('#alamat2').val(ui.item.alamat);
         $('#c-class').val(ui.item.c_class);
+        $("input[name='item']").focus();
         }
     });
 
@@ -1129,41 +1119,42 @@ function getData(page){
 //paginate stock selesai
 
 //total kembalian final
-var hasil = 0;  
-$('.simpanFinal').attr('disabled','disabled');     
-function updateKembalian(){
-  var inputs = document.getElementsByClassName( 'totPayment' ),
-  hasil  = [].map.call(inputs, function( input ) {
-      return input.value;
-  });
-    var total = 0;
-  for (var i = hasil.length - 1; i >= 0; i--){
-    hasil[i] = convertToAngka(hasil[i]);
-    hasil[i] = parseInt(hasil[i]);
-    total = total + hasil[i];
-  }
-      if (isNaN(total)) {
-      total=0;
+  var hasil = 0;  
+  $('.simpanFinal').attr('disabled','disabled');     
+  function updateKembalian(){
+    var inputs = document.getElementsByClassName( 'totPayment' ),
+    hasil  = [].map.call(inputs, function( input ) {
+        return input.value;
+    });
+      var total = 0;
+    for (var i = hasil.length - 1; i >= 0; i--){
+      hasil[i] = convertToAngka(hasil[i]);
+      hasil[i] = parseInt(hasil[i]);
+      total = total + hasil[i];
     }
-  total = convertToRupiah(total);
-  // alert(total);
-  $('#totPembayaran').val(total);
-  var sum = angkaDesimal($('#totPembayaran').val()); 
-  var bayar = angkaDesimal($('#totalPayment').val());
-  var hasil = parseInt(sum - bayar).toFixed(2);
-  if (hasil <= 0) {
-      diskon = 0;
-    }
-  var kembalian = $('#kembalian').val(SetFormRupiah(hasil));
+        if (isNaN(total)) {
+        total=0;
+      }
+    total = convertToRupiah(total);
+    // alert(total);
+    $('#totPembayaran').val(total);
+    var sum = angkaDesimal($('#totPembayaran').val()); 
+    var bayar = angkaDesimal($('#totalPayment').val());
+    var hasil = parseInt(sum - bayar).toFixed(2);
+    if (hasil <= 0) {
+        diskon = 0;
+      }
+    $('#kembalian').val(SetFormRupiah(hasil));
 
-  if (hasil < 0) {
-    $('#kembalian').css('background-color','red');
-    $('.simpanFinal').attr('disabled','disabled');
-  }else{
-    $('#kembalian').css('background-color','yellow');
-    $('.simpanFinal').removeAttr('disabled','disabled');
-  }
-  }
+    if (hasil < 0) {
+      $('#kembalian').css('background-color','red');
+      $('.simpanFinal').attr('disabled','disabled');
+    }else{
+      $('#kembalian').css('background-color','yellow');
+      $('.simpanFinal').removeAttr('disabled','disabled');
+    }
+  } 
+  
 UpdateTotalPayment();
 function UpdateTotalPayment(){
   var inputs = document.getElementsByClassName('bandingPayment'),
@@ -1246,6 +1237,7 @@ function tambahPayment(){
 function hapusPayment(a){   
   var par = a.parentNode.parentNode;
   $(par).remove();
+  updateKembalian();
   UpdateTotalPayment();
 }
 
@@ -1497,7 +1489,7 @@ function cariTanggal(){
       var tgl2=$('#tanggal2').val();
       var tampil=$('#tampil_data').val();
       //$('#dt_nota_jual').html(response);
-      $('#data2').DataTable({
+      tableNota = $('#data2').DataTable({
         "responsive":true,
         "destroy": true,
         "processing" : true,
@@ -1594,17 +1586,6 @@ function ubahStatus(idDetail,status){
       ],
     });
 
-  function distroyNota(id){
-  if(!confirm("Apakah anda yakin ingin menghapus?")) return false;
-  $.ajax({
-    type: 'get',
-    url : baseUrl + "/penjualan/POSgrosir/grosir/distroy/"+id,
-    success: function(){
-      cariTanggal();
-    }
-   });
-  }
-
   function dataInput(inField, e){
     var a = 0;
     $('input.discpercent:text').each(function(evt){
@@ -1626,6 +1607,41 @@ function ubahStatus(idDetail,status){
       }
     a++;
     })
+  }
+
+  function distroyNota(id){
+    iziToast.show({
+      color: 'red',
+      title: 'Peringatan',
+      message: 'Apakah anda yakin!',
+      position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+      progressBarColor: 'rgb(0, 255, 184)',
+      buttons: [
+        [
+          '<button>Ok</button>',
+          function (instance, toast) {
+            instance.hide({
+              transitionOut: 'fadeOutUp'
+            }, toast);
+            $.ajax({
+              type: 'get',
+              url : baseUrl + "/penjualan/POSretail/retail/distroy/"+id,
+              success: function(){
+                tableNota.ajax.reload();
+              }
+             }); 
+          }
+        ],
+        [
+          '<button>Close</button>',
+           function (instance, toast) {
+            instance.hide({
+              transitionOut: 'fadeOutUp'
+            }, toast);
+          }
+        ]
+      ]
+    }); 
   }
 </script>
 @endsection()

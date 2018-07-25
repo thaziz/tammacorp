@@ -115,7 +115,9 @@ class POSRetailController extends Controller
                             'sd_disc_value',
                             'sd_total',
                             's_status',
-                            'm_sname')
+                            'm_sname',
+                            'sd_price',
+                            'sd_disc_vpercent')
       ->join('m_customer', 'm_customer.c_id', '=' , 'd_sales.s_customer')
       ->join('d_sales_dt','d_sales_dt.sd_sales','=','d_sales.s_id')
       ->join('m_item','m_item.i_id','=','d_sales_dt.sd_item')
@@ -131,7 +133,7 @@ class POSRetailController extends Controller
     $dataPayment = DB::table('m_paymentmethod')->get();
 
     $ket = 'edit';
-
+    // dd($edit);
     return view('/penjualan/POSretail/index',compact('id_cust','fatkur','idreq', 'stock','edit','dataPayment', 'ket'));
   }
 
@@ -143,6 +145,7 @@ class POSRetailController extends Controller
                 'm_psell1',
                 'm_psell2',
                 'm_psell3',
+                'sd_price',
                 'sd_disc_percent',
                 'sd_disc_value',
                 'sd_total')
@@ -467,9 +470,13 @@ class POSRetailController extends Controller
                 'sp_nominal' => ($this->konvertRp($request->sp_nominal[$i]))
             ]);
         }
+
+      $nota = d_sales::where('s_id',$s_id)
+        ->first();
     DB::commit();
     return response()->json([
-        'status' => 'sukses'
+        'status' => 'sukses',
+        'nota' => $nota
       ]);
     } catch (\Exception $e) {
     DB::rollback();
@@ -527,9 +534,12 @@ class POSRetailController extends Controller
           ]);
           
         }
+      $nota = d_sales::where('s_id',$s_id)
+        ->first();
     DB::commit();
     return response()->json([
-          'status' => 'sukses'
+          'status' => 'sukses',
+          'nota' => $nota
       ]);
     } catch (\Exception $e) {
     DB::rollback();
@@ -607,9 +617,13 @@ class POSRetailController extends Controller
               ]);
             }
         }
+      $nota = d_sales::where('s_id',$s_id)
+        ->first();
+
     DB::commit();
     return response()->json([
-          'status' => 'sukses'
+          'status' => 'sukses',
+          'nota' => $nota
       ]);
     } catch (\Exception $e) {
     DB::rollback();

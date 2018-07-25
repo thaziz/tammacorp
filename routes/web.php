@@ -252,20 +252,14 @@ Route::get('/penjualan/mutasistok/mutasi', 'PenjualanController@mutasi');
 Route::get('/penjualan/broadcastpromosi/tambah_promosi2', 'PenjualanController@tambah_promosi2');
 //POSRetail
 Route::get('/penjualan/POSretail/index', 'Penjualan\POSRetailController@retail');
-Route::get('/penjualan/POSretail/retail/store', 'Penjualan\POSRetailController@store');
+Route::post('/penjualan/POSretail/retail/store', 'Penjualan\POSRetailController@store');
 Route::get('/penjualan/POSretail/retail/autocomplete', 'Penjualan\POSRetailController@autocomplete');
 Route::get('/penjualan/POSretail/retail/setnama/{id}', 'Penjualan\POSRetailController@setnama');
-Route::get('/penjualan/POSretail/retail/sal_save_final', 'Penjualan\POSRetailController@sal_save_final');
-Route::get('/penjualan/POSretail/retail/sal_save_draft', 'Penjualan\POSRetailController@sal_save_draft');
-Route::get('/penjualan/POSretail/retail/sal_save_onprogres', 'Penjualan\POSRetailController@sal_save_onProgres');
-Route::get('/penjualan/POSretail/retail/sal_save_finalupdate', 'Penjualan\POSRetailController@sal_save_finalUpdate');
-Route::get('/penjualan/POSretail/retail/sal_save_onProgresUpdate', 'Penjualan\POSRetailController@sal_save_onProgresUpdate');
-Route::get('/penjualan/POSretail/retail/sal_save_draftUpdate', 'Penjualan\POSRetailController@sal_save_draftUpdate');
-Route::get('/penjualan/POSretail/retail/create', 'Penjualan\POSRetailController@create');
-Route::get('/penjualan/POSretail/retail/create_sal', 'Penjualan\POSRetailController@create_sal');
+Route::post('/penjualan/POSretail/retail/sal_save_final', 'Penjualan\POSRetailController@sal_save_final');
+Route::post('/penjualan/POSretail/retail/sal_save_draft', 'Penjualan\POSRetailController@sal_save_draft');
+Route::post('/penjualan/POSretail/retail/sal_save_finalupdate', 'Penjualan\POSRetailController@sal_save_finalUpdate');
 Route::get('/penjualan/POSretail/retail/edit_sales/{id}', 'Penjualan\POSRetailController@edit_sales');
 Route::get('/penjualan/POSretail/retail/distroy/{id}', 'Penjualan\POSRetailController@distroy');
-Route::put('/penjualan/POSretail/retail/update/{id}', 'Penjualan\POSRetailController@update');
 Route::get('/penjualan/POSretail/retail/autocompleteitem/{tc}', 'Penjualan\POSRetailController@autocompleteitem');
 Route::get('/penjualan/POSretail/retail/transfer-item', 'Penjualan\stockController@transferItem');
 Route::get('/penjualan/POSretail/retail/item_save', 'Penjualan\POSRetailController@item_save');
@@ -277,31 +271,31 @@ Route::get('/penjualan/POSretail/get-tanggaljual/{tgl1}/{tgl2}', 'Penjualan\POSR
 Route::get('/pembayaran/POSretail/pay-methode', 'Penjualan\POSRetailController@PayMethode');
 Route::get('/penjualan/POSretail/setbarcode', 'Penjualan\POSRetailController@setBarcode');
 Route::get('/penjualan/POSretail/stock/table-stock', 'Penjualan\stockController@tableStock');
-//POSGrosir
-Route::get('/penjualan/POSgrosir/index', 'Penjualan\POSGrosirController@grosir');
+//Nota
+Route::get('/penjualan/POSretail/print/{id}', 'Penjualan\POSRetailController@print');
+Route::get('/penjualan/POSretail/print_surat_jalan/{id}', 'Penjualan\POSRetailController@print_surat_jalan');
+Route::get('/penjualan/print_jangan_dibanting/{id}', 'Penjualan\POSGrosirController@print_awas_barang_panas');
 //ferdy
 Route::get('/penjualan/POSgrosir/print/{id}', 'Penjualan\POSGrosirController@print');
-Route::get('/penjualan/POSgrosir/suratjalan', 'Penjualan\POSGrosirController@suratjalan');
-Route::get('/penjualan/POSgrosir/lpacking', 'Penjualan\POSGrosirController@lpacking');
+Route::get('/penjualan/POSgrosir/print_surat_jalan/{id}', 'Penjualan\POSGrosirController@print_surat_jalan');
 //end ferdy
-Route::get('/penjualan/POSgrosir/grosir/store', 'Penjualan\POSGrosirController@store');
+//POSGrosir
+Route::get('/penjualan/POSgrosir/index', 'Penjualan\POSGrosirController@grosir');
+Route::post('/penjualan/POSgrosir/grosir/store', 'Penjualan\POSGrosirController@store');
 Route::get('/penjualan/POSgrosir/grosir/autocomplete', 'Penjualan\POSGrosirController@autocomplete');
-Route::get('/penjualan/POSgrosir/grosir/sal_save_final', 'Penjualan\POSGrosirController@sal_save_final');
-Route::get('/penjualan/POSgrosir/grosir/sal_save_draft', 'Penjualan\POSGrosirController@sal_save_draft');
-Route::get('/penjualan/POSgrosir/grosir/sal_save_onprogres', 'Penjualan\POSGrosirController@sal_save_onProgres');
-Route::get('/penjualan/POSgrosir/grosir/sal_save_finalupdate', 'Penjualan\POSGrosirController@sal_save_finalUpdate');
-Route::get('/penjualan/POSgrosir/grosir/sal_save_onProgresUpdate', 'Penjualan\POSGrosirController@sal_save_onProgresUpdate');
-Route::get('/penjualan/POSgrosir/grosir/sal_save_draftUpdate', 'Penjualan\POSGrosirController@sal_save_draftUpdate');
+Route::post('/penjualan/POSgrosir/grosir/sal_save_final', 'Penjualan\POSGrosirController@sal_save_final');
+Route::post('/penjualan/POSgrosir/grosir/sal_save_draft', 'Penjualan\POSGrosirController@sal_save_draft');
+Route::post('/penjualan/POSgrosir/grosir/sal_save_onprogres', 'Penjualan\POSGrosirController@sal_save_onProgres');
+Route::post('/penjualan/POSgrosir/grosir/sal_save_finalupdate', 'Penjualan\POSGrosirController@sal_save_finalUpdate');
+Route::post('/penjualan/POSgrosir/grosir/sal_save_onProgresUpdate', 'Penjualan\POSGrosirController@sal_save_onProgresUpdate');
 Route::get('/penjualan/POSgrosir/grosir/create', 'Penjualan\POSGrosirController@create');
 Route::get('/penjualan/POSgrosir/grosir/create_sal', 'Penjualan\POSGrosirController@create_sal');
 Route::get('/penjualan/POSgrosir/grosir/edit_sales/{id}', 'Penjualan\POSGrosirController@edit_sales');
 Route::get('/penjualan/POSgrosir/grosir/distroy/{id}', 'Penjualan\POSGrosirController@distroy');
 Route::put('/penjualan/POSgrosir/grosir/update/{id}', 'Penjualan\POSGrosirController@update');
-Route::get('/penjualan/POSgrosir/grosir/autocompleteitem/{id}', 'Penjualan\POSGrosirController@autocompleteitem');
 Route::get('/penjualan/POSgrosir/grosir/autocompleteitem/{tc}', 'Penjualan\POSGrosirController@autocompleteitem');
 Route::get('/penjualan/POSgrosir/grosir/item_save', 'Penjualan\POSGrosirController@item_save');
 Route::get('/penjualan/POSgrosir/getdata', 'Penjualan\POSGrosirController@detail');
-Route::get('/penjualan/POSgrosir/grosir/req_retail', 'Penjualan\POSGrosirController@req_retail');
 Route::get('/penjualan/POSgrosir/get-tanggal/{tgl1}/{tgl2}/{tampil}', 'Penjualan\POSGrosirController@getTanggal');
 Route::get('/penjualan/POSgrosir/get-tanggaljual/{tgl1}/{tgl2}', 'Penjualan\POSGrosirController@getTanggalJual');
 Route::get('/pembayaran/POSgrosir/pay-methode', 'Penjualan\POSGrosirController@PayMethode');

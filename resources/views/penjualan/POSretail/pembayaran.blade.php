@@ -26,7 +26,7 @@
                   </select>
                 </td>
                 <td>
-                  <input type="text" name="sp_nominal[]" id="bayar" autocomplete="off" placeholder="Rp. 0,00" value="" class="i_price form-control total bandingPayment totPayment" onkeyup="updateKembalian()" style="text-align: right;" onkeyup="rege(event,'i_price');" onblur="setRupiah(event,'i_price')" onclick="setAwal('event','i_price')" onkeydown="warna()">
+                  <input type="text" name="sp_nominal[]" id="bayar" autocomplete="off" placeholder="Rp. 0,00" value="" class="i_price form-control total bandingPayment totPayment" onkeyup="updateKembalian()" style="text-align: right;" onkeyup="rege(event,'i_price');" onblur="setRupiah(event,'i_price')" onclick="setAwal('event','i_price')">
                 </td>
                 <td>
                  <button type="button" class="btn btn-info" onclick="tambahPayment()"><i class="glyphicon glyphicon-plus"></i></button> <button type="button" class="btn btn-danger hapus" disabled ><i class="glyphicon glyphicon-minus"></i></button>
@@ -81,7 +81,7 @@
                   </select>
                 </td>
                 <td>
-                  <input type="text" name="sp_nominal[]" id="bayar" autocomplete="off" placeholder="Rp. 0,00" value="" class="i_price form-control total bandingPayment totPayment" onkeyup="updateKembalian()" style="text-align: right;" onkeyup="rege(event,'i_price');" onblur="setRupiah(event,'i_price')" onclick="setAwal('event','i_price')" onkeydown="warna()">
+                  <input type="text" name="sp_nominal[]" id="bayar" autocomplete="off" placeholder="Rp. 0,00" value="" class="i_price form-control total bandingPayment totPayment" onkeyup="updateKembalian()" style="text-align: right;" onkeyup="rege(event,'i_price');" onblur="setRupiah(event,'i_price')" onclick="setAwal('event','i_price')">
                 </td>
                 <td>
                  <button type="button" class="btn btn-info" onclick="tambahPayment()"><i class="glyphicon glyphicon-plus"></i></button> <button type="button" class="btn btn-danger hapus" disabled ><i class="glyphicon glyphicon-minus"></i></button>

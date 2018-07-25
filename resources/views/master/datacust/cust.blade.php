@@ -68,9 +68,9 @@ tr.details td.details-control {
                         <thead>
                           <tr>
                             {{-- <th class="sorting_disabled"></th> --}}
-                            <th class="wd-15p">ID</th>
+                            <th class="wd-15p">Kode</th>
                             <th class="wd-15p">Nama Customer</th>
-                            <th class="wd-15p">Tanggal Lahir</th>
+                            <th class="wd-15p">No hp</th>
                             <th class="wd-15p">Tipe Cust</th>
                             <th class="wd-15p">Aksi</th>
                           </tr>
@@ -124,7 +124,7 @@ tr.details td.details-control {
             "columns": [
             { "data": "c_code" },
             { "data": "c_name" },
-            { "data": "c_birthday" },
+            { "data": "c_hp", "className" : "right" },
             { "data": "c_type" },
             { "data": "action" },
             ],

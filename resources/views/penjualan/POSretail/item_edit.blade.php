@@ -55,8 +55,7 @@
               {{ $x->m_sname }}<input type="hidden" name="satuan[]" class="satuan" value="{{ $x->m_sname }}">
             </td>
             <td>
-              <input type="text" size="10" readonly name="harga_item[]" class="harga_item form-control harga-{{ $x->i_id }}"  style="text-align: right;"
-              value="Rp.@if ($x->m_psell2 == '0' || $x->m_psell3 == '0'){{ number_format($x->m_psell1,2,',','.')}}@elseif ($x->m_psell1 == '0' || $x->m_psell3 == '0'){{ number_format($x->m_psell2,2,',','.')}}@else{{ number_format($x->m_psell3,2,',','.')}}@endif">
+              <input type="text" size="10" readonly name="harga_item[]" class="harga_item form-control harga-{{ $x->i_id }}"  style="text-align: right;" value="Rp.{{ number_format($x->sd_price,2,',','.')}}">
             </td>
             <td>
               <div class="input-group">
