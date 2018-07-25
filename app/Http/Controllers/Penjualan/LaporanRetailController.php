@@ -35,7 +35,9 @@ class LaporanRetailController extends Controller
                 ->select(   'd_sales_dt.*', 
                             'd_sales.*', 
                             'm_item.i_name', 
-                            'm_item.i_code', 'm_satuan.m_sname', 'm_customer.c_name')
+                            'm_item.i_code', 
+                            'm_satuan.m_sname', 
+                            'm_customer.c_name')
                 ->join('d_sales','d_sales_dt.sd_sales','=','d_sales.s_id')
                 ->join('m_item','d_sales_dt.sd_item','=','m_item.i_id')
                 ->join('m_satuan','m_item.i_sat1','=','m_satuan.m_sid')
@@ -84,35 +86,48 @@ class LaporanRetailController extends Controller
     $tanggal2 = $y2.'-'.$m2.'-'.$d2;
 
     $data = DB::table('d_sales_dt')
-                ->select('d_sales_dt.*', 'd_sales.*', 'm_item.i_name', 'm_item.i_code', 'm_satuan.m_sname', 'm_customer.c_name')
+                ->select( 'd_sales_dt.*', 
+                          'd_sales.*', 
+                          'm_item.i_name', 
+                          'm_item.i_code', 
+                          'm_satuan.m_sname', 
+                          'm_customer.c_name')
                 ->join('d_sales','d_sales_dt.sd_sales','=','d_sales.s_id')
                 ->join('m_item','d_sales_dt.sd_item','=','m_item.i_id')
                 ->join('m_satuan','m_item.i_sat1','=','m_satuan.m_sid')
                 ->join('m_customer','d_sales.s_customer','=','m_customer.c_id')
                 ->where('d_sales.s_channel', '=', "RT")
+                ->where('s_status','FN')
                 ->whereBetween('d_sales.s_date', [$tanggal1, $tanggal2])
                 ->orderBy('m_item.i_name' ,'DESC')
                 ->get()->toArray();
     // SUM
     $data_sum = DB::table('d_sales_dt')
-                ->select( (DB::raw('SUM(d_sales_dt.sd_total) as total_penjualan')), DB::raw('SUM(d_sales_dt.sd_qty) as total_qty'),DB::raw('SUM(d_sales_dt.sd_disc_vpercent) as sd_disc_vpercent'),DB::raw('SUM(d_sales_dt.sd_disc_value) as sd_disc_value') )
+                ->select((  DB::raw('SUM(d_sales_dt.sd_total) as total_penjualan')), 
+                            DB::raw('SUM(d_sales_dt.sd_qty) as total_qty'),
+                            DB::raw('SUM(d_sales_dt.sd_disc_vpercent) as sd_disc_vpercent'),
+                            DB::raw('SUM(d_sales_dt.sd_disc_value) as sd_disc_value') )
                 ->join('d_sales','d_sales_dt.sd_sales','=','d_sales.s_id')
                 ->join('m_item','d_sales_dt.sd_item','=','m_item.i_id')
                 ->join('m_satuan','m_item.i_sat1','=','m_satuan.m_sid')
                 ->join('m_customer','d_sales.s_customer','=','m_customer.c_id')
                 ->where('d_sales.s_channel', '=', "RT")
+                ->where('s_status','FN')
                 ->whereBetween('d_sales.s_date', [$tanggal1, $tanggal2])
                 ->orderBy('m_item.i_name' ,'DESC')
                 ->groupBy('m_item.i_name')
                 ->get()->toArray();
 
     $data_sum_all = DB::table('d_sales_dt')
-                ->select( (DB::raw('SUM(d_sales_dt.sd_total) as total_semua_penjualan')),DB::raw('SUM(d_sales_dt.sd_disc_vpercent) as allsd_disc_vpercent'), DB::raw('SUM(d_sales_dt.sd_disc_value) as allsd_disc_value') )
+                ->select((  DB::raw('SUM(d_sales_dt.sd_total) as total_semua_penjualan')),
+                            DB::raw('SUM(d_sales_dt.sd_disc_vpercent) as allsd_disc_vpercent'), 
+                            DB::raw('SUM(d_sales_dt.sd_disc_value) as allsd_disc_value') )
                 ->join('d_sales','d_sales_dt.sd_sales','=','d_sales.s_id')
                 ->join('m_item','d_sales_dt.sd_item','=','m_item.i_id')
                 ->join('m_satuan','m_item.i_sat1','=','m_satuan.m_sid')
                 ->join('m_customer','d_sales.s_customer','=','m_customer.c_id')
                 ->where('d_sales.s_channel', '=', "RT")
+                ->where('s_status','FN')
                 ->whereBetween('d_sales.s_date', [$tanggal1, $tanggal2])
                 ->orderBy('m_item.i_name' ,'DESC')
                 ->get()->toArray();
@@ -124,14 +139,9 @@ class LaporanRetailController extends Controller
         $nama_array[$i] = $data[$i]->i_code;
     }
 
-
     $nama_array = array_unique($nama_array);
 
     $nama_array = array_values($nama_array);
-
-
-    // dd($data_sum);
-    // return $data_sum_all;
 
     $penjualan = [];
 
@@ -144,14 +154,8 @@ class LaporanRetailController extends Controller
                 
                 array_push($penjualan[$j], $data[$k]);
             }
-
         }
-
-        // $penjualan[$j] = array_chunk($penjualan[$j], 10);
-
     }
-            // dd($penjualan);
-    // return $penjualan;
 
     return view('penjualan/laporanretail/print_laporan_penjualan', compact('data', 'tgl1', 'tgl2', 'penjualan', 'nama_array', 'data_sum', 'data_sum_all'));
   }
@@ -168,7 +172,12 @@ class LaporanRetailController extends Controller
     $tanggal2 = $y2.'-'.$m2.'-'.$d2;
 
     $data = DB::table('d_sales_dt')
-                ->select('d_sales_dt.*', 'd_sales.*', 'm_item.i_name', 'm_item.i_code', 'm_satuan.m_sname', 'm_customer.c_name')
+                ->select( 'd_sales_dt.*', 
+                          'd_sales.*', 
+                          'm_item.i_name', 
+                          'm_item.i_code', 
+                          'm_satuan.m_sname', 
+                          'm_customer.c_name')
                 ->join('d_sales','d_sales_dt.sd_sales','=','d_sales.s_id')
                 ->join('m_item','d_sales_dt.sd_item','=','m_item.i_id')
                 ->join('m_satuan','m_item.i_sat1','=','m_satuan.m_sid')

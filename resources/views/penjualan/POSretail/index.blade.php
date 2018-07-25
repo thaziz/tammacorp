@@ -202,10 +202,9 @@
                               </div>
                           </div>
                           <div class="col-md-3 col-sm-6 col-xs-12" style="margin-top: 15px;">
-                             <label class="control-label tebal" for="no_faktur" >Nomor Faktur</label>
+                             <label class="control-label tebal" for="no_faktur" >Jatuh Tempo</label>
                               <div class="input-group input-group-sm" style="width: 100%;">
-                                <input type="text" id="no_faktur" name="s_nota" class="form-control" readonly="true" value="{{$fatkur}}">
-                                <input type="hidden" id="idfatkur" class="form-control" name="s_id" readonly="true" value="{{$idfatkur+1}}">
+                                <input type="text" id="no_faktur" name="s_nota" class="form-control datepicker3" autocomplete="off"  value="">
                               </div>
                           </div>
                         </form>
@@ -281,11 +280,13 @@
                   </div>
 
                 </div>
-@else
-
-@include('penjualan.POSretail.index_edit')
-
+@elseif($ket == 'edit')
+  @if (count($edit) == 0)
+  @else
+    @include('penjualan.POSretail.index_edit')
+  @endif
 @endif                        
+
                 <!-- div note-tab -->
                 <div id="note-tab" class="tab-pane fade">
                   <div class="row">
@@ -453,16 +454,22 @@
     endDate: 'today'
     });//datepicker("setDate", "0");
 
+  $('.datepicker3').datepicker({
+    autoclose: true,
+    format:"dd-mm-yyyy",
+    endDate: 'today'
+    });//datepicker("setDate", "0");
+
   $( "#nama-customer" ).autocomplete({
       source: baseUrl+'/penjualan/POSretail/retail/autocomplete',
       minLength: 1,
       select: function(event, ui) {
         $("#nama-customer").attr("disabled", 'true');
-        $("input[name='item']").focus();
         $('#id_cus').val(ui.item.id);
         $('#nama-customer').val(ui.item.label);
         $('#alamat2').val(ui.item.alamat);
         $('#c-class').val(ui.item.c_class);
+        $("input[name='item']").focus();
         }
     });
 
@@ -1369,7 +1376,7 @@
     var tgl1=$('#tanggal1').val();
     var tgl2=$('#tanggal2').val();
     var tampil=$('#tampil_data').val();
-      $('#data2').DataTable({
+    tableNota = $('#data2').DataTable({
         "destroy": true,
         "processing" : true,
         "serverside" : true,
@@ -1454,14 +1461,38 @@
     });
 
   function distroyNota(id){
-  if(!confirm("Apakah anda yakin ingin menghapus?")) return false;
-  $.ajax({
-    type: 'get',
-    url : baseUrl + "/penjualan/POSretail/retail/distroy/"+id,
-    success: function(){
-      cariTanggal();
-    }
-   });
+    iziToast.show({
+      color: 'red',
+      title: 'Peringatan',
+      message: 'Apakah anda yakin!',
+      position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+      progressBarColor: 'rgb(0, 255, 184)',
+      buttons: [
+        [
+          '<button>Ok</button>',
+          function (instance, toast) {
+            instance.hide({
+              transitionOut: 'fadeOutUp'
+            }, toast);
+            $.ajax({
+              type: 'get',
+              url : baseUrl + "/penjualan/POSretail/retail/distroy/"+id,
+              success: function(){
+                tableNota.ajax.reload();
+              }
+             }); 
+          }
+        ],
+        [
+          '<button>Close</button>',
+           function (instance, toast) {
+            instance.hide({
+              transitionOut: 'fadeOutUp'
+            }, toast);
+          }
+        ]
+      ]
+    }); 
   }
 
 </script>

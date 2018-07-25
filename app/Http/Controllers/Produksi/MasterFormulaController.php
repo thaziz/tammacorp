@@ -84,6 +84,7 @@ class MasterFormulaController extends Controller
     $queries = m_item::where('m_item.i_name', 'LIKE', '%'.$term.'%')
       ->join('m_satuan','m_sid','=','i_sat1')
       ->where('i_type','BB')
+      ->orderBy('i_name')
       ->take(50)->get();
     
     if ($queries == null) {

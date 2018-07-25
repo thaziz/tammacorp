@@ -16,6 +16,12 @@
                               </span>
                           </div>
                         </div>
+                        <div class="col-md-3 col-sm-6 col-xs-12" style="margin-top: 15px;">
+                        <label class="control-label tebal" for="no_faktur" >Jatuh Tempo</label>
+                        <div class="input-group input-group-sm" style="width: 100%;">
+                          <input type="text" id="no_faktur" name="s_nota" class="form-control datepicker3" autocomplete="off"  value="">
+                        </div>
+                      </div>
                         <div class="col-md-9 col-sm-6 col-xs-12" style="margin-top: 15px;">
                           <label class="control-label tebal" for="alamat">Alamat Pelanggan<font color="red">*</font></label>
                             <div class="input-group input-group-sm" style="width: 100%;">
@@ -38,7 +44,7 @@
                           <label class="control-label tebal" for="no_faktur" >Nomor Faktur</label>
                           <div class="input-group input-group-sm" style="width: 100%;">
                             <input type="text" id="no_faktur" name="s_nota" class="form-control" readonly="true" value="{{$edit[0]->s_note}}">
-                            <input type="hidden" id="no_faktur" name="s_id" class="form-control" readonly="true" value="{{$edit[0]->sales_id}}">
+                            <input type="hidden" id="id_faktur" name="s_id" class="form-control" readonly="true" value="{{$edit[0]->sales_id}}">
                           </div>
                         </div>    
                       </form>

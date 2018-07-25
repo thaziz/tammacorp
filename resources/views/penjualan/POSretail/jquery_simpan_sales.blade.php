@@ -1,11 +1,16 @@
 <script type="text/javascript">
 
 function simpan(){
+  $.ajaxSetup({
+    headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+    });
   $('.simpanCus').attr('disabled','disabled');
   var a = $('#save_customer').serialize();
   $.ajax({
     url : baseUrl + "/penjualan/POSretail/retail/store",
-    type: 'get',
+    type: 'POST',
     data: a,
     success:function(response, customer){
       if (response.status=='sukses') {
@@ -42,128 +47,202 @@ function simpan(){
 $("input[name='s_member']").focus();
 
 function sal_save_final(){
-   $('.simpanFinal').attr('disabled','disabled');
+  $.ajaxSetup({
+    headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+    });
+  $('.simpanFinal').attr('disabled','disabled');
   var bb = $('#save_sform :input').serialize();
   var cc = $('#save_item :input').serialize();
   var data=tableDetail.$('input').serialize();
   $.ajax({
     url : baseUrl + "/penjualan/POSretail/retail/sal_save_final",
-    type: 'get',
+    type: 'POST',
     data: bb+'&'+cc+'&'+data,
 
-    success:function(response){
+    success:function(response, nota){
       if (response.status=='sukses') {
       $('#proses').modal('hide');
-        $("input[name='s_member']").val('');
         $("input[name='s_gross']").val('');
-        $("input[name='s_disc_percent']").val('');
-        $("input[name='s_disc_value']").val('');
-        $("input[name='s_pajak']").val('');
         $("input[name='s_net']").val('');
-        $("input[name='sd_qty[]']").val('');
-        $("input[name='sd_sell[]']").val('');
-        $("input[name='s_dibayarkan']").val('');
         $("input[name='totalDiscount[]']").val('');
-        $("input[name='s_kembalian']").val('');
-        $("input[name='sd_disc_percent[]']").val('');
-        $("input[name='sd_disc_value[]']").val('');
-        $("input[name='sp_method[]']").val('');
-        $("input[name='sp_nominal[]']").val('');
-        $("input[name='hasil[]']").val('');
-            var id = $('#idfatkur').val();
-        if (confirm("Berhasil!, Ingin langsung cetak nota?")) {
-            window.location.href = baseUrl+"/penjualan/POSretail/index";
-            window.open(baseUrl+"/penjualan/POSretail/print/"+id, "_blank");
-            window.location.href = baseUrl+"/penjualan/POSretail/index";
-        } else {
-            window.location.href = baseUrl+"/penjualan/POSretail/index";
-        }
+        $("#nama-customer").val('');
+        $("#alamat2").val('');
+        $('#c-class').val('');
+        tableDetail.row().clear().draw(false);
+          var inputs = document.getElementById( 'kode' ),
+          names  = [].map.call(inputs, function( input ) {
+              return input.value;
+          });
+          tamp = names;
+        $('#save_item')[0].reset();
+        $("#nama-customer").prop("disabled", false);
+        $("input[name='s_member']").focus();
+        $('.simpanFinal').removeAttr('disabled','disabled');
+        var nota = response.nota.s_note;
+        var id = response.nota.s_id;
+        iziToast.show({
+          timeout: false,
+          color: 'red',
+          title: nota,
+          message: 'Cetak sekarang!',
+          position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+          progressBarColor: 'rgb(0, 255, 184)',
+          buttons: [
+            [
+              '<button>Ok</button>',
+              function (instance, toast) {
+                instance.hide({
+                  transitionOut: 'fadeOutUp'
+                }, toast);
+                window.open(baseUrl+"/penjualan/POSretail/print/"+id, "_blank");
+              }
+            ],
+            [
+              '<button>Close</button>',
+               function (instance, toast) {
+                instance.hide({
+                  transitionOut: 'fadeOutUp'
+                }, toast);
+              }
+            ]
+          ]
+      });  
       }else{
-        alert('Mohon melengkapi data!!!');
+        iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'Mohon melengkapi data.'});
        $('.simpanFinal').removeAttr('disabled','disabled');
       }
       }         
     })
   }
 
+function sal_save_draft(){
+  $.ajaxSetup({
+    headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+    });
+  $('.simpanDraft').attr('disabled','disabled');
+  var bb = $('#save_sform :input').serialize();
+  var cc = $('#save_item :input').serialize();
+  var data=tableDetail.$('input').serialize();
+  $.ajax({
+    url : baseUrl + "/penjualan/POSretail/retail/sal_save_draft",
+    type: 'POST',
+    data: bb+'&'+cc+'&'+data,
+    success:function(response, nota){
+      if (response.status=='sukses') {
+        $("input[name='s_gross']").val('');
+        $("input[name='s_net']").val('');
+        $("input[name='totalDiscount[]']").val('');
+        $("#nama-customer").val('');
+        $("#alamat2").val('');
+        $('#c-class').val('');
+        tableDetail.row().clear().draw(false);
+          var inputs = document.getElementById( 'kode' ),
+          names  = [].map.call(inputs, function( input ) {
+              return input.value;
+          });
+          tamp = names;
+        $('#save_item')[0].reset();
+        $("#nama-customer").prop("disabled", false);
+        $("input[name='s_member']").focus();
+        $('.simpanDraft').removeAttr('disabled','disabled');
+        var nota = response.nota.s_note;
+        iziToast.success({timeout: 5000, 
+                          position: "topRight",
+                          icon: 'fa fa-chrome', 
+                          title: nota, 
+                          message: 'Nota tersimpan sebagai draft.'});
+      }else{
+        iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'Mohon melengkapi data.'});
+        $('.simpanDraft').removeAttr('disabled','disabled');;
+    }
+        }
+    })
+  }
+
 function sal_save_finalUpdate(){
+  $.ajaxSetup({
+    headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+    });
   $('.simpanFinal').attr('disabled','disabled');
   var bb = $('#save_sform :input').serialize();
   var cc = $('#save_item :input').serialize();
   var data=tableDetail.$('input').serialize();
   $.ajax({
     url : baseUrl + "/penjualan/POSretail/retail/sal_save_finalupdate",
-    type: 'get',
+    type: 'POST',
     data: bb+'&'+cc+'&'+data,
 
-    success:function(response){
+    success:function(response, nota){
       if (response.status=='sukses') {
         $('#proses').modal('hide');
-          $("input[name='s_member']").val('');
-          $("input[name='s_gross']").val('');
-          $("input[name='s_disc_percent']").val('');
-          $("input[name='s_disc_value']").val('');
-          $("input[name='s_pajak']").val('');
-          $("input[name='s_net']").val('');
-          $("input[name='sd_qty[]']").val('');
-          $("input[name='sd_sell[]']").val('');
-          $("input[name='s_dibayarkan']").val('');
-          $("input[name='totalDiscount[]']").val('');
-          $("input[name='s_kembalian']").val('');
-          $("input[name='sd_disc_percent[]']").val('');
-          $("input[name='sd_disc_value[]']").val('');
-          $("input[name='sp_method[]']").val('');
-          $("input[name='sp_nominal[]']").val('');
-          var id = $('#no_faktur').val();
-        if (confirm("Berhasil!, Ingin langsung cetak nota?")) {
-          window.open(baseUrl+"/penjualan/POSretail/print/"+id, "_blank");
-          window.location.href = baseUrl+"/penjualan/POSretail/index";
-          
-        } else {
-          window.location.href = baseUrl+"/penjualan/POSretail/index";
-        }
+        $("input[name='s_gross']").val('');
+        $("input[name='s_net']").val('');
+        $("input[name='totalDiscount[]']").val('');
+        $("#nama-customer").val('');
+        $("#alamat2").val('');
+        $('#c-class').val('');
+        $('.simpanFinal').removeAttr('disabled','disabled');
+        tableDetail.row().clear().draw(false);
+          var inputs = document.getElementById( 'kode' ),
+          names  = [].map.call(inputs, function( input ) {
+              return input.value;
+          });
+          tamp = names;
+        $('#save_item')[0].reset();
+        $("#nama-customer").prop("disabled", false);
+        $("input[name='s_member']").focus();
+          var id = $('#id_faktur').val();
+          var nota = response.nota.s_note;
+         iziToast.show({
+          timeout: false,
+          onClosing: function () {
+            window.location.href = baseUrl+"/penjualan/POSretail/index";
+          },
+          color: 'red',
+          title: nota,
+          message: 'Cetak sekarang!',
+          position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+          progressBarColor: 'rgb(0, 255, 184)',
+          buttons: [
+            [
+              '<button>Ok</button>',
+              function (instance, toast) {
+                instance.hide({
+                  transitionOut: 'fadeOutUp'
+                }, toast);
+                window.open(baseUrl+"/penjualan/POSretail/print/"+id, "_blank");
+                window.location.href = baseUrl+"/penjualan/POSretail/index";
+              }
+            ],
+            [
+              '<button>Close</button>',
+               function (instance, toast) {
+                instance.hide({
+                  transitionOut: 'fadeOutUp'
+                }, toast);
+                window.location.href = baseUrl+"/penjualan/POSretail/index"; 
+              }
+            ]
+          ]
+      }); 
       }else{
-        alert('Mohon melengkapi data!!!');
+        iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'Mohon melengkapi data.'});
        $('.simpanFinal').removeAttr('disabled','disabled');
       }
       }        
     })
   } 
-
-function sal_save_draft(){
-   $('.simpanDraft').attr('disabled','disabled');
-  var bb = $('#save_sform :input').serialize();
-  var cc = $('#save_item :input').serialize();
-  var data=tableDetail.$('input').serialize();
-  $.ajax({
-    url : baseUrl + "/penjualan/POSretail/retail/sal_save_draft",
-    type: 'get',
-    data: bb+'&'+cc+'&'+data,
-    success:function(response){
-      if (response.status=='sukses') {
-        $("input[name='id_cus']").val('');
-        $("input[name='s_gross']").val('');
-        $("input[name='s_disc_percent']").val('');
-        $("input[name='s_disc_value']").val('');
-        $("input[name='s_pajak']").val('');
-        $("input[name='s_net']").val('');
-        $("input[name='sd_qty[]']").val('');
-        $("input[name='sd_sell[]']").val('');
-        $("input[name='s_pembayaran[]']");
-        $("input[name='totalDiscount[]']").val('');
-        $("input[name='s_dibayarkan']").val('');
-        $("input[name='s_kembalian']").val('');
-        $("input[name='sd_disc_percent[]']").val('');
-        $("input[name='sd_disc_value[]']").val('');
-        $("input[name='hasil[]']").val('');
-        alert('di simpan sebagai draft');
-        window.location.reload();
-      }else{
-      alert('Mohon melengkapi data penjualan!!!');
-     $('.simpanDraft').removeAttr('disabled','disabled');;
-    }
-        }
-    })
-  }
 
 </script>

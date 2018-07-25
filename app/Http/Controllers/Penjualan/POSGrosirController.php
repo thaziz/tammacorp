@@ -124,7 +124,9 @@ class POSGrosirController extends Controller
                               'sd_disc_value',
                               'sd_total',
                               's_status',
-                              'm_sname')
+                              'm_sname',
+                              'sd_price',
+                              'sd_disc_vpercent')
         ->join('m_customer', 'm_customer.c_id', '=' , 'd_sales.s_customer')
         ->join('d_sales_dt','d_sales_dt.sd_sales','=','d_sales.s_id')
         ->join('m_item','m_item.i_id','=','d_sales_dt.sd_item')
@@ -153,6 +155,7 @@ class POSGrosirController extends Controller
                 'm_psell1',
                 'm_psell2',
                 'm_psell3',
+                'sd_price',
                 'sd_disc_percent',
                 'sd_disc_value',
                 'sd_total')
@@ -334,11 +337,26 @@ class POSGrosirController extends Controller
     DB::beginTransaction();
         try {  
     $s_id = d_sales::max('s_id') + 1;
+    //nota fatkur
+    $year = carbon::now()->format('y');
+    $month = carbon::now()->format('m');
+    $date = carbon::now()->format('d');
+
+    $idfatkur = DB::Table('d_sales')->select('s_id')->max('s_id');
+    
+    if ($idfatkur <= 0 || $idfatkur <= '') {
+      $idfatkur  = 1;
+    }else{
+      $idfatkur += 1;
+    }
+
+    $fatkur = 'XX'  . $year . $month . $date . $idfatkur;
+    //end nota fatkur
     d_sales::insert([
             's_id' =>$s_id,
             's_channel' => 'GR',
             's_date' => date('Y-m-d',strtotime($request->s_date)),
-            's_note' => $request->s_nota,
+            's_note' => $fatkur,
             's_staff' => $request->s_staff,
             's_customer' => $request->id_cus,
             's_disc_percent' => $request->s_disc_percent,
@@ -364,9 +382,13 @@ class POSGrosirController extends Controller
               'sd_total' => ($this->konvertRp($request->hasil[$i]))
             ]); 
     }
+
+    $nota = d_sales::where('s_id',$s_id)
+        ->first();
   DB::commit();
   return response()->json([
-        'status' => 'sukses'
+        'status' => 'sukses',
+        'nota' => $nota
       ]);
     } catch (\Exception $e) {
   DB::rollback();
@@ -381,6 +403,7 @@ class POSGrosirController extends Controller
     // dd($request->all());
     DB::beginTransaction();
           try { 
+    $s_id = d_sales::max('s_id') + 1;
     //nota fatkur
     $year = carbon::now()->format('y');
     $month = carbon::now()->format('m');
@@ -398,7 +421,7 @@ class POSGrosirController extends Controller
     //end nota fatkur
     $customer = DB::table('d_sales')
           ->insert([
-            's_id' =>$request->s_id,
+            's_id' =>$s_id,
             's_channel' =>'GR',
             's_date' =>date('Y-m-d',strtotime($request->s_date)),
             's_note' =>$fatkur,
@@ -433,9 +456,12 @@ class POSGrosirController extends Controller
 
           ]);
         }
+    $nota = d_sales::where('s_id',$s_id)
+        ->first();
   DB::commit();
   return response()->json([
-        'status' => 'sukses'
+        'status' => 'sukses',
+        'nota' => $nota
       ]);
     } catch (\Exception $e) {
   DB::rollback();
@@ -450,7 +476,8 @@ class POSGrosirController extends Controller
     // dd($request->all());
     DB::beginTransaction();
             try { 
-        //nota fatkur
+    $s_id = d_sales::max('s_id') + 1;
+    //nota fatkur
     $year = carbon::now()->format('y');
     $month = carbon::now()->format('m');
     $date = carbon::now()->format('d');
@@ -467,7 +494,7 @@ class POSGrosirController extends Controller
     //end nota fatkur
     $customer = DB::table('d_sales')
         ->insert([
-          's_id' => $request->s_id,
+          's_id' => $s_id,
           's_channel' => 'GR',
           's_date' => date('Y-m-d',strtotime($request->s_date)),
           's_note' => $fatkur,
@@ -510,10 +537,14 @@ class POSGrosirController extends Controller
               'sp_method' => $request->sp_method[$i],
               'sp_nominal' => ($this->konvertRp($request->sp_nominal[$i]))
           ]);
-        }    
+        } 
+
+      $nota = d_sales::where('s_id',$s_id)
+        ->first();   
     DB::commit();
     return response()->json([
-          'status' => 'sukses'
+          'status' => 'sukses',
+          'nota' => $nota
         ]);
       } catch (\Exception $e) {
     DB::rollback();
@@ -579,9 +610,13 @@ class POSGrosirController extends Controller
               ]);
             }
         }
+
+      $nota = d_sales::where('s_id',$s_id)
+        ->first();
     DB::commit();
     return response()->json([
-          'status' => 'sukses'
+          'status' => 'sukses',
+          'nota' => $nota
       ]);
     } catch (\Exception $e) {
     DB::rollback();
@@ -635,9 +670,12 @@ class POSGrosirController extends Controller
           'sd_total' => ($this->konvertRp($request->hasil[$i]))
         ]);
       }
+      $nota = d_sales::where('s_id',$s_id)
+        ->first();
     DB::commit();
     return response()->json([
-          'status' => 'sukses'
+          'status' => 'sukses',
+          'nota' => $nota
         ]);
       } catch (\Exception $e) {
     DB::rollback();
