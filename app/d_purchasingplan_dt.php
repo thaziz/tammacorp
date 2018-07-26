@@ -15,6 +15,7 @@ class d_purchasingplan_dt extends Model
         'd_pcspdt_id',
         'd_pcspdt_idplan',
         'd_pcspdt_item',
+        'd_pcspdt_sat',
         'd_pcspdt_qty',
         'd_pcspdt_qtyconfirm',
         'd_pcspdt_updated'
