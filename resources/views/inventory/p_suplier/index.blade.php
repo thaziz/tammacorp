@@ -87,6 +87,11 @@
       endDate: 'today'
     });//datepicker("setDate", "0");
 
+    $('.datepicker3').datepicker({
+      format:"dd-mm-yyyy",
+      autoclose: true
+    });
+
     //select2
     $( "#head_nota_purchase" ).select2({
       placeholder: "Pilih Nota Pembelian...",
@@ -110,6 +115,7 @@
     //event onchange select option
     $('#head_nota_purchase').change(function() 
     {
+      $('#appending div').remove();
       $('#btn_simpan').attr('disabled', false);
       //remove existing appending row
       $('tr').remove('.tbl_form_row');
@@ -124,10 +130,12 @@
           var totalPembelianNett = data.data_header[0].d_pcs_total_net;
           var totalDisc = parseInt(data.data_header[0].d_pcs_disc_value) + parseInt(data.data_header[0].d_pcs_discount);
           var taxPercent = data.data_header[0].d_pcs_tax_percent;
+
+          var date = data.data_header[0].d_pcs_duedate;
+          var newDueDate = date.split("-").reverse().join("-");
+
           //console.log(totalDisc);
-          $('#head_kode_terima').val(data.code);
-          $('#head_staff').val(data.staff.nama);
-          $('#head_staff_id').val(data.staff.id);
+          $('#head_nota_txt').val($('#head_nota_purchase').text());
           $('#head_supplier').val(data.data_header[0].s_company);
           $('#head_supplier_id').val(data.data_header[0].s_id);
           $('#head_total_gross').val(convertDecimalToRupiah(totalPembelianGross));
@@ -135,6 +143,31 @@
           $('#head_total_tax').val(taxPercent+' %');
           $('#head_total_nett').val(convertDecimalToRupiah(totalPembelianNett));
           $('#head_total_terima').val(convertDecimalToRupiah(totalPembelianNett));
+          $('#head_method').val(data.data_header[0].d_pcs_method);
+          if (data.data_header[0].d_pcs_method == "DEPOSIT") 
+          {
+            $('#appending div').remove();
+            $('#appending').append('<div class="col-md-2 col-sm-12 col-xs-12">'
+                                      +'<label class="tebal">Batas Terakhir Pengiriman</label>'
+                                  +'</div>'
+                                  +'<div class="col-md-4 col-sm-12 col-xs-12">'
+                                    +'<div class="form-group">'
+                                      +'<input type="text" id="apd_tgl" name="apdTgl" class="form-control datepicker3 input-sm" readonly value="'+newDueDate+'">'
+                                    +'</div>'
+                                  +'</div>');
+          }
+          else if (data.data_header[0].d_pcs_method == "CREDIT")
+          {
+            $('#appending div').remove();
+            $('#appending').append('<div class="col-md-2 col-sm-12 col-xs-12">'
+                                      +'<label class="tebal">Termin Of Payment (TOP)</label>'
+                                  +'</div>'
+                                  +'<div class="col-md-4 col-sm-12 col-xs-12">'
+                                    +'<div class="form-group">'
+                                      +'<input type="text" id="apd_tgl" name="apdTgl" class="form-control datepicker3 input-sm" readonly value="'+newDueDate+'">'
+                                    +'</div>'
+                                  +'</div>');
+          }
           //persentase diskon berdasarkan total harga bruto
           var percentDiscTotalGross = parseFloat(totalDisc*100/totalPembelianGross);
           var key = 1;
@@ -170,7 +203,6 @@
             i = randString(5);
             key++;
           });
-          //set readonly to enabled
           totalNilaiPenerimaan();
         },
         error: function (jqXHR, textStatus, errorThrown)
@@ -227,12 +259,15 @@
     // fungsi jika modal hidden
     $(".modal").on("hidden.bs.modal", function(){
       $('#btn_simpan').attr('disabled', true);
+      //remove append tr
       $('tr').remove('.tbl_form_row');
       $('tr').remove('.tbl_modal_detail_row');
       //reset all input txt field
       $('#form-terima-beli')[0].reset();
       //empty select2 field
       $('#head_nota_purchase').empty();
+      //remove appending div
+      $('#appending div').remove();
       //set datepicker to today 
       $('.datepicker2').datepicker('setDate', 'today');  
     });
@@ -319,6 +354,8 @@
       success: function(data)
       {
         var key = 1;
+        var date = data.header[0].d_pcs_duedate;
+        var newDueDate = date.split("-").reverse().join("-");
         //ambil data ke json->modal
         $('#lblNotaPembelian').text(data.header[0].d_pcs_code);
         $('#lblNotaPenerimaan').text(data.header[0].d_tb_code);
@@ -330,6 +367,31 @@
         $('#lblTotalBeliTax').text(data.header2.hargaTotBeliTax);
         $('#lblTotalBeliNett').text(data.header2.hargaTotBeliNett);
         $('#lblTotalTerimaNett').text(data.header2.hargaTotalTerimaNett);
+
+        if (data.header[0].d_pcs_method == "DEPOSIT") 
+        {
+          $('#appending-det div').remove();
+          $('#appending-det').append('<div class="col-md-3 col-sm-12 col-xs-12">'
+                                    +'<label class="tebal">Batas Terakhir Pengiriman</label>'
+                                +'</div>'
+                                +'<div class="col-md-3 col-sm-12 col-xs-12">'
+                                  +'<div class="form-group">'
+                                    +'<label>'+newDueDate+'</label>'
+                                  +'</div>'
+                                +'</div>');
+        }
+        else if (data.header[0].d_pcs_method == "CREDIT")
+        {
+          $('#appending-det div').remove();
+          $('#appending-det').append('<div class="col-md-3 col-sm-12 col-xs-12">'
+                                    +'<label class="tebal">Termin Of Payment (TOP)</label>'
+                                +'</div>'
+                                +'<div class="col-md-3 col-sm-12 col-xs-12">'
+                                  +'<div class="form-group">'
+                                    +'<label>'+newDueDate+'</label>'
+                                  +'</div>'
+                                +'</div>');
+        }
         //loop data
         Object.keys(data.data_isi).forEach(function(){
           $('#tabel-detail').append('<tr class="tbl_modal_detail_row">'

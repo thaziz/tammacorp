@@ -33,12 +33,7 @@ class PenerimaanBrgSupController extends Controller
     }
 
     public function getDataForm($id)
-    {
-        //code penerimaan
-        $kode = $this->kodeOtomatis(); 
-        $staff['nama'] = Auth::user()->m_name;
-        $staff['id'] = Auth::User()->m_id;
-
+    { 
         $dataHeader = DB::table('d_purchasing')
                     ->select('d_purchasing.*', 'd_supplier.s_company', 'd_supplier.s_name', 'd_supplier.s_id')
                     ->join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
@@ -86,8 +81,6 @@ class PenerimaanBrgSupController extends Controller
         $dataStok = $this->getStokByType($itemType, $sat1, $counter);
 
         return response()->json([
-            'code' => $kode,
-            'staff' => $staff,
             'status' => 'sukses',
             'data_header' => $dataHeader,
             'data_qty' => $qtyRemain,
@@ -219,7 +212,7 @@ class PenerimaanBrgSupController extends Controller
         }
     }
 
-    public function kodeOtomatis()
+    public function kodePenerimaanAuto()
     {
         $query = DB::select(DB::raw("SELECT MAX(RIGHT(d_tb_code,4)) as kode_max from d_terima_pembelian WHERE DATE_FORMAT(d_tb_created, '%Y-%m') = DATE_FORMAT(CURRENT_DATE(), '%Y-%m')"));
         $kd = "";
@@ -246,16 +239,26 @@ class PenerimaanBrgSupController extends Controller
         DB::beginTransaction();
         try 
         {
+            //code penerimaan
+            $kode = $this->kodePenerimaanAuto();
             //insert to table d_terimapembelian
             $dataHeader = new d_terima_pembelian;
             $dataHeader->d_tb_pid = $request->headNotaPurchase;
             $dataHeader->d_tb_sup = $request->headSupplierId;
-            $dataHeader->d_tb_code = $request->headKodeTerima;
+            $dataHeader->d_tb_code = $kode;
             $dataHeader->d_tb_staff = $request->headStaffId;
-            $dataHeader->d_tb_date = date('Y-m-d',strtotime($request->headTglTerima));
+            $dataHeader->d_tb_noreff = $request->headNotaTxt;
             $dataHeader->d_tb_totalnett = $this->konvertRp($request->headTotalTerima);
+            $dataHeader->d_tb_date = date('Y-m-d',strtotime($request->headTglTerima));
+            if ($request->headMethod != "CASH") 
+            {
+              $dataHeader->d_tb_duedate = date('Y-m-d',strtotime($request->apdTgl));
+            }
             $dataHeader->d_tb_created = Carbon::now();
             $dataHeader->save();
+
+            //update status purchasing to RC = "RECEIVED"
+            DB::table('d_purchasing')->where('d_pcs_id', $request->headNotaPurchase)->update(['d_pcs_status' => 'RC']);
                   
             //get last lastId then insert id to d_terimapembelian_dt
             $lastId = d_terima_pembelian::select('d_tb_id')->max('d_tb_id');
@@ -266,6 +269,7 @@ class PenerimaanBrgSupController extends Controller
 
             //variabel untuk hitung array field
             $hitung_field = count($request->fieldItemId);
+
 
             //update d_stock, insert d_stock_mutation & insert d_terimapembelian_dt
             for ($i=0; $i < $hitung_field; $i++) 
@@ -348,8 +352,7 @@ class PenerimaanBrgSupController extends Controller
                 $dataIsi->d_tbdt_created = Carbon::now();
                 $dataIsi->save();
 
-                //update isrecieved d_purchasingdt 
-                //if qty purchase == qty received
+                //update isrecieved d_purchasingdt jika qty == terima
                 $qtyRcv = DB::select(DB::raw("SELECT IFNULL(sum(d_tbdt_qty), 0) as aa FROM d_terima_pembelian_dt where d_tbdt_idpcsdt = '".$request->fieldIdPurchaseDet[$i]."'"));
                 $qtyPcs = DB::select(DB::raw("SELECT IFNULL(sum(d_pcsdt_qtyconfirm), 0) as bb FROM d_purchasing_dt where d_pcsdt_id = '".$request->fieldIdPurchaseDet[$i]."'"));
 
@@ -385,6 +388,11 @@ class PenerimaanBrgSupController extends Controller
         try {
           //cari item & qty d_terimapembelian_dt
           $query = DB::table('d_terima_pembelian_dt')->select('d_tbdt_item', 'd_tbdt_qty', 'd_tbdt_smdetail', 'd_tbdt_sat', 'd_tbdt_idpcsdt')->where('d_tbdt_idtb', $request->id)->get();
+
+          //cari id_purchasing & update status ke CF
+          $query2 = DB::table('d_terima_pembelian')->select('d_tb_id','d_tb_pid')->where('d_tb_id', $request->id)->first(); 
+          //update status purchasing to CF = "CONFIRMED"
+          DB::table('d_purchasing')->where('d_pcs_id', $query2->d_tb_pid)->update(['d_pcs_status' => 'CF']);
 
           foreach ($query as $value) 
           {
@@ -480,16 +488,7 @@ class PenerimaanBrgSupController extends Controller
     {
         foreach ($arrItemType as $val) 
         {
-            if ($val->i_type == "BP") //brg produksi
-            {
-                $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '6' AND s_position = '6' limit 1) ,'0') as qtyStok"));
-                $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();
-                  
-                $stok[] = $query[0];
-                $satuan[] = $satUtama->m_sname;
-                $counter++;
-            }
-            elseif ($val->i_type == "BJ") //brg jual
+            if ($val->i_type == "BJ") //brg jual
             {
                 $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
                 $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();
@@ -523,10 +522,6 @@ class PenerimaanBrgSupController extends Controller
         elseif ($typeBrg->i_type == "BJ") 
         {
           $idGroupGdg = '2';
-        }
-        elseif ($typeBrg->i_type == "BP") 
-        {
-          $idGroupGdg = '6';
         }
         return $idGroupGdg;
     }

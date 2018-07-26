@@ -685,7 +685,8 @@ class ConfrimBeliController extends Controller
   public function getDataBelanjaHarian()
   {
     $data = d_purchasingharian::join('d_supplier','d_purchasingharian.d_pcsh_supid','=','d_supplier.s_id')
-            ->select('d_purchasingharian.*', 'd_supplier.s_id', 'd_supplier.s_company')
+            ->join('d_mem', 'd_purchasingharian.d_pcsh_staff','=','d_mem.m_id')
+            ->select('d_purchasingharian.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_mem.m_id', 'd_mem.m_name')
             ->orderBy('d_pcsh_created', 'DESC')
             ->get();
     //dd($data);    
@@ -758,7 +759,8 @@ class ConfrimBeliController extends Controller
   public function confirmBelanjaHarian($id,$type)
   {
     $dataHeader = d_purchasingharian::join('d_supplier','d_purchasingharian.d_pcsh_supid','=','d_supplier.s_id')
-                ->select('d_purchasingharian.*', 'd_supplier.s_id', 'd_supplier.s_company')
+                ->join('d_mem', 'd_purchasingharian.d_pcsh_staff','=','d_mem.m_id')
+                ->select('d_purchasingharian.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_mem.m_name', 'd_mem.m_id')
                 ->where('d_pcsh_id', '=', $id)
                 ->orderBy('d_pcsh_created', 'DESC')
                 ->get();
@@ -894,16 +896,7 @@ class ConfrimBeliController extends Controller
   {
     foreach ($arrItemType as $val) 
     {
-        if ($val->i_type == "BP") //brg produksi
-        {
-            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '6' AND s_position = '6' limit 1) ,'0') as qtyStok"));
-            $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();
-            
-            $stok[] = $query[0];
-            $satuan[] = $satUtama->m_sname;
-            $counter++;
-        }
-        elseif ($val->i_type == "BJ") //brg jual
+        if ($val->i_type == "BJ") //brg jual
         {
             $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
             $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();

@@ -14,23 +14,15 @@
           <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-top:10px;padding-bottom: 10px;padding-top: 20px;margin-bottom: 15px;">
 
             <div class="col-md-2 col-sm-12 col-xs-12">
-              <label class="tebal">Nota Return Pembelian</label>
+              <label class="tebal">Nota Pembelian (PO)</label>
             </div>
 
             <div class="col-md-4 col-sm-12 col-xs-12">
               <div class="form-group">
                 <select class="form-control input-sm select2" id="head_nota_purchase" name="headNotaPurchase" style="width: 100% !important;">
                 </select>
-              </div>  
-            </div>
-            
-            <div class="col-md-2 col-sm-12 col-xs-12">
-              <label class="tebal">Kode Penerimaan</label>
-            </div>
-
-            <div class="col-md-4 col-sm-12 col-xs-12">
-              <div class="form-group">
-                <input type="text" name="headKodeTerima" id="head_kode_terima" readonly="" class="form-control input-sm">
+                <input type="hidden" name="headNotaTxt" id="head_nota_txt" class="form-control input-sm">
+                <input type="hidden" name="headMethod" id="head_method" class="form-control input-sm">
               </div>  
             </div>
 
@@ -50,8 +42,8 @@
 
             <div class="col-md-4 col-sm-12 col-xs-12">
               <div class="form-group">
-                <input type="text" name="headStaff" id="head_staff" readonly="" class="form-control input-sm">
-                <input type="hidden" name="headStaffId" id="head_staff_id" class="form-control input-sm">
+                <input type="text" name="headStaff" id="head_staff" readonly="" class="form-control input-sm" value="{{Auth::user()->m_name}}">
+                <input type="hidden" name="headStaffId" id="head_staff_id" class="form-control input-sm" value="{{Auth::User()->m_id}}">
               </div>
             </div>
 
@@ -116,6 +108,8 @@
               </div>
             </div>
 
+            <div id="appending"></div>
+
           </div>
           
           <div class="table-responsive">
@@ -124,12 +118,12 @@
                 <tr>
                   <th style="text-align: center;" width="5%;">No</th>
                   <th width="25%;">Kode | Barang</th>
-                  <th width="10%">Qty</th>
-                  <th width="10%">Qty Terima</th>
-                  <th width="5%">Satuan</th>
-                  <th width="15%">Harga</th>
+                  <th width="7%">Qty</th>
+                  <th width="7%">Qty Terima</th>
+                  <th width="10%">Satuan</th>
+                  <th width="13%">Harga</th>
                   <th width="15%">Total</th>
-                  <th width="10%">Stok</th>
+                  <th width="13%">Stok</th>
                   <th width="5%">Aksi</th>
                 </tr>
               </thead>
