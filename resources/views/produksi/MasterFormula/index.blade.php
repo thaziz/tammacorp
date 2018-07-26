@@ -49,7 +49,6 @@
                                     <th>No</th>
                                     <th>Kode Item</th>
                                     <th>Nama Item</th>
-                                    <th>Formula</th>
                                     <th>Hasil</th>
                                     <th>Satuan</th>
                                     <th>Aksi</th>
@@ -162,7 +161,7 @@
         $('#i_name').val(ui.item.name);
         Object.keys(ui.item.satuan).forEach(function(){
           $('#satuan').append($('<option>', { 
-            value: ui.item.satuan[key-1],
+            value: ui.item.id_satuan[key-1],
             text : ui.item.satuan[key-1]
             }));
           key++;
@@ -186,7 +185,7 @@
         $("input[name='hasil_item']").focus();
         Object.keys(ui.item.satuan).forEach(function(){
             $('#satuan-item').append($('<option>', { 
-              value: ui.item.satuan[key-1],
+              value: ui.item.id_satuan[key-1],
               text : ui.item.satuan[key-1]
               }));
             key++;
@@ -209,7 +208,6 @@
     {data: 'DT_Row_Index', name: 'DT_Row_Index'},
     {data: 'i_code', name: 'i_code'},
     {data: 'i_name', name: 'i_name'},
-    {data: 'formula', name: 'formula', orderable: false},
     {data: 'fr_result', name: 'fr_result'},
     {data: 'm_sname', name: 'm_sname'},
     {data: 'action', name: 'action', orderable: false, searchable: false},
@@ -223,7 +221,8 @@
     var i_code = $('#i_code').val();
     var i_name = $('#i_name').val();
     var qty = $('#qty').val();
-    var satuan = $('#satuan').val();
+    var idSatuan = $('#satuan option:selected').val();
+    var satuan = $('#satuan option:selected').text();
     var hapus = '<div class="text-center"><button type="button" class="btn btn-danger hapus" onclick="hapus(this)"><i class="fa fa-trash-o"></i></button><div>'
     var index = tamp.indexOf(i_id);
 
@@ -232,7 +231,7 @@
         i_code+'<input type="hidden" name="i_id[]" id="" class="i_id" value="'+i_id+'">',
         i_name+'',
         '<input type="number" name="qty[]" id="" class="form-control text-right" value="'+qty+'">',
-        satuan+'<input type="hidden" name="satuan[]" id="" class="" value="'+satuan+'">',
+        satuan+'<input type="hidden" name="satuan[]" id="" class="" value="'+idSatuan+'">',
         hapus
         ]);
       tableResep.draw();
@@ -296,7 +295,7 @@
     });
     $.ajax({
       url : baseUrl + "/produksi/namaitem/save/formula",
-      type: 'POST',
+      type: 'GET',
       data: a,
       success:function(response){
         if (response.status=='sukses') {
@@ -307,7 +306,6 @@
           $("#satuan").empty();
           $("#bahan_baku" ).val('');
           $("#hasil_item" ).val('');
-          alert('Data formula telah tersimpan!!');
           tableResep.row().clear().draw(false);
           var inputs = document.getElementsByClassName( 'i_id' ),
           names  = [].map.call(inputs, function( input ) {
@@ -315,9 +313,17 @@
           });
           tamp = names;
           tableFormula.ajax.reload();
+          $('#myModal').modal('hide');
+          iziToast.success({timeout: 5000, 
+                          position: "topRight",
+                          icon: 'fa fa-chrome', 
+                          title: '', 
+                          message: 'Data resep tersimpan.'});
           $('#btn-simpan').removeAttr('disabled','disabled');
         }else{
-          toastr.warning('Mohon melengkapi data atau data sudah ada di daftar!!!');
+          iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'Mohon mengecek kelengkapan resep.'});
           $('#btn-simpan').removeAttr('disabled','disabled');
         }
       }
@@ -325,24 +331,49 @@
   }
 
   function distroyFormula(id){
-    if(!confirm("Apakah Anda yakin ingin menghapus formula?")) return false;
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
+    iziToast.show({
+      color: 'red',
+      title: 'Peringatan',
+      message: 'Apakah anda yakin!',
+      position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+      progressBarColor: 'rgb(0, 255, 184)',
+      buttons: [
+        [
+          '<button>Ok</button>',
+          function (instance, toast) {
+            instance.hide({
+              transitionOut: 'fadeOutUp'
+            }, toast);
     $.ajax({
       url : baseUrl + "/produksi/namaitem/distroy/formula/"+id,
-      type: 'POST',
+      type: 'GET',
       success : function(response){
         if (response.status=='sukses') {
-          alert('Data formula berhasil di hapus!!!');
+          iziToast.success({timeout: 5000, 
+                          position: "topRight",
+                          icon: 'fa fa-chrome', 
+                          title: '', 
+                          message: 'Formula berhasil dihapus.'});
           tableFormula.ajax.reload();
         }else{
-          alert('Data gagal di hapus!!!');
+          iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'Formula gagal dihapus.'});
         }
       }
     });
+    }
+        ],
+        [
+          '<button>Close</button>',
+           function (instance, toast) {
+            instance.hide({
+              transitionOut: 'fadeOutUp'
+            }, toast);
+          }
+        ]
+      ]
+    }); 
   }
 
   function lihatDetail(id){
@@ -369,7 +400,6 @@
 
   function simpanResepUpdate(){
     $('#btn-simpan-edit').attr('disabled','disabled');
-    if(!confirm("Apakah Anda yakin ingin merubah formula?")) return false;
     var b = $('#myFormUpdate').serialize();
     $.ajaxSetup({
         headers: {
@@ -382,7 +412,12 @@
       data: b,
       success:function(response){
         if (response.status=='sukses') {
-          alert('Data Formula berhasil di update!');
+          $('#myModalEdit').modal('hide');
+          iziToast.success({timeout: 5000, 
+                          position: "topRight",
+                          icon: 'fa fa-chrome', 
+                          title: '', 
+                          message: 'Data resep terupdate.'});
           tableFormula.ajax.reload();
           $('#btn-simpan-edit').removeAttr('disabled','disabled');
         }else{

@@ -30,9 +30,9 @@
               <div class="col-md-8 col-sm-8 col-xs-12">
                 <div class="form-group">  
                   <select class="form-control" id="satuan-itemEdit" name="satuanItem[]">
-                    <option value="{{ $item->i_sat1 }}">{{ $item->i_sat1 }}</option>
-                    <option value="{{ $item->i_sat2 }}">{{ $item->i_sat2 }}</option>
-                    <option value="{{ $item->i_sat3 }}">{{ $item->i_sat3 }}</option>
+                    <option value="{{ $item->i_sat1 }}">{{ $item->m_sname }}</option>
+                    <option value="{{ $item->i_sat2 }}">{{ $item->m_sname }}</option>
+                    <option value="{{ $item->i_sat3 }}">{{ $item->m_sname }}</option>
                   </select>
                 </div>
               </div>
@@ -90,7 +90,7 @@
                           value="{{ $data->f_value }}">
                         </td>
                         <td>
-                          {{ $data->f_scale }}
+                          {{ $data->m_sname }}
                           <input type="hidden" name="satuan[]" id="" class="" 
                           value="{{ $data->f_scale }}">
                         </td>
@@ -118,7 +118,7 @@
         $('#i_nameEdit').val(ui.item.name);
         Object.keys(ui.item.satuan).forEach(function(){
           $('#satuanEdit').append($('<option>', { 
-            value: ui.item.satuan[key-1],
+            value: ui.item.id_satuan[key-1],
             text : ui.item.satuan[key-1]
             }));
           key++;
@@ -141,7 +141,8 @@
     var i_code = $('#i_codeEdit').val();
     var i_name = $('#i_nameEdit').val();
     var qty = $('#qtyEdit').val();
-    var satuan = $('#satuanEdit').val();
+    var idSatuan = $('#satuanEdit option:selected').val();
+    var satuan = $('#satuanEdit option:selected').text();
     var hapus = '<div class="text-center"><button type="button" class="btn btn-danger hapus" onclick="hapus(this)"><i class="fa fa-trash-o"></i></button><div>'
     var index = tamp.indexOf(i_id);
 
@@ -156,7 +157,7 @@
         i_code+'<input type="hidden" name="i_id[]" id="" class="i_id" value="'+i_id+'">',
         i_name+'',
         '<input type="number" name="qty[]" id="" class="form-control text-right" value="'+qty+'">',
-        satuan+'<input type="hidden" name="satuan[]" id="" class="" value="'+satuan+'">',
+        satuan+'<input type="hidden" name="satuan[]" id="" class="" value="'+idSatuan+'">',
         hapus
         ]);
       tableResepEdit.draw();

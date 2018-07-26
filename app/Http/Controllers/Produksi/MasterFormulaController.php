@@ -16,7 +16,7 @@ class MasterFormulaController extends Controller
 {
   public function index(){
 
-    return view('Produksi.MasterFormula.index');
+    return view('produksi.MasterFormula.index');
   }
 
   public function table(){
@@ -26,27 +26,27 @@ class MasterFormulaController extends Controller
                                 'm_sname',
                                 'fr_id')
                 ->join('m_item','i_id','=','fr_adonan')
-                ->join('m_satuan','m_sid','=','fr_scale')
+                ->join('m_satuan','m_sid','=','fr_id')
                 ->get();
                 // dd($data);
     return DataTables::of($data)
 
     ->addColumn('formula', function ($data) {
     return '<div class="text-center">
-              <button style="margin-left:5px;" 
-                      title="Detail" 
-                      type="button"
-                      data-toggle="modal"
-                      data-target="#myModalView"
-                      onclick="lihatDetail('.$data->fr_id.')" 
-                      class="btn btn-info fa fa-eye btn-sm"
-              </button>
             </div>';
 
     })
 
     ->addColumn('action', function ($data) {
     return '<div class="text-center">
+                  <button style="margin-left:5px;" 
+                          title="Detail" 
+                          type="button"
+                          data-toggle="modal"
+                          data-target="#myModalView"
+                          onclick="lihatDetail('.$data->fr_id.')" 
+                          class="btn btn-info fa fa-eye btn-sm"
+                  </button>
                   <button style="margin-left:5px;" 
                           title="Edit" 
                           type="button"
@@ -95,7 +95,8 @@ class MasterFormulaController extends Controller
         $results[] = [  'id' => $query->i_id, 
                         'label' => $query->i_code .' - '.$query->i_name,
                         'name' => $query->i_name,
-                        'satuan' =>[$query->m_sname, $query->m_sname, $query->m_sname],
+                        'id_satuan' => [$query->i_sat1, $query->i_sat2, $query->i_sat3],
+                        'satuan' => [$query->m_sname, $query->m_sname, $query->m_sname],
                         'i_code' => $query->i_code ];
       }
     } 
@@ -121,6 +122,7 @@ class MasterFormulaController extends Controller
         $results[] = [  'id' => $query->i_id, 
                         'label' => $query->i_code .' - '.$query->i_name,
                         'name' => $query->i_name,
+                        'id_satuan' =>[$query->i_sat1, $query->i_sat1, $query->i_sat1],
                         'satuan' =>[$query->m_sname, $query->m_sname, $query->m_sname] ];
       }
     } 
@@ -129,6 +131,7 @@ class MasterFormulaController extends Controller
   }
 
   public function saveFormula(Request $request){
+    // dd($request->all());
     DB::beginTransaction();
           try { 
     $i_id = $request->i_id;
@@ -184,15 +187,19 @@ class MasterFormulaController extends Controller
   public function viewFormula(Request $request){
     $data = d_formula_result::select( 'i_name',
                                       'fr_result',
-                                      'fr_scale')
+                                      'fr_scale',
+                                      'm_sname')
       ->join('m_item','i_id','=','fr_adonan')
+      ->join('m_satuan','m_sid','=','fr_scale')
       ->where('fr_id',$request->x)
       ->get();
 
     $formula = d_formula::select( 'i_name',
                                   'f_value',
-                                  'f_scale')
+                                  'f_scale',
+                                  'm_sname')
       ->join('m_item','i_id','=','f_bb')
+      ->join('m_satuan','m_sid','=','f_scale')
       ->where('f_id',$request->x)
       ->get();
 
@@ -205,18 +212,22 @@ class MasterFormulaController extends Controller
                                       'i_sat1',
                                       'i_sat2',
                                       'i_sat3',
+                                      'm_sname',
                                       'fr_result',
                                       'fr_scale')
       ->join('m_item','i_id','=','fr_adonan')
+      ->join('m_satuan','m_sid','=','fr_scale')
       ->where('fr_id',$request->x)
       ->get();
 
     $formula = d_formula::select( 'i_name',
                                   'i_code',
                                   'i_id',
+                                  'm_sname',
                                   'f_value',
                                   'f_scale')
       ->join('m_item','i_id','=','f_bb')
+      ->join('m_satuan','m_sid','=','f_scale')
       ->where('f_id',$request->x)
       ->get();
 
