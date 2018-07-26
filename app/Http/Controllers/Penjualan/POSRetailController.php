@@ -868,7 +868,7 @@ class POSRetailController extends Controller
 
   
       
-      return view('penjualan.POSRetail.print_faktur', compact('data', 'dataTotal', 'sales'));
+      return view('penjualan.POSretail.print_faktur', compact('data', 'dataTotal', 'sales'));
   }
   public function print_surat_jalan($id){
     $sales = d_sales::select( 'c_name',
@@ -898,7 +898,7 @@ class POSRetailController extends Controller
       ->where('sd_sales',$id)->get();
       
 
-      return view('penjualan.POSRetail.print_surat_jalan', compact('data', 'dataTotal', 'sales'));
+      return view('penjualan.POSretail.print_surat_jalan', compact('data', 'dataTotal', 'sales'));
   }
 }
 
