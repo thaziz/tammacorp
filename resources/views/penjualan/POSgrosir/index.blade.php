@@ -657,6 +657,7 @@ $('#qty').keypress(function(e){
     if ((e.which && e.which == 13)){
 
       var isi   = parseInt($('#qty').val());
+      if (isNaN(isi)) {return false;}
       var jumlah= $('#detailnama').val();
       var stok  = parseInt($('#s_qty').val());
       var data1 = $('#nama-customer').val();
