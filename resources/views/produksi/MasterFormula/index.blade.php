@@ -295,7 +295,7 @@
     });
     $.ajax({
       url : baseUrl + "/produksi/namaitem/save/formula",
-      type: 'GET',
+      type: 'POST',
       data: a,
       success:function(response){
         if (response.status=='sukses') {
@@ -408,7 +408,7 @@
     });
     $.ajax({
       url : baseUrl + "/produksi/namaitem/update/formula",
-      type: 'GET',
+      type: 'POST',
       data: b,
       success:function(response){
         if (response.status=='sukses') {

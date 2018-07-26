@@ -223,10 +223,10 @@ Route::get('/produksi/masterformula/table', 'Produksi\MasterFormulaController@ta
 Route::get('/produksi/masterformula/autocomplete', 'Produksi\MasterFormulaController@autocompFormula');
 Route::get('/produksi/namaitem/autocomplete', 'Produksi\MasterFormulaController@autocompNamaItem');
 Route::post('/produksi/namaitem/save/formula', 'Produksi\MasterFormulaController@saveFormula');
-Route::post('/produksi/namaitem/distroy/formula/{id}', 'Produksi\MasterFormulaController@distroyFormula');
+Route::get('/produksi/namaitem/distroy/formula/{id}', 'Produksi\MasterFormulaController@distroyFormula');
 Route::get('/produksi/namaitem/view/formula', 'Produksi\MasterFormulaController@viewFormula');
 Route::get('/produksi/namaitem/edit/formula', 'Produksi\MasterFormulaController@editFormula');
-Route::get('/produksi/namaitem/update/formula', 'Produksi\MasterFormulaController@updateFormula');
+Route::post('/produksi/namaitem/update/formula', 'Produksi\MasterFormulaController@updateFormula');
 //End Master Formula
 /*Penjualan*/
 Route::get('/penjualan/manajemenharga/harga', 'PenjualanController@harga');
