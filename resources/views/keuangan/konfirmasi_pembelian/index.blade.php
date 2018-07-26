@@ -429,7 +429,7 @@
           {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
           {"data" : "tglBelanja", "width" : "10%"},
           {"data" : "d_pcsh_code", "width" : "10%"},
-          {"data" : "d_pcsh_staff", "width" : "10%"},
+          {"data" : "m_name", "width" : "10%"},
           {"data" : "s_company", "width" : "15%"},
           {"data" : "tglConfirm", "width" : "10%"},
           {"data" : "hargaTotal", "width" : "15%"},
@@ -640,7 +640,7 @@
         $("#status_belanja_confirm").val(data.header[0].d_pcsh_status);
         $('#lblCodeBelanjaConfirm').text(data.header[0].d_pcsh_code);
         $('#lblTglBelanjaConfirm').text(data.header[0].d_pcsh_date);
-        $('#lblStaffBelanjaConfirm').text(data.header[0].d_pcsh_staff);
+        $('#lblStaffBelanjaConfirm').text(data.header[0].m_name);
         $('#lblSupplierBelanjaConfirm').text(data.header[0].s_company);
         $('#lblTotalBelanjaConfirm').text(convertDecimalToRupiah(data.header[0].d_pcsh_totalprice));
         $('#lblTotalBayarConfirm').text(convertDecimalToRupiah(data.header[0].d_pcsh_totalpaid));
@@ -881,6 +881,16 @@
   function refreshTabelOrder() 
   {
     $('#tbl-order').DataTable().ajax.reload();
+  }
+
+  function refreshTabelBharian() 
+  {
+    $('#tbl-belanjaharian').DataTable().ajax.reload();
+  }
+
+  function refreshTabelReturn() 
+  {
+    $('#tbl-return').DataTable().ajax.reload();
   }
 
 </script>

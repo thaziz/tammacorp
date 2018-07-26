@@ -17,8 +17,12 @@ class d_terima_pembelian extends Model
         'd_tb_sup',
         'd_tb_code',
         'd_tb_staff',
-        'd_tb_date',
+        'd_tb_noreff',
         'd_tb_totalnett',
+        'd_tb_totalbyr',
+        'd_tb_date',
+        'd_tb_datepaid',
+        'd_tb_duedate',
         'd_tb_created',
         'd_tb_updated'
     ];
