@@ -1200,7 +1200,7 @@ class POSGrosirController extends Controller
 
   
       
-      return view('penjualan.POSGrosir.print_faktur', compact('data', 'dataTotal', 'sales'));
+      return view('penjualan.POSgrosir.print_faktur', compact('data', 'dataTotal', 'sales'));
   }
 
   public function suratjalan(){
