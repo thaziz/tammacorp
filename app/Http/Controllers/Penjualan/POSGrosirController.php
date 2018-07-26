@@ -1204,11 +1204,11 @@ class POSGrosirController extends Controller
   }
 
   public function suratjalan(){
-    return view('penjualan.POSGrosir.suratjalan');
+    return view('penjualan.POSgrosir.suratjalan');
   }
 
   public function lpacking(){
-    return view('penjualan.POSGrosir.lpacking');
+    return view('penjualan.POSgrosir.lpacking');
   }
   public function print_surat_jalan($id){
     $sales = d_sales::select( 'c_name',
@@ -1238,7 +1238,7 @@ class POSGrosirController extends Controller
       ->where('sd_sales',$id)->get();
       
 
-      return view('penjualan.POSGrosir.print_surat_jalan', compact('data', 'dataTotal', 'sales'));
+      return view('penjualan.POSgrosir.print_surat_jalan', compact('data', 'dataTotal', 'sales'));
   }
 
   public function print_awas_barang_panas($id){
