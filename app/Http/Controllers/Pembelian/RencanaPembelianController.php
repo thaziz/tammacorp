@@ -356,6 +356,7 @@ class RencanaPembelianController extends Controller
       $term = $request->term;
       $results = array();
       $queries = DB::table('m_item')
+        ->select('i_id','i_type','i_sat1','i_sat2','i_sat3','i_code','i_name')
         ->where('i_name', 'LIKE', '%'.$term.'%')
         ->where('i_type', '<>', 'BP')
         ->take(10)->get();
@@ -540,40 +541,30 @@ class RencanaPembelianController extends Controller
         $d2 = substr($tgl2,0,2);
         $tanggal2 = $y2.'-'.$m2.'-'.$d2;
 
-        if ($tampil == 'wait') {
-          $data = DB::table('d_purchasingplan_dt')
-            ->select('d_purchasingplan_dt.*', 'd_purchasingplan.*', 'm_item.i_name', 'd_supplier.s_company', 'm_satuan.m_sname')
-            ->leftJoin('d_purchasingplan','d_purchasingplan_dt.d_pcspdt_idplan','=','d_purchasingplan.d_pcsp_id')
-            ->leftJoin('d_supplier','d_purchasingplan.d_pcsp_sup','=','d_supplier.s_id')
-            ->leftJoin('m_item','d_purchasingplan_dt.d_pcspdt_item','=','m_item.i_id')
-            ->leftJoin('m_satuan','d_purchasingplan_dt.d_pcspdt_sat','=','m_satuan.m_sid')
-            ->where('d_purchasingplan_dt.d_pcspdt_isconfirm','=',"FALSE")
-            ->where('d_purchasingplan.d_pcsp_status','=',"WT")
-            ->whereBetween('d_purchasingplan.d_pcsp_datecreated', [$tanggal1, $tanggal2])
-            ->get();
-        }elseif ($tampil == 'edit') {
-          $data = DB::table('d_purchasingplan_dt')
-            ->select('d_purchasingplan_dt.*', 'd_purchasingplan.*', 'm_item.i_name', 'd_supplier.s_company', 'm_satuan.m_sname')
-            ->leftJoin('d_purchasingplan','d_purchasingplan_dt.d_pcspdt_idplan','=','d_purchasingplan.d_pcsp_id')
-            ->leftJoin('d_supplier','d_purchasingplan.d_pcsp_sup','=','d_supplier.s_id')
-            ->leftJoin('m_item','d_purchasingplan_dt.d_pcspdt_item','=','m_item.i_id')
-            ->leftJoin('m_satuan','d_purchasingplan_dt.d_pcspdt_sat','=','m_satuan.m_sid')
-            ->where('d_purchasingplan_dt.d_pcspdt_isconfirm','=',"TRUE")
-            ->where('d_purchasingplan.d_pcsp_status','=',"DE")
-            ->whereBetween('d_purchasingplan.d_pcsp_datecreated', [$tanggal1, $tanggal2])
-            ->get();
-        }else{
-          $data = DB::table('d_purchasingplan_dt')
-            ->select('d_purchasingplan_dt.*', 'd_purchasingplan.*', 'm_item.i_name', 'd_supplier.s_company', 'm_satuan.m_sname')
-            ->leftJoin('d_purchasingplan','d_purchasingplan_dt.d_pcspdt_idplan','=','d_purchasingplan.d_pcsp_id')
-            ->leftJoin('d_supplier','d_purchasingplan.d_pcsp_sup','=','d_supplier.s_id')
-            ->leftJoin('m_item','d_purchasingplan_dt.d_pcspdt_item','=','m_item.i_id')
-            ->leftJoin('m_satuan','d_purchasingplan_dt.d_pcspdt_sat','=','m_satuan.m_sid')
-            ->where('d_purchasingplan_dt.d_pcspdt_isconfirm','=',"TRUE")
-            ->where('d_purchasingplan.d_pcsp_status','=',"FN")
-            ->whereBetween('d_purchasingplan.d_pcsp_datecreated', [$tanggal1, $tanggal2])
-            ->get();
+        if ($tampil == 'wait') 
+        { 
+          $is_confirm = "FALSE";
+          $status = "WT";
+        }elseif ($tampil == 'edit') 
+        {
+          $is_confirm = "TRUE";
+          $status = "DE";
+        }else
+        {
+          $is_confirm = "TRUE";
+          $status = "FN";
         }
+
+        $data = DB::table('d_purchasingplan_dt')
+            ->select('d_purchasingplan_dt.*', 'd_purchasingplan.*', 'm_item.i_name', 'd_supplier.s_company', 'm_satuan.m_sname')
+            ->leftJoin('d_purchasingplan','d_purchasingplan_dt.d_pcspdt_idplan','=','d_purchasingplan.d_pcsp_id')
+            ->leftJoin('d_supplier','d_purchasingplan.d_pcsp_sup','=','d_supplier.s_id')
+            ->leftJoin('m_item','d_purchasingplan_dt.d_pcspdt_item','=','m_item.i_id')
+            ->leftJoin('m_satuan','d_purchasingplan_dt.d_pcspdt_sat','=','m_satuan.m_sid')
+            ->where('d_purchasingplan_dt.d_pcspdt_isconfirm','=',$is_confirm)
+            ->where('d_purchasingplan.d_pcsp_status','=',$status)
+            ->whereBetween('d_purchasingplan.d_pcsp_datecreated', [$tanggal1, $tanggal2])
+            ->get();
 
         return DataTables::of($data)
         ->addIndexColumn()
