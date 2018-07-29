@@ -72,6 +72,7 @@ tr.details td.details-control {
                             <th class="wd-15p">Nama Customer</th>
                             <th class="wd-15p">No hp</th>
                             <th class="wd-15p">Tipe Cust</th>
+                            <th class="wd-10p">Kelas</th>
                             <th class="wd-15p">Aksi</th>
                           </tr>
                         </thead>
@@ -125,8 +126,9 @@ tr.details td.details-control {
             { "data": "c_code" },
             { "data": "c_name" },
             { "data": "c_hp", "className" : "right" },
-            { "data": "c_type" },
-            { "data": "action" },
+            { "data": "c_type", className: 'center' },
+            { "data": "c_class", className: 'center' },
+            { "data": "action", className: 'center' },
             ],
             "responsive":true,
 

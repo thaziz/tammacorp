@@ -202,13 +202,16 @@
                                 </li>
                                 @endif
 
-                                 @if(Auth::user()->punyaAkses('Data Barang','ma_read'))
-
+                                @if(Auth::user()->punyaAkses('Data Barang','ma_read'))
                                 <li class="{{ Request::is('master/databarang/barang') ? 'active' : '' || Request::is('master/databarang/*') ? 'active' : '' }}"><a href="{{ url('/master/databarang/barang') }}"><span class="submenu-title">Data Barang </span><span class="hidden">Master</span></a>
                                 </li>
                                 @endif
                                 </li>
-
+                                @if(Auth::user()->punyaAkses('Item Produksi','ma_read'))
+                                <li class="{{ Request::is('master/itemproduksi/index') ? 'active' : '' || Request::is('master/itemproduksi/*') ? 'active' : '' }}"><a href="{{ url('/master/itemproduksi/index') }}"><span class="submenu-title">Data Item Produksi </span><span class="hidden">Master</span></a>
+                                </li>
+                                @endif
+                                </li>
                                 <li class="{{ Request::is('master/masterproduksi/index') ? 'active' : '' || Request::is('master/masterproduksi/*') ? 'active' : '' }}"><a href="{{ url('master/masterproduksi/index') }}"><span class="submenu-title">Master Formula</span></a>
                                 </li>
                                 

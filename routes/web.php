@@ -487,6 +487,14 @@ Route::get('/master/databarang/update_barang', 'master\barangController@update_b
 Route::get('/master/databarang/datatable_barang', 'master\barangController@datatable_barang')->name('datatable_barang');
 Route::get('/master/databarang/kode_barang', 'master\barangController@kode_barang')->name('kode_barang');
 Route::get('/master/databarang/cari_group_barang', 'master\barangController@cari_group_barang')->name('cari_group_barang');
+//itemproduksi mahmud
+Route::get('/master/itemproduksi/index', 'master\itemProduksiController@index');
+Route::get('/master/tableproduksi/table', 'master\itemProduksiController@tableProduksi');
+Route::get('/master/itemproduksi/tambah_item', 'master\itemProduksiController@tambahItem');
+Route::post('/master/itemproduksi/simpan_item', 'master\itemProduksiController@simpanItem');
+Route::get('/master/itemproduksi/ubah_status/{a}', 'master\itemProduksiController@ubahStatus');
+Route::get('/master/itemproduksi/edit_item/{a}', 'master\itemProduksiController@editBarang');
+Route::get('/master/itemproduksi/update_item/{a}', 'master\itemProduksiController@updateItem');
 //bahan baku
 Route::get('/master/databaku/baku', 'master\bahan_bakuController@baku')->name('baku');
 Route::get('/master/databaku/tambah_baku', 'master\bahan_bakuController@tambah_baku')->name('tambah_baku');
