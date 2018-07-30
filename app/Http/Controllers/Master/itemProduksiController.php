@@ -45,16 +45,16 @@ class itemProduksiController extends Controller
       ->addColumn('aksi', function ($data) {
       	if ($data->i_isactive == 'TRUE') {
       		return  '<button id="edit" 
-               									onclick="edit('.$data->i_id.')" 
-               									class="btn btn-warning btn-sm" 
-               									title="Edit">
-               									<i class="glyphicon glyphicon-pencil"></i>
+									onclick="edit('.$data->i_id.')" 
+									class="btn btn-warning btn-sm" 
+									title="Edit">
+									<i class="glyphicon glyphicon-pencil"></i>
                					</button>'.'
                         <button id="status'.$data->i_id.'" 
-                        				onclick="ubahStatus('.$data->i_id.')" 
-                        				class="btn btn-primary btn-sm" 
-                        				title="Aktif">
-                        				<i class="fa fa-check-square" aria-hidden="true"></i>
+	                				onclick="ubahStatus('.$data->i_id.')" 
+	                				class="btn btn-primary btn-sm" 
+	                				title="Aktif">
+	                				<i class="fa fa-check-square" aria-hidden="true"></i>
                         </button>';
       	}else{
       		return  '<button id="edit" 
@@ -137,7 +137,7 @@ class itemProduksiController extends Controller
  		DB::beginTransaction();
   	try {
  		$data = m_item::select(	'i_id',
- 														'i_isactive')
+ 								'i_isactive')
  			->where('i_id',$id)
  			->first();
  		if ($data->i_isactive == 'TRUE') {
