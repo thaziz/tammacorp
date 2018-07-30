@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\GajiManajemen;
 use App\GajiProduksi;
+use App\Potongan;
 use DB;
 use DataTables;
 class GajiController extends Controller
@@ -88,6 +89,18 @@ class GajiController extends Controller
                 ->rawColumns(['action','lembur','gaji'])
                 ->make(true);
     }
+    public function potonganData(){
+        $list = DB::table('m_potongan')
+                ->get();
+        $data = collect($list);
+        return Datatables::of($data)           
+                ->addColumn('action', function ($data) {
+                         return  '<button id="edit" onclick="editPot('.$data->c_id.')" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
+                                        <button id="delete" onclick="hapusPot('.$data->c_id.')" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+    }
     public function tambahGajiMan(){
         return view('hrd/payroll/tambah_set_manajemen');
     }
@@ -135,6 +148,31 @@ class GajiController extends Controller
     }
     public function deleteGajiPro($id){
         $data = DB::table('m_gaji_pro')->where('c_id', $id)->delete();
+
+        return redirect('/hrd/payroll/setting-gaji');
+    }
+    public function tambahPotongan(){
+        return view('hrd/payroll/tambah_set_potongan');
+    }
+    public function simpanPotongan(Request $request){
+        $input = $request->all();
+        $data = Potongan::create($input);
+        
+        return redirect('/hrd/payroll/setting-gaji');
+    }
+    public function editPotongan($id){
+        $data = DB::table('m_potongan')->where('c_id', $id)->first();
+        
+        return view('hrd/payroll/edit_set_potongan',['data' => $data]);
+    }
+    public function updatePotongan(Request $request, $id){
+        $input = $request->except('_token', '_method','jumlah');
+        $data = Potongan::where('c_id', $id)->update($input);
+        
+        return redirect('/hrd/payroll/setting-gaji');
+    }
+    public function deletePotongan($id){
+        $data = DB::table('m_potongan')->where('c_id', $id)->delete();
 
         return redirect('/hrd/payroll/setting-gaji');
     }
