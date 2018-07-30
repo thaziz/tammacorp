@@ -10,105 +10,107 @@
       <div class="modal-body">
         <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-top:10px;padding-bottom: 10px;padding-top: 20px;margin-bottom: 15px;">
 
-          <div class="col-md-2 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <label class="tebal">Nota Return Pembelian</label>
           </div>
 
-          <div class="col-md-4 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="form-group">
               <label id="lblNotaPembelian"></label>
             </div>  
           </div>
           
-          <div class="col-md-2 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <label class="tebal">Kode Penerimaan</label>
           </div>
 
-          <div class="col-md-4 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="form-group">
               <label id="lblNotaPenerimaan"></label>
             </div>  
           </div>
 
-          <div class="col-md-2 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <label class="tebal">Tanggal Penerimaan</label>
           </div>
 
-          <div class="col-md-4 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="form-group">
               <label id="lblTglPenerimaan"></label>
             </div>  
           </div>
           
-          <div class="col-md-2 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <label class="tebal">Staff</label>
           </div>
 
-          <div class="col-md-4 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="form-group">
               <label id="lblStaff"></label>
             </div>
           </div>
 
-          <div class="col-md-2 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <label class="tebal">Supplier</label>
           </div>
 
-          <div class="col-md-4 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="form-group">
               <label id="lblSupplier"></label>
             </div>
           </div>
 
-          <div class="col-md-2 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <label class="tebal">Total Pembelian Gross</label>
           </div>
 
-          <div class="col-md-4 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="form-group">
               <label id="lblTotalBeliGross"></label>
             </div>
           </div>
 
-          <div class="col-md-2 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <label class="tebal">Total Disc</label>
           </div>
 
-          <div class="col-md-4 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="form-group">
               <label id="lblTotalBeliDisc"></label>
             </div>
           </div>
 
-          <div class="col-md-2 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <label class="tebal">Pajak</label>
           </div>
 
-          <div class="col-md-4 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="form-group">
               <label id="lblTotalBeliTax"></label>
             </div>
           </div>
 
-          <div class="col-md-2 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <label class="tebal">Total Pembelian Nett</label>
           </div>
 
-          <div class="col-md-4 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="form-group">
               <label id="lblTotalBeliNett"></label>
             </div>
           </div>
 
-          <div class="col-md-2 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <label class="tebal">Total Terima</label>
           </div>
 
-          <div class="col-md-4 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="form-group">
               <label id="lblTotalTerimaNett"></label>
             </div>
           </div>
+
+          <div id="appending-det"></div>
 
         </div>
         

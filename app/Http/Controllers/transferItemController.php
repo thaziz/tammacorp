@@ -12,8 +12,6 @@ use Carbon\Carbon;
 use App\d_stock;
 use App\d_stock_mutation;
 use Auth;
-use DataTables;
-
 class transferItemController extends Controller
 {
   public function noNota(){
@@ -151,76 +149,6 @@ class transferItemController extends Controller
                       ->get();
       return view('transfer.penerimaan.penerimaan-transfer',compact('transferItem','transferItemDt'));
   }
-
-  public function listDatatables(){
-    $list = d_transferItem::where("ti_isapproved", "N")->get();
-    $data = collect($list);
-    return Datatables::of($data)           
-            ->addColumn('action', function ($data) {
-                if($data->ti_isreceived == "Y" ){
-                    $tombol = '<button id="edit" onclick="editTransfer('.$data->ti_id.')" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-eye"></i></button>';
-                }else{
-                    $tombol = '<button id="edit" onclick="editTransfer('.$data->ti_id.')" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
-                    <button id="delete" onclick="hapusTransfer('.$data->ti_id.')" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
-                }
-                return $tombol;
-            })
-            ->addColumn('status', function ($data) {
-                if($data->ti_isreceived == "Y" && $data->ti_issent == "Y" && $data->ti_isapproved == "Y"){
-                    $status = '<span class="label label-success">RECEIVED</span>';
-                }elseif($data->ti_isreceived == "Y" && $data->ti_issent == "Y"){
-                    $status = '<span class="label label-primary">SENT</span>';
-                }elseif($data->ti_isreceived == "Y"){
-                    $status = '<span class="label label-info">APPROVED</span>';
-                }else{
-                    $status = '<span class="label label-warning">WAITING</span>';
-                }
-                return $status;
-            })
-            ->addColumn('none', function ($data) {
-                return '-';
-            })
-            ->addColumn('tanggal', function ($data) {
-                return date_format($data->ti_insert, 'd-m-Y');
-            })
-            ->rawColumns(['action','view','status'])
-            ->make(true);
-}
-
-  public function transferDatatables(){
-    $list = d_transferItem::where("ti_isreceived", "Y")->get();
-    $data = collect($list);
-    return Datatables::of($data)           
-            ->addColumn('action', function ($data) {
-                if($data->ti_isreceived == "Y" ){
-                    $tombol = '<button id="edit" onclick="editTransfer('.$data->ti_id.')" class="btn btn-warning btn-sm" title="Edit"><i class="fa fa-eye"></i></button>';
-                }else{
-                    $tombol = '<button id="edit" onclick="editTransfer('.$data->ti_id.')" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
-                    <button id="delete" onclick="hapusTransfer('.$data->ti_id.')" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
-                }
-                return $tombol;
-            })
-            ->addColumn('status', function ($data) {
-                if($data->ti_isreceived == "Y" && $data->ti_issent == "Y" && $data->ti_isapproved == "Y"){
-                    $status = '<span class="label label-success">RECEIVED</span>';
-                }elseif($data->ti_isreceived == "Y" && $data->ti_issent == "Y"){
-                    $status = '<span class="label label-primary">SENT</span>';
-                }elseif($data->ti_isreceived == "Y"){
-                    $status = '<span class="label label-info">APPROVED</span>';
-                }else{
-                    $status = '<span class="label label-warning">WAITING</span>';
-                }
-                return $status;
-            })
-            ->addColumn('tanggal', function ($data) {
-                return date_format($data->ti_insert, 'd-m-Y');
-            })
-            ->addColumn('none', function ($data) {
-                return '-';
-            })
-            ->rawColumns(['action','view','status'])
-            ->make(true);
-}
 
 public function simpaPenerimaan(Request $request){
   return DB::transaction(function () use ($request) {    

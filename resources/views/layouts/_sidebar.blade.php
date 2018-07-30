@@ -202,13 +202,16 @@
                                 </li>
                                 @endif
 
-                                 @if(Auth::user()->punyaAkses('Data Barang','ma_read'))
-
+                                @if(Auth::user()->punyaAkses('Data Barang','ma_read'))
                                 <li class="{{ Request::is('master/databarang/barang') ? 'active' : '' || Request::is('master/databarang/*') ? 'active' : '' }}"><a href="{{ url('/master/databarang/barang') }}"><span class="submenu-title">Data Barang </span><span class="hidden">Master</span></a>
                                 </li>
                                 @endif
                                 </li>
-
+                                @if(Auth::user()->punyaAkses('Item Produksi','ma_read'))
+                                <li class="{{ Request::is('master/itemproduksi/index') ? 'active' : '' || Request::is('master/itemproduksi/*') ? 'active' : '' }}"><a href="{{ url('/master/itemproduksi/index') }}"><span class="submenu-title">Data Item Produksi </span><span class="hidden">Master</span></a>
+                                </li>
+                                @endif
+                                </li>
                                 <li class="{{ Request::is('master/masterproduksi/index') ? 'active' : '' || Request::is('master/masterproduksi/*') ? 'active' : '' }}"><a href="{{ url('master/masterproduksi/index') }}"><span class="submenu-title">Master Formula</span></a>
                                 </li>
                                 
@@ -530,10 +533,10 @@
                                 <li class="{{ Request::is('penjualan/monitoringorder/monitoring') ? 'active' : '' || Request::is('penjualan/monitoringorder/*') ? 'active' : '' }}"><a href="{{ url('/penjualan/monitoringorder/monitoring') }}"><span class="submenu-title">Monitoring Order & Stock</span><span class="hidden">Penjualan</span></a>
                                 </li>
                                 @endif
-{{--                                 @if(Auth::user()->punyaAkses('Manajemen Return Penjualan','ma_read'))
+                                @if(Auth::user()->punyaAkses('Manajemen Return Penjualan','ma_read'))
                                 <li class="{{ Request::is('penjualan/manajemenreturn/r_penjualan') ? 'active' : '' || Request::is('penjualan/manajemenreturn/*') ? 'active' : '' }}"><a href="{{ url('/penjualan/manajemenreturn/r_penjualan') }}"><span class="submenu-title">Manajemen Return Penjualan</span><span class="hidden">Penjualan</span></a>
                                 </li>
-                                @endif --}}
+                                @endif
 {{--                                 @if(Auth::user()->punyaAkses('Monitoring Progress Penjualan','ma_read'))
                                 <li class="{{ Request::is('penjualan/monitorprogress/progress') ? 'active' : '' || Request::is('penjualan/monitorprogress/*') ? 'active' : '' }}"><a href="{{ url('/penjualan/monitorprogress/progress') }}"><span class="submenu-title">Monitoring Progress Penjualan</span><span class="hidden">Penjualan</span></a>
                                 </li>

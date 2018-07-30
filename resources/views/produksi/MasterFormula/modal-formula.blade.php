@@ -24,7 +24,7 @@
 
               <div class="col-md-8 col-sm-8 col-xs-12">
                 <div class="form-group">  
-                   <input type="text" class="form-control input-sm" readonly name="namaitem" id="namaitem" value="{{ $item->fr_scale }}">
+                   <input type="text" class="form-control input-sm" readonly name="namaitem" id="namaitem" value="{{ $item->m_sname }}">
                 </div>
               </div>
               @endforeach
@@ -47,7 +47,7 @@
                   <td>{{ $index + 1 }}</td>
                   <td>{{ $data->i_name }}</td>
                   <td>{{ $data->f_value }}</td>
-                  <td>{{ $data->f_scale }}</td>
+                  <td>{{ $data->m_sname }}</td>
                 </tr>
                 @endforeach
                </tbody>

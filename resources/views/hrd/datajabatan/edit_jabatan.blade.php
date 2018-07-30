@@ -59,77 +59,49 @@
                     style="font-family:Arial;">
                     {{ csrf_field() }} {{ method_field('PUT') }}
                     <table class="table">
-                      <tr>
-                        <td class="col-sm-2">
-                          <label>Kode</label>
-                        </td>
-                        <td class="col-sm-1">
-                          <label>:</label>
-                        </td>
-                        <td>
-                          <div class="col-sm-12">
-                            <input value="{{$jabatan->c_id}}" type="text" name="c_id" placeholder="Kode Jabatan" class="form-control">
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <label>Divisi</label>
-                        </td>
-                        <td>
-                          <label>:</label>
-                        </td>
-                        <td>
-                          <div class="col-sm-12">
-                            <select id="divisi" name="c_divisi_id" class="form-control input-sm">
-                              <?php foreach($divisi as $div){ ?>
-                              <?php if($div->c_id == $jabatan->c_divisi_id){ ?>
-                              <option value="{{ $div->c_id }}" selected="">{{ $div->c_divisi }}</option>
-                              <?php }else{ ?>
-                              <option value="{{ $div->c_id }}">{{ $div->c_divisi }}</option>
-                              <?php }} ?>
-                            </select>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <label>Sub Divisi</label>
-                        </td>
-                        <td>
-                          <label>:</label>
-                        </td>
-                        <td>
-                          <div class="col-sm-12">
-                            <select id="divisi" name="c_divisi_id" class="form-control input-sm">
-                              <?php foreach($subdivisi as $sdiv){ ?>
-                              <?php if($sdiv->c_id == $jabatan->c_sub_divisi_id){ ?>
-                              <option value="{{ $sdiv->c_id }}" selected="">{{ $sdiv->c_subdivisi }}</option>
-                              <?php }else{ ?>
-                              <option value="{{ $sdiv->c_id }}">{{ $sdiv->c_subdivisi }}</option>
-                              <?php }} ?>
-                            </select>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <label>Nama Jabatan</label>
-                        </td>
-                        <td>
-                          <label>:</label>
-                        </td>
-                        <td>
-                          <div class="col-sm-12">
-                            <input value="{{$jabatan->c_posisi}}" type="text" name="c_posisi" placeholder="Nama" class="form-control">
-                          </div>
-                        </td>
-                      </tr>
+                      <div class="col-md-2 col-sm-4 col-xs-12">
+                        <label class="tebal">Divisi</label>
+                      </div>
+                      <div class="col-md-4 col-sm-8 col-xs-12">
+                        <div class="form-group">
+                          <select disabled id="divisi" name="c_divisi_id" class="form-control input-sm">
+                            <?php foreach($divisi as $div){ ?>
+                            <?php if($div->c_id == $jabatan->c_divisi_id){ ?>
+                            <option value="{{ $div->c_id }}" selected="">{{ $div->c_divisi }}</option>
+                            <?php }else{ ?>
+                            <option value="{{ $div->c_id }}">{{ $div->c_divisi }}</option>
+                            <?php }} ?>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-2 col-sm-4 col-xs-12">
+                        <label class="tebal">Posisi</label>
+                      </div>
+                      <div class="col-md-4 col-sm-8 col-xs-12">
+                        <div class="form-group">
+                          <select disabled id="divisi" name="c_sub_divisi_id" class="form-control input-sm">
+                            <option>--pilih posisi--</option>
+                            <?php foreach($subdivisi as $sdiv){ ?>
+                            <?php if($sdiv->c_id == $jabatan->c_sub_divisi_id){ ?>
+                            <option value="{{ $sdiv->c_id }}" selected="">{{ $sdiv->c_subdivisi }}</option>
+                            <?php }else{ ?>
+                            <option value="{{ $sdiv->c_id }}">{{ $sdiv->c_subdivisi }}</option>
+                            <?php }} ?>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-2 col-sm-4 col-xs-12">
+                        <label class="tebal">Nama Jabatan</label>
+                      </div>
+                      <div class="col-md-10 col-sm-8 col-xs-12">
+                        <div class="form-group">
+                          <input required type="text" name="c_posisi" id="c_posisi" class="form-control input-sm" value="{{ $jabatan->c_posisi }}">
+                        </div>
+                      </div>
                     </table>
                     <div class="col-sm-12">
                       <input type="submit" value="Simpan" class="btn btn-warning pull-right">
                     </div>
-
                   </form>
                 </div>
               </div>

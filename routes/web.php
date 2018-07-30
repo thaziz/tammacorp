@@ -44,7 +44,31 @@ Route::post('/hrd/manajemensurat/simpan-phk', 'Hrd\ManajemenSuratController@simp
 Route::get('/hrd/manajemensurat/edit-phk/{id}', 'Hrd\ManajemenSuratController@editPhk');
 Route::put('/hrd/manajemensurat/update-phk/{id}', 'Hrd\ManajemenSuratController@updatePhk');
 Route::delete('/hrd/manajemensurat/delete-phk/{id}', 'Hrd\ManajemenSuratController@deletePhk');
+//gaji
+Route::get('/hrd/payroll/payroll', 'Hrd\GajiController@payroll');
+Route::get('/hrd/payroll/setting-gaji', 'Hrd\GajiController@settingGajiMan');
+Route::get('/hrd/payroll/datatable-gaji-man', 'Hrd\GajiController@gajiManData');
+Route::get('/hrd/payroll/tambah-gaji-man', 'Hrd\GajiController@tambahGajiMan');
+Route::post('/hrd/payroll/simpan-gaji-man', 'Hrd\GajiController@simpanGajiMan');
+Route::get('/hrd/payroll/edit-gaji-man/{id}', 'Hrd\GajiController@editGajiMan');
+Route::put('/hrd/payroll/update-gaji-man/{id}', 'Hrd\GajiController@updateGajiMan');
+Route::delete('/hrd/payroll/delete-gaji-man/{id}', 'Hrd\GajiController@deleteGajiMan');
+Route::get('/hrd/payroll/datatable-gaji-pro', 'Hrd\GajiController@gajiProData');
+Route::get('/hrd/payroll/tambah-gaji-pro', 'Hrd\GajiController@tambahGajiPro');
+Route::post('/hrd/payroll/simpan-gaji-pro', 'Hrd\GajiController@simpanGajiPro');
+Route::get('/hrd/payroll/edit-gaji-pro/{id}', 'Hrd\GajiController@editGajiPro');
+Route::put('/hrd/payroll/update-gaji-pro/{id}', 'Hrd\GajiController@updateGajiPro');
+Route::delete('/hrd/payroll/delete-gaji-pro/{id}', 'Hrd\GajiController@deleteGajiPro');
+Route::get('/hrd/payroll/datatable-potongan', 'Hrd\GajiController@potonganData');
 //pegawai
+Route::get('/master/datapegawai/datatable-pegawaipro', 'Master\PegawaiController@pegawaiPro');
+Route::get('/master/datapegawai/tambah-pegawai-pro', 'Master\PegawaiController@tambahPegawaiPro');
+Route::post('/master/datapegawai/simpan-pegawai-pro', 'Master\PegawaiController@simpanPegawaiPro');
+Route::get('/master/datapegawai/edit-pegawai-pro/{id}', 'Master\PegawaiController@editPegawaiPro');
+Route::put('/master/datapegawai/update-pegawai-pro/{id}', 'Master\PegawaiController@updatePegawaiPro');
+Route::delete('/master/datapegawai/delete-pegawai-pro/{id}', 'Master\PegawaiController@deletePegawaiPro');
+Route::post('/master/datapegawai/import-pro', 'Master\PegawaiController@importPegawaiPro');
+Route::get('/master/datapegawai/master-import-pro', 'Master\PegawaiController@getFilePro');
 Route::get('/master/datapegawai/pegawai', 'Master\PegawaiController@pegawai')->name('pegawai');
 Route::get('/master/datapegawai/edit-pegawai/{id}', 'Master\PegawaiController@editPegawai');
 Route::put('/master/datapegawai/update-pegawai/{id}', 'Master\PegawaiController@updatePegawai');
@@ -223,10 +247,10 @@ Route::get('/produksi/masterformula/table', 'Produksi\MasterFormulaController@ta
 Route::get('/produksi/masterformula/autocomplete', 'Produksi\MasterFormulaController@autocompFormula');
 Route::get('/produksi/namaitem/autocomplete', 'Produksi\MasterFormulaController@autocompNamaItem');
 Route::post('/produksi/namaitem/save/formula', 'Produksi\MasterFormulaController@saveFormula');
-Route::post('/produksi/namaitem/distroy/formula/{id}', 'Produksi\MasterFormulaController@distroyFormula');
+Route::get('/produksi/namaitem/distroy/formula/{id}', 'Produksi\MasterFormulaController@distroyFormula');
 Route::get('/produksi/namaitem/view/formula', 'Produksi\MasterFormulaController@viewFormula');
 Route::get('/produksi/namaitem/edit/formula', 'Produksi\MasterFormulaController@editFormula');
-Route::get('/produksi/namaitem/update/formula', 'Produksi\MasterFormulaController@updateFormula');
+Route::post('/produksi/namaitem/update/formula', 'Produksi\MasterFormulaController@updateFormula');
 //End Master Formula
 /*Penjualan*/
 Route::get('/penjualan/manajemenharga/harga', 'PenjualanController@harga');
@@ -463,6 +487,14 @@ Route::get('/master/databarang/update_barang', 'master\barangController@update_b
 Route::get('/master/databarang/datatable_barang', 'master\barangController@datatable_barang')->name('datatable_barang');
 Route::get('/master/databarang/kode_barang', 'master\barangController@kode_barang')->name('kode_barang');
 Route::get('/master/databarang/cari_group_barang', 'master\barangController@cari_group_barang')->name('cari_group_barang');
+//itemproduksi mahmud
+Route::get('/master/itemproduksi/index', 'Master\itemProduksiController@index');
+Route::get('/master/tableproduksi/table', 'Master\itemProduksiController@tableProduksi');
+Route::get('/master/itemproduksi/tambah_item', 'Master\itemProduksiController@tambahItem');
+Route::post('/master/itemproduksi/simpan_item', 'Master\itemProduksiController@simpanItem');
+Route::get('/master/itemproduksi/ubah_status/{a}', 'Master\itemProduksiController@ubahStatus');
+Route::get('/master/itemproduksi/edit_item/{a}', 'Master\itemProduksiController@editBarang');
+Route::get('/master/itemproduksi/update_item/{a}', 'Master\itemProduksiController@updateItem');
 //bahan baku
 Route::get('/master/databaku/baku', 'master\bahan_bakuController@baku')->name('baku');
 Route::get('/master/databaku/tambah_baku', 'master\bahan_bakuController@tambah_baku')->name('tambah_baku');

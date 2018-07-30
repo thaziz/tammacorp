@@ -25,8 +25,8 @@ class ManajemenHargaController extends Controller
                               'i_name')
 			->join('m_item','i_id','=','m_pitem')
       ->join('m_group','m_group.m_gcode','=','i_code_group')
-      ->orWhere('i_type','BJ')
-      ->orWhere('i_type','BP')
+      ->where('m_item.i_isactive', '=', 'TRUE')
+      ->where('i_type','!=','BB')
 			->get();
 
 		return DataTables::of($data)

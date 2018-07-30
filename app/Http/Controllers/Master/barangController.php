@@ -28,6 +28,7 @@ class barangController extends Controller
                 ->join('m_satuan','m_item.i_sat1','=','m_satuan.m_sid')
                 ->select('m_item.*', 'm_price.*', 'm_group.*', 'm_satuan.*')
                 ->where('m_item.i_isactive', '=', 'TRUE')
+                ->where('i_type','!=','BP')
                 ->orderBy('m_item.i_id', 'DESC')
                 ->get();
         // return $list;
