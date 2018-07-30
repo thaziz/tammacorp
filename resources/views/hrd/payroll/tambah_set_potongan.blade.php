@@ -4,7 +4,7 @@
   <!--BEGIN TITLE & BREADCRUMB PAGE-->
   <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
     <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
-      <div class="page-title">Setting Gaji</div>
+      <div class="page-title">Setting Potongan</div>
     </div>
     <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
       <li>
@@ -14,7 +14,7 @@
       <li>
         <i></i>&nbsp;HRD&nbsp;&nbsp;
         <i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
-      <li class="active">Setting Gaji</li>
+      <li class="active">Setting Potongan</li>
     </ol>
     <div class="clearfix">
     </div>
@@ -29,7 +29,7 @@
           </div>
           <ul id="generalTab" class="nav nav-tabs">
             <li class="active">
-              <a href="#alert-tab" data-toggle="tab">Setting Gaji</a>
+              <a href="#alert-tab" data-toggle="tab">Setting Potongan</a>
             </li>
             <!-- <li><a href="#note-tab" data-toggle="tab">2</a></li>
                             <li><a href="#label-badge-tab-tab" data-toggle="tab">3</a></li> -->
@@ -38,31 +38,15 @@
             <div id="alert-tab" class="tab-pane fade in active">
               <div class="row">
                 <div class="col-md-12">
-                  <form method="POST" action="{{ url('hrd/payroll/simpan-gaji-pro') }}">
+                  <form method="POST" action="{{ url('hrd/payroll/simpan-potongan') }}">
                     {{ csrf_field() }}
                     <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px; padding-bottom:5px;padding-top:15px;padding-left:-10px;padding-right: -10px; ">
                       <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">Nama Gaji</label>
+                        <label class="tebal">Nama Potongan</label>
                       </div>
                       <div class="col-md-10 col-sm-8 col-xs-12">
                         <div class="form-group">
-                          <input type="text" name="nm_gaji" class="form-control input-sm">
-                        </div>
-                      </div>
-                      <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">Gaji</label>
-                      </div>
-                      <div class="col-md-4 col-sm-8 col-xs-12">
-                        <div class="form-group">
-                          <input type="number" name="c_gaji" class="form-control input-sm">
-                        </div>
-                      </div>
-                      <div class="col-md-2 col-sm-4 col-xs-12">
-                        <label class="tebal">Lembur</label>
-                      </div>
-                      <div class="col-md-4 col-sm-8 col-xs-12">
-                        <div class="form-group">
-                          <input type="number" name="c_lembur" class="form-control input-sm">
+                          <input type="text" name="c_nama" class="form-control input-sm">
                         </div>
                       </div>
                       <div class="col-md-6 col-sm-12 col-xs-12">
