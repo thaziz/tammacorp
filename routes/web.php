@@ -60,6 +60,11 @@ Route::get('/hrd/payroll/edit-gaji-pro/{id}', 'Hrd\GajiController@editGajiPro');
 Route::put('/hrd/payroll/update-gaji-pro/{id}', 'Hrd\GajiController@updateGajiPro');
 Route::delete('/hrd/payroll/delete-gaji-pro/{id}', 'Hrd\GajiController@deleteGajiPro');
 Route::get('/hrd/payroll/datatable-potongan', 'Hrd\GajiController@potonganData');
+Route::get('/hrd/payroll/tambah-potongan', 'Hrd\GajiController@tambahPotongan');
+Route::post('/hrd/payroll/simpan-potongan', 'Hrd\GajiController@simpanPotongan');
+Route::get('/hrd/payroll/edit-potongan/{id}', 'Hrd\GajiController@editPotongan');
+Route::put('/hrd/payroll/update-potongan/{id}', 'Hrd\GajiController@updatePotongan');
+Route::delete('/hrd/payroll/delete-potongan/{id}', 'Hrd\GajiController@deletePotongan');
 //pegawai
 Route::get('/master/datapegawai/datatable-pegawaipro', 'Master\PegawaiController@pegawaiPro');
 Route::get('/master/datapegawai/tambah-pegawai-pro', 'Master\PegawaiController@tambahPegawaiPro');

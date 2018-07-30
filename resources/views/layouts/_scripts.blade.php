@@ -49,7 +49,7 @@
     <script src="{{ asset ('assets/script/timepicker.min.js') }}"></script>
     <script src="{{asset('assets/script/jquery.maskMoney.js')}}"></script>
     <script src="{{asset('assets/script/accounting.min.js')}}"></script>
-    <script src="{{ asset('js/iziToast.min.js') }}"></script>
+    <script src="{{ asset('js/iziToast.js') }}"></script>
     <script type="text/javascript">
         var baseUrl = '{{url('/')}}';
 
