@@ -10,9 +10,6 @@ use DB;
 use DataTables;
 class GajiController extends Controller
 {
-    public function payroll(){
-        return view('hrd/payroll/payroll');
-    }
     public function settingGajiMan(){
         return view('hrd/payroll/setting_manajemen');
     }
