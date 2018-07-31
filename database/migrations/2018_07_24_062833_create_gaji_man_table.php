@@ -16,14 +16,11 @@ class CreateGajiManTable extends Migration
         Schema::create('m_gaji_man', function (Blueprint $table) {
             $table->increments('c_id');
             $table->string('nm_gaji');
-            $table->string('c_sd');
-            $table->string('c_smp');
-            $table->string('c_sma');
-            $table->string('c_d1');
-            $table->string('c_d2');
-            $table->string('c_d3');
-            $table->string('c_s1');
-            $table->integer('c_jabatan');
+            $table->string('c_jenjang');
+            $table->string('c_leader');
+            $table->string('c_staf');
+            $table->string('is_harian');
+            $table->string('status');
             $table->timestamps();
         });
     }
