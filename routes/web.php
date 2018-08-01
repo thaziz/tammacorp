@@ -45,7 +45,12 @@ Route::get('/hrd/manajemensurat/edit-phk/{id}', 'Hrd\ManajemenSuratController@ed
 Route::put('/hrd/manajemensurat/update-phk/{id}', 'Hrd\ManajemenSuratController@updatePhk');
 Route::delete('/hrd/manajemensurat/delete-phk/{id}', 'Hrd\ManajemenSuratController@deletePhk');
 //gaji
-Route::get('/hrd/payroll/payroll', 'Hrd\GajiController@payroll');
+Route::get('/hrd/payroll/payroll', 'Hrd\PayrollController@payroll');
+Route::get('/hrd/payroll/view/{id}', 'Hrd\PayrollController@viewPayroll');
+Route::get('/hrd/payroll/tambah/{id}/{peg}', 'Hrd\PayrollController@bayar');
+Route::post('/hrd/payroll/simpan', 'Hrd\PayrollController@simpanDetail');
+Route::get('/hrd/payroll/datatable-payroll', 'Hrd\PayrollController@payrollData');
+Route::get('/hrd/payroll/datatable-view/{id}', 'Hrd\PayrollController@pegawai');
 Route::get('/hrd/payroll/setting-gaji', 'Hrd\GajiController@settingGajiMan');
 Route::get('/hrd/payroll/datatable-gaji-man', 'Hrd\GajiController@gajiManData');
 Route::get('/hrd/payroll/tambah-gaji-man', 'Hrd\GajiController@tambahGajiMan');
@@ -371,8 +376,6 @@ Route::get('/penjualan/returnpenjualan/tabelpnota/{id}', 'Penjualan\ManajemenRet
 //End
 /*HRD*/
 Route::get('/hrd/manajemenkpipegawai/kpi', 'HrdController@kpi');
-Route::get('/hrd/payroll/payroll', 'HrdController@payroll');
-Route::get('/hrd/payroll/tambah_payroll', 'HrdController@tambah_payroll');
 Route::get('/hrd/payroll/table', 'HrdController@table');
 Route::get('/hrd/recruitment/rekrut', 'HrdController@rekrut');
 Route::get('/hrd/datajabatan/edit_jabatan', 'HrdController@edit_jabatan');

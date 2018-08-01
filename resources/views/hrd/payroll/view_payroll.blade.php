@@ -39,68 +39,19 @@
               <div class="row">
                 <div class="col-lg-12">
                   <div class="pull-right" style="margin-bottom: 10px;">
-
                   </div>
                   <div class="table-responsive">
-                  <form method="POST" action="{{ url('hrd/payroll/simpan') }}">
-                    {{ csrf_field() }}
-                    <table id="" class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data">
+                    <table id="tbl_pay" class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data">
                       <thead>
                         <tr>
-                          <th>Gaji</th>
+                          <th>Kode</th>
                           <th>Jumlah</th>
-                          <th>Keterangan</th>
+                          <th>Action</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <?php foreach($bayaran as $bay){ ?>
-                        <tr>
-                          <td>
-                            {{$bay->nm_gaji}}
-                            <input type="hidden" name="c_payroll_id[]" value="{{ Request::segment(4) }}" class="form-control input-sm">
-                            <input type="hidden" name="c_pegawai_man_id[]" value="{{ Request::segment(5) }}" class="form-control input-sm">
-                          </td>
-                          <td>
-                            <div>Rp.
-                              <span class="pull-right">
-                                {{ number_format( $bay->gaji ,2,',','.') }}
-                              </span>
-                            </div>
-                            <input type="hidden" name="c_gaji_man_id[]" value="{{ $bay->c_id }}" class="form-control input-sm">
-                            <input type="hidden" name="c_jumlah[]" value="{{ $bay->gaji }}" class="form-control input-sm">
-                          </td>
-                          <td><?php if($bay->is_harian == "y"){ ?>
-                              <input type="number" name="c_keterangan[]" class="form-control input-sm">
-                            <?php }else{ ?>
-                              <input type="hidden" name="c_keterangan[]" value="1" class="form-control input-sm">
-                            <?php } ?>
-                          </td>
-                        </tr>
-                        <?php } ?>
                       </tbody>
                     </table>
-                    <table id="" class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data">
-                      <thead>
-                        <tr>
-                          <th>Potongan</th>
-                          <th>Jumlah</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <?php foreach($potongan as $pot){ ?>
-                        <tr>
-                          <td>{{$pot->c_nama}}</td>
-                          <td>
-                            <input type="number" class="form-control input-sm">
-                          </td>
-                        </tr>
-                        <?php } ?>
-                      </tbody>
-                    </table>
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                      <input type="submit" value="Simpan" class="btn btn-primary btn-block">
-                    </div>
-                    </form>
                   </div>
                 </div>
               </div>
@@ -123,7 +74,7 @@
             // responsive:true, 
             serverSide: true,
             ajax: {
-              url: '{{ url("hrd/payroll/datatable-payroll") }}',
+              url: '{{ url("hrd/payroll/datatable-view") }}/{{Request::segment(4)}}',
             },
             columnDefs: [
               {
@@ -132,9 +83,8 @@
               },
             ],
             "columns": [
-              { "data": "c_code" },
-              { "data": "c_tanggal" },
-              { "data": "status" },
+              { "data": "c_nama" },
+              { "data": "jumlah" },
               { "data": "action" }
             ],
             "responsive": true,
@@ -154,13 +104,13 @@
               }
             }
           });
-          function view(a) {
+          function bayar(a) {
             var parent = $(a).parents('tr');
             var id = $(parent).find('.d_id').text();
             console.log(id);
             $.ajax({
               type: "GET",
-              url: '{{ url("hrd/payroll/view/") }}' + '/' + a,
+              url: '{{ url("/hrd/payroll/tambah") }}' + '/' + '{{ Request::segment(4) }}'+ '/' + a,
               success: function (data) {
               },
               complete: function (argument) {
