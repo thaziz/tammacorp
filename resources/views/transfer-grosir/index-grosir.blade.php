@@ -4,90 +4,226 @@
   .ui-autocomplete { z-index:2147483647; }
 </style>
 
-            <!--BEGIN PAGE WRAPPER-->
-            <div id="page-wrapper">
-                <!--BEGIN TITLE & BREADCRUMB PAGE-->
-                <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
-                    <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
-                        <div class="page-title">Transfer Grosir</div>
-                    </div>
-                    <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
-                        <li><i class="fa fa-home"></i>&nbsp;<a href="{{ url('/home') }}">Home</a>&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
-                        <li><i></i>&nbsp;Penjualan&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
-                        <li class="active">Transfer Grosir</li>
-                    </ol>
-                    <div class="clearfix">
-                    </div>
-                </div>
+      <!--BEGIN PAGE WRAPPER-->
+      <div id="page-wrapper">
+          <!--BEGIN TITLE & BREADCRUMB PAGE-->
+          <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
+              <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
+                  <div class="page-title">Transfer Grosir</div>
+              </div>
+              <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
+                  <li><i class="fa fa-home"></i>&nbsp;<a href="{{ url('/home') }}">Home</a>&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
+                  <li><i></i>&nbsp;Penjualan&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
+                  <li class="active">Transfer Grosir</li>
+              </ol>
+              <div class="clearfix">
+              </div>
+          </div>
                 
-                  <div class="page-content fadeInRight">
-                    <div id="tab-general">
-                        <div class="row mbl">
-                            <div class="col-lg-12">
-                                
-                              <div class="col-md-12">
-                                  <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
-                                  </div>
-                              </div>
-                                
-                       <ul id="generalTab" class="nav nav-tabs">
-                        <li class="active"><a href="#data-transfer" data-toggle="tab">Persetujuan Transfer</a></li>
-                            <li><a href="#nav-stock" data-toggle="tab" onclick="tfToRetail()">Transfer Ke Retail</a></li>
-                          </ul>
-                <div id="generalTabContent" class="tab-content responsive">
-                        <div id="data-transfer" class="tab-pane fade in active">
-
-                        </div>
-                
-
-                  <!-- div note-tab -->
-                          <div id="nav-stock" class="tab-pane fade">
-                            <div class="row">
-                              <div class="panel-body">
-            <div class="" align="right" style="margin-bottom: 15px;">
-                <button  data-toggle="modal" onclick="noNota()" aria-controls="list" role="tab"  class="btn-primary btn-flat btn-sm"><i class="fa fa-plus" aria-hidden="true"></i> &nbsp; Transfer Item</button>
-            </div>        
-
-
-            <div id="data-tf-to-retail" class="tab-pane fade in active">
-
-            </div>                     
-                              </div>
-                            </div>                            
+          <div class="page-content fadeInRight">
+            <div id="tab-general">
+                <div class="row mbl">
+                    <div class="col-lg-12">
+                        
+                      <div class="col-md-12">
+                          <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
                           </div>
-                          <!-- End DIv note-tab -->
-                   @include('transfer-grosir.modal-transfer')        
-                   
-                 
-        </div>
-        @include('transfer-grosir.modal-edit-tf-grosir')  
-        <!-- End div generalTab -->
-      </div>
-    </div>
-  </div>
-</div>  
-  @include('transfer-grosir.modal-approve')
+                      </div>
+                        
+                  <ul id="generalTab" class="nav nav-tabs">
+                    <li class="active">
+                      <a href="#data-transfer" data-toggle="tab">Persetujuan Transfer</a>
+                    </li>
+                    <li>
+                      <a href="#nav-stock" data-toggle="tab" onclick="cariTanggalTransfer()">Transfer Ke Retail</a>
+                    </li>
+                  </ul>
+                  <div id="generalTabContent" class="tab-content responsive">
+                        <div id="data-transfer" class="tab-pane fade in active"> 
 
+                              <div class="col-md-2 col-sm-3 col-xs-12">
+                                <label class="tebal">Tanggal Persetujuan</label>
+                              </div>
+
+                              <div class="col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                  <div class="input-daterange input-group">
+                                    <input id="tanggal1" class="form-control input-sm datepicker1" name="tanggal" type="text">
+                                    <span class="input-group-addon">-</span>
+                                    <input id="tanggal2" class="input-sm form-control datepicker2" name="tanggal" type="text" value="{{ date('d-m-Y') }}">
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="col-md-3 col-sm-3 col-xs-12" align="left">
+                                <button class="btn btn-primary btn-sm btn-flat autoCari" type="button" onclick="cariTanggal()">
+                                  <strong>
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                  </strong>
+                                </button>
+                              </div>
+                              <div class="col-md-3 col-sm-3 col-xs-12" style="margin-bottom: 15px;" align="right">
+
+                                    <select name="tampilData" id="tampil_data" class="form-control input-sm" >
+                                      <option value="Semua" class="form-control">Tampilkan Data : Semua</option>
+                                      <option value="Waiting" class="form-control">Tampilkan Data : Waiting</option>
+                                      <option value="Approved" class="form-control">Tampilkan Data : Approved</option>
+                                      <option value="Send" class="form-control">Tampilkan Data : Send</option>
+                                      <option value="Received" class="form-control">Tampilkan Data : Received</option>
+                                    </select>
+
+                              </div>
+                            <div class="panel-body">
+                              <table class="table tabelan table-bordered no-padding" 
+                              id="acceptTransfer">
+                                  <thead>
+                                    <tr>
+                                      <th width="7%">Tanggal</th>
+                                      <th width="10%">Kode</th>              
+                                      <th width="43%">Catatan</th>
+                                      <th width="10%">Waktu</th>
+                                      <th width="10%">Status</th>              
+                                      <th width="10%">Aksi</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+
+                                  </tbody>
+                              </table>
+                            </div>
+                        </div>
+
+                        <!-- div note-tab -->
+                        <div id="nav-stock" class="tab-pane fade">
+                          <div class="row">
+
+                              <div class="col-md-2 col-sm-3 col-xs-12">
+                                <label class="tebal">Tanggal Transfer</label>
+                              </div>
+
+                              <div class="col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                  <div class="input-daterange input-group">
+                                    <input id="tanggal3" class="form-control input-sm datepicker1" name="tanggal" type="text">
+                                    <span class="input-group-addon">-</span>
+                                    <input id="tanggal4" class="input-sm form-control datepicker2" name="tanggal" type="text" value="{{ date('d-m-Y') }}">
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="col-md-3 col-sm-3 col-xs-12" align="left">
+                                <button class="btn btn-primary btn-sm btn-flat autoCari" type="button" onclick="cariTanggalTransfer()">
+                                  <strong>
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                  </strong>
+                                </button>
+
+                              </div>
+
+                            
+                              <div class="col-md-3 col-sm-3 col-xs-12" align="right" style="margin-bottom: 15px;">
+                                  <button  data-toggle="modal" onclick="noNota()" aria-controls="list" role="tab"  class="btn-primary btn-flat btn-sm"><i class="fa fa-plus" aria-hidden="true"></i> &nbsp; Transfer Item</button>
+
+                                    <div style="margin-bottom: 15px;"></div>
+
+                                  <select name="tampilData" id="tampil_data_Transfer" class="form-control input-sm" >
+                                    <option value="Semua" class="form-control">Tampilkan Data : Semua</option>
+                                    <option value="Send" class="form-control">Tampilkan Data : Send</option>
+                                    <option value="Received" class="form-control">Tampilkan Data : Received</option>
+                                  </select>
+
+                                </div>
+                            <div class="panel-body">
+                              <div class="table-responsive no-padding">       
+                                <table class="table tabelan table-bordered no-padding" width="100%" id="transfer_retail">
+                                    <thead>
+                                      <tr>
+                                        <th width="7%">Tanggal</th>
+                                        <th width="10%">Kode</th>              
+                                        <th width="43%">Catatan</th>
+                                        <th width="7%">Waktu</th>
+                                        <th width="10%">Status</th>              
+                                        <th width="10%">Aksi</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                              </div>
+                            </div>                     
+                          </div>
+                        </div>                            
+                    </div>
+                          <!-- End DIv note-tab -->
+                   @include('transfer-grosir.modal-transfer')  
+
+                </div>
+              @include('transfer-grosir.modal-edit-tf-grosir')  
+        <!-- End div generalTab -->
+            </div>
+
+          </div>
+        </div>
+
+      </div>  
+              @include('transfer-grosir.modal-approve')
+
+    </div>
 @endsection
 @section("extra_scripts")
-
+    <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
     <script src="{{ asset ('assets/script/bootstrap-datepicker.js') }}"></script>
 
     <script type="text/javascript">
     
-   
-    datax();
-    function datax(){
-         $.ajax({
-                    url         : baseUrl+'/transfer/data-transfer-appr',
-                    type        : 'get',
-                    timeout     : 10000,                                        
-                    success     : function(response){
-                        $('#data-transfer').html(response);
-                        }
-                    });
-     }
+  $(document).ready(function() {
+    var extensions = {
+         "sFilterInput": "form-control input-sm",
+        "sLengthSelect": "form-control input-sm"
+    }
+    // Used when bJQueryUI is false
+    $.extend($.fn.dataTableExt.oStdClasses, extensions);
+    // Used when bJQueryUI is true
+    $.extend($.fn.dataTableExt.oJUIClasses, extensions);
+    var date = new Date();
+    var newdateIndex = new Date(date);
+    var newdate = new Date(date);
 
+    newdateIndex.setDate(newdate.getDate()-30);
+    newdate.setDate(newdate.getDate()-3);
+
+    var ndi = new Date(newdateIndex);
+    var nd = new Date(newdate);
+
+    $('.datepicker').datepicker({
+      autoclose: true,
+      format:"dd-mm-yyyy",
+      endDate: 'today'
+    }).datepicker("setDate", ndi);
+
+    $('.datepicker1').datepicker({
+      autoclose: true,
+      format:"dd-mm-yyyy",
+      endDate: 'today'
+    }).datepicker("setDate", nd);
+
+    $('.datepicker2').datepicker({
+      autoclose: true,
+      format:"dd-mm-yyyy",
+      endDate: 'today'
+    });
+
+    cariTanggal();
+    $('#tampil_data').on('change', function() {
+      cariTanggal();
+    })
+
+    $('#tampil_data_Transfer').on('change', function() {
+      cariTanggalTransfer();
+    })
+
+  });
 
      function edit($id){
             $.ajax({
@@ -114,23 +250,31 @@
      }
 
 
-     function simpanApprove(){
-
-         $.ajax({
-                    url         : baseUrl+'/penjualan/POSgrosir/approve-transfer/simpan-approve',
-                    type        : 'get',
-                    timeout     : 10000,  
-                    data: item+'&'+tableReq.$('input').serialize(),
-                    dataType:'json',                                      
-                    success     : function(response){
-                          if(response.status=='sukses'){
-                            location.reload();
-                          }else if(response.status=='Gagal'){
-                            toastr.warning(response.info);
-                          }
-                    }
-            });
-     }
+  function simpanApprove(){
+    $.ajax({
+        url         : baseUrl+'/penjualan/POSgrosir/approve-transfer/simpan-approve',
+        type        : 'get',
+        timeout     : 10000,  
+        data: item+'&'+tableReq.$('input').serialize(),
+        dataType:'json',                                      
+        success     : function(response){
+          if(response.status=='sukses'){
+            iziToast.success({timeout: 5000, 
+                    position: "topRight",
+                    icon: 'fa fa-chrome', 
+                    title: '',
+                    message: 'Data tersimpan.'});
+            transfer.ajax.reload();
+            transfer_retail.ajax.reload();
+            $('#myTransfer').modal('hide');
+          }else{
+            iziToast.error({position: "topRight",
+                    title: '', 
+                    message: 'Data gagal tersimpan.'});
+          }
+        }
+    });
+  }
 
  function noNota(){
          $.ajax({
@@ -285,19 +429,6 @@ $('#stf_qty').keypress(function(e){
      }
 
 
-//transfer grosir to retail
-
-function tfToRetail(){
-         $.ajax({
-                    url         : baseUrl+'/penjualan/transfer/grosir/data-transfer-grosir',
-                    type        : 'get',
-                    timeout     : 10000,                                        
-                    success     : function(response){
-                        $('#data-tf-to-retail').html(response);
-                        }
-                    });
-     }
-
       function editTransferGrosir($id){
             $.ajax({
                     url         : baseUrl+'/penjualan/POSgrosir/edit-transfer-grosir/'+$id+'/edit',
@@ -326,6 +457,74 @@ function tfToRetail(){
                         
             });
      }
+
+  function cariTanggal(){
+    $('#acceptTransfer').dataTable().fnDestroy();
+    var tgl1 = $('#tanggal1').val();
+    var tgl2 = $('#tanggal2').val();
+    var tampil=$('#tampil_data').val();
+    transfer = $('#acceptTransfer').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+        url : baseUrl + "/transfer/grosir/table_transfer/"+tgl1+'/'+tgl2+'/'+tampil,
+    },
+    columns: [
+      {data: 'ti_date', name: 'ti_date'},
+      {data: 'ti_code', name: 'ti_code'},
+      {data: 'ti_note', name: 'ti_note'},
+      {data: 'ti_time', name: 'ti_time'},
+      {data: 'status', name: 'status'},
+      {data: 'action', name: 'action', orderable: false, searchable: false},
+    ],
+    language: {
+      searchPlaceholder: "Cari Data",
+      emptyTable: "Tidak ada data",
+      sInfo: "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+      sSearch: '<i class="fa fa-search"></i>',
+      sLengthMenu: "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+      infoEmpty: "",
+      paginate: {
+            previous: "Sebelumnya",
+            next: "Selanjutnya",
+         }
+    }
+  });
+  }
+
+  function cariTanggalTransfer(){
+    $('#transfer_retail').dataTable().fnDestroy();
+    var tgl3 = $('#tanggal3').val();
+    var tgl4 = $('#tanggal4').val();
+    var tampil1 = $('#tampil_data_Transfer').val();
+    transfer_retail = $('#transfer_retail').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+        url : baseUrl + "/transfer/grosir/transfer_retail/"+tgl3+'/'+tgl4+'/'+tampil1,
+    },
+    columns: [
+      {data: 'ti_date', name: 'ti_date', width:'7%'},
+      {data: 'ti_code', name: 'ti_code', width:'10%'},
+      {data: 'ti_note', name: 'ti_note', width:'43%'},
+      {data: 'ti_time', name: 'ti_time', width:'10%'},
+      {data: 'status', name: 'status', width:'10%'},
+      {data: 'action', name: 'action', width:'10%', orderable: false, searchable: false},
+    ],
+    language: {
+      searchPlaceholder: "Cari Data",
+      emptyTable: "Tidak ada data",
+      sInfo: "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+      sSearch: '<i class="fa fa-search"></i>',
+      sLengthMenu: "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+      infoEmpty: "",
+      paginate: {
+            previous: "Sebelumnya",
+            next: "Selanjutnya",
+         }
+    }
+  });
+  }
 
     </script>
     

@@ -64,8 +64,8 @@
                              <th width="50%">Nama Item</th>
                              <th width="10%">stok</th>
                              <th width="10%">Jumlah</th>                            
-                             <th width="10%"> Setujui</th>                            
-                             <th width="10%"> Kirim</th> 
+                             <th width="10%">Setujui</th>                            
+                             <th width="10%">Kirim</th> 
                              
                             </tr>
                            </thead> 
@@ -90,7 +90,7 @@
                                         <input type="text" name="qtyAppr[]"  class="form-control" value="{{$data->tidt_qty_appr}}">
                                       </td>
                                       <td>
-                                        <input id="ty" type="text" name="qtySend[]"  class="form-control" value="{{$data->tidt_qty_send}}" >
+                                        <input id="ty" type="text" name="qtySend[]"  class="form-control qty-terima" value="{{$data->tidt_qty_send}}" >
                                       </td>
                                     </tr>
                               @endforeach

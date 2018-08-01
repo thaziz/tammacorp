@@ -64,7 +64,7 @@
                               <th width="10%">Kode</th>
                              <th width="50%">Nama Item</th>
                              <th width="10%">stok</th>
-                             <th width="10%">Jumlah Kirim</th>                                                         
+                             <th width="10%">Jumlah Kirim</th>
                              <th width="10%">Jumlah Terima</th>                              
                             </tr>
                            </thead> 
@@ -72,7 +72,7 @@
                               @foreach($transferItemDt as $data)
                                     <tr>
                                       <td>
-                                          {{$data->tidt_item}}
+                                          {{$data->i_code}}
                                            <input type="hidden" name="tidt_item[]"  class="form-control" value="{{$data->tidt_item}}">
                                           <input type="hidden" name="tidt_id[]"  class="form-control" 
                                           value="{{$data->tidt_id}}">
@@ -80,16 +80,17 @@
                                           value="{{$data->tidt_detail}}">
                                       </td>
                                       <td>{{$data->i_name}}</td>
-                                      <td>@if($data->s_qty=='')
+                                      <td class="text-right">@if($data->s_qty=='')
                                             0
                                           @else
                                             {{$data->s_qty}}</td>
                                           @endif
-                                      <td>{{$data->tidt_qty_send}}
+                                      <td class="text-right">{{$data->tidt_qty_send}}
                                           <input type="hidden" value="{{$data->tidt_qty_send}}" id="qtySend-{{$data->i_id}}">
                                       </td>                                     
                                       <td>
-                                        <input onkeyup="HitungQtyRecieved('{{$data->i_id}}')" id="qtyreceived-{{$data->i_id}}" type="text" name="qtyRecieved[]"  class="form-control" value="{{$data->tidt_qty_received}}">
+                                        <input type="number" id="qtyreceived-{{$data->i_id}}"
+                                        onkeyup="HitungQtyRecieved('{{$data->i_id}}');cekQty(this, event);" type="text" name="qtyRecieved[]"  class="form-control text-right terima" value="{{$data->tidt_qty_received}}">
                                       </td>
                                     </tr>
                               @endforeach
@@ -110,15 +111,38 @@
 <script type="text/javascript">
 tablePenerimaan=$('#detail-terima').DataTable();
 var item = $('#save_penerimaan :input').serialize();
-//var data = tableReq.$('input').serialize();
-/*tableReq=$('#detail-req').DataTable();*/
-   function HitungQtyRecieved(id){  
-  var qtySend = $('#qtySend-'+id).val();
-  var qtyRecieved = $('#qtyreceived-'+id).val();
 
-  if(parseFloat(qtySend)<parseFloat(qtyRecieved)){
-    toastr.warning('Jumlah Terima Melebihi Approve');
-    $('#qtyreceived-'+id).val('');
+  function HitungQtyRecieved(id){  
+    var qtySend = $('#qtySend-'+id).val();
+    var qtyRecieved = $('#qtyreceived-'+id).val();
+
+    if(parseFloat(qtySend)<parseFloat(qtyRecieved)){
+      toastr.warning('Jumlah Terima Melebihi Approve');
+      $('#qtyreceived-'+id).val('');
+    }
   }
-}
+
+  function cekQty(inField, e){
+    var a = 0;
+    $('input.discpercent:text').each(function(evt){
+      var getIndex = a;
+      var dataInput = $('input.discpercent:text:eq('+getIndex+')').val();
+      var dataInput1 = $('input.discvalue:text:eq('+getIndex+')').val();
+      if (dataInput == '' || dataInput1 == '0') {
+        if (dataInput == '' && dataInput1 == 'Rp. 0,00  ') {
+          $('input.discvalue:text:eq('+getIndex+')').attr("readonly",false);
+          $('input.discpercent:text:eq('+getIndex+')').attr("readonly",false);
+          getIndex+=1;
+        }else{
+          $('input.discvalue:text:eq('+getIndex+')').attr("readonly",false);
+          getIndex+=1;
+        }
+      }else{
+        $('input.discvalue:text:eq('+getIndex+')').attr("readonly",true);
+        getIndex+=1;
+      }
+    a++;
+    }) 
+  }
+
 </script>

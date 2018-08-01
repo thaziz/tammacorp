@@ -81,21 +81,21 @@
                                           value="{{$data->tidt_detail}}">
                                       </td>
                                       <td>{{$data->i_name}}</td>
-                                      <td>@if($data->s_qty=='')
+                                      <td class="text-right">@if($data->s_qty=='')
                                             0
                                           @else
                                             {{$data->s_qty}}</td>
                                           @endif
-                                      <td>
+                                      <td class="text-right">
                                          <input id="qty-{{$data->i_id}}" type="hidden" name="qty[]"  class="form-control" value="{{$data->tidt_qty}}">
                                         {{$data->tidt_qty}}</td>
-                                      <td>
-                                        <input onkeyup="aktifSend('{{$data->i_id}}');HitungQtyApprove('{{$data->i_id}}');" id="qtyAppr-{{$data->i_id}}" type="text" name="qtyAppr[]"  class="form-control" value="{{$data->tidt_qty_appr}}">
+                                      <td class="text-right">
+                                        <input onkeyup="aktifSend('{{$data->i_id}}');HitungQtyApprove('{{$data->i_id}}');" id="qtyAppr-{{$data->i_id}}" type="number" name="qtyAppr[]"  class="form-control text-right" value="{{$data->tidt_qty_appr}}">
                                       </td>
-                                      <td>
+                                      <td class="text-right">
                                         <input onkeyup="HitungQtySend('{{$data->i_id}}');" id="qtySend-{{$data->i_id}}" 
                                         @if($data->tidt_qty_appr=='' && $data->tidt_qty_send=='') readonly="" @endif 
-                                        type="text" name="qtySend[]"  class="form-control" value="{{$data->tidt_qty_send}}" >
+                                        type="number" name="qtySend[]"  class="form-control text-right" value="{{$data->tidt_qty_send}}" >
                                       </td>
                                     </tr>
                               @endforeach

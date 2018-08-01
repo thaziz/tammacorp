@@ -63,8 +63,8 @@
                               <th width="10%">Kode</th>
                              <th width="50%">Nama Item</th>
                              <th width="10%">Jumlah</th>                            
-                             <th width="10%"> Setujui</th>                            
-                             <th width="10%"> Kirim</th> 
+                             <th width="10%">Setujui</th>                            
+                             <th width="10%">Kirim</th> 
                             </tr>
                            </thead> 
                            <tbody>
