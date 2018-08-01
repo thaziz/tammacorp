@@ -55,6 +55,8 @@
       @include('purchasing.orderpembelian.modal')
       <!-- modal edit -->
       @include('purchasing.orderpembelian.modal-edit')
+      <!-- modal detail peritem -->
+      @include('purchasing.orderpembelian.modal-detail-peritem')
       <!-- /modal -->
   </div>
 
@@ -79,7 +81,7 @@
     var date = new Date();
     var newdate = new Date(date);
 
-    newdate.setDate(newdate.getDate()-3);
+    newdate.setDate(newdate.getDate()-30);
     var nd = new Date(newdate);
 
     $('.datepicker1').datepicker({
@@ -132,6 +134,7 @@
     $(".modal").on("hidden.bs.modal", function(){
       $('tr').remove('.tbl_modal_row');
       $('tr').remove('.tbl_modal_edit_row');
+      $('tr').remove('.tbl_modal_detailmsk_row');
       //remove span class in modal detail
       $("#txt_span_status_detail").removeClass();
       $('#txt_span_status_edit').removeClass();
@@ -309,7 +312,8 @@
         {"data" : "d_pcsdt_qtyconfirm", "width" : "5%"},
         {"data" : "tglTerima", "width" : "10%"},
         {"data" : "qtyTerima", "width" : "5%"},
-        {"data" : "status", "width" : "10%"}
+        {"data" : "status", "width" : "10%"},
+        {"data" : "action", "width" : "5%"}
       ],
       "language": {
         "searchPlaceholder": "Cari Data",
@@ -322,6 +326,44 @@
               "previous": "Sebelumnya",
               "next": "Selanjutnya",
            }
+      }
+    });
+  }
+
+  function detailMasukPeritem(id) 
+  {
+    $.ajax({
+      url : baseUrl + "/purchasing/orderpembelian/get-penerimaan-peritem/" + id,
+      type: "GET",
+      dataType: "JSON",
+      success: function(data)
+      {
+        var key = 1;
+        var dateCreated = data.header[0].d_pcs_date_created;
+        var newDateCreated = dateCreated.split("-").reverse().join("-");
+        //ambil data ke json->modal
+        $('#lblHeadItem').text('( '+data.isi[0].i_code+' '+data.isi[0].i_name+' )');
+        $('#lblHeadPo').text(data.header[0].d_pcs_code);
+        $('#lblHeadQty').text(data.header[0].d_pcsdt_qty);
+        $('#lblHeadTglPo').text(data.header[0].d_pcs_date_created);
+        $('#lblHeadSup').text(data.header[0].s_company);
+        //loop data
+        Object.keys(data.isi).forEach(function(){
+          $('#tabel-detail-peritem').append('<tr class="tbl_modal_detailmsk_row">'
+                          +'<td>'+key+'</td>'
+                          +'<td>'+data.isi[key-1].i_code+' '+data.isi[key-1].i_name+'</td>'
+                          +'<td>'+data.isi[key-1].m_sname+'</td>'
+                          +'<td>'+data.isi[key-1].d_tbdt_qty+'</td>'
+                          +'<td>'+data.isi[key-1].d_tb_code+'</td>'
+                          +'<td>'+data.tanggalTerima[key-1]+'</td>'
+                          +'</tr>');
+          key++;
+        });
+        $('#modal_detail_peritem').modal('show');
+      },
+      error: function (jqXHR, textStatus, errorThrown)
+      {
+          alert('Error get data from ajax');
       }
     });
   }
