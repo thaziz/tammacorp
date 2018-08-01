@@ -39,7 +39,7 @@
               <div class="row">
                 <div class="col-lg-12">
                   <div class="pull-right" style="margin-bottom: 10px;">
-                  <a href="{{ url('hrd/payroll/setting-gaji') }}">
+                    <a href="{{ url('hrd/payroll/setting-gaji') }}">
                       <button type="button" class="btn btn-box-tool" title="Tambahkan Data Item">
                         <i class="fa fa-gear" aria-hidden="true">
                           &nbsp;
@@ -55,14 +55,13 @@
                     </a>
                   </div>
                   <div class="table-responsive">
-                    <table class="table tabelan table-hover table-bordered data-table" width="100%" cellspacing="0" id="data">
+                    <table id="tbl_pay" class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data">
                       <thead>
                         <tr>
-                          <th>Tanggal Pengajian</th>
-                          <th>jumlah Pegawai</th>
-                          <th>Total Gaji Pegawai</th>
+                          <th>Kode</th>
+                          <th>Tanggal</th>
                           <th>Status</th>
-                          <th>Aksi</th>
+                          <th>Action</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -76,24 +75,67 @@
         </div>
         @endsection @section('extra_scripts')
         <script type="text/javascript">
-          function klik() {
-            swal({
-              title: "Apa anda yakin?",
-              text: "Data Yang Dihapus Tidak Dapat Dikembalikan",
-              type: "warning",
-              showCancelButton: true,
-              confirmButtonClass: "btn-danger",
-              confirmButtonText: "Yes, delete it!",
-              cancelButtonText: "Cancel",
-              closeOnConfirm: false,
-              closeOnCancel: false
+
+          var extensions = {
+            "sFilterInput": "form-control input-sm",
+            "sLengthSelect": "form-control input-sm"
+          }
+          // Used when bJQueryUI is false
+          $.extend($.fn.dataTableExt.oStdClasses, extensions);
+          // Used when bJQueryUI is true
+          $.extend($.fn.dataTableExt.oJUIClasses, extensions)
+          $('#tbl_pay').DataTable({
+            processing: true,
+            // responsive:true, 
+            serverSide: true,
+            ajax: {
+              url: '{{ url("hrd/payroll/datatable-payroll") }}',
             },
-              function (isConfirm) {
-                if (isConfirm) {
-                  swal("Deleted!", "Your imaginary data has been delete.", "success");
-                } else {
-                  swal("Cancelled", "Your imaginary data is safe :)", "error");
-                }
-              });
+            columnDefs: [
+              {
+                targets: 0,
+                className: 'center d_id'
+              },
+            ],
+            "columns": [
+              { "data": "c_code" },
+              { "data": "c_tanggal" },
+              { "data": "status" },
+              { "data": "action" }
+            ],
+            "responsive": true,
+
+            "pageLength": 10,
+            "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+            "language": {
+              "searchPlaceholder": "Cari Data",
+              "emptyTable": "Tidak ada data",
+              "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+              "sSearch": '<i class="fa fa-search"></i>',
+              "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+              "infoEmpty": "",
+              "paginate": {
+                "previous": "Sebelumnya",
+                "next": "Selanjutnya",
+              }
+            }
+          });
+          function view(a) {
+            var parent = $(a).parents('tr');
+            var id = $(parent).find('.d_id').text();
+            console.log(id);
+            $.ajax({
+              type: "GET",
+              url: '{{ url("hrd/payroll/view/") }}' + '/' + a,
+              success: function (data) {
+              },
+              complete: function (argument) {
+                window.location = (this.url)
+              },
+              error: function () {
+
+              },
+              async: false
+            });
           }
         </script> @endsection

@@ -150,9 +150,14 @@ class PegawaiController extends Controller
         // dd($data->c_hari_kerja);
         $data->c_hari_awal = $hari[0];
         $data->c_hari_akhir = $hari[1];
-        $lahir = explode(", ",$data->c_lahir);
-        $data->c_tempat = $lahir[0];
-        $data->tgl_lahir = $lahir[1];
+        if($data->c_lahir){
+            $lahir = explode(", ",$data->c_lahir);
+            $data->c_tempat = $lahir[0];
+            $data->tgl_lahir = $lahir[1];
+        }else{
+            $data->c_tempat = "-";
+            $data->tgl_lahir = "-";
+        }
         return view('master.datapegawai.edit_pegawai',['data' => $data, 'divisi'=> $divisi, 'shift' => $shift]);
     }
 

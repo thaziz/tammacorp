@@ -4,7 +4,7 @@
   <!--BEGIN TITLE & BREADCRUMB PAGE-->
   <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
     <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
-      <div class="page-title">Payroll</div>
+      <div class="page-title">Setting Gaji</div>
     </div>
     <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
       <li>
