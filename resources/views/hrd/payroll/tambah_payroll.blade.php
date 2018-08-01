@@ -91,7 +91,8 @@
                         <tr>
                           <td>{{$pot->c_nama}}</td>
                           <td>
-                            <input type="number" class="form-control input-sm">
+                            <input type="hidden" name="c_potongan_id[]" value="{{ $pot->c_id }}" class="form-control input-sm">
+                            <input type="number" name="potongan[]" class="form-control input-sm">
                           </td>
                         </tr>
                         <?php } ?>

@@ -32,7 +32,7 @@ class PayrollController extends Controller
     }
     public function pegawai($id){
         $list = DB::table('m_pegawai_man')
-                ->select('m_pegawai_man.c_id', 'm_pegawai_man.c_nama', DB::raw('SUM(payroll_detail_man.c_jumlah) as c_jumlah'), 'payroll_detail_man.c_payroll_id')
+                ->select('m_pegawai_man.c_id', 'm_pegawai_man.c_nama', DB::raw('SUM(payroll_detail_man.c_jumlah) as gaji'), 'payroll_detail_man.c_payroll_id')
                 ->leftJoin('payroll_detail_man', function($join)
                          {
                              $id = Request::segment(4);
@@ -41,28 +41,44 @@ class PayrollController extends Controller
                          })
                 ->groupBy(DB::raw("m_pegawai_man.c_nama"))
                 ->get();
-        $data = collect($list);
+        $list1 = DB::table('m_pegawai_man')
+                ->select('m_pegawai_man.c_id', 'm_pegawai_man.c_nama', DB::raw('SUM(payroll_detail_pot.c_jumlah) as potongan'), 'payroll_detail_pot.c_payroll_id')
+                ->leftJoin('payroll_detail_pot', function($join)
+                         {
+                             $id = Request::segment(4);
+                             $join->on('m_pegawai_man.c_id', '=', 'payroll_detail_pot.c_pegawai_man_id');
+                             $join->where('payroll_detail_pot.c_payroll_id', $id);
+                         })
+                ->groupBy(DB::raw("m_pegawai_man.c_nama"))
+                ->get();
+        $data = collect([$list, $list1]);
+        $data2 = collect($list1);
+        // dd($data2);
         return Datatables::of($data)           
                 ->addColumn('action', function ($data) {
-                         return  '<button id="delete" onclick="bayar('.$data->c_id.')" class="btn btn-primary btn-sm" title="Hapus"><i class="fa fa-plus"></i></button>';
+                    if($data[0]->gaji == null){
+                        return  '<button onclick="bayar('.$data[0]->c_id.')" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i></button>';
+                    }else{
+                        return  '<button onclick="lihat('.$data[0]->c_id.')" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></button>';
+                    }
                 })
-                ->addColumn('jumlah', function ($data) {
-                if($data->c_jumlah == null){
-                    $jum = '<div>Rp.
-                    <span class="pull-right">
-                      '.number_format( 0 ,2,',','.').'
-                    </span>
-                  </div>';
-                }else{
-                    $jum = '<div>Rp.
-                    <span class="pull-right">
-                      '.number_format( $data->c_jumlah ,2,',','.').'
-                    </span>
-                  </div>';
-                }
-                    return  $jum;
+                ->addColumn('gaji', function ($data) {
+                    if($data[0]->gaji == null){
+                        $jum = '<div>Rp.
+                        <span class="pull-right">
+                          '.number_format( 0 ,2,',','.').'
+                        </span>
+                      </div>';
+                    }else{
+                        $jum = '<div>Rp.
+                        <span class="pull-right">
+                          '.number_format( $data[0]->gaji ,2,',','.').'
+                        </span>
+                      </div>';
+                    }
+                        return  $jum;
                 })
-                ->rawColumns(['action', 'jumlah'])
+                ->rawColumns(['action', 'jumlah', 'gaji', 'potongan'])
                 ->make(true);
     }
     public function payroll(){
@@ -85,6 +101,9 @@ class PayrollController extends Controller
         }else{
             $select = 'c_staf AS gaji';
         }
+        if($pegawai->c_pendidikan == "SMK"){
+            $pegawai->c_pendidikan = "SMA";
+        }
         $bayaran = DB::table('m_gaji_man')
                 ->select('nm_gaji', 'c_id', 'is_harian', $select)
                 ->where('c_jenjang', $pegawai->c_pendidikan)
@@ -94,19 +113,27 @@ class PayrollController extends Controller
         return view('hrd/payroll/tambah_payroll',['bayaran' => $bayaran, 'potongan' => $potongan]);
     }
     public function simpanDetail(Request $request){
-        $input = Input::except('_token');
+        $input = Request::except('_token');
+        // dd($input['c_payroll_id'][0]);
+        $load = $input['c_payroll_id'][0];
         $count = count($input['c_payroll_id']);
         for($i = 0; $i < $count; $i++){
             // echo $i;
-            $in['c_payroll_id'] = $input['c_payroll_id'][$i];
-            $in['c_pegawai_man_id'] = $input['c_pegawai_man_id'][$i];
-            $in['c_gaji_man_id'] = $input['c_gaji_man_id'][$i];
-            $in['c_gaji_man_id'] = $input['c_gaji_man_id'][$i];
-            $in['c_jumlah'] = $input['c_jumlah'][$i];
-            $in['c_keterangan'] = $input['c_keterangan'][$i];
+            $det['c_payroll_id'] = $input['c_payroll_id'][$i];
+            $det['c_pegawai_man_id'] = $input['c_pegawai_man_id'][$i];
+            $det['c_gaji_man_id'] = $input['c_gaji_man_id'][$i];
+            $det['c_jumlah'] = $input['c_jumlah'][$i] * $input['c_keterangan'][$i];
+            $det['c_keterangan'] = $input['c_keterangan'][$i];
             // print_r($in);
-            DB::table('payroll_detail_man')->insert([$in]);
+            DB::table('payroll_detail_man')->insert([$det]);
+            
+            // $pot['c_payroll_id'] = $input['c_payroll_id'][$i];
+            // $pot['c_pegawai_man_id'] = $input['c_pegawai_man_id'][$i];
+            // $pot['c_potongan_id'] = $input['c_potongan_id'][$i];
+            // $pot['c_jumlah'] = $input['potongan'][$i];
+            // // print_r($in);
+            // DB::table('payroll_detail_pot')->insert([$pot]);
         }
-        return redirect()->back();
+        return redirect('hrd/payroll/view/'.$load);
     }
 }
