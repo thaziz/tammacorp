@@ -21,7 +21,8 @@
                                   <div class="form-group">
                                     <div class="input-icon right">
                                       <i class="glyphicon glyphicon-user"></i>
-                                      <input type="text" id="" readonly="true" name="admin" class="form-control input-sm" value="{{ Auth::user()->m_name }}"> 
+                                      <input type="text" id="" readonly="true" name="admin" class="form-control input-sm" \
+                                      value="{{ Auth::user()->m_name }}"> 
                                       <input type="hidden" id="" readonly="true" name="ri_admin" class="form-control input-sm" value="{{ Auth::user()->m_id }}">      
                                     </div>                           
                                   </div>
@@ -48,7 +49,7 @@
                                   <div class="form-group">
                                     <div class="input-icon right">
                                       <i class="glyphicon glyphicon-envelope"></i>
-                                      <input type="text" id="" name="ri_keterangan" class="form-control input-sm" autocomplete="off" value="{{$transferItem->ti_note}}">
+                                      <input type="text" id="" name="ri_keterangan" class="form-control input-sm" value="{{$transferItem->ti_note}}">
                                     </div>                                
                                   </div>
                                 </div>
@@ -103,7 +104,7 @@
                         </div>
                      <div class="modal-footer">
                     <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-                    <button class="btn btn-primary" id="update" type="button" onclick="updateTransfer('{{$transferItem->ti_id}}')">Perbarui</button> 
+                    <button class="btn btn-primary" type="button" onclick="updateTransfer('{{$transferItem->ti_id}}')">Perbarui</button> 
                   </div>
                   
 

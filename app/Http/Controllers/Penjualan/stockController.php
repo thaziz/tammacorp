@@ -48,14 +48,12 @@ class stockController extends Controller
 
     $results = array();
 
-    $queries = m_item::  
-    where('i_type', '=', DB::raw("'BP'"))
+    $queries = m_item::where('i_type', '=', DB::raw("'BP'"))
     ->where('i_name', 'like', DB::raw('"%'.$request->term.'%"'))        
-    
     ->orWhere('i_type', '=', DB::raw("'BJ'"))
-    ->where('i_name', 'like', DB::raw('"%'.$request->term.'%"'))       
-
-    ->get();
+    ->where('i_name', 'like', DB::raw('"%'.$request->term.'%"')) 
+    ->where('i_isactive','TRUE')      
+    ->take(10)->get();
     
     if ($queries == null) {
       $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];
@@ -64,7 +62,9 @@ class stockController extends Controller
       {
         if($query->s_qty=='')
           $query->s_qty=0;
-        $results[] = [ 'id' => $query->i_id, 'label' =>$query->i_code.'-'. $query->i_name, 'code' => $query->i_id,
+        $results[] = [  'id' => $query->i_id, 
+                        'label' =>$query->i_code.'-'. $query->i_name, 
+                        'code' => $query->i_code,
                        'name' => $query->i_name ];
       }
     }
