@@ -12,6 +12,8 @@ use DataTables;
 use Auth;
 use App\d_purchasing;
 use App\d_purchasing_dt;
+use App\d_terima_pembelian;
+use App\d_terima_pembelian_dt;
 
 class OrderPembelianController extends Controller
 {
@@ -134,7 +136,7 @@ class OrderPembelianController extends Controller
           }
           else
           {
-            return '<span class="label label-success">Disetujui</span>';
+            return '<span class="label label-success">Selesai</span>';
           }
         })
         ->editColumn('tglOrder', function ($data) 
@@ -336,6 +338,21 @@ class OrderPembelianController extends Controller
             ->whereBetween('d_purchasing.d_pcs_date_created', [$tanggal1, $tanggal2])
             ->get();
 
+        for ($z=0; $z < count($data); $z++) 
+        {   
+          //variabel untuk menyimpan penjumlahan array qty penerimaan
+          $hasil_qty_rcv = 0;
+          //get data qty received
+          $qtyRcv = DB::select(DB::raw("SELECT IFNULL(sum(d_tbdt_qty), 0) as zz FROM d_terima_pembelian_dt where d_tbdt_idpcsdt = '".$data[$z]->d_pcsdt_id."'"));
+          
+          foreach ($qtyRcv as $nilai) 
+          {
+            $hasil_qty_rcv = (int)$nilai->zz;
+          }
+          //create new object properties and assign value
+          $data[$z]->qty_received = $hasil_qty_rcv;
+        }
+
         return DataTables::of($data)
         ->addIndexColumn()
         ->editColumn('status', function ($data)
@@ -354,7 +371,7 @@ class OrderPembelianController extends Controller
           }
           else
           {
-            return '<span class="label label-success">Disetujui</span>';
+            return '<span class="label label-success">Selesai</span>';
           }
         })
         ->editColumn('tglBuat', function ($data) 
@@ -381,11 +398,56 @@ class OrderPembelianController extends Controller
         })
         ->editColumn('qtyTerima', function ($data) 
         {
-            $qty = ($data->d_tbdt_qty == null) ? '-' : $data->d_tbdt_qty;
+            $qty = ($data->qty_received == null) ? '-' : $data->qty_received;
             return $qty;
         })
-        ->rawColumns(['status'])
+        ->addColumn('action', function($data)
+        {
+          if ($data->d_pcs_status == "WT" || $data->d_pcs_status == "DE") 
+          {
+            return '<div class="text-center"> - </div>'; 
+          }
+          elseif ($data->d_pcs_status == "CF" || $data->d_pcs_status == "RC") 
+          {
+            return '<div class="text-center">
+                      <button class="btn btn-sm btn-success" title="Detail"
+                          onclick=detailMasukPeritem("'.$data->d_pcsdt_id.'")><i class="fa fa-eye"></i> 
+                      </button>
+                    </div>'; 
+          }
+          
+        })
+        ->rawColumns(['status', 'action'])
         ->make(true);
+    }
+
+    public function getPenerimaanPeritem($id)
+    {
+        $dataHeader = d_purchasing_dt::join('d_purchasing','d_purchasing_dt.d_pcs_id','=','d_purchasing.d_pcs_id')
+            ->join('d_supplier','d_purchasing_dt.d_pcsdt_sid','=','d_supplier.s_id')
+            ->select('d_purchasing.d_pcs_code', 'd_purchasing_dt.d_pcsdt_qty', 'd_purchasing.d_pcs_date_created', 'd_supplier.s_company')
+            ->where('d_purchasing_dt.d_pcsdt_id', '=', $id)
+            ->get();
+
+        $dataIsi = d_terima_pembelian_dt::join('d_terima_pembelian', 'd_terima_pembelian_dt.d_tbdt_idtb', '=', 'd_terima_pembelian.d_tb_id')
+                ->join('m_item', 'd_terima_pembelian_dt.d_tbdt_item', '=', 'm_item.i_id')
+                ->join('m_satuan', 'd_terima_pembelian_dt.d_tbdt_sat', '=', 'm_satuan.m_sid')
+                ->select('m_item.i_name', 'm_item.i_code', 'm_satuan.m_sname', 'd_terima_pembelian_dt.d_tbdt_qty', 'd_terima_pembelian.d_tb_code', 'd_terima_pembelian_dt.d_tbdt_date_received', 'd_terima_pembelian.d_tb_date')
+                ->where('d_terima_pembelian_dt.d_tbdt_idpcsdt', '=', $id)
+                ->orderBy('d_terima_pembelian_dt.d_tbdt_date_received', 'ASC')
+                ->get();
+
+        foreach ($dataIsi as $val) 
+        {   
+          $tanggalTerima[] = date('d-m-Y',strtotime($val->d_tbdt_date_received));
+        }
+        
+        return response()->json([
+            'status' => 'sukses',
+            'header' => $dataHeader,
+            'isi' => $dataIsi,
+            'tanggalTerima' => $tanggalTerima
+        ]);
     }
 
     public function getEditOrder($id)

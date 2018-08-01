@@ -34,7 +34,7 @@
           <option value="wait" class="form-control">Tampilkan Data : Waiting</option>
           <option value="edit" class="form-control">Tampilkan Data : Dapat diedit</option>
           <option value="confirm" class="form-control">Tampilkan Data : Disetujui</option>
-          <option value="received" class="form-control">Tampilkan Data : Diterima</option>
+          <option value="received" class="form-control">Tampilkan Data : Selesai</option>
         </select>
       </div>
 
@@ -53,6 +53,7 @@
                 <th class="wd-10p">Tgl Masuk</th>
                 <th class="wd-5p">Qty Masuk</th>
                 <th class="wd-10p">Status</th>
+                <th class="wd-5p">Aksi</th>
               </tr>
             </thead>
 
