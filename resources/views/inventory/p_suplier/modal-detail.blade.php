@@ -60,58 +60,6 @@
             </div>
           </div>
 
-          <div class="col-md-3 col-sm-12 col-xs-12">
-            <label class="tebal">Total Pembelian Gross</label>
-          </div>
-
-          <div class="col-md-3 col-sm-12 col-xs-12">
-            <div class="form-group">
-              <label id="lblTotalBeliGross"></label>
-            </div>
-          </div>
-
-          <div class="col-md-3 col-sm-12 col-xs-12">
-            <label class="tebal">Total Disc</label>
-          </div>
-
-          <div class="col-md-3 col-sm-12 col-xs-12">
-            <div class="form-group">
-              <label id="lblTotalBeliDisc"></label>
-            </div>
-          </div>
-
-          <div class="col-md-3 col-sm-12 col-xs-12">
-            <label class="tebal">Pajak</label>
-          </div>
-
-          <div class="col-md-3 col-sm-12 col-xs-12">
-            <div class="form-group">
-              <label id="lblTotalBeliTax"></label>
-            </div>
-          </div>
-
-          <div class="col-md-3 col-sm-12 col-xs-12">
-            <label class="tebal">Total Pembelian Nett</label>
-          </div>
-
-          <div class="col-md-3 col-sm-12 col-xs-12">
-            <div class="form-group">
-              <label id="lblTotalBeliNett"></label>
-            </div>
-          </div>
-
-          <div class="col-md-3 col-sm-12 col-xs-12">
-            <label class="tebal">Total Terima</label>
-          </div>
-
-          <div class="col-md-3 col-sm-12 col-xs-12">
-            <div class="form-group">
-              <label id="lblTotalTerimaNett"></label>
-            </div>
-          </div>
-
-          <div id="appending-det"></div>
-
         </div>
         
         <div class="table-responsive">
@@ -119,12 +67,12 @@
             <thead>
               <tr>
                 <th style="text-align: center;" width="5%;">No</th>
-                <th width="25%;">Kode | Barang</th>
+                <th width="55%;">Kode | Barang</th>
                 <th width="10%">Qty</th>
                 <th width="10%">Qty Terima</th>
-                <th width="5%">Satuan</th>
-                <th width="15%">Harga</th>
-                <th width="15%">Total</th>
+                <th width="10%">Satuan</th>
+                <!-- <th width="15%">Harga</th>
+                <th width="15%">Total</th> -->
                 <th width="10%">Stok</th>
               </tr>
             </thead>

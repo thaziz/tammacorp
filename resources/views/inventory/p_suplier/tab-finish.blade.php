@@ -1,43 +1,58 @@
-<div id="finish-tab" class="tab-pane fade in">
-    <div class="row">
-   
-    <div class="col-md-3 col-sm-3 col-xs-12" align="left">
-      <button class="btn btn-box-tool btn-sm btn-flat" type="button" id="btn_refresh_index" onclick="refreshTabelFinish()">
-        <i class="fa fa-undo" aria-hidden="true">&nbsp;</i> Refresh
-      </button>
-    </div>
+<div id="finish-tab" class="tab-pane fade">
+  <div class="row">
+    <div class="panel-body">
 
-    <div class="col-md-9 col-sm-9 col-xs-12" align="right" style="margin-bottom: 10px;">
-      <a href="{{ url('/purchasing/rencanapembelian/create') }}"><button type="button" class="btn btn-box-tool" title="Tambahkan Data Item">
-        <i class="fa fa-plus" aria-hidden="true">
-           &nbsp;
-        </i>Tambah Data
+      <div class="col-md-3 col-sm-3 col-xs-12">
+        <label class="tebal">Tanggal pembelian (PO)</label>
+      </div>
+
+      <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="form-group">
+          <div class="input-daterange input-group">
+            <input id="tanggal3" class="form-control input-sm datepicker1 " name="tanggal" type="text">
+            <span class="input-group-addon">-</span>
+            <input id="tanggal4" class="input-sm form-control datepicker2" name="tanggal" type="text" value="{{ date('d-m-Y') }}">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-sm-3 col-xs-12" align="center">
+        <button class="btn btn-primary btn-sm btn-flat autoCari" type="button" onclick="listReceivedByTgl()">
+          <strong>
+            <i class="fa fa-search" aria-hidden="true"></i>
+          </strong>
         </button>
-      </a>
-    </div>
+        <button class="btn btn-info btn-sm btn-flat" type="button" onclick="refreshTabelReceived()">
+          <strong>
+            <i class="fa fa-undo" aria-hidden="true"></i>
+          </strong>
+        </button>
+      </div>
 
-   
-    <div class="col-md-12 col-sm-12 col-xs-12">                          
-      <div class="table-responsive">
-        <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="tbl-finish">
-          <thead>
-            <tr>
-              <th class="wd-10p">No</th>
-              <th class="wd-15p">Tgl Dibuat</th>
-              <th class="wd-15p">Kode Rencana</th>
-              <th class="wd-15p">Staff</th>
-              <th class="wd-20p">Suplier</th>
-              <th class="wd-15p">Tgl Disetujui</th>
-              <th class="wd-15p">Status</th>
-              <th class="wd-15p" style="text-align: center;">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-          </tbody>              
-        </table> 
-      </div>  
-    </div>  
+      <div class="table-responsive" style="padding-top: 15px;">
+        <div id="tabelPenerimaanReceived"> 
+          <table class="table tabelan table-hover table-bordered dt-responsive" id="tbl-received" width="100%">
+            <thead>
+              <tr>
+                  <th>No</th>
+                  <th>Kode PO</th>
+                  <th>Supplier</th>
+                  <th>Nama Item</th>
+                  <th>Satuan</th>
+                  <th width="5%">Qty PO</th>
+                  <th width="5%">Qty Masuk</th>
+                  <th>Tgl PO</th>
+                  <th width="10%">Status</th>
+                  <th width="5%">Detail</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
 
     </div>
   </div>
+</div>
