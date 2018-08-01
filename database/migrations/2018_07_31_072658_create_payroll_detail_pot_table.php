@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePotongansTable extends Migration
+class CreatePayrollDetailPotTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,12 @@ class CreatePotongansTable extends Migration
      */
     public function up()
     {
-        Schema::create('potongans', function (Blueprint $table) {
+        Schema::create('payroll_detail_pot', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('c_payroll_id');
+            $table->unsignedInteger('c_pegawai_man_id');
+            $table->unsignedInteger('c_potongan_id');
+            $table->string('c_jumlah');
             $table->timestamps();
         });
     }
@@ -26,6 +30,6 @@ class CreatePotongansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('potongans');
+        Schema::dropIfExists('payroll_detail_pot');
     }
 }

@@ -44,7 +44,7 @@
                     <table id="tbl_pay" class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data">
                       <thead>
                         <tr>
-                          <th>Kode</th>
+                          <th>Nama</th>
                           <th>Jumlah</th>
                           <th>Action</th>
                         </tr>
@@ -84,7 +84,7 @@
             ],
             "columns": [
               { "data": "c_nama" },
-              { "data": "jumlah" },
+              { "data": "gaji" },
               { "data": "action" }
             ],
             "responsive": true,
