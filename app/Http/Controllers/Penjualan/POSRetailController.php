@@ -163,7 +163,7 @@ class POSRetailController extends Controller
     $term = $request->term;
     $results = array();
     $queries = m_customer::where('m_customer.c_name', 'LIKE', '%'.$term.'%')
-      ->take(50)->get();
+      ->take(15)->get();
     
     if ($queries == null) {
       $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];
@@ -190,8 +190,10 @@ class POSRetailController extends Controller
                             join m_satuan on m_sid = i_sat1 
                             where ( i_name like "%'.$term.'%" or i_code like "%'.$term.'%" ) 
                             and ( i_type = "BP" or i_type = "BJ" ) 
+                            and (i_isactive = "TRUE")
                             and ( s_comp = 1 and s_position = 1 or s_comp is null or s_position is null ) 
-                            limit 50');
+                            limit 15');
+
 
       if ($queries == null) {
         $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];
@@ -215,8 +217,9 @@ class POSRetailController extends Controller
                           join m_satuan on m_sid = i_sat1
                           where ( i_name like "%'.$term.'%" or i_code like "%'.$term.'%" ) 
                           and ( i_type = "BP" or i_type = "BJ" ) 
+                          and (i_isactive = "TRUE")
                           and ( s_comp = 1 and s_position = 1 or s_comp is null or s_position is null ) 
-                          limit 50');
+                          limit 15');
 
       if ($queries == null) {
         $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];
@@ -239,8 +242,9 @@ class POSRetailController extends Controller
                           join m_satuan on m_sid = i_sat1
                           where ( i_name like "%'.$term.'%" or i_code like "%'.$term.'%" ) 
                           and ( i_type = "BP" or i_type = "BJ" ) 
+                          and (i_isactive = "TRUE")
                           and ( s_comp = 1 and s_position = 1 or s_comp is null or s_position is null ) 
-                          limit 50');
+                          limit 15');
 
       if ($queries == null) {
         $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];
@@ -278,7 +282,8 @@ class POSRetailController extends Controller
                 $d->orWhere('m_item.i_type', 'LIKE', '%'.$term.'%')
                   ->orWhere('m_item.i_name', 'LIKE', '%'.$term.'%');
             })
-      ->take(50)->get();
+      ->where('i_isactive','TRUE')
+      ->take(15)->get();
     if ($queries == null) {
       $results[] = [ 'i_id' => null, 'label' =>'tidak di temukan data terkait'];
     } else {

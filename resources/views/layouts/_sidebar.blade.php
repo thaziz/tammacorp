@@ -336,7 +336,7 @@
                                 @endif
 
                                 @if(Auth::user()->punyaAkses('Penerimaan Barang Return Customer','ma_read'))
-                                <li class="{{ Request::is('inventory/p_returncustomer/cust') ? 'active' : '' || Request::is('inventory/p_returncustomer/*') ? 'active' : '' }}"><a href="{{ url('/inventory/p_returncustomer/cust') }}"><span class="submenu-title">Penerimaan Barang Return Customer</span><span class="hidden">Inventory</span></a>
+                                <li class="{{ Request::is('inventory/p_returncustomer/cust') ? 'active' : '' || Request::is('inventory/p_returncustomer/*') ? 'active' : '' }}"><a href="{{ url('/inventory/p_returncustomer/cust') }}"><span class="submenu-title">Penerimaan Barang Return Supplier</span><span class="hidden">Inventory</span></a>
                                 </li>
                                 @endif
 
@@ -356,7 +356,7 @@
                                 @endif
 
                                 @if(Auth::user()->punyaAkses('Ritail Transfer','ma_read'))
-                                <li class="{{ Request::is('inventory/POSretail/transfer') ? 'active' : '' || Request::is('inventory/POSretail/transfer/*') ? 'active' : '' }}"><a href="{{ url('inventory/POSretail/transfer') }}"><span class="submenu-title">Ritail Transfer</span><span class="hidden">Inventory</span></a>
+                                <li class="{{ Request::is('inventory/POSretail/transfer') ? 'active' : '' || Request::is('inventory/POSretail/transfer/*') ? 'active' : '' }}"><a href="{{ url('inventory/POSretail/transfer') }}"><span class="submenu-title">Ritail Request</span><span class="hidden">Inventory</span></a>
                                 </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Grosir Transfer','ma_read'))

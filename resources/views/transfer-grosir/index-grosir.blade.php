@@ -263,12 +263,12 @@
         dataType:'json',                                      
         success     : function(response){
           if(response.status=='sukses'){
+            transfer.ajax.reload();
             iziToast.success({timeout: 5000, 
                     position: "topRight",
                     icon: 'fa fa-chrome', 
                     title: '',
                     message: 'Data tersimpan.'});
-            transfer_retail.ajax.reload();
             $('#myTransfer').modal('hide');
           }else{
             iziToast.error({position: "topRight",
@@ -415,7 +415,7 @@
                           icon: 'fa fa-chrome', 
                           title: nota, 
                           message: 'Telah terkirim.'});
-        $('#master_transfer')[0].reset();
+        $('#master_transfer')[0].reset()
         tableReq.row().clear().draw(false);
         var inputs = document.getElementsByClassName( 'kode' ),
         names  = [].map.call(inputs, function( input ) {
