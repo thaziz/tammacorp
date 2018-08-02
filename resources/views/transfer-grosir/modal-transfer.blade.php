@@ -9,19 +9,9 @@
                   </div>
                 <div class="modal-body">
 
-                      <form action="get" id="master_transfer">
+                      <form id="master_transfer">
                             <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:5px;padding-top:20px; ">
 
-                                <div class="col-md-4 col-sm-3 col-xs-12"> 
-                              
-                                  <label class="tebal">No Transfer</label>
-                                  
-                                </div>
-                                <div class="col-md-8 col-sm-9 col-xs-12">
-                                  <div class="form-group">
-                                        <input type="text" id="no-nota" readonly="true" name="tf_nomor" class="form-control input-sm">
-                                  </div>
-                                </div>
                                 <div class="col-md-4 col-sm-3 col-xs-12">
                                   
                                       <label class="tebal" name="admin">Admin</label>
@@ -59,28 +49,34 @@
                                   <div class="form-group">
                                     <div class="input-icon right">
                                       <i class="glyphicon glyphicon-envelope"></i>
-                                      <input type="text" id="tf_note" name="tf_keterangan" class="form-control input-sm">
+                                      <input type="text" id="tf_note" name="tf_keterangan" class="form-control input-sm" autocomplete="off">
                                     </div>                                
                                   </div>
                                 </div>
                             </div>
                         <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:20px;padding-top:20px; ">
-                             <div class="col-md-6 col-sm-6 col-xs-12">
-                               <label class="control-label tebal" >Masukan Kode / Nama</label>
-                                  <div class="input-group input-group-sm" style="width: 100%;">
-                                      <input type="text" id="stf_namaitem" name="stf_namaitem" class="form-control">
-                                      <input type="hidden" id="stf_kode" name="stf_item" class="form-control">        
-                                      <input type="hidden" id="stf_detailnama" name="stf_nama" class="form-control">
-                                      <input type="hidden" id="sstf_qty" name="sstf_qty" class="form-control">                                     
-                                      
-                                  </div>
-                              </div>        
-                              <div class="col-md-6 col-sm-6 col-xs-12">
-                               <label class="control-label tebal">Masukan Jumlah</label>
-                                  <div class="input-group input-group-sm" style="width: 100%;">
-                                     <input type="number" id="stf_qty" name="stf_qty" class="form-control" >
-                                  </div>
-                              </div>
+                           <div class="col-md-6 col-sm-6 col-xs-12">
+                             <label class="control-label tebal" >Masukan Kode / Nama</label>
+                                <div class="input-group input-group-sm" style="width: 100%;">
+                                  <input type="text" id="stf_namaitem" name="stf_namaitem" class="form-control">
+                                  <input type="hidden" id="stf_kode" name="stf_item" class="form-control">
+                                  <input type="hidden" id="stf_code" name="stf_code" class="form-control">
+                                  <input type="hidden" id="stf_detailnama" name="stf_nama" class="form-control">
+                                  <input type="hidden" id="sstf_qty" name="sstf_qty" class="form-control">
+                                </div>
+                            </div>        
+                            <div class="col-md-3 col-sm-6 col-xs-12">
+                             <label class="control-label tebal">Masukan Jumlah</label>
+                                <div class="input-group input-group-sm" style="width: 100%;">
+                                   <input type="number" id="stf_qty" name="stf_qty" class="form-control" >
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 col-xs-12">
+                             <label class="control-label tebal">Stok</label>
+                                <div class="input-group input-group-sm" style="width: 100%;">
+                                   <input type="number" id="stf_stok" name="stf_stok" class="form-control" readonly="">
+                                </div>
+                            </div>
                         </div> 
                       </form>
                         <div class="table-responsive">
@@ -102,7 +98,7 @@
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-                    <button class="btn btn-primary" type="button" onclick="simpanTransfer()">Simpan</button> 
+                    <button class="btn btn-primary simpan" type="button" onclick="simpanTransfer()">Simpan</button> 
                   </div>
               </div>
                     
