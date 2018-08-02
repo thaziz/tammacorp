@@ -126,23 +126,11 @@ var item = $('#save_penerimaan :input').serialize();
     var a = 0;
     $('input.discpercent:text').each(function(evt){
       var getIndex = a;
-      var dataInput = $('input.discpercent:text:eq('+getIndex+')').val();
+      var dataInput = $('input.terima:text:eq('+getIndex+')').val();
       var dataInput1 = $('input.discvalue:text:eq('+getIndex+')').val();
-      if (dataInput == '' || dataInput1 == '0') {
-        if (dataInput == '' && dataInput1 == 'Rp. 0,00  ') {
-          $('input.discvalue:text:eq('+getIndex+')').attr("readonly",false);
-          $('input.discpercent:text:eq('+getIndex+')').attr("readonly",false);
-          getIndex+=1;
-        }else{
-          $('input.discvalue:text:eq('+getIndex+')').attr("readonly",false);
-          getIndex+=1;
-        }
-      }else{
-        $('input.discvalue:text:eq('+getIndex+')').attr("readonly",true);
-        getIndex+=1;
+
       }
     a++;
-    }) 
   }
 
 </script>

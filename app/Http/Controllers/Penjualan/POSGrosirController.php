@@ -202,7 +202,8 @@ class POSGrosirController extends Controller
                             join m_satuan on m_sid = i_sat1 
                             where ( i_name like "%'.$term.'%" or i_code like "%'.$term.'%" ) 
                             and ( i_type = "BP" or i_type = "BJ" ) 
-                            and ( s_comp = 2 and s_position = 2 or s_comp is null or s_position is null ) 
+                            and ( s_comp = 2 and s_position = 2 or s_comp is null or s_position is null )
+                            and (i_isactive = "TRUE") 
                             limit 50');
 
       if ($queries == null) {
@@ -228,7 +229,8 @@ class POSGrosirController extends Controller
                             join m_satuan on m_sid = i_sat1 
                             where ( i_name like "%'.$term.'%" or i_code like "%'.$term.'%" ) 
                             and ( i_type = "BP" or i_type = "BJ" ) 
-                            and ( s_comp = 2 and s_position = 2 or s_comp is null or s_position is null ) 
+                            and ( s_comp = 2 and s_position = 2 or s_comp is null or s_position is null )
+                            and (i_isactive = "TRUE") 
                             limit 50');
 
       if ($queries == null) {
@@ -248,13 +250,14 @@ class POSGrosirController extends Controller
         }
       }
     }else{
-      $queries = DB::select('select i_id, i_code,i_name,m_psell3,m_sname,s_qty,i_type
+      $queries = DB::select('select i_id, i_code,i_name,m_psell3,m_sname,s_qty,i_type,i_isactive
                             from m_item left join d_stock on i_id = s_item 
                             join m_price on i_id = m_pitem 
                             join m_satuan on m_sid = i_sat1 
                             where ( i_name like "%'.$term.'%" or i_code like "%'.$term.'%" ) 
                             and ( i_type = "BP" or i_type = "BJ" ) 
-                            and ( s_comp = 2 and s_position = 2 or s_comp is null or s_position is null ) 
+                            and ( s_comp = 2 and s_position = 2 or s_comp is null or s_position is null )
+                            and (i_isactive = "TRUE") 
                             limit 50');
 
       if ($queries == null) {
