@@ -606,4 +606,19 @@ class transferItemGrosirController extends Controller
       });
   }
 
+
+    public function print_setuju($id)
+    {
+        // $query = DB::table('d_transferitem_dt')
+        // ->select('i_name', 'tidt_qty')
+        // ->join('m_item', 'm_item.i_id', '=', 'd_transferitem_dt.tidt_item')
+        // ->get()
+
+      $time = Carbon::now('Asia/Jakarta');
+
+      $waktu = $time->hour.".".$time->minute;
+
+        return view('transfer-grosir.print.print_persetujuan', compact('waktu'));
+    }
+
 }

@@ -162,6 +162,12 @@ Route::get('/inventory/p_hasilproduksi/cari_nota', 'Inventory\InventoryControlle
 Route::get('/inventory/p_returncustomer/cari_nota', 'Inventory\InventoryController@cari_nota_cust');
 /*End Inventory*/
 
+// Ari
+Route::get('/inventory/POSgrosir/print_setuju/{id}', 'transferItemGrosirController@print_setuju');
+Route::get('/inventory/POSgrosir/print_transfer/{id}', 'transferItemGrosirController@print_transfer');
+
+// End irA
+
 //rizky
 //p_hasilproduksi
 Route::get('/inventory/p_hasilproduksi/produksi', 'Inventory\PenerimaanBrgProdController@produksi');
