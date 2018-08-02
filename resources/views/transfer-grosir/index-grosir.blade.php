@@ -415,7 +415,7 @@
                           icon: 'fa fa-chrome', 
                           title: nota, 
                           message: 'Telah terkirim.'});
-        $('#master_transfer')[0].reset()
+        $('#master_transfer')[0].reset();
         tableReq.row().clear().draw(false);
         var inputs = document.getElementsByClassName( 'kode' ),
         names  = [].map.call(inputs, function( input ) {
