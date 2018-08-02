@@ -30,10 +30,10 @@ class KeuanganController extends Controller
         return view('/keuangan/p_inputtransaksi/transaksi');
     }
 
-    public function hutang()
+    /*public function hutang()
     {
         return view('/keuangan/l_hutangpiutang/hutang');
-    }
+    }*/
 
     public function jurnal()
     {

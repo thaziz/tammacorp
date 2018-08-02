@@ -422,6 +422,10 @@ Route::post('/keuangan/konfirmasipembelian/confirm-return-submit', 'Keuangan\Con
 Route::get('/keuangan/konfirmasipembelian/get-data-tabel-belanjaharian', 'Keuangan\ConfrimBeliController@getDataBelanjaHarian');
 Route::get('/keuangan/konfirmasipembelian/confirm-belanjaharian/{id}/{type}', 'Keuangan\ConfrimBeliController@confirmBelanjaHarian');
 Route::post('/keuangan/konfirmasipembelian/confirm-belanjaharian-submit', 'Keuangan\ConfrimBeliController@submitBelanjaHarian');
+//hutang piutang
+Route::get('/keuangan/l_hutangpiutang/hutang', 'Keuangan\HutangController@hutang');
+Route::get('/keuangan/l_hutangpiutang/get_hutang_by_tgl/{tgl1}/{tgl2}', 'Keuangan\HutangController@getHutangByTgl');
+Route::get('/keuangan/l_hutangpiutang/get_detail_hutangbeli/{id}', 'Keuangan\HutangController@getDetailHutangBeli');
 // end rizky
 //mahmud
 Route::get('/produksi/lihatadonan/tabel/{id}/{qty}', 'Keuangan\spkFinancialController@tabelFormula');
