@@ -175,12 +175,8 @@ Route::get('/inventory/p_hasilproduksi/get_tabel_data/{id}', 'Inventory\Penerima
 Route::get('/inventory/p_hasilproduksi/ubah_status_transaksi/{id}/{id2}', 'Inventory\PenerimaanBrgProdController@ubah_status_transaksi');
 Route::get('/inventory/p_hasilproduksi/get_penerimaan_by_tgl/{tgl1}/{tgl2}/{akses}', 'Inventory\PenerimaanBrgProdController@get_penerimaan_by_tgl');
 Route::get('/inventory/p_hasilproduksi/get_list_waiting_by_tgl/{tgl1}/{tgl2}', 'Inventory\PenerimaanBrgProdController@get_list_waiting_by_tgl');
-//p_hasilsupplier 12/07/18
-Route::get('/inventory/datagudang/gudang', 'inventory\stock_gudangController@gudang')->name('gudang');
-Route::get('/inventory/datagudang/datatable_gudang', 'inventory\stock_gudangController@datatable_gudang')->name('datatable_gudang');
-Route::get('/inventory/datagudang/cari_gudang', 'inventory\stock_gudangController@cari_gudang')->name('cari_gudang');
+//p_hasilsupplier
 Route::get('/inventory/p_suplier/suplier', 'Inventory\PenerimaanBrgSupController@suplier');
-// ============
 Route::get('/inventory/p_suplier/lookup-data-pembelian', 'Inventory\PenerimaanBrgSupController@lookupDataPembelian');
 Route::get('/inventory/p_suplier/get-data-form/{id}', 'Inventory\PenerimaanBrgSupController@getDataForm');
 Route::post('/inventory/p_suplier/simpan-penerimaan', 'Inventory\PenerimaanBrgSupController@simpanPenerimaan');
@@ -191,13 +187,12 @@ Route::get('/inventory/p_suplier/get_tabel_data/{id}', 'Inventory\PenerimaanBrgS
 Route::get('/inventory/p_suplier/get-list-waiting-bytgl/{tgl1}/{tgl2}', 'Inventory\PenerimaanBrgSupController@getListWaitingByTgl');
 Route::get('/inventory/p_suplier/get-list-received-bytgl/{tgl1}/{tgl2}', 'Inventory\PenerimaanBrgSupController@getListReceivedByTgl');
 Route::get('/inventory/p_suplier/get-penerimaan-peritem/{id}', 'Inventory\PenerimaanBrgSupController@getPenerimaanPeritem');
-// ============
-Route::get('/inventory/p_suplier/create_suplier', 'Inventory\penerimaanbarang_supController@create_suplier');
-Route::get('/inventory/p_suplier/save_pensuplier', 'Inventory\penerimaanbarang_supController@save_pensuplier')->name('save_pensuplier');
-Route::get('/inventory/p_suplier/edit_pensuplier', 'Inventory\penerimaanbarang_supController@edit_pensuplier')->name('edit_pensuplier');
-Route::get('/inventory/p_suplier/cari_nota', 'Inventory\penerimaanbarang_supController@cari_nota_sup');
-Route::get('/inventory/p_suplier/get_data_po', 'Inventory\PenerimaanBrgSupController@get_data_po');
 Route::get('/inventory/p_suplier/list_po', 'Inventory\PenerimaanBrgSupController@list_po');
+Route::get('/inventory/p_suplier/get_data_po', 'Inventory\PenerimaanBrgSupController@get_data_po');
+//==================================================================
+Route::get('/inventory/datagudang/gudang', 'inventory\stock_gudangController@gudang')->name('gudang');
+Route::get('/inventory/datagudang/datatable_gudang', 'inventory\stock_gudangController@datatable_gudang')->name('datatable_gudang');
+Route::get('/inventory/datagudang/cari_gudang', 'inventory\stock_gudangController@cari_gudang')->name('cari_gudang');
 /*End Inventory*/
 /*Produksi*/
 Route::get('/produksi/spk/spk', 'ProduksiController@spk');
@@ -548,21 +543,6 @@ Route::get('/master/datagroup/edit_group', 'master\groupController@edit_group')-
 Route::get('/master/datagroup/update_group', 'master\groupController@update_group')->name('update_group');
 Route::get('/master/datagroup/datatable_group', 'master\groupController@datatable_group')->name('datatable_group');
 //-[]-belum-[]-//
-
-//inven
-//gudang
-Route::get('/inventory/datagudang/gudang', 'inventory\stock_gudangController@gudang')->name('gudang');
-Route::get('/inventory/datagudang/datatable_gudang', 'inventory\stock_gudangController@datatable_gudang')->name('datatable_gudang');
-Route::get('/inventory/datagudang/cari_gudang', 'inventory\stock_gudangController@cari_gudang')->name('cari_gudang');
-Route::get('/inventory/p_suplier/suplier', 'Inventory\penerimaanbarang_supController@suplier')->name('pensuplier');
-Route::get('/inventory/p_suplier/create_suplier', 'Inventory\penerimaanbarang_supController@create_suplier');
-Route::get('/inventory/p_suplier/save_pensuplier', 'Inventory\penerimaanbarang_supController@save_pensuplier')->name('save_pensuplier');
-Route::get('/inventory/p_suplier/datatable_pensuplier', 'Inventory\penerimaanbarang_supController@datatable_pensuplier')->name('datatable_pensuplier');
-Route::get('/inventory/p_suplier/edit_pensuplier', 'Inventory\penerimaanbarang_supController@edit_pensuplier')->name('edit_pensuplier');
-Route::get('/inventory/p_suplier/cari_nota', 'Inventory\penerimaanbarang_supController@cari_nota_sup');
-//end
-
-
 // route Keuangan (Dirga)
 // akun keuangan route
 Route::get('/master/datakeuangan/keuangan', 'Keuangan\akunController@index');
