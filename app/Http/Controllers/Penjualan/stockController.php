@@ -61,11 +61,13 @@ class stockController extends Controller
       foreach ($queries as $query) 
       {
         if($query->s_qty=='')
+
           $query->s_qty=0;
-        $results[] = [  'id' => $query->i_id, 
-                        'label' =>$query->i_code.'-'. $query->i_name, 
-                        'code' => $query->i_code,
-                       'name' => $query->i_name ];
+
+          $results[] = [  'id' => $query->i_id, 
+                          'label' =>$query->i_code.'-'. $query->i_name, 
+                          'code' => $query->i_code,
+                          'name' => $query->i_name ];
       }
     }
  
@@ -78,17 +80,18 @@ class stockController extends Controller
 
     $results = array();
 
-    $queries=m_item::leftjoin('d_stock',function($join) use ($request){
+    $queries = m_item::leftjoin('d_stock',function($join) use ($request){
         $join->on('i_id', '=', 's_item');        
         $join->on('s_comp', '=', 's_position');                
         $join->on('s_comp', '=',DB::raw("'2'"));                   
-    })    
+    })   
+    ->where('i_isactive','TRUE') 
     ->where('i_type', '=',DB::raw("'BJ'"))    
     ->where('i_name', 'like',DB::raw('"%'.$request->term.'%"')) 
     ->orWhere('i_type', '=',DB::raw("'BP'"))       
     ->where('i_name', 'like',DB::raw('"%'.$request->term.'%"'))
     ->orderBy('i_name')
-    //->toSql();
+    ->take(15)
     ->get();   
     
     if ($queries == null) {
@@ -98,9 +101,10 @@ class stockController extends Controller
       {
         if($query->s_qty=='')
         $query->s_qty=0;
-        $results[] = [ 'id' => $query->i_id, 'label' =>$query->i_code.'-'. $query->i_name.'('. $query->s_qty .')', 'code' => $query->i_id,
-                       'name' => $query->i_name,
-                       'qty' => $query->s_qty ];
+        $results[] = [  'id' => $query->i_id, 'label' =>$query->i_code.' - '. $query->i_name, 
+                        'code' => $query->i_code,
+                        'name' => $query->i_name,
+                        'qty' => $query->s_qty ];
       }
     }
  
