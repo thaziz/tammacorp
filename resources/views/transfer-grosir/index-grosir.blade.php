@@ -223,9 +223,13 @@
       cariTanggalTransfer();
     })
 
+    $('#myTransferToRetail').on('shown.bs.modal', function () {
+      $('#tf_note').focus()
+    }) 
+
   });
 
-     function edit($id){
+    function edit($id){
             $.ajax({
                     url         : baseUrl+'/penjualan/POSgrosir/approve-transfer/'+$id+'/edit',
                     type        : 'get',
@@ -235,7 +239,7 @@
                          $('#myTransfer').modal('show');
                         }
             });
-     }
+    }
 
 
      function hapus($id){
@@ -264,7 +268,6 @@
                     icon: 'fa fa-chrome', 
                     title: '',
                     message: 'Data tersimpan.'});
-            transfer.ajax.reload();
             transfer_retail.ajax.reload();
             $('#myTransfer').modal('hide');
           }else{
@@ -292,22 +295,45 @@
  tableReq=$('#transfer-detail').DataTable();
 
       //transfer thoriq
+  $( "#stf_namaitem" ).focus(function(){
+      var key = 1;
     $("#stf_namaitem").autocomplete({
         source: baseUrl+'/penjualan/transfer/grosir/transfer-item',
         minLength: 1,
-        select: function(event, ui) 
-        {
-          console.log(ui);          
-        $('#stf_namaitem').val(ui.item.label);        
-        $('#stf_kode').val(ui.item.code);
-        $('#stf_detailnama').val(ui.item.name);        
-        $('#sstf_qty').val(ui.item.qty);
-        $("input[name='stf_qty']").focus();
+        select: function(event, ui) {        
+          $('#stf_namaitem').val(ui.item.label);        
+          $('#stf_kode').val(ui.item.id);
+          $('#stf_detailnama').val(ui.item.name);        
+          $('#sstf_qty').val(ui.item.qty);
+          $('#stf_stok').val(ui.item.qty);
+          $('#stf_code').val(ui.item.code);
+          $("input[name='stf_qty']").focus();
         }
-      });
+    });
+      $("#stf_namaitem").val('');
+      $("#stf_kode" ).val('');
+      $('#stf_detailnama').val('');
+      $("#stf_qty").val('');
+      $("#sstf_qty").val('');
+      $("#stf_stok").val('');
+      $("#stf_code").val('');
+  });
 
+    $('#tf_note').keypress(function(e){
+      var charCode;
+      if ((e.which && e.which == 13)) {
+        charCode = e.which;
+      }else if (window.event) {
+          e = window.event;
+          charCode = e.keyCode;
+      }
+      if ((e.which && e.which == 13)){
+        $("input[name='stf_namaitem']").focus();
+        return false;
+      }
+    });
 
-$('#stf_qty').keypress(function(e){      
+  $('#stf_qty').keypress(function(e){      
       var qtyStok   =parseInt($('#sstf_qty').val()); 
       var qtySend   =parseInt($('#stf_qty').val()); 
       var charCode;
@@ -339,17 +365,18 @@ $('#stf_qty').keypress(function(e){
 
    var rindex=0;
     var rtamp=[];
-            function tambahTf() {   
-        var kode  =$('#stf_kode').val();      
-        var nama  =$('#stf_detailnama').val();                                
-        var qty   =parseInt($('#stf_qty').val());        
+      function tambahTf() {   
+        var kode  = $('#stf_kode').val(); 
+        var code  = $('#stf_code').val();     
+        var nama  = $('#stf_detailnama').val();                                
+        var qty   = parseInt($('#stf_qty').val());        
         var Hapus = '<button type="button" class="btn btn-danger hapus" onclick="rhapus(this)"><i class="fa fa-trash-o"></i></button>';
         var rindex = rtamp.indexOf(kode);
 
         if ( rindex == -1){     
             tableReq.row.add([
-              kode,
-              nama+'<input type="hidden" name="kode_item[]" class="kode_item kode" value="'+kode+'"><input type="hidden" name="nama_item[]" class="nama_item" value="'+nama+'"> ',
+              code,
+              nama+'<input type="hidden" name="kode_item[]" class="kode_item kode" value="'+kode+'">',
               '<input size="30" style="text-align:right;" type="text"  name="sd_qty[]" class="sd_qty form-control tf_qty-'+kode+'" value="'+qty+'"> ',
               
               Hapus
@@ -357,62 +384,72 @@ $('#stf_qty').keypress(function(e){
 
             tableReq.draw();
         rindex++;
-        // console.log(rtamp);
+
         rtamp.push(kode);
             }else{
-            var qtyLawas= parseInt($(".stf_qty-"+kode).val());
-            $(".stf_qty-"+kode).val(qtyLawas+qty);
+            var qtyLawas = parseInt($(".tf_qty-"+kode).val());
+            var c = $(".tf_qty-"+kode).val(qtyLawas + qty);
+
             }
 
           var kode  =$('#stf_kode').val('');      
           var nama  =$('#stf_detailnama').val('');
         }
 
-       function simpanTransfer() 
-      {
-        var item = $('#master_transfer :input').serialize();
-        var data = tableReq.$('input').serialize();
-        $.ajax({
-        url : baseUrl + "/penjualan/transfer/grosir/simpan-transfer-grosir",
-        type: 'get',
-        data: item+'&'+data,
-        dataType:'json',
-        success:function(response){
-          
-          
-              if(response.status=='sukses'){
+  function simpanTransfer() {
+    $('.simpan').attr('disabled','disabled');
+    var item = $('#master_transfer :input').serialize();
+    var data = tableReq.$('input').serialize();
+    $.ajax({
+    url : baseUrl + "/penjualan/transfer/grosir/simpan-transfer-grosir",
+    type: 'get',
+    data: item+'&'+data,
+    dataType:'json',
+    success:function(response){     
+      if(response.status=='sukses'){
+        var nota = response.nota;
+        $('#myTransferToRetail').modal('hide');
+        transfer_retail.ajax.reload();
+        iziToast.success({timeout: 5000, 
+                          position: "topRight",
+                          icon: 'fa fa-chrome', 
+                          title: nota, 
+                          message: 'Telah terkirim.'});
+        $('#master_transfer')[0].reset()
+        tableReq.row().clear().draw(false);
+        var inputs = document.getElementsByClassName( 'kode' ),
+        names  = [].map.call(inputs, function( input ) {
+            return input.value;
+        });
+        rtamp = names;
+        $('.simpan').removeAttr('disabled','disabled');           
+      }else{
+        iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'Mohon melengkapi data.'});  
+        $('.simpan').removeAttr('disabled','disabled');
+      } 
+    }
+    })
+  }
 
-              $("input[name='tf_nomor']").val('');
-              $("input[name='tf_admin']").val('');              
-              $("input[name='tf_ketetangan']").val('');
-              alert('Proses Telah Terkirim');                
-              $('#myTransferToRetail').modal('hide');
-              }    
-        }
-        })
-      }
-
-       function updateTransfer($id) 
-      {
+      function updateTransfer($id) {
         var item = $('#edit_request :input').serialize();
         var data = tableTf.$('input').serialize();
         $.ajax({
-        url : baseUrl + "/penjualan/POSgrosir/update-transfer-grosir/"+$id,
-        type: 'get',
-        data: item+'&'+data,
-        dataType:'json',
-        success:function(response){
-          
-          
+          url : baseUrl + "/penjualan/POSgrosir/update-transfer-grosir/"+$id,
+          type: 'get',
+          data: item+'&'+data,
+          dataType:'json',
+            success:function(response){
               if(response.status=='sukses'){
-
               $("input[name='tf_nomor']").val('');
               $("input[name='tf_admin']").val('');              
               $("input[name='tf_ketetangan']").val('');
               alert('Proses Telah Terkirim');                
               $('#myTransferToRetail').modal('hide');
-              }    
-        }
+            }    
+          }
         })
       }
 
