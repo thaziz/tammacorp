@@ -405,7 +405,7 @@
     type: 'get',
     data: item+'&'+data,
     dataType:'json',
-    success:function(response){     
+    success:function(response, nota){     
       if(response.status=='sukses'){
         var nota = response.nota;
         $('#myTransferToRetail').modal('hide');
