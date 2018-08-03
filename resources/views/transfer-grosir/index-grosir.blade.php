@@ -255,6 +255,7 @@
 
 
   function simpanApprove(){
+    $no_transfer = $('input[name="ri_nomor"]').val();
     $.ajax({
         url         : baseUrl+'/penjualan/POSgrosir/approve-transfer/simpan-approve',
         type        : 'get',
@@ -263,12 +264,13 @@
         dataType:'json',                                      
         success     : function(response){
           if(response.status=='sukses'){
-            transfer.ajax.reload();
             iziToast.success({timeout: 5000, 
                     position: "topRight",
                     icon: 'fa fa-chrome', 
                     title: '',
                     message: 'Data tersimpan.'});
+            transfer_retail.ajax.reload();
+            window.open(baseUrl+'/inventory/POSgrosir/print_setuju/'+$no_transfer);
             $('#myTransfer').modal('hide');
           }else{
             iziToast.error({position: "topRight",
@@ -415,7 +417,7 @@
                           icon: 'fa fa-chrome', 
                           title: nota, 
                           message: 'Telah terkirim.'});
-        $('#master_transfer')[0].reset()
+        $('#master_transfer')[0].reset();
         tableReq.row().clear().draw(false);
         var inputs = document.getElementsByClassName( 'kode' ),
         names  = [].map.call(inputs, function( input ) {
@@ -434,6 +436,7 @@
   }
 
       function updateTransfer($id) {
+        $no_transfer2 = $('input[name="ri_nomor"]').val();
         var item = $('#edit_request :input').serialize();
         var data = tableTf.$('input').serialize();
         $.ajax({
@@ -446,6 +449,7 @@
               $("input[name='tf_nomor']").val('');
               $("input[name='tf_admin']").val('');              
               $("input[name='tf_ketetangan']").val('');
+              window.open(baseUrl+'/inventory/POSgrosir/print_setuju/'+$no_transfer2);
               alert('Proses Telah Terkirim');                
               $('#myTransferToRetail').modal('hide');
             }    

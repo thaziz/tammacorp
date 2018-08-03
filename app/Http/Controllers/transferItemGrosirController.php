@@ -606,4 +606,26 @@ class transferItemGrosirController extends Controller
       });
   }
 
+
+    public function print_setuju($id)
+    {
+        $query = DB::table('d_transferitem_dt')
+        ->select('i_name', 'tidt_qty', 'tidt_qty_appr')
+        ->join('m_item', 'm_item.i_id', '=', 'd_transferitem_dt.tidt_item')
+        ->join('d_transferitem', 'd_transferitem.ti_id', '=', 'd_transferitem_dt.tidt_id')
+        ->where('ti_code', $id)
+        ->get()
+        ->toArray()
+        ;
+
+        $query_chunk = array_chunk($query, 20);
+        // return $query_chunk;
+
+      
+
+      
+
+        return view('transfer-grosir.print.print_persetujuan', compact('query_chunk'));
+    }
+
 }
