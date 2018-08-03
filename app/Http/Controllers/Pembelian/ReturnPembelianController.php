@@ -9,6 +9,9 @@ use Carbon\Carbon;
 use Response;
 use DB;
 use DataTables;
+use Auth;
+use App\d_purchasing;
+use App\d_purchasing_dt;
 use App\d_purchasingreturn;
 use App\d_purchasingreturn_dt;
 
@@ -28,7 +31,8 @@ class ReturnPembelianController extends Controller
   {
     $data = d_purchasingreturn::join('d_purchasing','d_purchasingreturn.d_pcsr_pcsid','=','d_purchasing.d_pcs_id')
             ->join('d_supplier','d_purchasingreturn.d_pcsr_supid','=','d_supplier.s_id')
-            ->select('d_purchasingreturn.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_purchasing.d_pcs_id', 'd_purchasing.d_pcs_code')
+            ->join('d_mem','d_purchasingreturn.d_pcs_staff','=','d_mem.m_id')
+            ->select('d_purchasingreturn.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_purchasing.d_pcs_id', 'd_purchasing.d_pcs_code', 'd_mem.m_id', 'd_mem.m_name')
             ->orderBy('d_pcsr_created', 'DESC')
             ->get();
     //dd($data);    
@@ -129,7 +133,8 @@ class ReturnPembelianController extends Controller
   {
     $dataHeader = d_purchasingreturn::join('d_purchasing','d_purchasingreturn.d_pcsr_pcsid','=','d_purchasing.d_pcs_id')
           ->join('d_supplier','d_purchasingreturn.d_pcsr_supid','=','d_supplier.s_id')
-          ->select('d_purchasingreturn.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_purchasing.d_pcs_id', 'd_purchasing.d_pcs_total_net', 'd_purchasing.d_pcs_code')
+          ->join('d_mem', 'd_purchasingreturn.d_pcs_staff', '=', 'd_mem.m_id')
+          ->select('d_purchasingreturn.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_purchasing.d_pcs_id', 'd_purchasing.d_pcs_total_net', 'd_purchasing.d_pcs_code', 'd_mem.m_name', 'd_mem.m_id')
           ->where('d_purchasingreturn.d_pcsr_id', '=', $id)
           ->orderBy('d_pcsr_created', 'DESC')
           ->get();
@@ -166,7 +171,7 @@ class ReturnPembelianController extends Controller
         $data = array(
           'hargaTotalReturn' => 'Rp. '.number_format($val->d_pcsr_pricetotal,2,",","."),
           'hargaTotalResult' => 'Rp. '.number_format($val->d_pcsr_priceresult,2,",","."),
-          'tanggalReturn' => date('Y-m-d',strtotime($val->d_pcsr_datecreated))
+          'tanggalReturn' => date('d-m-Y',strtotime($val->d_pcsr_datecreated))
         );
     }
 
@@ -190,6 +195,9 @@ class ReturnPembelianController extends Controller
     $counter = 0;
     //ambil value stok by item type
     $dataStok = $this->getStokByType($itemType, $sat1, $counter);
+    //auth
+    $staff['nama'] = Auth::user()->m_name;
+    $staff['id'] = Auth::User()->m_id;
 
     return response()->json([
         'status' => 'sukses',
@@ -201,6 +209,7 @@ class ReturnPembelianController extends Controller
         'lblMethod' => $lblMethod,
         'data_stok' => $dataStok['val_stok'],
         'data_satuan' => $dataStok['txt_satuan'],
+        'staff' => $staff
     ]);
   }
 
@@ -224,8 +233,9 @@ class ReturnPembelianController extends Controller
     }
 
     $codeRP = "RTN-".date('myd')."-".$kd;
-    $namaStaff = 'Jamilah';
-    return view ('/purchasing/returnpembelian/tambah-return',compact('codeRP', 'namaStaff'));
+    $staff['nama'] = Auth::user()->m_name;
+    $staff['id'] = Auth::User()->m_id;
+    return view ('/purchasing/returnpembelian/tambah-return',compact('codeRP', 'staff'));
   }
 
   public function lookupDataPembelian(Request $request)
@@ -233,7 +243,7 @@ class ReturnPembelianController extends Controller
     $formatted_tags = array();
     $term = trim($request->q);
     if (empty($term)) {
-      $sup = DB::table('d_purchasing')->where('d_pcs_status','=','CF')->orderBy('d_pcs_code', 'DESC')->limit(5)->get();
+      $sup = DB::table('d_purchasing')->where('d_pcs_status','=','RC')->orderBy('d_pcs_code', 'DESC')->limit(5)->get();
       foreach ($sup as $val) {
           $formatted_tags[] = ['id' => $val->d_pcs_id, 'text' => $val->d_pcs_code];
       }
@@ -241,7 +251,7 @@ class ReturnPembelianController extends Controller
     }
     else
     {
-      $sup = DB::table('d_purchasing')->where('d_pcs_status','=','CF')->orderBy('d_pcs_code', 'DESC')->where('d_pcs_code', 'LIKE', '%'.$term.'%')->limit(5)->get();
+      $sup = DB::table('d_purchasing')->where('d_pcs_status','=','RC')->orderBy('d_pcs_code', 'DESC')->where('d_pcs_code', 'LIKE', '%'.$term.'%')->limit(5)->get();
       foreach ($sup as $val) {
           $formatted_tags[] = ['id' => $val->d_pcs_id, 'text' => $val->d_pcs_code];
       }
@@ -293,36 +303,25 @@ class ReturnPembelianController extends Controller
   {
     //dd($request->all());
     DB::beginTransaction();
-    try {
-      //cek method return
+    try {      
+      //insert to table d_purchasingreturn
+      $dataHeader = new d_purchasingreturn;
+      $dataHeader->d_pcsr_pcsid = $request->cariNotaPurchase;
+      $dataHeader->d_pcsr_supid = $request->idSup;
+      $dataHeader->d_pcsr_code = $request->kodeReturn;
+      $dataHeader->d_pcsr_method = $request->metodeReturn;
+      $dataHeader->d_pcs_staff = $request->idStaff;
+      $dataHeader->d_pcsr_datecreated = date('Y-m-d',strtotime($request->tanggal));
+      $dataHeader->d_pcsr_pricetotal = $request->nilaiTotalReturnRaw;
       if ($request->metodeReturn == "PN") 
       {
-        //insert to table d_purchasingreturn
-        $dataHeader = new d_purchasingreturn;
-        $dataHeader->d_pcsr_pcsid = $request->cariNotaPurchase;
-        $dataHeader->d_pcsr_supid = $request->idSup;
-        $dataHeader->d_pcsr_code = $request->kodeReturn;
-        $dataHeader->d_pcsr_method = $request->metodeReturn;
-        $dataHeader->d_pcs_staff = $request->namaStaff;
-        $dataHeader->d_pcsr_datecreated = date('Y-m-d',strtotime($request->tanggal));
-        $dataHeader->d_pcsr_pricetotal = $this->konvertRp($request->nilaiTotalReturn);
-        $dataHeader->d_pcsr_priceresult = $this->konvertRp($request->nilaiTotalNett) - $this->konvertRp($request->nilaiTotalReturn);
-        $dataHeader->save();
+        $dataHeader->d_pcsr_priceresult = $this->konvertRp($request->nilaiTotalNett) - $request->nilaiTotalReturnRaw;
       }
-      else
+      elseif ($request->metodeReturn == "TK")
       {
-        //insert to table d_purchasingreturn
-        $dataHeader = new d_purchasingreturn;
-        $dataHeader->d_pcsr_pcsid = $request->cariNotaPurchase;
-        $dataHeader->d_pcsr_supid = $request->idSup;
-        $dataHeader->d_pcsr_code = $request->kodeReturn;
-        $dataHeader->d_pcsr_method = $request->metodeReturn;
-        $dataHeader->d_pcs_staff = $request->namaStaff;
-        $dataHeader->d_pcsr_datecreated = date('Y-m-d',strtotime($request->tanggal));
-        $dataHeader->d_pcsr_pricetotal = $this->konvertRp($request->nilaiTotalReturn);
         $dataHeader->d_pcsr_priceresult = $this->konvertRp($request->nilaiTotalNett);
-        $dataHeader->save();
       }
+      $dataHeader->save();
       
       //get last lastId then insert id to d_purchasingreturn_dt
       $lastId = d_purchasingreturn::select('d_pcsr_id')->max('d_pcsr_id');
@@ -393,7 +392,7 @@ class ReturnPembelianController extends Controller
             'sm_qty_used' => '0',
             'sm_qty_expired' => '0',
             'sm_detail' => "PENGURANGAN",
-            'sm_hpp' => $this->konvertRp($request->fieldHargaTotal[$i]),
+            'sm_hpp' => $request->fieldHargaTotalRaw[$i],
             /*'sm_hpptax' => '0',
             'sm_hppdisc' => '0',
             'sm_hppnett' => $this->konvertRp($request->fieldHargaTotal[$i]),*/
@@ -410,7 +409,6 @@ class ReturnPembelianController extends Controller
                         ->orderBy('sm_date')
                         ->get();
         //dd($getBarang);
-
         $sm_hpp = $getBarang[0]->sm_hpp;
         $total = [];
         $total[0] = ([
@@ -481,10 +479,15 @@ class ReturnPembelianController extends Controller
         $dataIsi->d_pcsrdt_sat = $request->fieldSatuanId[$i];
         $dataIsi->d_pcsrdt_qty = $request->fieldQty[$i];
         $dataIsi->d_pcsrdt_price = $request->fieldHargaRaw[$i];
-        $dataIsi->d_pcsrdt_pricetotal = $this->konvertRp($request->fieldHargaTotal[$i]);
+        $dataIsi->d_pcsrdt_pricetotal = $request->fieldHargaTotalRaw[$i];
         $dataIsi->d_pcsrdt_created = Carbon::now();
         $dataIsi->save();
-      }
+      }//end loop for
+
+      //update status po RC -> RV (Revisied)
+      DB::table('d_purchasing')
+              ->where('d_pcs_id', $request->cariNotaPurchase)
+              ->update(['d_pcs_status' => 'RV']);
 
       DB::commit();
       return response()->json([
@@ -507,27 +510,20 @@ class ReturnPembelianController extends Controller
     //dd($request->all());
     DB::beginTransaction();
     try {
-      //cek method return
+      //update to table d_purchasingreturn
+      $data_header = d_purchasingreturn::find($request->idReturn);
+      $data_header->d_pcsr_dateupdated = date('Y-m-d',strtotime(Carbon::now()));
+      $data_header->d_pcsr_updated = Carbon::now();
+      $data_header->d_pcsr_pricetotal = $request->priceTotalRaw;
       if ($request->methodReturn == "PN") 
       {
-        //update to table d_purchasingreturn
-        $data_header = d_purchasingreturn::find($request->idReturn);
-        $data_header->d_pcsr_dateupdated = date('Y-m-d',strtotime(Carbon::now()));
-        $data_header->d_pcsr_updated = Carbon::now();
-        $data_header->d_pcsr_pricetotal = $this->konvertRp($request->priceTotal);
-        $data_header->d_pcsr_priceresult = (int)$request->priceTotalNett - (int)$request->priceTotal;
-        $data_header->save();
+        $data_header->d_pcsr_priceresult = $request->priceTotalNett - $request->priceTotalRaw;
       }
       else
       {
-        //update to table d_purchasingreturn
-        $data_header = d_purchasingreturn::find($request->idReturn);
-        $data_header->d_pcsr_dateupdated = date('Y-m-d',strtotime(Carbon::now()));
-        $data_header->d_pcsr_updated = Carbon::now();
-        $data_header->d_pcsr_pricetotal = $this->konvertRp($request->priceTotal);
-        $data_header->d_pcsr_priceresult = (int)$request->priceTotalNett;
-        $data_header->save();
+        $data_header->d_pcsr_priceresult = $request->priceTotalNett;
       }
+      $data_header->save();
 
       //variabel untuk cek jumlah field
       $hitung_field_edit = count($request->fieldIdItem);
@@ -587,8 +583,8 @@ class ReturnPembelianController extends Controller
         //update to table d_purchasingreturn_dt
         $data_isi = d_purchasingreturn_dt::find($request->fieldIdDt[$i]);
         $data_isi->d_pcsrdt_qty = $request->fieldQty[$i];
-        $data_isi->d_pcsrdt_price = $this->konvertRp($request->fieldHarga[$i]);
-        $data_isi->d_pcsrdt_pricetotal = $this->konvertRp($request->fieldHargaTotal[$i]);
+        $data_isi->d_pcsrdt_price = $request->fieldHargaRaw[$i];
+        $data_isi->d_pcsrdt_pricetotal = $request->fieldHargaTotalRaw[$i];
         $data_isi->d_pcsrdt_updated = Carbon::now();
         $data_isi->save();
 
@@ -613,7 +609,7 @@ class ReturnPembelianController extends Controller
           ->where('sm_item', $request->fieldIdItem[$i])
           ->update([
             'sm_qty' => $hasilConvert,
-            'sm_hpp' => $this->konvertRp($request->fieldHargaTotal[$i]),
+            'sm_hpp' => $request->fieldHargaTotalRaw[$i],
             'sm_update' => Carbon::now(),
           ]);
 
@@ -776,11 +772,14 @@ class ReturnPembelianController extends Controller
           ->delete();
       }
 
+      //get id purchase and update status po RV -> RC (Received)
+      $idPurchase = d_purchasingreturn::select('d_pcsr_pcsid')->where('d_pcsr_id', $request->id)->first();
+      DB::table('d_purchasing')->where('d_pcs_id', $idPurchase->d_pcsr_pcsid)->update(['d_pcs_status' => 'RC']);
       //delete row table d_purchasingreturn_dt
       $deleteReturnDt = d_purchasingreturn_dt::where('d_pcsrdt_idpcsr', $request->id)->delete();
       //delete row table d_purchasingreturn
-      $deleteReturn = d_purchasingreturn::where('d_pcsr_id', $request->id)->delete();   
-      
+      $deleteReturn = d_purchasingreturn::where('d_pcsr_id', $request->id)->delete();
+    
       DB::commit();
       return response()->json([
           'status' => 'sukses',
@@ -812,11 +811,7 @@ class ReturnPembelianController extends Controller
     } 
     elseif ($typeBrg->i_type == "BJ") 
     {
-      $idGroupGdg = '7';
-    }
-    elseif ($typeBrg->i_type == "BP") 
-    {
-      $idGroupGdg = '6';
+      $idGroupGdg = '2';
     }
     return $idGroupGdg;
   }
@@ -825,33 +820,24 @@ class ReturnPembelianController extends Controller
   {
     foreach ($arrItemType as $val) 
     {
-        if ($val->i_type == "BP") //brg produksi
-        {
-            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '6' AND s_position = '6' limit 1) ,'0') as qtyStok"));
-            $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();
-            
-            $stok[] = $query[0];
-            $satuan[] = $satUtama->m_sname;
-            $counter++;
-        }
-        elseif ($val->i_type == "BJ") //brg jual
-        {
-            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
-            $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();
+      if ($val->i_type == "BJ") //brg jual
+      {
+          $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
+          $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();
 
-            $stok[] = $query[0];
-            $satuan[] = $satUtama->m_sname;
-            $counter++;
-        }
-        elseif ($val->i_type == "BB") //bahan baku
-        {
-            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '3' AND s_position = '3' limit 1) ,'0') as qtyStok"));
-            $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();
+          $stok[] = $query[0];
+          $satuan[] = $satUtama->m_sname;
+          $counter++;
+      }
+      elseif ($val->i_type == "BB") //bahan baku
+      {
+          $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '3' AND s_position = '3' limit 1) ,'0') as qtyStok"));
+          $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();
 
-            $stok[] = $query[0];
-            $satuan[] = $satUtama->m_sname;
-            $counter++;
-        }
+          $stok[] = $query[0];
+          $satuan[] = $satUtama->m_sname;
+          $counter++;
+      }
     }
 
     $data = array('val_stok' => $stok, 'txt_satuan' => $satuan);

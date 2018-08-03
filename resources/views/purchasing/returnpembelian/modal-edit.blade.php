@@ -8,8 +8,10 @@
       <input type="hidden" name="codeReturn" id="code_return" class="form-control">
       <input type="hidden" name="methodReturn" id="method_return" class="form-control">
       <input type="hidden" name="priceTotal" id="price_total" class="form-control">
+      <input type="hidden" name="priceTotalRaw" id="price_total_raw" class="form-control">
       <input type="hidden" name="priceTotalNett" id="price_total_nett" class="form-control">
       <input type="hidden" name="priceResult" id="price_result" class="form-control">
+      <input type="hidden" name="idStaffEdit" id="id_staff_edit" class="form-control">
 
       <!-- Modal content-->
       <div class="modal-content">
