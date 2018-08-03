@@ -268,85 +268,104 @@ class transferItemGrosirController extends Controller
          
   }
 
+  public function simpanTransferGrosir(Request $request){
+  DB::beginTransaction();
+      try {
+    //no req
+      $year = carbon::now()->format('y');
+      $month = carbon::now()->format('m');
+      $date = carbon::now()->format('d');
 
-      public function simpanTransferGrosir(Request $request){
-      return DB::transaction(function () use ($request) {
-      $ti_id=d_transferItem::max('ti_id')+1;
-      d_transferItem::create([
-                  'ti_id'         =>$ti_id,
-                  'ti_time'       =>date('Y-m-d',strtotime($request->tf_tanggal)), 
-                  'ti_code'       =>$request->tf_nomor, 
-                  'ti_order'      =>'GR',
-                  //'ti_orderstaff'   =>,
-                  'ti_note'       =>$request->tf_keterangan,
-                  'ti_isapproved' =>'Y',
-                  'ti_issent' =>'Y',
-                  
+      $idreq = d_transferItem::select('ti_id')->max('ti_id');        
+          if ($idreq <= 0 || $idreq <= '') {
+            $idreq  = 1;
+          }else{
+            $idreq += 1;
+          }                
+      $idreq = 'REQ'  . $year . $month . $date . $idreq;
+      //end no req
+      
+    $ti_id=d_transferItem::max('ti_id')+1;
+    d_transferItem::create([
+                'ti_id'         =>$ti_id,
+                'ti_time'       =>date('Y-m-d',strtotime($request->tf_tanggal)), 
+                'ti_code'       =>$idreq, 
+                'ti_order'      =>'GR',
+                //'ti_orderstaff'   =>,
+                'ti_note'       =>$request->tf_keterangan,
+                'ti_isapproved' =>'Y',
+                'ti_issent' =>'Y',
+                
+    ]);
+
+    for ($i=0; $i <count($request->kode_item) ; $i++) { 
+      $tidt_id=d_transferItemDt::where('tidt_id',$ti_id)->max('tidt_detail')+1;
+       d_transferItemDt::create([
+          'tidt_id'           =>$ti_id,
+          'tidt_detail'       =>$tidt_id, 
+          'tidt_item'     =>$request->kode_item[$i], 
+          'tidt_qty'      =>$request->sd_qty[$i],
+
+
+          'tidt_qty_appr'=>$request->sd_qty[$i],
+          'tidt_apprtime'=>date('Y-m-d g:i:s'),
+          'tidt_qty_send'=>$request->sd_qty[$i],
+          'tidt_sendtime'=>date('Y-m-d g:i:s'),
       ]);
 
-      for ($i=0; $i <count($request->kode_item) ; $i++) { 
-              $tidt_id=d_transferItemDt::where('tidt_id',$ti_id)->max('tidt_detail')+1;
-               d_transferItemDt::create([
-                  'tidt_id'           =>$ti_id,
-                  'tidt_detail'       =>$tidt_id, 
-                  'tidt_item'     =>$request->kode_item[$i], 
-                  'tidt_qty'      =>$request->sd_qty[$i],
 
 
-                  'tidt_qty_appr'=>$request->sd_qty[$i],
-                  'tidt_apprtime'=>date('Y-m-d g:i:s'),
-                  'tidt_qty_send'=>$request->sd_qty[$i],
-                  'tidt_sendtime'=>date('Y-m-d g:i:s'),
-              ]);
+        $stockGrosir=d_stock::                        
+             where('s_item',$request->kode_item[$i])->
+             where('s_comp',DB::raw('2'))->
+             where('s_position',DB::raw('2'));
 
-
-
-                $stockGrosir=d_stock::                        
-                     where('s_item',$request->kode_item[$i])->
-                     where('s_comp',DB::raw('2'))->
-                     where('s_position',DB::raw('2'));
-
-              if($stockGrosir->first()){
-                          $stockGrosir->update([
-                              's_qty'=>$stockGrosir->first()->s_qty-$request->sd_qty[$i]
-                          ]);
-              }else{
-                          DB::rollback();
-                          $data=['status'=>'Gagal','info'=>'Stok Tidak Mencukupi'];
-                          return json_encode($data);
-              }
-
-
-
-               //stock 11/3
-              $stockRetailInGrosir=d_stock::                        
-                     where('s_item',$request->kode_item[$i])->
-                     where('s_comp',DB::raw('1'))->
-                     where('s_position',DB::raw('2'));
-                     
-              if($stockRetailInGrosir->first()){
-                          $stockRetailInGrosir->update([
-                              's_qty'=>$stockRetailInGrosir->first()->s_qty+$request->sd_qty[$i]
-                          ]);
-                  }else{
-                          $s_id=d_stock::max('s_id');
-                          d_stock::create([
-                                  's_id'      =>$s_id+1,
-                                  's_comp'    =>1,
-                                  's_position' =>2,
-                                  's_item'    =>$request->kode_item[$i],
-                                  's_qty'     =>$request->sd_qty[$i],
-
-                          ]);
-                  }
-
-
+      if($stockGrosir->first()){
+                  $stockGrosir->update([
+                      's_qty'=>$stockGrosir->first()->s_qty-$request->sd_qty[$i]
+                  ]);
+      }else{
+                  DB::rollback();
+                  $data=['status'=>'Gagal','info'=>'Stok Tidak Mencukupi'];
+                  return json_encode($data);
       }
 
-      $data=['status'=>'sukses'];     
-      return json_encode($data);
-     
-  });
+
+
+       //stock 11/3
+      $stockRetailInGrosir=d_stock::                        
+             where('s_item',$request->kode_item[$i])->
+             where('s_comp',DB::raw('1'))->
+             where('s_position',DB::raw('2'));
+             
+      if($stockRetailInGrosir->first()){
+                  $stockRetailInGrosir->update([
+                      's_qty'=>$stockRetailInGrosir->first()->s_qty+$request->sd_qty[$i]
+                  ]);
+          }else{
+                  $s_id=d_stock::max('s_id');
+                  d_stock::create([
+                          's_id'      =>$s_id+1,
+                          's_comp'    =>1,
+                          's_position' =>2,
+                          's_item'    =>$request->kode_item[$i],
+                          's_qty'     =>$request->sd_qty[$i],
+
+                  ]);
+          }
+        }
+    DB::commit();
+    return response()->json([
+        'status' => 'sukses',
+        'nota' => $idreq
+      ]);
+    } catch (\Exception $e) {
+    DB::rollback();
+    return response()->json([
+      'status' => 'gagal',
+      'data' => $e
+      ]);
+    }
   }
 
    public function dataTransferGrosir(Request $request, $tgl3, $tgl4, $tampil1){  

@@ -254,20 +254,6 @@
       }
     });
 
-    $('#rnamaitem').keypress(function(e){
-      var charCode;
-      if ((e.which && e.which == 13)) {
-        charCode = e.which;
-      }else if (window.event) {
-          e = window.event;
-          charCode = e.keyCode;
-      }
-      if ((e.which && e.which == 13)){
-        return false;
-      }
-    });
-
-
     tableReq = $('#detail-req').DataTable();
 
       //transfer thoriq

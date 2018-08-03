@@ -172,7 +172,6 @@
   } 
 
   function updatePrice(){
-    if(!confirm("Apakah Anda yakin ingin update harga?")) return false;
     var data = $('#myFormUpdate').serialize();
     $.ajaxSetup({
         headers: {
@@ -185,10 +184,17 @@
       data: data,
       success : function(response){
         if (response.status=='sukses'){
-          alert('Data harga berhasil di update!');
-          dataHarga.ajax.reload( null, false );
+          dataHarga.ajax.reload();
+          iziToast.success({timeout: 5000, 
+                          position: "topRight",
+                          icon: 'fa fa-chrome', 
+                          title: '', 
+                          message: 'Berhasil update harga.'});
+          $('#myModalEdit').modal('hide');
         }else{
-          alert('Data harga gagal di update! ')
+          iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'Gagal update harga.'}); 
         }
       }
     });
