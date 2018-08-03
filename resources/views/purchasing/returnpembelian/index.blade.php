@@ -32,56 +32,26 @@
           </div>
                     
           <ul id="generalTab" class="nav nav-tabs">
-            <li class="active"><a href="#alert-tab" data-toggle="tab">Return Pembelian</a></li>
-          <!-- <li><a href="#note-tab" data-toggle="tab">2</a></li>
-          <li><a href="#label-badge-tab-tab" data-toggle="tab">3</a></li> -->
+            <li class="active"><a href="#index-tab" data-toggle="tab">Return Pembelian</a></li>
+            <li><a href="#revisi-tab" data-toggle="tab" onclick="lihatRevisipoByTgl()">Revisi PO</a></li>
           </ul>
 
           <div id="generalTabContent" class="tab-content responsive" >
-            <div id="alert-tab" class="tab-pane fade in active">
-            <div class="row">
-          <div class="col-lg-12">
-          
-          <div class="pull-right" style="margin-bottom: 10px;">
-            <a href="{{ url('purchasing/returnpembelian/tambah-return') }}">
-              <button type="button" class="btn btn-box-tool" title="Tambahkan Data Item">
-                <i class="fa fa-plus" aria-hidden="true">&nbsp;</i>
-                Tambah Data
-              </button>
-            </a>
+            <!-- div index-tab -->  
+            @include('purchasing.returnpembelian.tab-index')
+            <!-- div revisi-tab -->
+            @include('purchasing.returnpembelian.tab-revisi')
           </div>
-
-          <div class="table-responsive">
-            <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="tabel-return">
-              <thead>
-                <tr>
-                  <th class="wd-5p">No.</th>
-                  <th class="wd-10p">Tgl Return</th>
-                  <th class="wd-15p">ID Return</th>
-                  <th class="wd-10p">Staff</th>
-                  <th class="wd-10p">Metode</th>
-                  <th class="wd-15p">Supplier</th>
-                  <th class="wd-15p">Total Retur</th>
-                  <th class="wd-15p">Status</th>
-                  <th class="wd-15p">Aksi</th>
-                </tr>
-              </thead>
-
-              <tbody>                 
-              </tbody>
-            </table> 
-          </div>
-              
+          <!-- modal -->
+          <!--modal detail-->
+          @include('purchasing.returnpembelian.modal-detail')
+          <!--modal edit-->
+          @include('purchasing.returnpembelian.modal-edit')
+          <!-- /modal -->
         </div>
       </div>
     </div>
   </div>
-  <!-- modal -->
-    <!--modal detail-->
-    @include('purchasing.returnpembelian.modal-detail')
-    <!--modal edit-->
-    @include('purchasing.returnpembelian.modal-edit')
- <!-- /modal -->
 </div>
 <!--END PAGE WRAPPER-->
 @endsection
@@ -131,7 +101,7 @@
           {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
           {"data" : "tglBuat", "width" : "10%"},
           {"data" : "d_pcsr_code", "width" : "10%"},
-          {"data" : "d_pcs_staff", "width" : "10%"},
+          {"data" : "m_name", "width" : "10%"},
           {"data" : "metode", "width" : "10%"},
           {"data" : "s_company", "width" : "15%"},
           {"data" : "hargaTotal", "width" : "15%"},
@@ -161,6 +131,7 @@
       var button_id = $(this).attr('id');
       $('#row'+button_id+'').remove();
       totalNilaiReturn();
+      totalNilaiReturnRaw();
     });
 
     // fungsi jika modal hidden
@@ -185,10 +156,13 @@
       var qtyReturn = $(this).val();
       //alert(qtyReturn);
       var cost = $('#costRaw_'+getid+'').val();
+      var hasilTotalRaw = parseFloat(qtyReturn * cost).toFixed(2);
       var hasilTotal = parseInt(qtyReturn * cost);
       var totalCost = $('#total_'+getid+'').val(convertDecimalToRupiah(hasilTotal));
+      var totalCostRaw = $('#totalRaw_'+getid+'').val(hasilTotalRaw);
       // $(this).val(potonganRp);
       totalNilaiReturn();
+      totalNilaiReturnRaw();
       $('#button_save').attr('disabled', false);
     });
 
@@ -210,14 +184,10 @@
         $('#lblNotaPembelian').text(data.header[0].d_pcs_code);
         $('#lblCodeReturn').text(data.header[0].d_pcsr_code);
         $('#lblTglReturn').text(data.header2.tanggalReturn);
-        $('#lblStaff').text(data.header[0].d_pcs_staff);
+        $('#lblStaff').text(data.header[0].m_name);
         $('#lblSupplier').text(data.header[0].s_company);
         $('#lblMetode').text(data.lblMethod);
         $('#lblTotalReturn').text(data.header2.hargaTotalReturn);
-        // $('[name="totalHarga"]').val(data.header2.hargaBruto);
-        // $('[name="diskonHarga"]').val(data.header2.nilaiDiskon);
-        // $('[name="ppnHarga"]').val(data.header2.nilaiPajak);
-        // $('[name="totalHargaFinal"]').val(data.header2.hargaNet);
         //loop data
         Object.keys(data.data_isi).forEach(function(){
           $('#tabel-detail').append('<tr class="tbl_modal_detail_row" id="row'+i+'">'
@@ -256,7 +226,8 @@
         $('#lblCodeReturnEdit').text(data.header[0].d_pcsr_code);
         $('#lblNotaPembelianEdit').text(data.header[0].d_pcs_code);
         $('#lblTglReturnEdit').text(data.header2.tanggalReturn);
-        $('#lblStaffEdit').text(data.header[0].d_pcs_staff);
+        $('#lblStaffEdit').text(data.staff['nama']);
+        $('#id_staff_edit').val(data.staff['id']);
         $('#lblSupplierEdit').text(data.header[0].s_company);
         $('#lblMetodeEdit').text(data.lblMethod);
         $('#lblTotalReturnEdit').text(data.header2.hargaTotalReturn);
@@ -272,6 +243,7 @@
           var qtyCost = data.data_isi[key-1].d_pcsrdt_qty;
           var hargaSatuanItemNet = data.data_isi[key-1].d_pcsrdt_price
           var hargaTotalItemNet = Math.round(parseFloat(qtyCost * hargaSatuanItemNet).toFixed(2));
+          var hargaTotalPerRow = hargaSatuanItemNet * qtyCost;
           //console.log(hargaSatuanItemNet);
           $('#tabel-edit').append('<tr class="tbl_modal_edit_row" id="row'+i+'">'
                           +'<td style="text-align:center">'+key+'</td>'
@@ -285,15 +257,17 @@
                           +'<input type="hidden" value="'+data.data_isi[key-1].m_sid+'" name="fieldSatuanId[]" class="form-control input-sm" readonly/></td>'
                           +'<td><input type="text" value="'+convertDecimalToRupiah(hargaSatuanItemNet)+'" name="fieldHarga[]" class="form-control input-sm" id="cost_'+i+'" readonly/>'
                           +'<input type="hidden" value="'+hargaSatuanItemNet+'" name="fieldHargaRaw[]" id="costRaw_'+i+'" class="form-control input-sm field_harga_raw numberinput" readonly/></td>'
-                          +'<td><input type="text" value="'+convertDecimalToRupiah(hargaTotalItemNet)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem" id="total_'+i+'" readonly/></td>'
+                          +'<td><input type="text" value="'+convertDecimalToRupiah(hargaTotalPerRow)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem" id="total_'+i+'" readonly/>'
+                          +'<input type="hidden" value="'+hargaTotalPerRow+'" name="fieldHargaTotalRaw[]" id="totalRaw_'+i+'" class="form-control input-sm hargaTotalItemRaw numberinput" readonly/></td>'
                           +'<td><input type="text" value="'+data.data_stok[key-1].qtyStok+' '+data.data_satuan[key-1]+'" name="fieldStokTxt[]" class="form-control input-sm" readonly/>'
                           +'<input type="hidden" value="'+data.data_stok[key-1].qtyStok+'" name="fieldStokVal[]" class="form-control input-sm" readonly/></td>'
-                          +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm">X</button></td>'
+                          +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm" disabled>X</button></td>'
                           +'</tr>');
           i = randString(5);
           key++;
         });
         totalNilaiReturn();
+        totalNilaiReturnRaw();
         $('#modal-edit').modal('show');
       },
       error: function (jqXHR, textStatus, errorThrown)
@@ -429,6 +403,26 @@
     // console.log(total);
     $('#lblTotalReturnEdit').text(total);
     $('#price_total').val(total);
+  }
+
+  function totalNilaiReturnRaw()
+  {
+    var inputs = document.getElementsByClassName( 'hargaTotalItemRaw' ),
+    hasil  = [].map.call(inputs, function( input ) 
+    {
+      if(input.value == '') input.value = 0;
+      return input.value;
+    });
+    //console.log(hasil);
+    var total = 0;
+    for (var i = 0; i < hasil.length; i++){
+      total = (parseFloat(total) + parseFloat(hasil[i])).toFixed(2);
+      // console.log(total);
+    }
+      if (isNaN(total)) {
+        total = parseFloat(0).toFixed(2);
+      }
+    $('[name="priceTotalRaw"]').val(total);
   }
 
 </script>

@@ -392,7 +392,7 @@
           {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
           {"data" : "tglReturn", "width" : "10%"},
           {"data" : "d_pcsr_code", "width" : "10%"},
-          {"data" : "d_pcs_staff", "width" : "10%"},
+          {"data" : "m_name", "width" : "10%"},
           {"data" : "metode", "width" : "15%"},
           {"data" : "s_company", "width" : "15%"},
           {"data" : "hargaTotal", "width" : "15%"},
@@ -567,10 +567,10 @@
         $("#id_return").val(data.header[0].d_pcsr_id);
         $("#status_return_confirm").val(data.header[0].d_pcsr_status);
         $('#lblCodeReturnConfirm').text(data.header[0].d_pcsr_code);
-        $('#lblTglReturnConfirm').text(data.header[0].d_pcsr_datecreated);
-        $('#lblStaffReturnConfirm').text(data.header[0].d_pcs_staff);
+        $('#lblTglReturnConfirm').text(data.header2.tanggalReturn);
+        $('#lblStaffReturnConfirm').text(data.header[0].m_name);
         $('#lblSupplierReturnConfirm').text(data.header[0].s_company);
-        $('#lblTotalReturnConfirm').text(convertDecimalToRupiah(data.header[0].d_pcsr_pricetotal));
+        $('#lblTotalReturnConfirm').text(data.header2.hargaTotalReturn);
         
         if ($("#status_return_confirm").val() != "CF") 
         {
@@ -583,10 +583,10 @@
                             +'<td>'+data.data_isi[key-1].d_pcsrdt_qty
                             +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_qty+'" name="fieldConfirmReturn[]" id="'+i+'" class="form-control numberinput input-sm field_qty_confirm">'
                             +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_id+'" name="fieldIdDtReturn[]" class="form-control input-sm"/></td>'
-                            +'<td>'+data.data_isi[key-1].i_sat1+'</td>'
+                            +'<td>'+data.data_isi[key-1].m_sname+'</td>'
                             +'<td id="price_'+i+'">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_price)+'</td>'
                             +'<td id="total_'+i+'">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_pricetotal)+'</td>'
-                            +'<td>'+data.data_stok[key-1].qtyStok+'</td>'
+                            +'<td>'+data.data_stok[key-1].qtyStok+' '+data.data_satuan[key-1]+'</td>'
                             +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove_row_order btn-sm" disabled>X</button></td>'
                             +'</tr>');
             i = randString(5);
@@ -604,10 +604,10 @@
                             +'<td>'+data.data_isi[key-1].d_pcsrdt_qty
                             +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_qty+'" name="fieldConfirmReturn[]" id="'+i+'" class="form-control numberinput input-sm field_qty_confirm">'
                             +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_id+'" name="fieldIdDtReturn[]" class="form-control input-sm"/></td>'
-                            +'<td>'+data.data_isi[key-1].i_sat1+'</td>'
+                            +'<td>'+data.data_isi[key-1].m_sname+'</td>'
                             +'<td id="price_'+i+'">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_price)+'</td>'
                             +'<td id="total_'+i+'">'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsrdt_pricetotal)+'</td>'
-                            +'<td>'+data.data_stok[key-1].qtyStok+'</td>'
+                            +'<td>'+data.data_stok[key-1].qtyStok+' '+data.data_satuan[key-1]+'</td>'
                             +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove_row_order btn-sm">X</button></td>'
                             +'</tr>');
             i = randString(5);

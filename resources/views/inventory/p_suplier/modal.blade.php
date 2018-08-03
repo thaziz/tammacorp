@@ -58,58 +58,18 @@
               </div>
             </div>
 
-            <div class="col-md-2 col-sm-12 col-xs-12">
-              <label class="tebal">Total Pembelian Gross</label>
-            </div>
-
             <div class="col-md-4 col-sm-12 col-xs-12">
               <div class="form-group">
-                <input type="text" name="headTotalGross" id="head_total_gross" readonly="" class="form-control input-sm">
-              </div>
-            </div>
-
-            <div class="col-md-2 col-sm-12 col-xs-12">
-              <label class="tebal">Total Disc</label>
-            </div>
-
-            <div class="col-md-4 col-sm-12 col-xs-12">
-              <div class="form-group">
-                <input type="text" name="headTotalDisc" id="head_total_disc" readonly="" class="form-control input-sm">
-              </div>
-            </div>
-
-            <div class="col-md-2 col-sm-12 col-xs-12">
-              <label class="tebal">Pajak</label>
-            </div>
-
-            <div class="col-md-4 col-sm-12 col-xs-12">
-              <div class="form-group">
-                <input type="text" name="headTotalTax" id="head_total_tax" readonly="" class="form-control input-sm">
-              </div>
-            </div>
-
-            <div class="col-md-2 col-sm-12 col-xs-12">
-              <label class="tebal">Total Pembelian Nett</label>
-            </div>
-
-            <div class="col-md-4 col-sm-12 col-xs-12">
-              <div class="form-group">
-                <input type="text" name="headTotalNett" id="head_total_nett" readonly="" class="form-control input-sm">
-              </div>
-            </div>
-
-            <div class="col-md-2 col-sm-12 col-xs-12">
-              <label class="tebal">Total Terima</label>
-            </div>
-
-            <div class="col-md-4 col-sm-12 col-xs-12">
-              <div class="form-group">
-                <input type="text" name="headTotalTerima" id="head_total_terima" readonly="" class="form-control input-sm">
+                <input type="text" name="headTotalGross" id="head_total_gross" readonly="" class="form-control input-sm hidden">
+                <input type="text" name="headTotalDisc" id="head_total_disc" readonly="" class="form-control input-sm hidden">
+                <input type="text" name="headTotalTax" id="head_total_tax" readonly="" class="form-control input-sm hidden">
+                <input type="text" name="headTotalNett" id="head_total_nett" readonly="" class="form-control input-sm hidden">
+                <input type="text" name="headTotalTerima" id="head_total_terima" readonly="" class="form-control input-sm hidden">
               </div>
             </div>
 
             <div id="appending"></div>
-
+            
           </div>
           
           <div class="table-responsive">
@@ -121,8 +81,8 @@
                   <th width="7%">Qty</th>
                   <th width="7%">Qty Terima</th>
                   <th width="10%">Satuan</th>
-                  <th width="13%">Harga</th>
-                  <th width="15%">Total</th>
+                  <!-- <th width="13%">Harga</th>
+                  <th width="15%">Total</th> -->
                   <th width="13%">Stok</th>
                   <th width="5%">Aksi</th>
                 </tr>

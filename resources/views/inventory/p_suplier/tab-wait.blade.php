@@ -2,8 +2,8 @@
   <div class="row">
     <div class="panel-body">
 
-      <div class="col-md-2 col-sm-3 col-xs-12">
-        <label class="tebal">Tanggal Penerimaan</label>
+      <div class="col-md-3 col-sm-3 col-xs-12">
+        <label class="tebal">Tanggal pembelian (PO)</label>
       </div>
 
       <div class="col-md-4 col-sm-6 col-xs-12">
@@ -17,7 +17,7 @@
       </div>
 
       <div class="col-md-3 col-sm-3 col-xs-12" align="center">
-        <button class="btn btn-primary btn-sm btn-flat autoCari" type="button" onclick="cariTanggal()">
+        <button class="btn btn-primary btn-sm btn-flat autoCari" type="button" onclick="listWaitingByTgl()">
           <strong>
             <i class="fa fa-search" aria-hidden="true"></i>
           </strong>
@@ -36,13 +36,13 @@
               <tr>
                   <th>No</th>
                   <th>Kode PO</th>
+                  <th>Supplier</th>
                   <th>Nama Item</th>
-                  <th width="5%">Qty Masuk</th>
-                  <th width="5%">Qty Terima</th>
-                  <th>Tgl Terima</th>
-                  <th>Jam Terima</th>
+                  <th>Satuan</th>
+                  <th width="5%">Qty PO</th>
+                  <th width="5%">Qty Sisa</th>
+                  <th>Tgl PO</th>
                   <th width="10%">Status</th>
-                  <th width="11%" style="text-align: center">Aksi</th>
               </tr>
             </thead>
             <tbody>

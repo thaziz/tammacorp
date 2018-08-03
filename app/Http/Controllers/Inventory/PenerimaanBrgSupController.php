@@ -145,11 +145,11 @@ class PenerimaanBrgSupController extends Controller
         foreach ($dataHeader as $val) 
         {   $total_disc = (int)$val->d_pcs_discount + (int)$val->d_pcs_disc_value;
             $data = array(
-                'hargaTotBeliGross' => 'Rp. '.number_format($val->d_pcs_total_gross,2,",","."),
+                /*'hargaTotBeliGross' => 'Rp. '.number_format($val->d_pcs_total_gross,2,",","."),
                 'hargaTotBeliDisc' => 'Rp. '.number_format($total_disc,2,",","."),
                 'hargaTotBeliTax' => 'Rp. '.number_format($val->d_pcs_tax_value,2,",","."),
                 'hargaTotBeliNett' => 'Rp. '.number_format($val->d_pcs_total_net,2,",","."),
-                'hargaTotalTerimaNett' => 'Rp. '.number_format($val->d_tb_totalnett,2,",","."),
+                'hargaTotalTerimaNett' => 'Rp. '.number_format($val->d_tb_totalnett,2,",","."),*/
                 'tanggalTerima' => date('d-m-Y',strtotime($val->d_tb_date))
             );
         }
@@ -183,6 +183,35 @@ class PenerimaanBrgSupController extends Controller
             'data_isi' => $dataIsi,
             'data_stok' => $dataStok['val_stok'],
             'data_satuan' => $dataStok['txt_satuan'],
+        ]);
+    }
+
+    public function getPenerimaanPeritem($id)
+    {
+        $dataHeader = d_purchasing_dt::join('d_purchasing','d_purchasing_dt.d_pcs_id','=','d_purchasing.d_pcs_id')
+            ->join('d_supplier','d_purchasing_dt.d_pcsdt_sid','=','d_supplier.s_id')
+            ->select('d_purchasing.d_pcs_code', 'd_purchasing_dt.d_pcsdt_qty', 'd_purchasing.d_pcs_date_created', 'd_supplier.s_company')
+            ->where('d_purchasing_dt.d_pcsdt_id', '=', $id)
+            ->get();
+
+        $dataIsi = d_terima_pembelian_dt::join('d_terima_pembelian', 'd_terima_pembelian_dt.d_tbdt_idtb', '=', 'd_terima_pembelian.d_tb_id')
+            ->join('m_item', 'd_terima_pembelian_dt.d_tbdt_item', '=', 'm_item.i_id')
+            ->join('m_satuan', 'd_terima_pembelian_dt.d_tbdt_sat', '=', 'm_satuan.m_sid')
+            ->select('m_item.i_name', 'm_item.i_code', 'm_satuan.m_sname', 'd_terima_pembelian_dt.d_tbdt_qty', 'd_terima_pembelian.d_tb_code', 'd_terima_pembelian_dt.d_tbdt_date_received', 'd_terima_pembelian.d_tb_date')
+            ->where('d_terima_pembelian_dt.d_tbdt_idpcsdt', '=', $id)
+            ->orderBy('d_terima_pembelian_dt.d_tbdt_date_received', 'ASC')
+            ->get();
+
+        foreach ($dataIsi as $val) 
+        {   
+          $tanggalTerima[] = date('d-m-Y',strtotime($val->d_tbdt_date_received));
+        }
+        
+        return response()->json([
+            'status' => 'sukses',
+            'header' => $dataHeader,
+            'isi' => $dataIsi,
+            'tanggalTerima' => $tanggalTerima
         ]);
     }
 
@@ -256,9 +285,6 @@ class PenerimaanBrgSupController extends Controller
             }
             $dataHeader->d_tb_created = Carbon::now();
             $dataHeader->save();
-
-            //update status purchasing to RC = "RECEIVED"
-            DB::table('d_purchasing')->where('d_pcs_id', $request->headNotaPurchase)->update(['d_pcs_status' => 'RC']);
                   
             //get last lastId then insert id to d_terimapembelian_dt
             $lastId = d_terima_pembelian::select('d_tb_id')->max('d_tb_id');
@@ -269,7 +295,6 @@ class PenerimaanBrgSupController extends Controller
 
             //variabel untuk hitung array field
             $hitung_field = count($request->fieldItemId);
-
 
             //update d_stock, insert d_stock_mutation & insert d_terimapembelian_dt
             for ($i=0; $i < $hitung_field; $i++) 
@@ -332,9 +357,9 @@ class PenerimaanBrgSupController extends Controller
                   'sm_qty_used' => '0',
                   'sm_qty_expired' => '0',
                   'sm_detail' => "PENAMBAHAN",
-                  'sm_hpp' => $this->konvertRp($request->fieldHargaTotal[$i]),
+                  'sm_hpp' => $request->fieldHargaTotalRaw[$i],
                   'sm_sell' => '0',
-                  'sm_reff' => $request->headKodeTerima,
+                  'sm_reff' => $request->headNotaTxt,
                   'sm_insert' => Carbon::now(),
                 ]);
 
@@ -347,7 +372,7 @@ class PenerimaanBrgSupController extends Controller
                 $dataIsi->d_tbdt_idpcsdt = $request->fieldIdPurchaseDet[$i];
                 $dataIsi->d_tbdt_qty = $request->fieldQtyterima[$i];
                 $dataIsi->d_tbdt_price = $request->fieldHargaRaw[$i];
-                $dataIsi->d_tbdt_pricetotal = $this->konvertRp($request->fieldHargaTotal[$i]);
+                $dataIsi->d_tbdt_pricetotal = $request->fieldHargaTotalRaw[$i];
                 $dataIsi->d_tbdt_date_received = date('Y-m-d',strtotime($request->headTglTerima));
                 $dataIsi->d_tbdt_created = Carbon::now();
                 $dataIsi->save();
@@ -362,14 +387,16 @@ class PenerimaanBrgSupController extends Controller
                       ->where('d_pcsdt_id', $request->fieldIdPurchaseDet[$i])
                       ->update(['d_pcsdt_isreceived' => 'TRUE']);
                 }
-                
             }
 
+            //cek pada table purchasingdt, jika isreceived semua tbl header ubah status ke RC
+            $this->cek_status_purchasing($request->headNotaPurchase);
+            
             DB::commit();
             return response()->json([
-                  'status' => 'sukses',
-                  'pesan' => 'Data Penerimaan Pembelian Berhasil Disimpan'
-              ]);
+                'status' => 'sukses',
+                'pesan' => 'Data Penerimaan Pembelian Berhasil Disimpan'
+            ]);
         } 
         catch (\Exception $e) 
         {
@@ -467,6 +494,8 @@ class PenerimaanBrgSupController extends Controller
           d_terima_pembelian_dt::where('d_tbdt_idtb', $request->id)->delete();
           //delete row table d_terima_pembelian
           d_terima_pembelian::where('d_tb_id', $request->id)->delete();
+          //cek pada table purchasingdt, jika isreceived semua tbl header ubah status ke RC
+          $this->cek_status_purchasing($query2->d_tb_pid);
           
           DB::commit();
           return response()->json([
@@ -526,477 +555,166 @@ class PenerimaanBrgSupController extends Controller
         return $idGroupGdg;
     }
 
+    public function getListWaitingByTgl($tgl1, $tgl2)
+    {
+        $y = substr($tgl1, -4);
+        $m = substr($tgl1, -7,-5);
+        $d = substr($tgl1,0,2);
+         $tanggal1 = $y.'-'.$m.'-'.$d;
+
+        $y2 = substr($tgl2, -4);
+        $m2 = substr($tgl2, -7,-5);
+        $d2 = substr($tgl2,0,2);
+        $tanggal2 = $y2.'-'.$m2.'-'.$d2;
+
+        $data = DB::table('d_purchasing_dt')
+                  ->select('d_purchasing_dt.*','d_purchasing.d_pcs_date_created','d_purchasing.d_pcs_code','m_item.i_name','m_item.i_code','m_item.i_sat1','m_item.i_id','d_supplier.s_company','m_satuan.m_sname','m_satuan.m_sid')
+                  ->leftJoin('d_purchasing','d_purchasing_dt.d_pcs_id','=','d_purchasing.d_pcs_id')
+                  ->leftJoin('m_item','d_purchasing_dt.i_id','=','m_item.i_id')
+                  ->leftJoin('m_satuan','d_purchasing_dt.d_pcsdt_sat','=','m_satuan.m_sid')
+                  ->leftJoin('d_supplier','d_purchasing_dt.d_pcsdt_sid','=','d_supplier.s_id')                  
+                  ->where('d_purchasing_dt.d_pcsdt_isreceived', '=', "FALSE")
+                  ->whereBetween('d_purchasing.d_pcs_date_created', [$tanggal1, $tanggal2])
+                  ->orderBy('d_purchasing.d_pcs_date_created', 'DESC')
+                  ->get();
+
+        for ($z=0; $z < count($data); $z++) 
+        {   
+          //variabel untuk menyimpan penjumlahan array qty penerimaan
+          $hasil_qty_rcv = 0;
+          //get data qty received
+          $qtyRcv = DB::select(DB::raw("SELECT IFNULL(sum(d_tbdt_qty), 0) as zz FROM d_terima_pembelian_dt where d_tbdt_idpcsdt = '".$data[$z]->d_pcsdt_id."'"));
+          
+          foreach ($qtyRcv as $nilai) 
+          {
+            $hasil_qty_rcv = (int)$nilai->zz;
+          }
+          //create new object properties and assign value
+          $data[$z]->qty_remain = $data[$z]->d_pcsdt_qtyconfirm - $hasil_qty_rcv;
+        }
+
+        return DataTables::of($data)
+        ->addIndexColumn()
+        ->editColumn('status', function ($data)
+        {
+          if ($data->d_pcsdt_isreceived == "FALSE") 
+          {
+            return '<span class="label label-info">Belum Diterima</span>';
+          }
+          elseif ($data->d_pcsdt_isreceived == "TRUE") 
+          {
+            return '<span class="label label-success">Disetujui</span>';
+          }
+        })
+        ->editColumn('tglBuat', function ($data) 
+        {
+            if ($data->d_pcsdt_created == null) 
+            {
+                return '-';
+            }
+            else 
+            {
+                return $data->d_pcsdt_created ? with(new Carbon($data->d_pcsdt_created))->format('d M Y') : '';
+            }
+        })
+        ->rawColumns(['status'])
+        ->make(true);
+    }
+
+    public function getListReceivedByTgl($tgl1, $tgl2)
+    {
+        $y = substr($tgl1, -4);
+        $m = substr($tgl1, -7,-5);
+        $d = substr($tgl1,0,2);
+         $tanggal1 = $y.'-'.$m.'-'.$d;
+
+        $y2 = substr($tgl2, -4);
+        $m2 = substr($tgl2, -7,-5);
+        $d2 = substr($tgl2,0,2);
+        $tanggal2 = $y2.'-'.$m2.'-'.$d2;
+
+        $data = DB::table('d_purchasing_dt')
+                  ->select('d_purchasing_dt.*','d_purchasing.d_pcs_date_created','d_purchasing.d_pcs_code','m_item.i_name','m_item.i_code','m_item.i_sat1','m_item.i_id','d_supplier.s_company','m_satuan.m_sname','m_satuan.m_sid')
+                  ->leftJoin('d_purchasing','d_purchasing_dt.d_pcs_id','=','d_purchasing.d_pcs_id')
+                  ->leftJoin('m_item','d_purchasing_dt.i_id','=','m_item.i_id')
+                  ->leftJoin('m_satuan','d_purchasing_dt.d_pcsdt_sat','=','m_satuan.m_sid')
+                  ->leftJoin('d_supplier','d_purchasing_dt.d_pcsdt_sid','=','d_supplier.s_id')                  
+                  ->where('d_purchasing_dt.d_pcsdt_isreceived', '=', "TRUE")
+                  ->whereBetween('d_purchasing.d_pcs_date_created', [$tanggal1, $tanggal2])
+                  ->orderBy('d_purchasing.d_pcs_date_created', 'DESC')
+                  ->get();
+
+        for ($z=0; $z < count($data); $z++) 
+        {   
+          //variabel untuk menyimpan penjumlahan array qty penerimaan
+          $hasil_qty_rcv = 0;
+          //get data qty received
+          $qtyRcv = DB::select(DB::raw("SELECT IFNULL(sum(d_tbdt_qty), 0) as zz FROM d_terima_pembelian_dt where d_tbdt_idpcsdt = '".$data[$z]->d_pcsdt_id."'"));
+          
+          foreach ($qtyRcv as $nilai) 
+          {
+            $hasil_qty_rcv = (int)$nilai->zz;
+          }
+          //create new object properties and assign value
+          $data[$z]->qty_received = $hasil_qty_rcv;
+        }
+
+        return DataTables::of($data)
+        ->addIndexColumn()
+        ->editColumn('status', function ($data)
+        {
+          if ($data->d_pcsdt_isreceived == "FALSE") 
+          {
+            return '<span class="label label-info">Belum Diterima</span>';
+          }
+          elseif ($data->d_pcsdt_isreceived == "TRUE") 
+          {
+            return '<span class="label label-success">Diterima</span>';
+          }
+        })
+        ->editColumn('tglBuat', function ($data) 
+        {
+          if ($data->d_pcsdt_created == null) 
+          {
+              return '-';
+          }
+          else 
+          {
+              return $data->d_pcsdt_created ? with(new Carbon($data->d_pcsdt_created))->format('d M Y') : '';
+          }
+        })
+        ->addColumn('action', function($data)
+        {
+          return '<div class="text-center">
+                      <button class="btn btn-sm btn-success" title="Detail"
+                          onclick=detailListReceived("'.$data->d_pcsdt_id.'")><i class="fa fa-eye"></i> 
+                      </button>
+                  </div>';
+        })
+        ->rawColumns(['status','action'])
+        ->make(true);
+    }
+
     public function konvertRp($value)
     {
         $value = str_replace(['Rp', '\\', '.', ' '], '', $value);
         return (int)str_replace(',', '.', $value);
     }
 
+    public function cek_status_purchasing($id_purchasing)
+    {
+      //tanggal sekarang
+      $tgl = Carbon::today()->toDateString();
+      //cek pada table purchasingdt, jika isreceived semua tbl header ubah status ke RC
+      $data_dt = DB::table('d_purchasing_dt')->select('d_pcsdt_isreceived')->where('d_pcs_id', '=', $id_purchasing)->get();
+
+      foreach ($data_dt as $x) { $data_status[] = $x->d_pcsdt_isreceived; }
+
+      if (!in_array("FALSE", $data_status, TRUE)) 
+      {
+        DB::table('d_purchasing')->where('d_pcs_id', $id_purchasing)->update(['d_pcs_status' => 'RC', 'd_pcs_date_received' => $tgl]);
+      }
+    }
+
     // ============================================================================================================== //
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public function get_penerimaan_by_tgl($tgl1,$tgl2,$akses)
-    {
-        $y = substr($tgl1, -4);
-        $m = substr($tgl1, -7,-5);
-        $d = substr($tgl1,0,2);
-        $tanggal1 = $y.'-'.$m.'-'.$d;
-
-        $y2 = substr($tgl2, -4);
-        $m2 = substr($tgl2, -7,-5);
-        $d2 = substr($tgl2,0,2);
-        $tanggal2 = $y2.'-'.$m2.'-'.$d2;
-        //dd(array($tanggal1, $tanggal2));
-        
-        $query = d_delivery_orderdt::select(
-                    'd_delivery_order.do_nota', 
-                    'd_delivery_orderdt.dod_do',
-                    'd_delivery_orderdt.dod_detailid',
-                    'm_item.i_name',
-                    'd_delivery_orderdt.dod_qty_send',
-                    'd_delivery_orderdt.dod_qty_received',
-                    'd_delivery_orderdt.dod_date_received',
-                    'd_delivery_orderdt.dod_time_received',
-                    'd_delivery_orderdt.dod_status')
-            ->join('d_delivery_order', 'd_delivery_orderdt.dod_do', '=', 'd_delivery_order.do_id')
-            ->join('m_item', 'd_delivery_orderdt.dod_item', '=', 'm_item.i_id')
-            ->where('d_delivery_orderdt.dod_status', '=', 'FN')
-            ->where('d_delivery_orderdt.dod_date_received','>=',$tanggal1)
-            ->where('d_delivery_orderdt.dod_date_received','<=',$tanggal2)
-            ->orderBy('d_delivery_orderdt.dod_update', 'desc')
-            ->get();    
-        if ($akses == "inventory") 
-        {
-            return DataTables::of($query)
-            ->addIndexColumn()
-            ->editColumn('tanggalTerima', function ($data) 
-            {
-                if ($data->dod_date_received == null) 
-                {
-                    return '-';
-                }
-                else 
-                {
-                    return $data->dod_date_received ? with(new Carbon($data->dod_date_received))->format('d M Y') : '';
-                }
-            })
-            ->editColumn('jamTerima', function ($data) 
-            {
-                if ($data->dod_time_received == null) 
-                {
-                    return '-';
-                }
-                else 
-                {
-                    return $data->dod_time_received;
-                }
-            })
-            ->editColumn('status', function ($data) 
-            {
-                if ($data->dod_status == "WT") 
-                {
-                    return '<span class="label label-info">Waiting</span>';
-                }
-                elseif ($data->dod_status == "FN") 
-                {
-                    return '<span class="label label-success">Final</span>';
-                }
-            })
-            ->rawColumns(['status'])
-            ->make(true);
-        }
-        else
-        {
-            return DataTables::of($query)
-            ->addIndexColumn()
-            ->addColumn('action', function($data)
-            {
-                if ($data->dod_qty_received == '0') 
-                {
-                    return '<div class="text-center">
-                                <a class="btn btn-sm btn-info" href="javascript:void(0)" title="Ubah Status"
-                                    onclick=ubahStatus("'.$data->dod_do.'","'.$data->dod_detailid.'")><i class="glyphicon glyphicon-ok"></i>
-                                </a>
-                            </div>';
-                }
-                else
-                {
-                    return '<div class="text-center">
-                                <a class="btn btn-sm btn-info" href="javascript:void(0)" title="Ubah Status"
-                                    onclick=ubahStatus("'.$data->dod_do.'","'.$data->dod_detailid.'")><i class="glyphicon glyphicon-ok"></i>
-                                </a>
-                            </div>';
-                }     
-            })
-            ->editColumn('tanggalTerima', function ($data) 
-            {
-                if ($data->dod_date_received == null) 
-                {
-                    return '-';
-                }
-                else 
-                {
-                    return $data->dod_date_received ? with(new Carbon($data->dod_date_received))->format('d M Y') : '';
-                }
-            })
-            ->editColumn('jamTerima', function ($data) 
-            {
-                if ($data->dod_time_received == null) 
-                {
-                    return '-';
-                }
-                else 
-                {
-                    return $data->dod_time_received;
-                }
-            })
-            ->editColumn('status', function ($data) 
-            {
-                if ($data->dod_status == "WT") 
-                {
-                    return '<span class="label label-info">Waiting</span>';
-                }
-                elseif ($data->dod_status == "FN") 
-                {
-                    return '<span class="label label-success">Final</span>';
-                }
-            })
-            ->rawColumns(['status', 'action'])
-            ->make(true);
-        }
-              
-    }
-
-    public function get_list_waiting_by_tgl($tgl3,$tgl4)
-    {
-        $y = substr($tgl3, -4);
-        $m = substr($tgl3, -7,-5);
-        $d = substr($tgl3,0,2);
-        $tanggal1 = $y.'-'.$m.'-'.$d;
-
-        $y2 = substr($tgl4, -4);
-        $m2 = substr($tgl4, -7,-5);
-        $d2 = substr($tgl4,0,2);
-        $tanggal2 = $y2.'-'.$m2.'-'.$d2;
-        //dd(array($tanggal1, $tanggal2));
-        
-        $query = d_delivery_orderdt::select(
-                    'd_delivery_order.do_nota', 
-                    'd_delivery_orderdt.dod_do',
-                    'd_delivery_orderdt.dod_detailid',
-                    'm_item.i_name',
-                    'd_delivery_orderdt.dod_qty_send',
-                    'd_delivery_orderdt.dod_qty_received',
-                    'd_delivery_orderdt.dod_date_received',
-                    'd_delivery_orderdt.dod_time_received',
-                    'd_delivery_orderdt.dod_status')
-            ->join('d_delivery_order', 'd_delivery_orderdt.dod_do', '=', 'd_delivery_order.do_id')
-            ->join('m_item', 'd_delivery_orderdt.dod_item', '=', 'm_item.i_id')
-            ->where('d_delivery_orderdt.dod_status', '=', 'WT')
-            ->where('d_delivery_orderdt.dod_date_send','>=',$tanggal1)
-            ->where('d_delivery_orderdt.dod_date_send','<=',$tanggal2)
-            ->orderBy('d_delivery_orderdt.dod_update', 'desc')
-            ->get();    
-
-        return DataTables::of($query)
-        ->addIndexColumn()
-        ->addColumn('action', function($data)
-        {
-            if ($data->dod_qty_received == '0') 
-            {
-                return '<div class="text-center">
-                            <a class="btn btn-sm btn-success" href="javascript:void(0)" title="Terima"
-                                onclick=terimaHasilProduksi("'.$data->dod_do.'","'.$data->dod_detailid.'")><i class="fa fa-plus"></i> 
-                            </a>&nbsp;
-                            <a class="btn btn-sm btn-info" href="javascript:void(0)" title="Ubah Status"
-                                onclick=ubahStatus("'.$data->dod_do.'","'.$data->dod_detailid.'")><i class="glyphicon glyphicon-ok"></i>
-                            </a>
-                        </div>';
-            }
-            else
-            {
-                return '<div class="text-center">
-                            <a class="btn btn-sm btn-warning" href="javascript:void(0)" title="Edit"
-                                onclick=editHasilProduksi("'.$data->dod_do.'","'.$data->dod_detailid.'")><i class="fa fa-edit"></i>  
-                            </a>&nbsp;
-                            <a class="btn btn-sm btn-info" href="javascript:void(0)" title="Ubah Status"
-                                onclick=ubahStatus("'.$data->dod_do.'","'.$data->dod_detailid.'")><i class="glyphicon glyphicon-ok"></i>
-                            </a>
-                        </div>';
-            }     
-        })
-        ->editColumn('tanggalTerima', function ($data) 
-        {
-            if ($data->dod_date_received == null) 
-            {
-                return '-';
-            }
-            else 
-            {
-                return $data->dod_date_received ? with(new Carbon($data->dod_date_received))->format('d M Y') : '';
-            }
-        })
-        ->editColumn('jamTerima', function ($data) 
-        {
-            if ($data->dod_time_received == null) 
-            {
-                return '-';
-            }
-            else 
-            {
-                return $data->dod_time_received;
-            }
-        })
-        ->editColumn('status', function ($data) 
-        {
-            if ($data->dod_status == "WT") 
-            {
-                return '<span class="label label-info">Waiting</span>';
-            }
-            elseif ($data->dod_status == "FN") 
-            {
-                return '<span class="label label-success">Final</span>';
-            }
-        })
-        ->rawColumns(['status', 'action'])
-        ->make(true);       
-    }
-
-    public function terima_hasil_produksi($dod_do, $dod_detailid)
-    {
-        $query = d_delivery_orderdt::select(
-                    'd_delivery_order.do_nota', 
-                    'd_delivery_orderdt.dod_do',
-                    'd_delivery_orderdt.dod_detailid',
-                    'd_delivery_orderdt.dod_item',
-                    'd_delivery_orderdt.dod_prdt_productresult',
-                    'd_delivery_orderdt.dod_prdt_detail',
-                    'm_item.i_name',
-                    'd_delivery_orderdt.dod_qty_send',
-                    'd_delivery_orderdt.dod_qty_received',
-                    'd_delivery_orderdt.dod_date_received',
-                    'd_delivery_orderdt.dod_time_received',
-                    'd_delivery_orderdt.dod_status')
-            ->join('d_delivery_order', 'd_delivery_orderdt.dod_do', '=', 'd_delivery_order.do_id')
-            ->join('m_item', 'd_delivery_orderdt.dod_item', '=', 'm_item.i_id')
-            ->where('d_delivery_orderdt.dod_do', '=', $dod_do)
-            ->where('d_delivery_orderdt.dod_detailid', '=', $dod_detailid)
-            ->where('d_delivery_orderdt.dod_status', '=', 'WT')
-            ->get();
-
-         echo json_encode($query);
-    }
-
-    public function edit_hasil_produksi($dod_do, $dod_detailid)
-    {
-         $query = d_delivery_orderdt::select(
-                    'd_delivery_order.do_nota', 
-                    'd_delivery_orderdt.dod_do',
-                    'd_delivery_orderdt.dod_detailid',
-                    'd_delivery_orderdt.dod_item',
-                    'd_delivery_orderdt.dod_prdt_productresult',
-                    'd_delivery_orderdt.dod_prdt_detail',
-                    'm_item.i_name',
-                    'd_delivery_orderdt.dod_qty_send',
-                    'd_delivery_orderdt.dod_qty_received',
-                    'd_delivery_orderdt.dod_date_received',
-                    'd_delivery_orderdt.dod_time_received',
-                    'd_delivery_orderdt.dod_status')
-            ->join('d_delivery_order', 'd_delivery_orderdt.dod_do', '=', 'd_delivery_order.do_id')
-            ->join('m_item', 'd_delivery_orderdt.dod_item', '=', 'm_item.i_id')
-            ->where('d_delivery_orderdt.dod_do', '=', $dod_do)
-            ->where('d_delivery_orderdt.dod_detailid', '=', $dod_detailid)
-            ->get();
-
-         echo json_encode($query);
-    }
-
-    public function update_data(Request $request)
-    {
-        //dd($request->all());
-        DB::beginTransaction();
-        try 
-        {
-            //get stock item gdg Sending
-            $stok_item_gs = DB::table('d_stock')
-                ->where('s_comp','2')
-                ->where('s_position','5')
-                ->where('s_item',$request->idItemMasuk)
-                ->first();
-
-            //get stock item gdg Produksi
-            $stok_item_gp = DB::table('d_stock')
-                ->where('s_comp','6')
-                ->where('s_position','6')
-                ->where('s_item',$request->idItemMasuk)
-                ->first();
-
-            //get stock item gdg Grosir
-            $stok_item_gg = DB::table('d_stock')
-                ->where('s_comp','2')
-                ->where('s_position','2')
-                ->where('s_item',$request->idItemMasuk)
-                ->first();
-            
-            //stok dikembalikan sebelum terjadinya penambahan
-            $stok_prev_gdgSending = $stok_item_gs->s_qty + $request->qtyMasukPrev;
-            $stok_prev_gdgProd = $stok_item_gp->s_qty + $request->qtyMasukPrev;
-            $stok_prev_gdgGrosir = $stok_item_gg->s_qty - $request->qtyMasukPrev;
-            //stok ditambahkan dengan inputan
-            $stok_akhir_gdgSending = $stok_prev_gdgSending - $request->qtyDiterima;
-            $stok_akhir_gdgProd = $stok_prev_gdgProd - $request->qtyDiterima;
-            $stok_akhir_gdgGrosir = $stok_prev_gdgGrosir + $request->qtyDiterima;
-
-            //update d_delivery_orderdt
-            $date = Carbon::parse($request->tglMasuk)->format('Y-m-d');
-            $time = $request->jamMasuk.":00";
-            $now = Carbon::now();
-            DB::table('d_delivery_orderdt')
-                    ->where('dod_detailid', $request->detailId)
-                    ->where('dod_do',$request->doId)
-                    ->update(['dod_qty_received' => $request->qtyDiterima, 'dod_date_received' => $date, 'dod_time_received' => $time, 'dod_update' => $now]);
-                        
-            //update gdg Grosir
-            DB::table('d_stock')
-                    ->where('s_item', $request->idItemMasuk)
-                    ->where('s_comp','2')
-                    ->where('s_position','2')
-                    ->update(['s_qty' => $stok_akhir_gdgGrosir]);
-             
-            //update gdg Sending
-            DB::table('d_stock')
-                    ->where('s_item', $request->idItemMasuk)
-                    ->where('s_comp','2')
-                    ->where('s_position','5')
-                    ->update(['s_qty' => $stok_akhir_gdgSending]);
-
-            //update gdg Produksi
-            // DB::table('d_stock')
-            //         ->where('s_item', $request->idItemMasuk)
-            //         ->where('s_comp','6')
-            //         ->where('s_position','6')
-            //         ->update(['s_qty' => $stok_akhir_gdgProd]);
-
-            // //cek qty mutasi
-            // $total_qty_mutasi = DB::table('d_stock_mutation')
-            //     ->selectRaw('sum(sm_qty) as totalMutasi')
-            //     ->where('sm_stock',$request->modalIdStockInput)
-            //     ->where('sm_item',$request->modalNamaItemInput)
-            //     ->where('sm_comp',"2")
-            //     ->first();
-                
-            // //jika jumlah qty pd mutasi sama dengan qty total pengiriman   
-            // if ($total_qty_mutasi->totalMutasi == $request->modalTotalKirim || $total_qty_mutasi->totalMutasi < $request->modalFieldBatasAtas) 
-            // {
-            //     //update status to finish
-            //     $update = DB::table('d_productresult')
-            //         ->where('pr_id', $request->modalIdProductResultInput)
-            //         ->update(['prdt_status' => "FN"]);
-            // }            
-
-            DB::commit();
-            return response()->json([
-                'status' => 'Sukses',
-                'pesan' => 'Data Telah Berhasil di Update'
-            ]);
-        } 
-        catch (\Exception $e) 
-        {
-            DB::rollback();
-            return response()->json([
-                'status' => 'gagal',
-                'data' => $e->getMessage()
-            ]);
-        }
-    }
-
-    public function ubah_status_transaksi($dod_do, $dod_detailid)
-    {
-        //get recent status DO
-        $recentStatusDo = DB::table('d_delivery_orderdt')
-                            ->where('dod_do',$dod_do)
-                            ->where('dod_detailid',$dod_detailid)
-                            ->first();
-
-        if ($recentStatusDo->dod_status == "WT") 
-        {
-            //update status to FN
-            DB::table('d_delivery_orderdt')
-                ->where('dod_do',$dod_do)
-                ->where('dod_detailid',$dod_detailid)
-                ->update(['dod_status' => "FN"]);
-        }
-        else
-        {
-            //update status to WT
-            DB::table('d_delivery_orderdt')
-                ->where('dod_do',$dod_do)
-                ->where('dod_detailid',$dod_detailid)
-                ->update(['dod_status' => "WT"]);
-        }
-
-        //get recent status Product Result detail
-        $recentStatusPrdt = DB::table('d_productresult_dt')
-                                ->where('prdt_productresult',$recentStatusDo->dod_prdt_productresult)
-                                ->where('prdt_detail',$recentStatusDo->dod_prdt_detail)
-                                ->first();
-
-        if ($recentStatusPrdt->prdt_status != "RC") 
-        {
-            //update status to RC
-            DB::table('d_productresult_dt')
-                ->where('prdt_productresult',$recentStatusPrdt->prdt_productresult)
-                ->where('prdt_detail',$recentStatusPrdt->prdt_detail)
-                ->update(['prdt_status' => "RC"]);
-        }
-        else
-        {
-            //update status to SN
-            DB::table('d_productresult_dt')
-                ->where('prdt_productresult',$recentStatusPrdt->prdt_productresult)
-                ->where('prdt_detail',$recentStatusPrdt->prdt_detail)
-                ->update(['prdt_status' => "SN"]);
-        }
-        
-        return response()->json([
-            'status' => 'sukses',
-            'pesan' => 'Status penerimaan telah berhasil diubah',
-        ]);
-    }
 }
