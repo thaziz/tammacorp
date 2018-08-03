@@ -359,7 +359,7 @@ class PenerimaanBrgSupController extends Controller
                   'sm_detail' => "PENAMBAHAN",
                   'sm_hpp' => $request->fieldHargaTotalRaw[$i],
                   'sm_sell' => '0',
-                  'sm_reff' => $request->headKodeTerima,
+                  'sm_reff' => $request->headNotaTxt,
                   'sm_insert' => Carbon::now(),
                 ]);
 

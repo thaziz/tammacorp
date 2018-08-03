@@ -466,7 +466,8 @@ class ConfrimBeliController extends Controller
   {
     $data = d_purchasingreturn::join('d_supplier','d_purchasingreturn.d_pcsr_supid','=','d_supplier.s_id')
                 ->join('d_purchasing','d_purchasingreturn.d_pcsr_pcsid','=','d_purchasing.d_pcs_id')
-                ->select('d_purchasingreturn.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_purchasing.d_pcs_code')
+                ->join('d_mem','d_purchasingreturn.d_pcs_staff','=','d_mem.m_id')
+                ->select('d_purchasingreturn.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_purchasing.d_pcs_code', 'd_mem.m_name', 'd_mem.m_id')
                 ->orderBy('d_pcsr_created', 'DESC')
                 ->get();
     //dd($data);    
@@ -544,10 +545,19 @@ class ConfrimBeliController extends Controller
   {
     $dataHeader = d_purchasingreturn::join('d_supplier','d_purchasingreturn.d_pcsr_supid','=','d_supplier.s_id')
                 ->join('d_purchasing','d_purchasingreturn.d_pcsr_pcsid','=','d_purchasing.d_pcs_id')
-                ->select('d_purchasingreturn.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_purchasing.d_pcs_code')
+                ->join('d_mem','d_purchasingreturn.d_pcs_staff','=','d_mem.m_id')
+                ->select('d_purchasingreturn.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_purchasing.d_pcs_code', 'd_mem.m_name', 'd_mem.m_id')
                 ->where('d_pcsr_id', '=', $id)
                 ->orderBy('d_pcsr_created', 'DESC')
                 ->get();
+
+    foreach ($dataHeader as $val) 
+    {   
+      $data = array(
+          'hargaTotalReturn' => 'Rp. '.number_format($val->d_pcsr_pricetotal,2,",","."),
+          'tanggalReturn' => date('d-m-Y',strtotime($val->d_pcsr_datecreated))
+      );
+    }
 
     $statusLabel = $dataHeader[0]->d_pcsr_status;
     if ($statusLabel == "WT") 
@@ -570,7 +580,8 @@ class ConfrimBeliController extends Controller
     {
       $dataIsi = d_purchasingreturn_dt::join('m_item', 'd_purchasingreturn_dt.d_pcsrdt_item', '=', 'm_item.i_id')
                 ->join('d_purchasingreturn', 'd_purchasingreturn_dt.d_pcsrdt_idpcsr', '=', 'd_purchasingreturn.d_pcsr_id')
-                ->select('d_purchasingreturn_dt.*', 'm_item.*', 'd_purchasingreturn.d_pcsr_code')
+                ->join('m_satuan', 'd_purchasingreturn_dt.d_pcsrdt_sat', '=', 'm_satuan.m_sid')
+                ->select('d_purchasingreturn_dt.*', 'm_item.*', 'd_purchasingreturn.d_pcsr_code', 'm_satuan.*')
                 ->where('d_purchasingreturn_dt.d_pcsrdt_idpcsr', '=', $id)
                 ->orderBy('d_purchasingreturn_dt.d_pcsrdt_created', 'DESC')
                 ->get();
@@ -579,7 +590,8 @@ class ConfrimBeliController extends Controller
     {
       $dataIsi = d_purchasingreturn_dt::join('m_item', 'd_purchasingreturn_dt.d_pcsrdt_item', '=', 'm_item.i_id')
                 ->join('d_purchasingreturn', 'd_purchasingreturn_dt.d_pcsrdt_idpcsr', '=', 'd_purchasingreturn.d_pcsr_id')
-                ->select('d_purchasingreturn_dt.*', 'm_item.*', 'd_purchasingreturn.d_pcsr_code')
+                ->join('m_satuan', 'd_purchasingreturn_dt.d_pcsrdt_sat', '=', 'm_satuan.m_sid')
+                ->select('d_purchasingreturn_dt.*', 'm_item.*', 'd_purchasingreturn.d_pcsr_code', 'm_satuan.*')
                 ->where('d_purchasingreturn_dt.d_pcsrdt_idpcsr', '=', $id)
                 ->where('d_purchasingreturn_dt.d_pcsrdt_isconfirm', '=', "TRUE")
                 ->orderBy('d_purchasingreturn_dt.d_pcsrdt_created', 'DESC')
@@ -590,35 +602,24 @@ class ConfrimBeliController extends Controller
     {
       //cek item type
       $itemType[] = DB::table('m_item')->select('i_type', 'i_id')->where('i_id','=', $val->i_id)->first();
+      //get satuan utama
+      $sat1[] = $val->i_sat1;
     }
 
+    //variabel untuk count array
+    $counter = 0;
     //ambil value stok by item type
-    foreach ($itemType as $val) 
-    {
-        if ($val->i_type == "BP") //brg produksi
-        {
-            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '6' AND s_position = '6' limit 1) ,'0') as qtyStok"));
-            $stok[] = $query[0];
-        }
-        elseif ($val->i_type == "BJ") //brg jual
-        {
-            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '7' AND s_position = '7' limit 1) ,'0') as qtyStok"));
-            $stok[] = $query[0];
-        }
-        elseif ($val->i_type == "BB") //bahan baku
-        {
-            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '3' AND s_position = '3' limit 1) ,'0') as qtyStok"));
-            $stok[] = $query[0];
-        }
-    }
+    $dataStok = $this->getStokByType($itemType, $sat1, $counter);
     
     return Response()->json([
         'status' => 'sukses',
         'header' => $dataHeader,
+        'header2' => $data,
         'data_isi' => $dataIsi,
-        'data_stok' => $stok,
+        'data_stok' => $dataStok['val_stok'],
+        'data_satuan' => $dataStok['txt_satuan'],
         'spanTxt' => $spanTxt,
-        'spanClass' => $spanClass,
+        'spanClass' => $spanClass
     ]);
   }
 

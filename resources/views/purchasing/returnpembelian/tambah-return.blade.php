@@ -159,7 +159,8 @@
                                     +'</div>'
                                     +'<div class="col-md-4 col-sm-9 col-xs-12">'
                                       +'<div class="form-group">'
-                                        +'<input type="text" name="namaStaff" readonly="" class="form-control input-sm" id="nama_staff" value="{{ $namaStaff }}">'
+                                        +'<input type="text" name="namaStaff" readonly="" class="form-control input-sm" id="nama_staff" value="{{ $staff['nama'] }}">'
+                                        +'<input type="hidden" name="idStaff" readonly="" class="form-control input-sm" id="id_staff" value="{{ $staff['id'] }}">'
                                       +'</div>'
                                     +'</div>'
                                     +'<div class="col-md-2 col-sm-3 col-xs-12">'
@@ -274,7 +275,8 @@
                                     +'</div>'
                                     +'<div class="col-md-4 col-sm-9 col-xs-12">'
                                       +'<div class="form-group">'
-                                        +'<input type="text" name="namaStaff" readonly="" class="form-control input-sm" id="nama_staff" value="{{ $namaStaff }}">'
+                                        +'<input type="text" name="namaStaff" readonly="" class="form-control input-sm" id="nama_staff" value="{{ $staff['nama'] }}">'
+                                        +'<input type="hidden" name="idStaff" readonly="" class="form-control input-sm" id="id_staff" value="{{ $staff['id'] }}">'
                                       +'</div>'
                                     +'</div>'
                                     +'<div class="col-md-2 col-sm-3 col-xs-12">'
@@ -332,6 +334,7 @@
                                     +'<div class="col-md-4 col-sm-9 col-xs-12">'
                                       +'<div class="form-group">'
                                         +'<input type="text" name="nilaiTotalReturn" readonly="" class="form-control input-sm" id="nilai_total_return">'
+                                        +'<input type="hidden" name="nilaiTotalReturnRaw" readonly="" class="form-control input-sm" id="nilai_total_return_raw">'
                                       +'</div>'
                                     +'</div>'
                                     +'<div class="table-responsive">'
@@ -431,6 +434,7 @@
               //harga satuan per item setelah kena diskon & pajak
               //var hargaSatuanItemNet = Math.round(parseFloat(hargaTotalItemNet/qtyCost).toFixed(2));
               var hargaSatuanItemNet = hargaTotalItemNet/qtyCost;
+              var hargaTotalPerRow = hargaSatuanItemNet * qtyCost;
               //console.log(hargaSatuanItemNet);
               $('#tabel-form-return').append('<tr class="tbl_form_row" id="row'+i+'">'
                               +'<td style="text-align:center">'+key+'</td>'
@@ -442,7 +446,8 @@
                               +'<input type="hidden" value="'+data.data_isi[key-1].m_sid+'" name="fieldSatuanId[]" class="form-control input-sm" readonly/></td>'
                               +'<td><input type="text" value="'+convertDecimalToRupiah(hargaSatuanItemNet)+'" name="fieldHarga[]" id="cost_'+i+'" class="form-control input-sm field_harga numberinput" readonly/>'
                               +'<input type="hidden" value="'+hargaSatuanItemNet+'" name="fieldHargaRaw[]" id="costRaw_'+i+'" class="form-control input-sm field_harga_raw numberinput" readonly/></td>'
-                              +'<td><input type="text" value="'+convertDecimalToRupiah(hargaTotalItemNet)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem" id="total_'+i+'" readonly/></td>'
+                              +'<td><input type="text" value="'+convertDecimalToRupiah(hargaTotalPerRow)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem" id="total_'+i+'" readonly/>'
+                              +'<input type="hidden" value="'+hargaTotalPerRow+'" name="fieldHargaTotalRaw[]" id="totalRaw_'+i+'" class="form-control input-sm hargaTotalItemRaw numberinput" readonly/></td>'
                               +'<td><input type="text" value="'+data.data_stok[key-1].qtyStok+' '+data.data_satuan[key-1]+'" name="fieldStokTxt[]" class="form-control input-sm" readonly/>'
                               +'<input type="hidden" value="'+data.data_stok[key-1].qtyStok+'" name="fieldStokVal[]" class="form-control input-sm" readonly/></td>'
                               +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm">X</button></td>'
@@ -452,6 +457,7 @@
             });
             //set readonly to enabled
             totalNilaiReturn();
+            totalNilaiReturnRaw();
           },
           error: function (jqXHR, textStatus, errorThrown)
           {
@@ -465,6 +471,7 @@
       var button_id = $(this).attr('id');
       $('#row'+button_id+'').remove();
       totalNilaiReturn();
+      totalNilaiReturnRaw();
     });
 
     //event focus on input qty
@@ -474,26 +481,17 @@
         $('#button_save').attr('disabled', true);
     });
 
-    //event onblur input qty
-    /*$(document).on('blur', '.field_qty',  function(e){
-      var getid = $(this).attr("id");
-      var qtyReturn = $(this).val();
-      var cost = convertToAngka($('#costRaw_'+getid+'').val());
-      var hasilTotal = parseInt(qtyReturn * cost);
-      var totalCost = $('#total_'+getid+'').val(convertDecimalToRupiah(hasilTotal));
-      // $(this).val(potonganRp);
-      totalNilaiReturn();
-      $('#button_save').attr('disabled', false);
-    });*/
-
     $(document).on('blur', '.field_qty',  function(e){
       var getid = $(this).attr("id");
       var qtyReturn = $(this).val();
       var cost = $('#costRaw_'+getid+'').val();
       var hasilTotal = parseInt(qtyReturn * cost);
+      var hasilTotalRaw = parseFloat(qtyReturn * cost).toFixed(2);
       var totalCost = $('#total_'+getid+'').val(convertDecimalToRupiah(hasilTotal));
+      var totalCostRaw = $('#totalRaw_'+getid+'').val(hasilTotalRaw);
       // $(this).val(potonganRp);
       totalNilaiReturn();
+      totalNilaiReturnRaw();
       $('#button_save').attr('disabled', false);
     });
 
@@ -583,7 +581,7 @@
       if(input.value == '') input.value = 0;
       return input.value;
     });
-    console.log(hasil);
+    //console.log(hasil);
     var total = 0;
     for (var i = hasil.length - 1; i >= 0; i--){
 
@@ -597,6 +595,26 @@
     total = convertToRupiah(total);
     // console.log(total);
     $('[name="nilaiTotalReturn"]').val(total);
+  }
+
+  function totalNilaiReturnRaw()
+  {
+    var inputs = document.getElementsByClassName( 'hargaTotalItemRaw' ),
+    hasil  = [].map.call(inputs, function( input ) 
+    {
+      if(input.value == '') input.value = 0;
+      return input.value;
+    });
+    //console.log(hasil);
+    var total = 0;
+    for (var i = 0; i < hasil.length; i++){
+      total = (parseFloat(total) + parseFloat(hasil[i])).toFixed(2);
+      // console.log(total);
+    }
+      if (isNaN(total)) {
+        total = parseFloat(0).toFixed(2);
+      }
+    $('[name="nilaiTotalReturnRaw"]').val(total);
   }
 </script>
 @endsection                            
