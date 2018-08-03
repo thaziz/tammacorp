@@ -84,19 +84,24 @@ class MasterFormulaController extends Controller
     $queries = m_item::where('m_item.i_name', 'LIKE', '%'.$term.'%')
       ->join('m_satuan','m_sid','=','i_sat1')
       ->where('i_type','BB')
+      ->where('i_isactive','TRUE')
       ->orderBy('i_name')
-      ->take(50)->get();
+      ->take(15)->get();
     
     if ($queries == null) {
       $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];
     } else {
       foreach ($queries as $query) 
       {
+        $txtSat1 = DB::table('m_satuan')->select('m_sname', 'm_sid')->where('m_sid','=', $query->i_sat1)->first();
+        $txtSat2 = DB::table('m_satuan')->select('m_sname', 'm_sid')->where('m_sid','=', $query->i_sat2)->first();
+        $txtSat3 = DB::table('m_satuan')->select('m_sname', 'm_sid')->where('m_sid','=', $query->i_sat3)->first();
+
         $results[] = [  'id' => $query->i_id, 
                         'label' => $query->i_code .' - '.$query->i_name,
                         'name' => $query->i_name,
                         'id_satuan' => [$query->i_sat1, $query->i_sat2, $query->i_sat3],
-                        'satuan' => [$query->m_sname, $query->m_sname, $query->m_sname],
+                        'satuan' => [$txtSat1->m_sname, $txtSat2->m_sname, $txtSat3->m_sname],
                         'i_code' => $query->i_code ];
       }
     } 
@@ -112,18 +117,23 @@ class MasterFormulaController extends Controller
     $queries = m_item::where('m_item.i_name', 'LIKE', '%'.$term.'%')
       ->join('m_satuan','m_sid','=','i_sat1')
       ->where('i_type','BP')
-      ->take(50)->get();
+      ->where('i_isactive','TRUE')
+      ->take(15)->get();
     
     if ($queries == null) {
       $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];
     } else {
       foreach ($queries as $query) 
       {
+        $txtSat1 = DB::table('m_satuan')->select('m_sname', 'm_sid')->where('m_sid','=', $query->i_sat1)->first();
+        $txtSat2 = DB::table('m_satuan')->select('m_sname', 'm_sid')->where('m_sid','=', $query->i_sat2)->first();
+        $txtSat3 = DB::table('m_satuan')->select('m_sname', 'm_sid')->where('m_sid','=', $query->i_sat3)->first();
+
         $results[] = [  'id' => $query->i_id, 
                         'label' => $query->i_code .' - '.$query->i_name,
                         'name' => $query->i_name,
-                        'id_satuan' =>[$query->i_sat1, $query->i_sat1, $query->i_sat1],
-                        'satuan' =>[$query->m_sname, $query->m_sname, $query->m_sname] ];
+                        'id_satuan' =>[$query->i_sat1, $query->i_sat2, $query->i_sat3],
+                        'satuan' =>[$txtSat1->m_sname, $txtSat2->m_sname, $txtSat3->m_sname] ];
       }
     } 
 
