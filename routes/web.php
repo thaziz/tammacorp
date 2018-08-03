@@ -92,7 +92,6 @@ Route::get('/master/datapegawai/master-import', 'Master\PegawaiController@getFil
 /*Purchasing*/
 //rizky
 //order pembelian
-Route::get('/purchasing/orderpembelian/order', 'Pembelian\OrderPembelianController@order');
 Route::get('/purchasing/orderpembelian/tambah_order', 'Pembelian\OrderPembelianController@tambah_order');
 Route::get('/purchasing/orderpembelian/get-data-tabel-index', 'Pembelian\OrderPembelianController@getDataTabelIndex');
 Route::get('/purchasing/orderpembelian/get-supplier', 'Pembelian\OrderPembelianController@getSupplier');
@@ -148,6 +147,12 @@ Route::get('/purchasing/belanjalangsung/langsung', 'Pembelian\PurchasingControll
 Route::get('/purchasing/belanjaproduk/produk', 'Pembelian\PurchasingController@produk');
 Route::get('/purchasing/rencanabahanbaku/bahan', 'Pembelian\PurchasingController@bahan');
 Route::get('/purchasing/belanjapasar/pasar', 'Pembelian\PurchasingController@pasar');
+//rizky
+Route::get('/purchasing/belanjasuplier/suplier', 'Pembelian\PurchasingController@suplier');
+Route::get('/purchasing/belanjalangsung/langsung', 'Pembelian\PurchasingController@langsung');
+Route::get('/purchasing/belanjaproduk/produk', 'Pembelian\PurchasingController@produk');
+Route::get('/purchasing/rencanabahanbaku/bahan', 'Pembelian\PurchasingController@bahan');
+Route::get('/purchasing/belanjapasar/pasar', 'Pembelian\PurchasingController@pasar');
 //end purchasing
 /*Inventory*/
 Route::get('/inventory/POSretail/transfer', 'transferItemController@index');
@@ -160,8 +165,6 @@ Route::get('/inventory/stockopname/tambah_opname', 'Inventory\OpnameGdgControlle
 Route::get('/inventory/p_returncustomer/cust', 'Inventory\InventoryController@cust');
 Route::get('/inventory/p_hasilproduksi/cari_nota', 'Inventory\InventoryController@cari_nota_produksi'); 
 Route::get('/inventory/p_returncustomer/cari_nota', 'Inventory\InventoryController@cari_nota_cust');
-/*End Inventory*/
-
 //rizky
 //p_hasilproduksi
 Route::get('/inventory/p_hasilproduksi/produksi', 'Inventory\PenerimaanBrgProdController@produksi');
@@ -187,6 +190,10 @@ Route::post('/inventory/p_suplier/simpan-penerimaan', 'Inventory\PenerimaanBrgSu
 Route::get('/inventory/p_suplier/get-datatable-index', 'Inventory\PenerimaanBrgSupController@getDatatableIndex');
 Route::get('/inventory/p_suplier/get-detail-penerimaan/{id}', 'Inventory\PenerimaanBrgSupController@getDataDetail');
 Route::post('/inventory/p_suplier/delete-data-penerimaan', 'Inventory\PenerimaanBrgSupController@deletePenerimaan');
+Route::get('/inventory/p_suplier/get_tabel_data/{id}', 'Inventory\PenerimaanBrgSupController@get_tabel_data');
+Route::get('/inventory/p_suplier/get-list-waiting-bytgl/{tgl1}/{tgl2}', 'Inventory\PenerimaanBrgSupController@getListWaitingByTgl');
+Route::get('/inventory/p_suplier/get-list-received-bytgl/{tgl1}/{tgl2}', 'Inventory\PenerimaanBrgSupController@getListReceivedByTgl');
+Route::get('/inventory/p_suplier/get-penerimaan-peritem/{id}', 'Inventory\PenerimaanBrgSupController@getPenerimaanPeritem');
 // ============
 Route::get('/inventory/p_suplier/create_suplier', 'Inventory\penerimaanbarang_supController@create_suplier');
 Route::get('/inventory/p_suplier/save_pensuplier', 'Inventory\penerimaanbarang_supController@save_pensuplier')->name('save_pensuplier');
@@ -194,7 +201,7 @@ Route::get('/inventory/p_suplier/edit_pensuplier', 'Inventory\penerimaanbarang_s
 Route::get('/inventory/p_suplier/cari_nota', 'Inventory\penerimaanbarang_supController@cari_nota_sup');
 Route::get('/inventory/p_suplier/get_data_po', 'Inventory\PenerimaanBrgSupController@get_data_po');
 Route::get('/inventory/p_suplier/list_po', 'Inventory\PenerimaanBrgSupController@list_po');
-Route::get('/inventory/p_suplier/get_tabel_data/{id}', 'Inventory\PenerimaanBrgSupController@get_tabel_data');
+//end rizky
 /*End Inventory*/
 /*Produksi*/
 Route::get('/produksi/spk/spk', 'ProduksiController@spk');
@@ -421,9 +428,14 @@ Route::post('/keuangan/konfirmasipembelian/confirm-order-submit', 'Keuangan\Conf
 Route::get('/keuangan/konfirmasipembelian/get-data-tabel-return', 'Keuangan\ConfrimBeliController@getDataReturnPembelian');
 Route::get('/keuangan/konfirmasipembelian/confirm-return/{id}/{type}', 'Keuangan\ConfrimBeliController@confirmReturnPembelian');
 Route::post('/keuangan/konfirmasipembelian/confirm-return-submit', 'Keuangan\ConfrimBeliController@submitReturnPembelian');
+//10-07-18
 Route::get('/keuangan/konfirmasipembelian/get-data-tabel-belanjaharian', 'Keuangan\ConfrimBeliController@getDataBelanjaHarian');
 Route::get('/keuangan/konfirmasipembelian/confirm-belanjaharian/{id}/{type}', 'Keuangan\ConfrimBeliController@confirmBelanjaHarian');
 Route::post('/keuangan/konfirmasipembelian/confirm-belanjaharian-submit', 'Keuangan\ConfrimBeliController@submitBelanjaHarian');
+//hutang piutang
+Route::get('/keuangan/l_hutangpiutang/hutang', 'Keuangan\HutangController@hutang');
+Route::get('/keuangan/l_hutangpiutang/get_hutang_by_tgl/{tgl1}/{tgl2}', 'Keuangan\HutangController@getHutangByTgl');
+Route::get('/keuangan/l_hutangpiutang/get_detail_hutangbeli/{id}', 'Keuangan\HutangController@getDetailHutangBeli');
 // end rizky
 //mahmud
 Route::get('/produksi/lihatadonan/tabel/{id}/{qty}', 'Keuangan\spkFinancialController@tabelFormula');
@@ -545,20 +557,6 @@ Route::get('/master/datagroup/edit_group', 'master\groupController@edit_group')-
 Route::get('/master/datagroup/update_group', 'master\groupController@update_group')->name('update_group');
 Route::get('/master/datagroup/datatable_group', 'master\groupController@datatable_group')->name('datatable_group');
 //-[]-belum-[]-//
-
-//inven
-//gudang
-Route::get('/inventory/datagudang/gudang', 'inventory\stock_gudangController@gudang')->name('gudang');
-Route::get('/inventory/datagudang/datatable_gudang', 'inventory\stock_gudangController@datatable_gudang')->name('datatable_gudang');
-Route::get('/inventory/datagudang/cari_gudang', 'inventory\stock_gudangController@cari_gudang')->name('cari_gudang');
-Route::get('/inventory/p_suplier/suplier', 'Inventory\penerimaanbarang_supController@suplier')->name('pensuplier');
-Route::get('/inventory/p_suplier/create_suplier', 'Inventory\penerimaanbarang_supController@create_suplier');
-Route::get('/inventory/p_suplier/save_pensuplier', 'Inventory\penerimaanbarang_supController@save_pensuplier')->name('save_pensuplier');
-Route::get('/inventory/p_suplier/datatable_pensuplier', 'Inventory\penerimaanbarang_supController@datatable_pensuplier')->name('datatable_pensuplier');
-Route::get('/inventory/p_suplier/edit_pensuplier', 'Inventory\penerimaanbarang_supController@edit_pensuplier')->name('edit_pensuplier');
-Route::get('/inventory/p_suplier/cari_nota', 'Inventory\penerimaanbarang_supController@cari_nota_sup');
-//end
-
 
 // route Keuangan (Dirga)
 // akun keuangan route
