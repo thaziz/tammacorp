@@ -609,16 +609,23 @@ class transferItemGrosirController extends Controller
 
     public function print_setuju($id)
     {
-        // $query = DB::table('d_transferitem_dt')
-        // ->select('i_name', 'tidt_qty')
-        // ->join('m_item', 'm_item.i_id', '=', 'd_transferitem_dt.tidt_item')
-        // ->get()
+        $query = DB::table('d_transferitem_dt')
+        ->select('i_name', 'tidt_qty', 'tidt_qty_appr')
+        ->join('m_item', 'm_item.i_id', '=', 'd_transferitem_dt.tidt_item')
+        ->join('d_transferitem', 'd_transferitem.ti_id', '=', 'd_transferitem_dt.tidt_id')
+        ->where('ti_code', $id)
+        ->get()
+        ->toArray()
+        ;
 
-      $time = Carbon::now('Asia/Jakarta');
+        $query_chunk = array_chunk($query, 20);
+        // return $query_chunk;
 
-      $waktu = $time->hour.".".$time->minute;
+      
 
-        return view('transfer-grosir.print.print_persetujuan', compact('waktu'));
+      
+
+        return view('transfer-grosir.print.print_persetujuan', compact('query_chunk'));
     }
 
 }
