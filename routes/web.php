@@ -92,6 +92,7 @@ Route::get('/master/datapegawai/master-import', 'Master\PegawaiController@getFil
 /*Purchasing*/
 //rizky
 //order pembelian
+Route::get('/purchasing/orderpembelian/order', 'Pembelian\OrderPembelianController@order');
 Route::get('/purchasing/orderpembelian/tambah_order', 'Pembelian\OrderPembelianController@tambah_order');
 Route::get('/purchasing/orderpembelian/get-data-tabel-index', 'Pembelian\OrderPembelianController@getDataTabelIndex');
 Route::get('/purchasing/orderpembelian/get-supplier', 'Pembelian\OrderPembelianController@getSupplier');
