@@ -1,18 +1,26 @@
 @extends('main')
 @section('content')
+<style>
+  .error {
+    border: 1px solid #f00;
+  }
 
+  .valid {
+      border: 1px solid #8080ff;
+  }
+</style>
 <!--BEGIN PAGE WRAPPER-->
 <div id="page-wrapper">
   <!--BEGIN TITLE & BREADCRUMB PAGE-->
   <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
     <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
-      <div class="page-title">Form Master Data Barang</div>
+      <div class="page-title">Form Edit Data Barang</div>
     </div>
     
     <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
       <li><i class="fa fa-home"></i>&nbsp;<a href="{{ url('/home') }}">Home</a>&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
       <li><i></i>&nbsp;Master&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
-      <li class="active">Master Data Barang</li><li><i class="fa fa-angle-right"></i>&nbsp;Form Master Data Barang&nbsp;&nbsp;</i>&nbsp;&nbsp;</li>
+      <li class="active">Master Data Barang</li><li><i class="fa fa-angle-right"></i>&nbsp;Form Edit Data Barang&nbsp;&nbsp;</i>&nbsp;&nbsp;</li>
     </ol>
     
     <div class="clearfix"></div>
@@ -29,7 +37,7 @@
           </div>
                       
           <ul id="generalTab" class="nav nav-tabs">
-            <li class="active"><a href="#alert-tab" data-toggle="tab">Form Master Data Barang</a></li>
+            <li class="active"><a href="#alert-tab" data-toggle="tab">Form Edit Data Barang</a></li>
           </ul>
           
           <div id="generalTabContent" class="tab-content responsive">
@@ -37,7 +45,7 @@
               <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top:-10px;margin-bottom: 15px;">
                   <div class="col-md-5 col-sm-6 col-xs-8">
-                    <h4>Form Master Data Barang</h4>
+                    <h4>Form Edit Data Barang</h4>
                   </div>
                   
                   <div class="col-md-7 col-sm-6 col-xs-4" align="right" style="margin-top:5px;margin-right: -25px;">
@@ -46,32 +54,22 @@
                 </div>
                 
                 <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-top:15px;">
-                  <form id="form-save">
+                  <form method="POST" id="form-edit" name="formEditBarang">  
+                    {{ csrf_field() }}
                     <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:5px;padding-top:15px;padding-left:-10px;padding-right: -10px; ">
                       <input type="hidden" name="kode_old" value="{{ $data_item->i_id }}">
-                      
                       <div class="col-md-3 col-sm-4 col-xs-12">
-                        <label class="tebal">Kode Barang</label>
+                        <label class="tebal">Nama <span style="color: red">*</span></label>
                       </div>
 
-                      <div class="col-md-3 col-sm-8 col-xs-12">
-                        <div class="form-group">
-                          <input type="text" id="kode_barang" name="kode_barang" value="{{ $data_item->i_code }}" readonly="" class="form-control input-sm">                                  
-                        </div>
-                      </div>
-
-                      <div class="col-md-3 col-sm-4 col-xs-12">
-                        <label class="tebal">Nama</label>
-                      </div>
-
-                      <div class="col-md-3 col-sm-8 col-xs-12">
+                      <div class="col-md-9 col-sm-8 col-xs-12">
                         <div class="form-group">
                           <input type="text" id="nama" name="nama" value="{{ $data_item->i_name }}" class="form-control input-sm">                               
                         </div>
                       </div>
 
                       <div class="col-md-3 col-sm-12 col-xs-12">
-                        <label class="tebal">Type Barang</label>
+                        <label class="tebal">Type Barang <span style="color: red">*</span></label>
                       </div>
 
                       <div class="col-md-9 col-sm-12 col-xs-12">
@@ -85,10 +83,10 @@
                       </div>
 
                       <div class="col-md-3 col-sm-4 col-xs-12">
-                        <label class="tebal">Kelompok</label>
+                        <label class="tebal">Kelompok <span style="color: red">*</span></label>
                       </div>
 
-                      <div class="col-md-3 col-sm-8 col-xs-12">
+                      <div class="col-md-9 col-sm-8 col-xs-12">
                         <div class="form-group">
                           <select class="input-sm form-control disabled_select" name="code_group"> 
                             @foreach ($group as $g)
@@ -101,9 +99,19 @@
                           </select>
                         </div>
                       </div>
+                      
+                      <div class="col-md-3 col-sm-4 col-xs-12">
+                        <label class="tebal">Kode Barang</label>
+                      </div>
+
+                      <div class="col-md-3 col-sm-8 col-xs-12">
+                        <div class="form-group">
+                          <input type="text" id="kode_barang" name="kode_barang" value="{{ $data_item->i_code }}" readonly="" class="form-control input-sm">                                  
+                        </div>
+                      </div>
 
                       <div class="col-md-3 col-sm-4 col-xs-12">
-                        <label class="tebal">Min Stock</label>
+                        <label class="tebal">Min Stock <span style="color: red">*</span></label>
                       </div>
 
                       <div class="col-md-3 col-sm-8 col-xs-12">
@@ -113,7 +121,7 @@
                       </div>
                       
                       <div class="col-md-3 col-sm-4 col-xs-12">
-                        <label class="tebal">Satuan Utama</label>
+                        <label class="tebal">Satuan Utama <span style="color: red">*</span></label>
                       </div>
 
                       <div class="col-md-3 col-sm-8 col-xs-12">
@@ -132,7 +140,7 @@
                       </div>
 
                       <div class="col-md-3 col-sm-4 col-xs-12">
-                        <label class="tebal">Isi Sat Utama</label>
+                        <label class="tebal">Isi Sat Utama <span style="color: red">*</span></label>
                       </div>
 
                       <div class="col-md-3 col-sm-8 col-xs-12">
@@ -143,7 +151,7 @@
                       {{-- satuan 1 --}}
 
                       <div class="col-md-3 col-sm-4 col-xs-12">
-                        <label class="tebal">Satuan Alternatif 1</label>
+                        <label class="tebal">Satuan Alternatif 1 <span style="color: red">*</span></label>
                       </div>
 
                       <div class="col-md-3 col-sm-8 col-xs-12">
@@ -162,7 +170,7 @@
                       </div>
 
                       <div class="col-md-3 col-sm-4 col-xs-12">
-                        <label class="tebal">Isi Sat Alternatif 1</label>
+                        <label class="tebal">Isi Sat Alternatif 1 <span style="color: red">*</span></label>
                       </div>
 
                       <div class="col-md-3 col-sm-8 col-xs-12">
@@ -173,7 +181,7 @@
                       {{-- satuan 2 --}}
 
                       <div class="col-md-3 col-sm-4 col-xs-12">
-                        <label class="tebal">Satuan Alternatif 2</label>
+                        <label class="tebal">Satuan Alternatif 2 <span style="color: red">*</span></label>
                       </div>
 
                       <div class="col-md-3 col-sm-8 col-xs-12">
@@ -192,7 +200,7 @@
                       </div>
                       
                       <div class="col-md-3 col-sm-4 col-xs-12">
-                        <label class="tebal">Isi Sat Alternatif 2</label>
+                        <label class="tebal">Isi Sat Alternatif 2 <span style="color: red">*</span></label>
                       </div>
 
                       <div class="col-md-3 col-sm-8 col-xs-12">
@@ -202,24 +210,27 @@
                       </div>
                     
                       <div class="col-md-3 col-sm-4 col-xs-12">
-                        <label class="tebal">Harga</label>
+                        <label class="tebal">Harga Per Satuan <span style="color: red">*</span></label>
                       </div>
 
                       <div class="col-md-3 col-sm-8 col-xs-12">
                         <div class="form-group">
-                          <input type="text" id="harga_beli1" name="hargaBeli1" value="{{ $data_price->m_pbuy1 }}" class="form-control input-sm currency">                               
+                          <label class="tebal">Harga Satuan Utama</label>
+                          <input type="text" id="harga_beli1" name="hargaBeli1" value="{{ $data_price->m_pbuy1 }}" class="form-control input-sm currency" readonly>                               
                         </div>
                       </div>
 
                       <div class="col-md-3 col-sm-8 col-xs-12">
                         <div class="form-group">
+                          <label class="tebal">Harga Satuan Alternatif 1</label>
                           <input type="text" id="harga_beli2" name="hargaBeli2" class="form-control input-sm currency" readonly value="{{ $data_price->m_pbuy2 }}">                               
                         </div>
                       </div>
 
                       <div class="col-md-3 col-sm-8 col-xs-12">
                         <div class="form-group">
-                            <input type="text" id="harga_beli3" name="hargaBeli3" class="form-control input-sm currency" readonly value="{{ $data_price->m_pbuy3 }}">                               
+                          <label class="tebal">Harga Satuan Alternatif 2</label>
+                          <input type="text" id="harga_beli3" name="hargaBeli3" class="form-control input-sm currency" readonly value="{{ $data_price->m_pbuy3 }}">                               
                         </div>
                       </div>
                       
@@ -240,7 +251,11 @@
                           <textarea class="form-control input-sm" name="detail">{{ $data_item->i_det }}</textarea>
                         </div>
                       </div>
-                    </div> 
+                    </div>
+
+                    <div class="col-md-12 col-sm-4 col-xs-12">
+                      <label class="tebal" style="color: red">Keterangan : * Wajib diisi.</label>
+                    </div>
               
                     <div align="right" id="change_function">
                       <input type="button" name="tambah_data" value="Simpan Data" id="save_data" class="btn btn-primary">
@@ -299,6 +314,27 @@
         $('#harga_beli3').val('');
       });
 
+      //event focus on harga_beli1
+      $(document).on('focus', '#harga_beli1',  function(e){
+        $(this).attr('readonly', false).val(0);
+        $('#harga_beli2').attr('readonly', true).val(0);
+        $('#harga_beli3').attr('readonly', true).val(0);
+      });
+
+      //event focus on harga_beli2
+      $(document).on('focus', '#harga_beli2',  function(e){
+        $(this).attr('readonly', false).val(0);
+        $('#harga_beli1').attr('readonly', true).val(0);
+        $('#harga_beli3').attr('readonly', true).val(0);
+      });
+
+      //event focus on harga_beli3
+      $(document).on('focus', '#harga_beli3',  function(e){
+        $(this).attr('readonly', false).val(0);
+        $('#harga_beli1').attr('readonly', true).val(0);
+        $('#harga_beli2').attr('readonly', true).val(0);
+      });
+
       //event onblur harga beli1
       $(document).on('blur', '#harga_beli1',  function(e){
         var harga1 = $(this).val();
@@ -311,47 +347,126 @@
         $('#harga_beli2').val(harga2);
         $('#harga_beli3').val(harga3);
       });
-  });
+
+      //event onblur harga beli2
+      $(document).on('blur', '#harga_beli2',  function(e){
+        //cari harga sat 1
+        var harga2 = $(this).val();
+        harga2 = harga2.replace(/,/g, "");
+        var isi2 = $('#isi_sat2').val();
+        var isi3 = $('#isi_sat3').val();
+        var harga1 = parseFloat(harga2 / isi2);
+        //cari harga sat 3
+        var harga3 = parseFloat(harga1 * isi3);
+        $('#harga_beli1').val(harga1);
+        $('#harga_beli3').val(harga3);
+      });
+
+      //event onblur harga beli3
+      $(document).on('blur', '#harga_beli3',  function(e){
+        //cari harga sat 1
+        var harga3 = $(this).val();
+        harga3 = harga3.replace(/,/g, "");
+        var isi2 = $('#isi_sat2').val();
+        var isi3 = $('#isi_sat3').val();
+        var harga1 = parseFloat(harga3 / isi3);
+        //cari harga sat 2
+        var harga2 = parseFloat(harga1 * isi2);
+        $('#harga_beli1').val(harga1);
+        $('#harga_beli2').val(harga2);
+      });
+
+      //validasi
+      $("#form-edit").validate({
+        // Specify validation rules
+        rules:{
+            nama: "required",
+            type: "required",
+            code_group: "required",
+            min_stock: "required",
+            satuan1: "required",
+            isi_sat1: "required",
+            satuan2: "required",
+            isi_sat2: "required",
+            satuan3: "required",
+            isi_sat3: "required",
+            hargaBeli1: "required",
+            hargaBeli2: "required",
+            hargaBeli3: "required"
+        },
+        errorPlacement: function() {
+            return false;
+        },
+        submitHandler: function(form) {
+          form.submit();
+        }
+      });
+
+      $("#nama").load("/master/databarang/tambah_barang", function(){
+        $("#nama").focus();
+      });
+
+      $('#tgl_lahir').datepicker({
+        autoclose: true,
+        format: 'dd-mm-yyyy'
+      });
+
+      $('#change_function').on("click", "#save_data",function(){
+        var IsValid = $("form[name='formEditBarang']").valid();
+        if(IsValid){
+          $.ajax({
+           type: "POST",
+           url: '{{ route('update_barang') }}',
+           data: $('#form-edit').serialize(),
+           success: function(response)
+           {
+            if(response.status == "sukses")
+            {
+              iziToast.success({
+                position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                title: 'Pemberitahuan',
+                message: response.pesan,
+                onClosing: function(instance, toast, closedBy){
+                   window.location=('{{ route('barang') }}');
+                }
+              });
+            }
+            else
+            {
+              iziToast.error({
+                position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                title: 'Pemberitahuan',
+                message: "Data Gagal disimpan !",
+                onClosing: function(instance, toast, closedBy){
+                   window.location=('{{ route('barang') }}');
+                }
+              });
+            }
+           },
+           error: function(){
+            iziToast.error({
+              position: 'topRight', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+              title: 'Pemberitahuan',
+              message: "Data gagal disimpan !"
+            });
+           },
+           async: false
+          });
+        }
+        else //else validation
+        {
+          iziToast.warning({
+            position: 'center',
+            message: "Mohon Lengkapi data form !"
+          });
+        }
+      });
   
-  $("#nama").load("/master/databarang/tambah_barang", function(){
-      $("#nama").focus();
-  });
-
-  $('#tgl_lahir').datepicker({
-      autoclose: true,
-      format: 'dd-mm-yyyy'
-  });
-
-
-  $('#change_function').on("click", "#save_data",function(){
-  $.ajax({
-       type: "get",
-       url: '{{ route('update_barang') }}',
-       data: $('#form-save').serialize(),
-       success: function(response)
-       {
-        if(response.status == "sukses")
-        {
-          toastr.success(response.pesan, 'Pemberitahuan');
-          window.location=('{{ route('barang') }}');
-        }
-        else
-        {
-          toastr.error(response.pesan, 'Pemberitahuan'); 
-          window.location=('{{ route('barang') }}');
-        }
-       },
-       error: function(){
-        
-       },
-       async: false
-     });
-  });
+  }); //end jquery
 
   function convertToAngka(rupiah)
   {
     return parseInt(rupiah.replace(/,.*|[^0-9]/g, ''), 10);
   }
-
 </script>
 @endsection                            

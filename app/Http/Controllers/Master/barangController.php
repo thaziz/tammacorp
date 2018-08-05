@@ -22,32 +22,35 @@ class barangController extends Controller
 
     public function datatable_barang()
     {
-        $list = DB::table('m_item')
+        $data = DB::table('m_item')
                 ->join('m_price','m_item.i_id','=','m_price.m_pitem')
                 ->join('m_group','m_item.i_code_group','=','m_group.m_gcode')
                 ->join('m_satuan','m_item.i_sat1','=','m_satuan.m_sid')
-                ->select('m_item.*', 'm_price.*', 'm_group.*', 'm_satuan.*')
-                ->where('m_item.i_isactive', '=', 'TRUE')
-                ->where('i_type','!=','BP')
+                ->select('m_item.i_id', 'm_item.i_name', 'm_item.i_code', 'm_satuan.m_sname', 'm_group.m_gname', 'm_price.m_pbuy1', 'm_item.i_isactive')
+                ->where('m_item.i_type', '!=', 'BP')
+                //->where('m_item.i_isactive', '=', 'TRUE')
                 ->orderBy('m_item.i_id', 'DESC')
                 ->get();
-        // return $list;
-        $data = collect($list);
-        
-        // return $data;
-
         return Datatables::of($data)
-                //->addIndexColumn()
-                ->addColumn('aksi', function ($data) {
-
-                         return  '<button id="edit" onclick="edit(this)" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
-                                  <button id="delete" onclick="hapus(this)" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
-                })
-                ->addColumn('none', function ($data) {
-                    return '-';
-                })
-                ->rawColumns(['aksi','confirmed'])
-                ->make(true);
+        ->addIndexColumn()
+        ->addColumn('aksi', function ($data) 
+        {  
+            if ($data->i_isactive == "TRUE") 
+            {
+                return  '<button id="edit" onclick=edit("'.$data->i_id.'") class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
+                      <button id="delete" onclick=gantiStatus("'.$data->i_id.'","aktif") class="btn btn-danger btn-sm" title="Nonaktifan"><i class="glyphicon glyphicon-remove"></i></button>';
+            }
+            else
+            {
+                return  '<button id="edit" onclick=edit("'.$data->i_id.'") class="btn btn-warning btn-sm disabled" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
+                      <button id="delete" onclick=gantiStatus("'.$data->i_id.'","nonaktif") class="btn btn-info btn-sm" title="Aktifkan"><i class="glyphicon glyphicon-ok"></i></button>';
+            }
+        })
+        ->addColumn('none', function ($data) {
+            return '-';
+        })
+        ->rawColumns(['aksi','confirmed'])
+        ->make(true);
     }
 
     public function tambah_barang()
@@ -87,41 +90,33 @@ class barangController extends Controller
         DB::beginTransaction();
         try 
         {   
-            /*$anton[] = $this->konvertFloatRp($request->hargaBeli1);
-            $anton[] = $this->konvertFloatRp($request->hargaBeli2);
-            $anton[] = $this->konvertFloatRp($request->hargaBeli3);*/
-           /* $anton[] = str_replace(',', '', $request->hargaBeli1);
-            $anton[] = str_replace(',', '', $request->hargaBeli2);
-            $anton[] = str_replace(',', '', $request->hargaBeli3);
-            dd($anton);*/
             $tanggal = date("Y-m-d h:i:s");
             $data_item = DB::table('m_item')
-                        ->insert([
-                            'i_code'=>$request->kode_barang,
-                            'i_type' => $request->type,
-                            'i_code_group'=> $request->code_group,
-                            'i_name'=> $request->nama,
-                            'i_sat1'=>$request->satuan1,
-                            'i_sat_isi1'=> $request->isi_sat1,
-                            'i_sat2'=>$request->satuan2,
-                            'i_sat_isi2'=> $request->isi_sat2,
-                            'i_sat3'=>$request->satuan3,
-                            'i_sat_isi3'=> $request->isi_sat3,
-                            'i_det'=>$request->detail,
-                            'i_insert'=>$tanggal
-                        ]);
-
+                ->insert([
+                    'i_code'=>$request->kode_barang,
+                    'i_type' => $request->type,
+                    'i_code_group'=> $request->code_group,
+                    'i_name'=> $request->nama,
+                    'i_sat1'=>$request->satuan1,
+                    'i_sat_isi1'=> $request->isi_sat1,
+                    'i_sat2'=>$request->satuan2,
+                    'i_sat_isi2'=> $request->isi_sat2,
+                    'i_sat3'=>$request->satuan3,
+                    'i_sat_isi3'=> $request->isi_sat3,
+                    'i_det'=>$request->detail,
+                    'i_insert'=>$tanggal
+                ]);
 
             //-----insert m_price------//
             $get_itemid = DB::table('m_item')->select('i_id')->where('i_code','=', $request->kode_barang)->first();
             $data_price = DB::table('m_price')
-                            ->insert([
-                                'm_pitem' => $get_itemid->i_id,
-                                'm_pbuy1' => str_replace(',', '', $request->hargaBeli1),
-                                'm_pbuy2' => str_replace(',', '', $request->hargaBeli2),
-                                'm_pbuy3' => str_replace(',', '', $request->hargaBeli3),
-                                'm_pcreated' => $tanggal
-                            ]);
+                ->insert([
+                    'm_pitem' => $get_itemid->i_id,
+                    'm_pbuy1' => str_replace(',', '', $request->hargaBeli1),
+                    'm_pbuy2' => str_replace(',', '', $request->hargaBeli2),
+                    'm_pbuy3' => str_replace(',', '', $request->hargaBeli3),
+                    'm_pcreated' => $tanggal
+                ]);
 
             //-----update/insert d_stock------//
             //cek grup item
@@ -129,26 +124,20 @@ class barangController extends Controller
             {
                 $s_comp = '2';
                 $s_position = '2';
-                //cek ada tidaknya record pada tabel
-                $rows = DB::table('d_stock')->select('s_id')
-                    ->where('s_comp','2')
-                    ->where('s_position','2')
-                    ->where('s_item',$get_itemid->i_id)
-                    ->exists();
             }
             elseif ($request->type == "BB") //bahan baku
             {
                 $s_comp = '3';
                 $s_position = '3';
-                //cek ada tidaknya record pada tabel
-                $rows = DB::table('d_stock')->select('s_id')
-                    ->where('s_comp','3')
-                    ->where('s_position','3')
-                    ->where('s_item',$get_itemid->i_id)
-                    ->exists();
             }
+
+            //cek ada tidaknya record pada tabel
+            $rows = DB::table('d_stock')->select('s_id')
+                    ->where('s_comp', $s_comp)
+                    ->where('s_position', $s_position)
+                    ->where('s_item', $get_itemid->i_id)
+                    ->exists();
        
-            // dd($rows);
             if($rows !== FALSE) //jika terdapat record, maka lakukan update
             {
                 //update stok minimum
@@ -189,19 +178,27 @@ class barangController extends Controller
         }
     }
 
-    public function hapus_barang(Request $request)
+    public function ubah_status(Request $request)
     {
-        // dd($request->all());
+        //dd($request->all());
         DB::beginTransaction();
         try 
-        {
+        {   
             $tanggal = date("Y-m-d h:i:s");
+            if ($request->statusBrg == 'aktif') {
+                $active = 'FALSE';
+                $pesan = 'Data master barang berhasil Dinonaktifkan';
+            }else{
+                $active = 'TRUE';
+                $pesan = 'Data master barang berhasil Diaktifkan';
+            }
+            
             //update m_item
             DB::table('m_item')
                 ->where('i_id','=',$request->id)
                 ->update([
                     'i_update' => $tanggal,
-                    'i_isactive' => 'FALSE'
+                    'i_isactive' => $active
                 ]);
 
             //update m_price
@@ -209,13 +206,13 @@ class barangController extends Controller
                 ->where('m_pitem','=',$request->id)
                 ->update([
                     'm_pupdated' => $tanggal,
-                    'm_pisactive' => 'FALSE'
+                    'm_pisactive' => $active
                 ]);
 
             DB::commit();
             return response()->json([
               'status' => 'sukses',
-              'pesan' => 'Data Master Barang Berhasil Dinonaktifkan'
+              'pesan' => $pesan
             ]);          
         }
         catch (\Exception $e) 
@@ -277,24 +274,19 @@ class barangController extends Controller
             {
                 $s_comp = '2';
                 $s_position = '2';
-                //cek ada tidaknya record pada tabel
-                $rows = DB::table('d_stock')->select('s_id')
-                    ->where('s_comp','2')
-                    ->where('s_position','2')
-                    ->where('s_item',$request->kode_old)
-                    ->exists();
             }
             elseif ($request->type == "BB") //bahan baku
             {
                 $s_comp = '3';
                 $s_position = '3';
-                //cek ada tidaknya record pada tabel
-                $rows = DB::table('d_stock')->select('s_id')
-                    ->where('s_comp','3')
-                    ->where('s_position','3')
-                    ->where('s_item',$request->kode_old)
-                    ->exists();
             }
+
+            //cek ada tidaknya record pada tabel
+            $rows = DB::table('d_stock')->select('s_id')
+                ->where('s_comp', $s_comp)
+                ->where('s_position', $s_position)
+                ->where('s_item',$request->kode_old)
+                ->exists();
 
             //update stok minimum
             $update = DB::table('d_stock')

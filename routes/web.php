@@ -512,10 +512,10 @@ Route::get('/master/datacust/datatable_cust', 'master\custController@datatable_c
 //barang
 Route::get('/master/databarang/barang', 'master\barangController@barang')->name('barang');
 Route::get('/master/databarang/tambah_barang', 'master\barangController@tambah_barang');
-Route::get('/master/databarang/simpan_barang', 'master\barangController@simpan_barang')->name('simpan_barang');
-Route::get('/master/databarang/hapus_barang', 'master\barangController@hapus_barang')->name('hapus_barang');
+Route::post('/master/databarang/simpan_barang', 'master\barangController@simpan_barang')->name('simpan_barang');
+Route::post('/master/databarang/ubah_status_barang', 'master\barangController@ubah_status')->name('ubah_status');
 Route::get('/master/databarang/edit_barang', 'master\barangController@edit_barang')->name('edit_barang');
-Route::get('/master/databarang/update_barang', 'master\barangController@update_barang')->name('update_barang');
+Route::post('/master/databarang/update_barang', 'master\barangController@update_barang')->name('update_barang');
 Route::get('/master/databarang/datatable_barang', 'master\barangController@datatable_barang')->name('datatable_barang');
 Route::get('/master/databarang/kode_barang', 'master\barangController@kode_barang')->name('kode_barang');
 Route::get('/master/databarang/cari_group_barang', 'master\barangController@cari_group_barang')->name('cari_group_barang');
