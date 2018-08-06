@@ -313,72 +313,133 @@
     });
   }
 
-  function submitEdit()
-  {
-    if(confirm('Update Data ?'))
-    {
-        $('#btn_update').text('Updating...'); //change button text
-        $('#btn_update').attr('disabled',true); //set button disable 
-        $.ajax({
+  function submitEdit() {
+    iziToast.question({
+      timeout: 20000,
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      // id: 'question',
+      //zindex: 999,
+      title: 'Update data',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          $('#btn_update').text('Updating...'); //change button text
+          $('#btn_update').attr('disabled',true); //set button disable 
+          $.ajax({
             url : baseUrl + "/purchasing/rencanapembelian/update-data-plan",
-            type: "post",
+            type: "POST",
             dataType: "JSON",
             data: $('#form-edit-plan').serialize(),
             success: function(response)
             {
-                if(response.status == "sukses")
-                {
-                    alert(response.pesan);
+              if(response.status == "sukses")
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.success({
+                  position: 'topRight',
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
                     $('#btn_update').text('Update'); //change button text
                     $('#btn_update').attr('disabled',false); //set button enable
                     $('#modal-edit').modal('hide');
                     $('#tbl-daftar').DataTable().ajax.reload();
-                }
-                else
-                {
-                    alert(response.pesan);
+                  }
+                });
+              }
+              else
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.error({
+                  position: 'topRight',
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
                     $('#btn_update').text('Update'); //change button text
                     $('#btn_update').attr('disabled',false); //set button enable
                     $('#modal-edit').modal('hide');
                     $('#tbl-daftar').DataTable().ajax.reload();
-                }
+                  }
+                });
+              }
             },
             error: function (jqXHR, textStatus, errorThrown)
             {
-                alert('Error updating data');
+              iziToast.error({
+                icon: 'fa fa-times',
+                message: 'Terjadi Kesalahan!'
+              });
             }
-        });
-    }
+          });
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
   }
 
   function deletePlan(idPlan) 
   {
-    if(confirm('Yakin hapus data ?'))
-    {
-        $.ajax({
+    iziToast.question({
+      timeout: 20000,
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      title: 'Update data',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          $.ajax({
             url : baseUrl + "/purchasing/rencanapembelian/delete-data-plan",
             type: "POST",
             dataType: "JSON",
             data: {idPlan:idPlan, "_token": "{{ csrf_token() }}"},
             success: function(response)
             {
-                if(response.status == "sukses")
-                {
-                    alert(response.pesan);
+              if(response.status == "sukses")
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.success({
+                  position: 'topRight',
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
                     $('#tbl-daftar').DataTable().ajax.reload();
-                }
-                else
-                {
-                    alert(response.pesan);
+                  }
+                });
+              }
+              else
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.error({
+                  position: 'topRight',
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
                     $('#tbl-daftar').DataTable().ajax.reload();
-                }
+                  }
+                });
+              }
             },
             error: function (jqXHR, textStatus, errorThrown)
             {
-                alert('Error updating data');
+              iziToast.error({
+                icon: 'fa fa-times',
+                message: 'Terjadi Kesalahan!'
+              });
             }
-        });
-    }
+          });
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
   }
 
   function lihatHistorybyTgl(){

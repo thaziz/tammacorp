@@ -117,6 +117,7 @@ Route::get('/purchasing/rencanapembelian/get-edit-plan/{id}/{type}', 'Pembelian\
 Route::post('/purchasing/rencanapembelian/update-data-plan', 'Pembelian\RencanaPembelianController@updateDataPlan');
 Route::post('/purchasing/rencanapembelian/delete-data-plan', 'Pembelian\RencanaPembelianController@deleteDataPlan');
 Route::get('/purchasing/rencanapembelian/get-data-tabel-history/{tgl1}/{tgl2}/{tampil}', 'Pembelian\RencanaPembelianController@getDataTabelHistory');
+Route::get('/purchasing/rencanapembelian/get-stok-persatuan', 'Pembelian\RencanaPembelianController@getStokPersatuan');
 //belanja harian
 Route::get('/purchasing/belanjaharian/belanja', 'Pembelian\BelanjaHarianController@belanja');
 Route::get('/purchasing/belanjaharian/tambah_belanja', 'Pembelian\BelanjaHarianController@tambah_belanja');
