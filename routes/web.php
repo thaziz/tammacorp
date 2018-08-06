@@ -132,6 +132,9 @@ Route::post('/purchasing/belanjaharian/update-data-belanja', 'Pembelian\BelanjaH
 Route::post('/purchasing/belanjaharian/delete-data-belanja', 'Pembelian\BelanjaHarianController@deleteDataBelanja');
 Route::get('/purchasing/belanjaharian/get-belanja-by-tgl/{tgl1}/{tgl2}', 'Pembelian\BelanjaHarianController@getBelanjaByTgl');
 Route::get('/purchasing/belanjaharian/get-data-masterbarang', 'Pembelian\BelanjaHarianController@getDataMasterBarang');
+// Ari
+Route::get('/purchasing/belanjaharian/print/{id}', 'Pembelian\BelanjaHarianController@print');
+// irA
 //return pembelian
 Route::get('/purchasing/returnpembelian/pembelian', 'Pembelian\ReturnPembelianController@index');
 Route::get('/purchasing/returnpembelian/tambah-return', 'Pembelian\ReturnPembelianController@tambahReturn');

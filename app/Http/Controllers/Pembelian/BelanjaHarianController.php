@@ -608,4 +608,38 @@ class BelanjaHarianController extends Controller
       return (int)str_replace(',', '.', $value);
     }
 
+    public function print($id)
+    {
+      $dataHeader = d_purchasingharian::join('d_supplier','d_purchasingharian.d_pcsh_supid','=','d_supplier.s_id')
+                ->join('d_mem','d_purchasingharian.d_pcsh_staff','=','d_mem.m_id')
+                ->select('d_purchasingharian.*', 'd_supplier.s_company', 'd_supplier.s_name', 'd_supplier.s_id', 'd_mem.m_name', 'd_mem.m_id')
+                ->where('d_pcsh_id', '=', $id)
+                ->orderBy('d_pcsh_created', 'DESC')
+                ->get()->toArray();
+
+      $dataList = d_purchasingharian_dt::join('m_item', 'd_purchasingharian_dt.d_pcshdt_item', '=', 'm_item.i_id')
+                ->join('m_satuan', 'd_purchasingharian_dt.d_pcshdt_sat', '=', 'm_satuan.m_sid')
+                ->select('d_purchasingharian_dt.*', 'm_item.*', 'm_satuan.m_sname', 'm_satuan.m_sid')
+                ->where('d_purchasingharian_dt.d_pcshdt_pcshid', '=', $id)
+                ->orderBy('d_purchasingharian_dt.d_pcshdt_created', 'DESC')
+                ->get()->toArray();
+
+      $ambilHitungTotal = d_purchasingharian_dt::join('m_item', 'd_purchasingharian_dt.d_pcshdt_item', '=', 'm_item.i_id')
+                ->join('m_satuan', 'd_purchasingharian_dt.d_pcshdt_sat', '=', 'm_satuan.m_sid')
+                ->select(DB::raw('SUM(d_pcshdt_pricetotal) as total_totalharga'))
+                ->where('d_purchasingharian_dt.d_pcshdt_pcshid', '=', $id)
+                ->orderBy('d_purchasingharian_dt.d_pcshdt_created', 'DESC')
+                ->get();
+
+      $dataIsi = array_chunk($dataList, 7);
+
+      // return $dataHeader;
+      // return $dataIsi;
+
+      foreach ($ambilHitungTotal as $key => $hitungTotal) {
+        {{$hitungTotal->total_totalharga;}}
+      }
+
+      return view('purchasing/belanjaharian/print', compact('dataHeader', 'dataIsi', 'hitungTotal'));
+    }
 }

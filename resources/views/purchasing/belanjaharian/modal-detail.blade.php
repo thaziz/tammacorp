@@ -112,8 +112,8 @@
           
         </div>
     
-        <div class="modal-footer" style="border-top: none;">
-          <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+        <div id="m1a2-abrams" class="modal-footer" style="border-top: none;">
+          <!-- Button di Script di belanjaharian/index.blade.php -->
         </div>
 
       </div>
