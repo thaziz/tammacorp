@@ -36,16 +36,16 @@ class RencanaPembelianController extends Controller
           foreach($query as $k)
           {
             $tmp = ((int)$k->kode_max)+1;
-            $kd = sprintf("%04s", $tmp);
+            $kd = sprintf("%06s", $tmp);
           }
         }
         else
         {
-          $kd = "0001";
+          $kd = "000001";
         }
 
         // $idPlan = $id;
-        $codePlan = "ROR-".date('myd')."-".$kd;
+        $codePlan = "ROR-".date('ym')."-".$kd;
         $staff['nama'] = Auth::user()->m_name;
         $staff['id'] = Auth::User()->m_id;
       
@@ -331,24 +331,24 @@ class RencanaPembelianController extends Controller
 
     public function getDataSupplier(Request $request)
     {
-        $formatted_tags = array();
-        $term = trim($request->q);
-        if (empty($term)) {
-            $sup = DB::table('d_supplier')->get();
-            foreach ($sup as $val) {
-                $formatted_tags[] = ['id' => $val->s_id, 'text' => $val->s_company];
-            }
-            return Response::json($formatted_tags);
-        }
-        else
-        {
-            $sup = DB::table('d_supplier')->where('s_company', 'LIKE', '%'.$term.'%')->get();
-            foreach ($sup as $val) {
-                $formatted_tags[] = ['id' => $val->s_id, 'text' => $val->s_company];
-            }
+      $formatted_tags = array();
+      $term = trim($request->q);
+      if (empty($term)) {
+          $sup = DB::table('d_supplier')->get();
+          foreach ($sup as $val) {
+              $formatted_tags[] = ['id' => $val->s_id, 'text' => $val->s_company];
+          }
+          return Response::json($formatted_tags);
+      }
+      else
+      {
+          $sup = DB::table('d_supplier')->where('s_company', 'LIKE', '%'.$term.'%')->get();
+          foreach ($sup as $val) {
+              $formatted_tags[] = ['id' => $val->s_id, 'text' => $val->s_company];
+          }
 
-            return Response::json($formatted_tags);  
-        }
+          return Response::json($formatted_tags);  
+      }
     }
 
     public function autocompleteBarang(Request $request)
@@ -609,6 +609,35 @@ class RencanaPembelianController extends Controller
         ->make(true);
     }
 
+    /*public function getStokPersatuan(Request $request)
+    {
+      //dd($request->all());
+      if ($val->i_type == "BJ") //brg jual
+      {
+        $query = DB::select(DB::raw("SELECT IFNULL((SELECT s_qty FROM d_stock where s_item = '$request->idBrg' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
+
+        $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $request->idSat)->first();
+        $satAlter1 = DB::table('m_item')->join('m_satuan', 'm_item.i_sat2', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat2', '=', $request->idSat)->first();
+        $satAlter2 = DB::table('m_item')->join('m_satuan', 'm_item.i_sat3', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat3', '=', $request->idSat)->first();
+
+        $stok[] = $query[0];
+        $satuan[] = $satUtama->m_sname;
+        $counter++;
+      }
+      elseif ($val->i_type == "BB") //bahan baku
+      {
+        $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$request->idBrg' AND s_comp = '3' AND s_position = '3' limit 1) ,'0') as qtyStok"));
+        
+        $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $request->idSat)->first();
+        $satAlter1 = DB::table('m_item')->join('m_satuan', 'm_item.i_sat2', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat2', '=', $request->idSat)->first();
+        $satAlter2 = DB::table('m_item')->join('m_satuan', 'm_item.i_sat3', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat3', '=', $request->idSat)->first();
+
+        $stok[] = $query[0];
+        $satuan[] = $satUtama->m_sname;
+        $counter++;
+      }
+    }*/
+
     public function konvertRp($value)
     {
         $value = str_replace(['Rp', '\\', '.', ' '], '', $value);
@@ -619,24 +648,24 @@ class RencanaPembelianController extends Controller
     {
       foreach ($arrItemType as $val) 
       {
-          if ($val->i_type == "BJ") //brg jual
-          {
-              $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
-              $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();
+        if ($val->i_type == "BJ") //brg jual
+        {
+          $query = DB::select(DB::raw("SELECT IFNULL((SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
+          $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();
 
-              $stok[] = $query[0];
-              $satuan[] = $satUtama->m_sname;
-              $counter++;
-          }
-          elseif ($val->i_type == "BB") //bahan baku
-          {
-              $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '3' AND s_position = '3' limit 1) ,'0') as qtyStok"));
-              $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();
+          $stok[] = $query[0];
+          $satuan[] = $satUtama->m_sname;
+          $counter++;
+        }
+        elseif ($val->i_type == "BB") //bahan baku
+        {
+          $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '3' AND s_position = '3' limit 1) ,'0') as qtyStok"));
+          $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $arrSatuan[$counter])->first();
 
-              $stok[] = $query[0];
-              $satuan[] = $satUtama->m_sname;
-              $counter++;
-          }
+          $stok[] = $query[0];
+          $satuan[] = $satUtama->m_sname;
+          $counter++;
+        }
       }
 
       $data = array('val_stok' => $stok, 'txt_satuan' => $satuan);
