@@ -287,11 +287,17 @@ function simpan() {
           if (response.status == 'sukses') {
             var table = $('#data').DataTable();
             table.ajax.reload( null, false );
-            alert('Berhasil disimpan');
+            iziToast.success({timeout: 5000, 
+                          position: "topRight",
+                          icon: 'fa fa-chrome', 
+                          title: '', 
+                          message: 'Rencana di tambahkan.'});
             $("#modal").modal("hide");
             $('#btnSimpan').removeAttr('disabled');
           }else{
-            alert('Mohon Melengkapai Data Rencana')
+            iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'Rencana gagal di tambahkan.'});
             $('#btnSimpan').removeAttr('disabled');
           }
         },

@@ -109,8 +109,9 @@ class RencanaProduksiController extends Controller
       $results = array(); 
       $queries = DB::table('m_item')
         ->where('m_item.i_name', 'LIKE', '%'.$term.'%')
+        ->where('i_isactive','TRUE')
         ->where('i_type','BP')
-        ->take(50)->get();
+        ->take(15)->get();
       
       if ($queries == null) {
         $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];
@@ -133,19 +134,19 @@ class RencanaProduksiController extends Controller
     foreach ($data as $key) {
             // add new button
       $data[$i]['button'] = ' <div class="text-center">
-                                         <button class="btn btn-warning btn-sm btn-flat fa fa-edit edit"
-                                                        data-toggle="modal" 
-                                                        data-target="#myModal"
-                                                        data-name="'.$key['i_name'].'"
-                                                        data-id="'.$key['pp_id'].'"
-                                                        data-qty="'.$key['pp_qty'].'">
-                                            </button>
-                                            <button id="hapus"
-                                                        data-name="'.$key['i_name'].'"
-                                                        data-id="'.$key['pp_id'].'"
-                                                        class="fa fa-trash-o hapus btn btn-danger btn-sm">
-                                            </button>
-                                    </div> ';
+                                   <button class="btn btn-warning btn-sm btn-flat fa fa-edit edit"
+                                                  data-toggle="modal" 
+                                                  data-target="#myModal"
+                                                  data-name="'.$key['i_name'].'"
+                                                  data-id="'.$key['pp_id'].'"
+                                                  data-qty="'.$key['pp_qty'].'">
+                                      </button>
+                                      <button id="hapus"
+                                                  data-name="'.$key['i_name'].'"
+                                                  data-id="'.$key['pp_id'].'"
+                                                  class="fa fa-trash-o hapus btn btn-danger btn-sm">
+                                      </button>
+                              </div> ';
       $data[$i]['pp_date']='<span class="hide">'.$key['pp_date'].'</span>'.Date('d M Y', strtotime($key['pp_date']));
       $i++;
     }

@@ -84,12 +84,13 @@
             url : baseUrl + "/produksi/lihatadonan/tabel/"+iditem+'/'+jumlah,
         },
         columns: [
-        {data : 'DT_Row_Index', orderable: true, searchable: false},
+        // {data : 'DT_Row_Index', orderable: true, searchable: false},
         {data: 'f_bb', name: 'f_bb'},
         {data: 'f_value', name: 'f_value'},
-        {data: 'f_scale', name: 'f_scale'},
-        {data: '-', name: '-', orderable: false},
-        {data: '-', name: '-', orderable: false},
+        {data: 'm_sname', name: 'm_sname'},
+        {data: 'd_stock', name: 'd_stock', orderable: false},
+        {data: 'm_sname', name: 'm_sname'},
+        {data: 'purchesing', name: 'purchesing', orderable: false},
         ],
       });
   }
@@ -324,6 +325,8 @@
   function refreshTabelSpk() {
     $('#table-spk').DataTable().ajax.reload();
   }
+
+  
   
 </script>
 @endsection()

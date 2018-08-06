@@ -28,40 +28,49 @@
                     </div>
                 <ul id="generalTab" class="nav nav-tabs">
                   <li class="active"><a href="#alert-tab" data-toggle="tab">Form Manajemen Output Produksi</a></li>
-                  <li><a href="#note-hasil-produksi" data-toggle="tab">Form Hasil Produksi</a></li>
+           {{--        <li><a href="#note-hasil-produksi" data-toggle="tab">Form Hasil Produksi</a></li> --}}
                 </ul>
                 <div id="generalTabContent" class="tab-content responsive">
             <div id="alert-tab" class="tab-pane fade in active">
               <div class="row">
-              
-               <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: -10px;margin-bottom: 15px;">  
-                 <div class="col-md-5 col-sm-6 col-xs-8" >
-                   <h4>Form Manajemen Output Produksi</h4>
-                 </div>
-               </div>
+                <div class="col-md-12 col-sm-12 col-xs-12" align="right">
+                      <a href="#" data-toggle="modal" data-target="#create" class="btn btn-box-tool" style="margin-bottom: 15px;"><i class="fa fa-plus"></i>&nbsp;Tambah Hasil Produksi</a>
+                </div>
              <div class="col-md-12 col-sm-12 col-xs-12">
                 <form onsubmit="return false" autocomplete="off">
-                        <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="padding-bottom: 10px;padding-top: 20px;margin-bottom: 15px;">
-                            <div class="col-md-3 col-sm-12 col-xs-12">  
-                                    <label class="tebal">Tanggal Produksi</label>
-                            </div>
-                            <div class="col-md-3 col-sm-12 col-xs-12">
-                                <div class="form-group">
-                                    <input value="{{ date('d-m-Y') }}" class="form-control datepicker1 input-sm" type="text">
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-12 col-xs-12">
-                                    <label class="tebal">Nama Petugas</label>
-                            </div>
-                            <div class="col-md-3 col-sm-12 col-xs-12">
-                                <div class="form-group">
-                                    <input type="text" readonly="" class="form-control input-sm" name="" value="{{ Auth::user()->name }}">
-                                </div>
-                            </div>  
+
+                      <div class="col-md-2 col-sm-3 col-xs-12">
+                        <label class="tebal">Tanggal Persetujuan</label>
+                      </div>
+
+                      <div class="col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                          <div class="input-daterange input-group">
+                            <input id="tanggal1" class="form-control input-sm datepicker1" name="tanggal" type="text">
+                            <span class="input-group-addon">-</span>
+                            <input id="tanggal2" class="input-sm form-control datepicker2" name="tanggal" type="text" value="{{ date('d-m-Y') }}">
+                          </div>
                         </div>
-                        <div class="col-md-12 col-sm-12 col-xs-12" align="right">
-                              <a href="#" data-toggle="modal" data-target="#create" class="btn btn-box-tool" style="margin-bottom: 15px;"><i class="fa fa-plus"></i>&nbsp;Tambah Hasil Produksi</a>
-                        </div>
+                      </div>
+
+                      <div class="col-md-3 col-sm-3 col-xs-12" align="left">
+                        <button class="btn btn-primary btn-sm btn-flat autoCari" type="button" onclick="cariTanggal()">
+                          <strong>
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                          </strong>
+                        </button>
+                      </div>
+                      <div class="col-md-3 col-sm-3 col-xs-12" style="margin-bottom: 15px;" align="right">
+
+                            <select name="tampilData" id="tampil_data" class="form-control input-sm" >
+                              <option value="Semua" class="form-control">Tampilkan Data : Semua</option>
+                              <option value="Belum-dikirim" class="form-control">
+                                Tampilkan Data : Belum Terkirim</option>
+                              <option value="Dikirim" class="form-control">Tampilkan Data : Dikirim</option>
+                              <option value="Terkirim" class="form-control">Tampilkan Data : Terkirim</option>
+                            </select>
+
+                      </div>
                         <!-- Modal -->
                       <div class="modal fade" id="create" role="dialog">
                         <div class="modal-dialog">
@@ -87,7 +96,7 @@
                                           <td>Nomor SPK<font color="red">*</font></td>
                                           <td id="ubahselect">
                                             <select class="form-control input-sm" id="cari_spk" name="cariSpk" style="width: 100%;">
-                                              <option>- Pilih Nomor SPK</option>
+                                              <option >- Pilih Nomor SPK</option>
                                             </select>
                                           </td>                                         
                                         </tr>
@@ -118,6 +127,16 @@
                                           </td>
                                         </tr>
                                         <tr>
+                                          <td>Dari Produksi<font color="red">*</font></td>
+                                          <td>
+                                            <select class="form-control input-sm" id="prdt_produksi" name="prdt_produksi" style="width: 100%;">
+                                              @foreach ($data as $produksi)
+                                                <option value="{{ $produksi->mp_id }}">{{ $produksi->mp_name }}</option>
+                                              @endforeach
+                                            </select>
+                                          </td>
+                                        </tr>
+                                        <tr>
                                           <td>Jam Produksi<font color="red">*</font></td>
                                           <td>
                                             <input type="text" class="form-control timepicker" id="time" name="">
@@ -140,22 +159,27 @@
                             </div>
                         </div>
                       </div>
-                        <div class="table-responsive">
-                          <table class="table tabelan table-bordered table-striped" id="oProduct">
-                            <thead>
-                             <tr>
-                                <th>Nomor SPK</th>
-                                <th>Tanggal Spk</th>
-                                <th>Nama Item</th>
-                                <th>Tanggal Jadi</th>
-                                <th>Waktu Jadi</th>
-                                <th>Jumlah</th>
-                            </tr>
-                            </thead>
-                            <tbody> 
-                            </tbody>
-                          </table>
+                        <div class="panel-body">
+                          <div class="table-responsive">
+                          
+                            <table class="table tabelan table-bordered table-striped" id="oProduct" width="100%">
+                              <thead>
+                               <tr>
+                                  <th>Tanggal Spk</th>
+                                  <th>Nota Spk</th>
+                                  <th>Produksi</th>
+                                  <th>Nama Item</th>
+                                  <th>Waktu Selesai</th>
+                                  <th>Jumlah</th>
+                                  <th>Status</th>
+                                  <th>Aksi</th>
+                              </tr>
+                              </thead>
+                              <tbody> 
+                              </tbody>
+                            </table>
                         </div> 
+                      </div>
                   </form>
               </div>                                       
             </div>
@@ -276,73 +300,48 @@
 <script src="http://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js"></script>
 <script type="text/javascript"> 
 
-$(document).ready(function() {
-var extensions = {
-     "sFilterInput": "form-control input-sm",
-    "sLengthSelect": "form-control input-sm"
-}
-// Used when bJQueryUI is false
-$.extend($.fn.dataTableExt.oStdClasses, extensions);
-// Used when bJQueryUI is true
-$.extend($.fn.dataTableExt.oJUIClasses, extensions);
+  $(document).ready(function() {
+  var extensions = {
+       "sFilterInput": "form-control input-sm",
+      "sLengthSelect": "form-control input-sm"
+  }
+  // Used when bJQueryUI is false
+  $.extend($.fn.dataTableExt.oStdClasses, extensions);
+  // Used when bJQueryUI is true
+  $.extend($.fn.dataTableExt.oJUIClasses, extensions);
 
-$('#oProduct').dataTable({
-  "responsive":true,
-  "pageLength": 10,
-  "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
-  "language": {
-      "searchPlaceholder": "Cari Data",
-      "emptyTable": "Tidak ada data",
-      "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-      "infoFiltered" : "",
-      "sSearch": '<i class="fa fa-search"></i>',
-      "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-      "infoEmpty": "",
-      "zeroRecords": "Data tidak ditemukan",
-      "paginate": {
-              "previous": "Sebelumnya",
-              "next": "Selanjutnya",
-          }
-    },
-  "ajax":{
-          "url" : baseUrl + "/produksi/o_produksi/tabel",
-          "type": "GET"
-    },
-  "columns": [
-        { "data": "spk_code" },
-        { "data": "pr_date" },
-        { "data": "i_name" },
-        { "data": "prdt_date" },
-        { "data": "prdt_time" ,"className" : "dt-body-right" },
-        { "data": "prdt_qty" ,"className" : "dt-body-right" },]
-});
+    var timepicker = new TimePicker('time', {
+      lang: 'en',
+      theme: 'dark'
+    });
+    timepicker.on('change', function(evt) {
+      
+      var value = (evt.hour || '00') + ':' + (evt.minute || '00');
+      evt.element.value = value;
 
-var timepicker = new TimePicker('time', {
-  lang: 'en',
-  theme: 'dark'
-});
-timepicker.on('change', function(evt) {
-  
-  var value = (evt.hour || '00') + ':' + (evt.minute || '00');
-  evt.element.value = value;
+    });
 
-});
+    $('#myModal').on('shown.bs.modal', function () {
+      $('#prdt_qty').focus()
+    }) 
 
+  });
 
-});
-
-  var tableSpk = $('#tabelHasilProduksi').DataTable({
+  var oProduct = $('#oProduct').DataTable({
     processing: true,
     serverSide: true,
     ajax: {
-        url : baseUrl + "/produksi/o_produksi/lihat/tabelhasil",
+        url : baseUrl + "/produksi/o_produksi/tabel",
     },
     columns: [
     {data: 'pr_date', name: 'pr_date'},
     {data: 'spk_code', name: 'spk_code'},
+    {data: 'mp_name', name: 'mp_name'},
     {data: 'i_name', name: 'i_name', orderable: false},
-    {data: 'action_belum', name: 'action_belum', orderable: false},
-    {data: 'action_sudah', name: 'action_sudah', orderable: false, searchable: false},
+    {data: 'prdt_date', name: 'prdt_date'},
+    {data: 'prdt_qty', name: 'prdt_qty', className: 'right'},
+    {data: 'prdt_status', name: 'prdt_status'},
+    {data: 'action', name: 'action'},
     ],
     "responsive":true,
 
@@ -361,6 +360,37 @@ timepicker.on('change', function(evt) {
                          }
                   }
   });
+
+  // var tableSpk = $('#tabelHasilProduksi').DataTable({
+  //   processing: true,
+  //   serverSide: true,
+  //   ajax: {
+  //       url : baseUrl + "/produksi/o_produksi/lihat/tabelhasil",
+  //   },
+  //   columns: [
+  //   {data: 'pr_date', name: 'pr_date'},
+  //   {data: 'spk_code', name: 'spk_code'},
+  //   {data: 'i_name', name: 'i_name', orderable: false},
+  //   {data: 'action_belum', name: 'action_belum', orderable: false},
+  //   {data: 'action_sudah', name: 'action_sudah', orderable: false, searchable: false},
+  //   ],
+  //   "responsive":true,
+
+  //                 "pageLength": 10,
+  //               "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+  //               "language": {
+  //                   "searchPlaceholder": "Cari Data",
+  //                   "emptyTable": "Tidak ada data",
+  //                   "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+  //                   "sSearch": '<i class="fa fa-search"></i>',
+  //                   "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+  //                   "infoEmpty": "",
+  //                   "paginate": {
+  //                           "previous": "Sebelumnya",
+  //                           "next": "Selanjutnya",
+  //                        }
+  //                 }
+  // });
 
 var date = new Date();
 var newdate = new Date(date);
@@ -433,95 +463,7 @@ function simpanHasilProduct(){
     time = $('#time').val(),
     spk_item = $("#id_item").val(),
     spk_qty = $("#JumlahItem").val();
-  if (tgl == '') {
-  Command: toastr["warning"]("Kolom Tanggal tidak boleh kosong ", "Peringatan !")
-      $('.PostingHasil').removeAttr('disabled','disabled');
-  toastr.options = {
-    "closeButton": false,
-    "debug": false,
-    "newestOnTop": true,
-    "progressBar": false,
-    "positionClass": "toast-top-right",
-    "preventDuplicates": false,
-    "onclick": null,
-    "showDuration": "300",
-    "hideDuration": "1000",
-    "timeOut": "3000",
-    "extendedTimeOut": "1000",
-    "showEasing": "swing",
-    "hideEasing": "linear",
-    "showMethod": "fadeIn",
-    "hideMethod": "fadeOut"
-  }
-  return false;
-  }
-  if (time == '') {
-  Command: toastr["warning"]("Kolom Jam tidak boleh kosong ", "Peringatan !")
-      $('.PostingHasil').removeAttr('disabled','disabled');
-  toastr.options = {
-    "closeButton": false,
-    "debug": false,
-    "newestOnTop": true,
-    "progressBar": false,
-    "positionClass": "toast-top-right",
-    "preventDuplicates": false,
-    "onclick": null,
-    "showDuration": "300",
-    "hideDuration": "1000",
-    "timeOut": "3000",
-    "extendedTimeOut": "1000",
-    "showEasing": "swing",
-    "hideEasing": "linear",
-    "showMethod": "fadeIn",
-    "hideMethod": "fadeOut"
-  }
-  return false;
-  }
-  if (spk_id == '') {
-  Command: toastr["warning"]("Kolom SPK tidak boleh kosong ", "Peringatan !")
-      $('.PostingHasil').removeAttr('disabled','disabled');
-  toastr.options = {
-    "closeButton": false,
-    "debug": false,
-    "newestOnTop": true,
-    "progressBar": false,
-    "positionClass": "toast-top-right",
-    "preventDuplicates": false,
-    "onclick": null,
-    "showDuration": "300",
-    "hideDuration": "1000",
-    "timeOut": "3000",
-    "extendedTimeOut": "1000",
-    "showEasing": "swing",
-    "hideEasing": "linear",
-    "showMethod": "fadeIn",
-    "hideMethod": "fadeOut"
-  }
-  return false;
-  }
-  if (spk_qty == '' || spk_qty <= 0 ) {
-  Command: toastr["warning"]("Kolom Jumlah Item tidak boleh kosong ", "Peringatan !")
-      $('.PostingHasil').removeAttr('disabled','disabled');
-  toastr.options = {
-    "closeButton": false,
-    "debug": false,
-    "newestOnTop": true,
-    "progressBar": false,
-    "positionClass": "toast-top-right",
-    "preventDuplicates": false,
-    "onclick": null,
-    "showDuration": "300",
-    "hideDuration": "1000",
-    "timeOut": "3000",
-    "extendedTimeOut": "1000",
-    "showEasing": "swing",
-    "hideEasing": "linear",
-    "showMethod": "fadeIn",
-    "hideMethod": "fadeOut"
-  }
-  return false;
-  }
-
+    prdt_produksi = $("#prdt_produksi").val();
   $.ajax({
   url : baseUrl + "/produksi/o_produksi/store",
   type: 'get',
@@ -530,7 +472,8 @@ function simpanHasilProduct(){
     spk_id: spk_id,
     spk_item: spk_item,
     spk_qty: spk_qty,
-    time : time
+    time : time,
+    prdt_produksi: prdt_produksi
   },
   success:function(response){
     if (response.status=='sukses') {
@@ -541,13 +484,18 @@ function simpanHasilProduct(){
       $("#spk_ref").val('');
       $("#JumlahItemSpk").val('');
       $("#TanggalProduksi").val('');
-      $("#oProduct").DataTable().ajax.reload( null, false );
-       tableSpk.ajax.reload();
-      alert('Data Tersimpan');
+      oProduct.ajax.reload();
+      iziToast.success({timeout: 5000, 
+                          position: "topRight",
+                          icon: 'fa fa-chrome', 
+                          title: '', 
+                          message: 'Berhasil ditambahkan.'});
       $('.PostingHasil').removeAttr('disabled','disabled');
       $("input[name='Tanggal_Produksi']").focus();
     }else{
-      alert('Data Tidak Tersimpan');
+      iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'Gagal menyimpan.'}); 
       $('.PostingHasil').removeAttr('disabled','disabled');
     }
     }
@@ -590,8 +538,6 @@ function edit(id1,id2){
 }
 
   function simpanProduksiQty(){
-    if(!confirm("Apakah Anda yakin ingin merubah jumlah hasil produksi?")) return false;
-    $('.btn-simpan').attr('disabled','disabled');
     var myForm = $('#myForm :input').serialize();
     $.ajaxSetup({
         headers: {
@@ -604,16 +550,32 @@ function edit(id1,id2){
       data: myForm,
       success: function(response){
         if (response.status == 'sukses') {
-          oTable.ajax.reload();
-          alert('Jumlah Barang Telah di Rubah');
+          oProduct.ajax.reload();
+          iziToast.success({timeout: 5000, 
+                          position: "topRight",
+                          icon: 'fa fa-chrome', 
+                          title: '', 
+                          message: 'Berhasil update.'});
+          $('#myModal').modal('hide');
         }else{
-          alert('Barang Belum Bisa di Kirim');
-          $('.btn-simpan').removeAttr('disabled','disabled');
+          iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'Gagal update.'}); 
         }
         
       }
 
     });
   }
+
+function hapus(id1,id2){
+  $.ajax({
+    type: "get",
+    url : baseUrl + "/produksi/o_produksi/distroy/"+id1+'/'+id2,
+    success: function(){
+      oTable.ajax.reload();
+    }
+  });
+}
 </script>
 @endsection()                           

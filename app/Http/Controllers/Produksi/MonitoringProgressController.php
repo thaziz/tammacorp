@@ -61,7 +61,10 @@ class MonitoringProgressController extends Controller
 
 
      $mon = DB::Table('m_item')
-        ->select('i_id','i_code','i_name','s_qty','pp_qty', DB::raw("sum(sd_qty) as jumlah"), DB::raw("count(sd_sales) as nota"), DB::raw("max(s_date) as s_date"))
+        ->select('i_id','i_code','i_name','s_qty','pp_qty', 
+            DB::raw("sum(sd_qty) as jumlah"), 
+            DB::raw("count(sd_sales) as nota"), 
+            DB::raw("max(s_date) as s_date"))
         ->leftjoin(DB::raw( sprintf( '(%s) d_stock', $stock->toSql() ) ), function ($join){
             $join->on('m_item.i_id','=','d_stock.s_item');
           })
@@ -72,8 +75,8 @@ class MonitoringProgressController extends Controller
             $join->on('i_id','=','sd_item');
           })
         ->where('i_type','BP')
+        ->where('i_isactive','TRUE')
         ->groupBy('i_id')
-        //->orderBy('sd_sales','desc')
         ->get();
 
      //return $mon;

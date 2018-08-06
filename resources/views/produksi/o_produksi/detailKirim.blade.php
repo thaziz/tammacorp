@@ -30,7 +30,6 @@ var oTable = $('#tableAksiKirim').DataTable({
         {data: 'prdt_time', name: 'prdt_time', orderable: false},
         {data: 'prdt_qty', name: 'prdt_qty', orderable: false, searchable: false},
         {data: 'prdt_status', name: 'prdt_status'},
-        // {data: 'action', name: 'action', orderable: false, searchable: false},
     ],
     });
 </script>

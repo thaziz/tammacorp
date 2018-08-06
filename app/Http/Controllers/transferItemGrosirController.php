@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\d_transferItem;
 use App\d_transferItemDt;
+use App\d_stock_mutation;
 use DB;
 use Validator;
 use Carbon\Carbon;
@@ -168,14 +169,12 @@ class transferItemGrosirController extends Controller
   public function simpanApprove(Request $request){
   DB::beginTransaction();
     try {  
-         
     $tglAppr='';
     $tglSend='';
     $ttlAppr=0;
     $ttlSend=0;
     $isAppr='N';
     $isSend='N';
-
     for ($i=0; $i <count($request->tidt_id) ; $i++) {                 
    	 $qtyAwal=0;
         if($request->qtyAppr[$i]!='' || $request->qtyAppr[$i]!='0' && $request->qtyAppr[$i]!='' || $request->qtyAppr[$i]!=null){
@@ -222,37 +221,35 @@ class transferItemGrosirController extends Controller
                where('s_position',DB::raw('3'));
                
         if($stockRetailInGrosir->first()){
-                    $stockRetailInGrosir->update([
-                        's_qty'=>($stockRetailInGrosir->first()->s_qty-$qtyAwal)+$request->qtySend[$i]
-                    ]);
-            }else{
-                    $s_id=d_stock::max('s_id');
-                    d_stock::create([
-                            's_id'      =>$s_id+1,
-                            's_comp'    =>1,
-                            's_position' =>2,
-                            's_item'    =>$request->tidt_item[$i],
-                            's_qty'     =>$request->qtySend[$i],
+          $stockRetailInGrosir->update([
+              's_qty'=>($stockRetailInGrosir->first()->s_qty-$qtyAwal)+$request->qtySend[$i]
+          ]);
+        }else{
+          $s_id = d_stock::max('s_id');
+          d_stock::create([
+                  's_id'      =>$s_id+1,
+                  's_comp'    =>1,
+                  's_position' =>5,
+                  's_item'    =>$request->tidt_item[$i],
+                  's_qty'     =>$request->qtySend[$i],
 
-                    ]);
-            }
-            }
+          ]);
+        }
+    }
 
-            if(count($request->tidt_id)==$ttlAppr){
-                $isAppr='Y';
+      if(count($request->tidt_id)==$ttlAppr){
+          $isAppr='Y';
 
-            }
-            if(count($request->tidt_id)==$ttlSend){
-                $isSend='Y';
-            }
-        $transferItem=d_transferItem::where('ti_id',$request->tidt_id);
+      }
+      if(count($request->tidt_id)==$ttlSend){
+          $isSend='Y';
+      }
+      $transferItem=d_transferItem::where('ti_id',$request->tidt_id);
 
-        $transferItem->update([
+      $transferItem->update([
                     'ti_isapproved'=>$isAppr,
                     'ti_issent'=>$isSend
                         ]);
-
-
     DB::commit();
     return response()->json([
         'status' => 'sukses'
@@ -271,7 +268,6 @@ class transferItemGrosirController extends Controller
   public function simpanTransferGrosir(Request $request){
   DB::beginTransaction();
       try {
-    //no req
       $year = carbon::now()->format('y');
       $month = carbon::now()->format('m');
       $date = carbon::now()->format('d');
@@ -285,13 +281,12 @@ class transferItemGrosirController extends Controller
       $idreq = 'REQ'  . $year . $month . $date . $idreq;
       //end no req
       
-    $ti_id=d_transferItem::max('ti_id')+1;
+    $ti_id = d_transferItem::max('ti_id')+1;
     d_transferItem::create([
                 'ti_id'         =>$ti_id,
                 'ti_time'       =>date('Y-m-d',strtotime($request->tf_tanggal)), 
                 'ti_code'       =>$idreq, 
                 'ti_order'      =>'GR',
-                //'ti_orderstaff'   =>,
                 'ti_note'       =>$request->tf_keterangan,
                 'ti_isapproved' =>'Y',
                 'ti_issent' =>'Y',
@@ -301,19 +296,15 @@ class transferItemGrosirController extends Controller
     for ($i=0; $i <count($request->kode_item) ; $i++) { 
       $tidt_id=d_transferItemDt::where('tidt_id',$ti_id)->max('tidt_detail')+1;
        d_transferItemDt::create([
-          'tidt_id'           =>$ti_id,
-          'tidt_detail'       =>$tidt_id, 
-          'tidt_item'     =>$request->kode_item[$i], 
-          'tidt_qty'      =>$request->sd_qty[$i],
-
-
+          'tidt_id'      =>$ti_id,
+          'tidt_detail'  =>$tidt_id, 
+          'tidt_item'    =>$request->kode_item[$i], 
+          'tidt_qty'     =>$request->sd_qty[$i],
           'tidt_qty_appr'=>$request->sd_qty[$i],
           'tidt_apprtime'=>date('Y-m-d g:i:s'),
           'tidt_qty_send'=>$request->sd_qty[$i],
           'tidt_sendtime'=>date('Y-m-d g:i:s'),
       ]);
-
-
 
         $stockGrosir=d_stock::                        
              where('s_item',$request->kode_item[$i])->
@@ -329,14 +320,10 @@ class transferItemGrosirController extends Controller
                   $data=['status'=>'Gagal','info'=>'Stok Tidak Mencukupi'];
                   return json_encode($data);
       }
-
-
-
        //stock 11/3
-      $stockRetailInGrosir=d_stock::                        
-             where('s_item',$request->kode_item[$i])->
-             where('s_comp',DB::raw('1'))->
-             where('s_position',DB::raw('2'));
+      $stockRetailInGrosir = d_stock::where('s_item',$request->kode_item[$i])
+             ->where('s_comp',DB::raw('1'))
+             ->where('s_position',DB::raw('5'));
              
       if($stockRetailInGrosir->first()){
                   $stockRetailInGrosir->update([
@@ -347,7 +334,7 @@ class transferItemGrosirController extends Controller
                   d_stock::create([
                           's_id'      =>$s_id+1,
                           's_comp'    =>1,
-                          's_position' =>2,
+                          's_position' =>5,
                           's_item'    =>$request->kode_item[$i],
                           's_qty'     =>$request->sd_qty[$i],
 

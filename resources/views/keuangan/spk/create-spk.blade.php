@@ -49,6 +49,17 @@
               </div>
             </div>
 
+                      <div class="col-md-4 col-sm-3 col-xs-12">
+              <div class="">
+                <label class="tebal">No SPK :</label>
+              </div>
+            </div>
+            <div class="col-md-8 col-sm-3 col-xs-12">
+              <div class="form-group">
+                <input class="form-control" readonly="" type="text" name="id_spk" id="id_spk">               
+              </div>
+            </div> 
+
           </div>
 
           <div class="table-responsive">
@@ -56,11 +67,11 @@
               <table class="table tabelan table-hover table-bordered" id="tableFormula">
                 <thead>
                   <tr>
-                    <th>No</th>
                     <th>Bahan Baku</th>
                     <th>Kebutuhan</th>
-                    <th>Satuan</th>
+                    <th width="5%">Satuan</th>
                     <th>Stok</th>
+                    <th width="5%">Satuan</th>
                     <th>Purchase</th>
                   </tr>
                 </thead>
@@ -70,34 +81,6 @@
               </table>
             </form>
             </div>
-
-
-          <div id="data-spk">
-            <div class="col-md-4 col-sm-3 col-xs-12">
-              <div class="">
-                <label class="tebal">No SPK :</label>
-              </div>
-            </div>
-            <div class="col-md-8 col-sm-3 col-xs-12">
-              <div class="form-group">
-                <input class="form-control" readonly="" type="text" name="id_spk" id="id_spk">               
-              </div>
-            </div>
-
-            <div class="col-md-4 col-sm-3 col-xs-12">
-              <div class="">
-                <label class="tebal">Tanggal SPK :</label>
-              </div>
-            </div>
-            <div class="col-md-8 col-sm-3 col-xs-12">
-              <div class="form-group">
-                <input class="form-control" readonly="" type="text" value="{{ date('d-m-Y') }}" name="tgl_spk" id="tgl_spk">                
-              </div>
-            </div>
-          </div>
-          
-          
-        </div>
             
         <div class="modal-footer">
           <button class="btn btn-link" type="button"><i class="glyphicon glyphicon-print"></i>&nbsp;Print</button>

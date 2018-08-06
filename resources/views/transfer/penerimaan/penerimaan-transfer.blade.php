@@ -122,15 +122,15 @@ var item = $('#save_penerimaan :input').serialize();
     }
   }
 
-  function cekQty(inField, e){
-    var a = 0;
-    $('input.discpercent:text').each(function(evt){
-      var getIndex = a;
-      var dataInput = $('input.terima:text:eq('+getIndex+')').val();
-      var dataInput1 = $('input.discvalue:text:eq('+getIndex+')').val();
+  // function cekQty(inField, e){
+  //   var a = 0;
+  //   $('input.discpercent:text').each(function(evt){
+  //     var getIndex = a;
+  //     var dataInput = $('input.terima:text:eq('+getIndex+')').val();
+  //     var dataInput1 = $('input.discvalue:text:eq('+getIndex+')').val();
 
-      }
-    a++;
-  }
+  //     }
+  //   a++;
+  // }
 
 </script>

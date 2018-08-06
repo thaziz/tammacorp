@@ -13,6 +13,7 @@ class d_productresult_dt extends Model
 					      						 'prdt_detail',
 					      						 'prdt_item', 
 					      						 'prdt_qty',
+					      						 'prdt_produksi',
 					      						 'prdt_status',
 					      						 'prdt_date',
 					      						 'prdt_time'];
