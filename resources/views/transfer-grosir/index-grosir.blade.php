@@ -269,7 +269,7 @@
                     icon: 'fa fa-chrome', 
                     title: '',
                     message: 'Data tersimpan.'});
-            transfer_retail.ajax.reload();
+            transfer.ajax.reload();
             window.open(baseUrl+'/inventory/POSgrosir/print_setuju/'+$no_transfer);
             $('#myTransfer').modal('hide');
           }else{
@@ -424,6 +424,7 @@
             return input.value;
         });
         rtamp = names;
+        window.open(baseUrl+'/inventory/POSgrosir/print_setuju/'+ nota);
         $('.simpan').removeAttr('disabled','disabled');           
       }else{
         iziToast.error({position: "topRight",
@@ -446,12 +447,13 @@
           dataType:'json',
             success:function(response){
               if(response.status=='sukses'){
-              $("input[name='tf_nomor']").val('');
-              $("input[name='tf_admin']").val('');              
-              $("input[name='tf_ketetangan']").val('');
-              window.open(baseUrl+'/inventory/POSgrosir/print_setuju/'+$no_transfer2);
-              alert('Proses Telah Terkirim');                
-              $('#myTransferToRetail').modal('hide');
+              iziToast.success({timeout: 5000, 
+                          position: "topRight",
+                          icon: 'fa fa-chrome', 
+                          title: '', 
+                          message: 'Berhasil di update.'});
+              $('#EditTransfer').modal('hide');
+              window.open(baseUrl+'/inventory/POSgrosir/print_setuju/'+$no_transfer2);               
             }    
           }
         })

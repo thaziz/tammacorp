@@ -30,7 +30,7 @@ class PengambilanItemController extends Controller
     ->join('d_productresult','d_productresult_dt.prdt_productresult', '=', 'd_productresult.pr_id')
     ->join('d_spk', 'd_productresult.pr_spk', '=', 'd_spk.spk_id')
     ->join('m_item', 'd_productresult.pr_item', '=', 'm_item.i_id')
-    ->where('prdt_status','PR')
+    ->where('prdt_status','RD')
     ->get();
     // dd($data);
 

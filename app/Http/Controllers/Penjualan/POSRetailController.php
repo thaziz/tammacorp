@@ -351,8 +351,8 @@ class POSRetailController extends Controller
 
   public function sal_save_final(Request $request){ 
   // dd($request->all());
-  DB::beginTransaction();
-    try {
+  // DB::beginTransaction();
+  //   try {
     $s_id = d_sales::max('s_id') + 1;
     //nota
     $year = carbon::now()->format('y');
@@ -402,59 +402,59 @@ class POSRetailController extends Controller
               'sd_total' => ($this->konvertRp($request->hasil[$i]))
             ]);
 
-        // $getItem = d_stock::join('d_stock_mutation','sm_stock', '=', 's_id')
-        //     ->select( 's_id',
-        //               's_item',
-        //               's_qty',
-        //               'sm_detailid',
-        //               'sm_date',
-        //               'sm_comp',
-        //               'sm_detail', DB::raw('(sm_qty - sm_qty_used) as sisa'))
-        //     ->where('s_item',$kodeItem[$i])
-        //     ->orderBy('sm_date')
-        //     ->get();
-          
-        // $sisa = $qtyItem[$i];
-        // for ($j=0; $j < count($getItem); $j++) {
+        $getItem = d_stock::join('d_stock_mutation','sm_stock', '=', 's_id')
+            ->select( 's_id',
+                      's_item',
+                      's_qty',
+                      'sm_detailid',
+                      'sm_date',
+                      'sm_comp',
+                      'sm_detail', DB::raw('(sm_qty - sm_qty_used) as sisa'))
+            ->where('s_item',$kodeItem[$i])
+            ->orderBy('sm_date')
+            ->get();
+     
+        $sisa = $qtyItem[$i];
+        for ($j=0; $j < count($getItem); $j++) {
 
-        //   //mutasi
-        //   if ($sisa <= $getItem[$j]->sisa && $getItem[$j]->s_item == $kodeItem[$i]) {
-        //     d_stock_mutation::where('sm_stock', '=', $getItem[$j]->s_id)
-        //       ->where('sm_detailid', '=', $getItem[$j]->sm_detailid)
-        //       ->update([
-        //         'sm_qty_used' => DB::raw('sm_qty_used +' . $sisa),
-        //       ]);
-        //     $sisa = 0; 
-        //   } elseif ($sisa > $getItem[$j]->sisa && $getItem[$j]->s_item == $kodeItem[$i]) {
-        //     d_stock_mutation::where('sm_stock', '=', $getItem[$j]->s_id)
-        //       ->where('sm_detailid', '=', $getItem[$j]->sm_detailid)
-        //       ->update([
-        //         'sm_qty_used' => DB::raw('sm_qty_used +' . $getItem[$j]->sisa),
-        //       ]);
-        //     $sisa = $sisa - $getItem[$j]->sisa;
-        //   }
-        //   //end-mutasi
-        // }
+          //mutasi
+          if ($sisa <= $getItem[$j]->sisa && $getItem[$j]->s_item == $kodeItem[$i]) {
+            d_stock_mutation::where('sm_stock', '=', $getItem[$j]->s_id)
+              ->where('sm_detailid', '=', $getItem[$j]->sm_detailid)
+              ->update([
+                'sm_qty_used' => DB::raw('sm_qty_used +' . $sisa),
+              ]);
+            $sisa = 0; 
+          } elseif ($sisa > $getItem[$j]->sisa && $getItem[$j]->s_item == $kodeItem[$i]) {
+            d_stock_mutation::where('sm_stock', '=', $getItem[$j]->s_id)
+              ->where('sm_detailid', '=', $getItem[$j]->sm_detailid)
+              ->update([
+                'sm_qty_used' => DB::raw('sm_qty_used +' . $getItem[$j]->sisa),
+              ]);
+            $sisa = $sisa - $getItem[$j]->sisa;
+          }
+          //end-mutasi
+        }
 
-        // $detailId = d_stock_mutation::where('sm_item', '=', $kodeItem[$i])
-        //       ->where('sm_comp','1')
-        //       ->max('sm_detailid');
+        $detailId = d_stock_mutation::where('sm_item', '=', $kodeItem[$i])
+              ->where('sm_comp','1')
+              ->max('sm_detailid');
  
-        // d_stock_mutation::where('sm_stock', '=', $kodeItem[$i])
-        //       ->where('s_comp','1')
-        //       ->insert([  'sm_stock' => $getItem[$i]->s_id,
-        //                   'sm_detailid' => $detailId + 1,
-        //                   'sm_date' => Carbon::now(),
-        //                   'sm_comp' => 1,
-        //                   'sm_mutcat' => 1,
-        //                   'sm_item' => $kodeItem[$i],
-        //                   'sm_qty' => $qtyItem[$i],
-        //                   'sm_qty_used' => 0,
-        //                   'sm_qty_expired' => 0,
-        //                   'sm_detail' => 'PENGURANGAN',
-        //                   'sm_reff' => $request->s_nota,
-        //                   'sm_insert' => Carbon::now()
-        //       ]);
+        d_stock_mutation::where('sm_stock', '=', $kodeItem[$i])
+              ->where('s_comp','1')
+              ->insert([  'sm_stock' => $getItem[$i]->s_id,
+                          'sm_detailid' => $detailId + 1,
+                          'sm_date' => Carbon::now(),
+                          'sm_comp' => 1,
+                          'sm_mutcat' => 1,
+                          'sm_item' => $kodeItem[$i],
+                          'sm_qty' => $qtyItem[$i],
+                          'sm_qty_used' => 0,
+                          'sm_qty_expired' => 0,
+                          'sm_detail' => 'PENGURANGAN',
+                          'sm_reff' => $request->s_nota,
+                          'sm_insert' => Carbon::now()
+              ]);
 
         $stokBaru = $stokRetail->s_qty - $request->sd_qty[$i];
 
@@ -478,18 +478,18 @@ class POSRetailController extends Controller
 
       $nota = d_sales::where('s_id',$s_id)
         ->first();
-    DB::commit();
-    return response()->json([
-        'status' => 'sukses',
-        'nota' => $nota
-      ]);
-    } catch (\Exception $e) {
-    DB::rollback();
-    return response()->json([
-      'status' => 'gagal',
-      'data' => $e
-      ]);
-    }
+    // DB::commit();
+    // return response()->json([
+    //     'status' => 'sukses',
+    //     'nota' => $nota
+    //   ]);
+    // } catch (\Exception $e) {
+    // DB::rollback();
+    // return response()->json([
+    //   'status' => 'gagal',
+    //   'data' => $e
+    //   ]);
+    // }
   }
 
   public function sal_save_draft(Request $request){

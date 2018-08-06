@@ -45,17 +45,17 @@ class itemProduksiController extends Controller
       ->addColumn('aksi', function ($data) {
       	if ($data->i_isactive == 'TRUE') {
       		return  '<button id="edit" 
-									onclick="edit('.$data->i_id.')" 
-									class="btn btn-warning btn-sm" 
-									title="Edit">
-									<i class="glyphicon glyphicon-pencil"></i>
-               					</button>'.'
-                        <button id="status'.$data->i_id.'" 
+      									onclick="edit('.$data->i_id.')" 
+      									class="btn btn-warning btn-sm" 
+      									title="Edit">
+									       <i class="glyphicon glyphicon-pencil"></i>
+           					</button>'.'
+                    <button id="status'.$data->i_id.'" 
 	                				onclick="ubahStatus('.$data->i_id.')" 
 	                				class="btn btn-primary btn-sm" 
 	                				title="Aktif">
 	                				<i class="fa fa-check-square" aria-hidden="true"></i>
-                        </button>';
+                    </button>';
       	}else{
       		return  '<button id="edit" 
                									onclick="edit('.$data->i_id.')" 

@@ -47,9 +47,9 @@
                                   <div class="col-md-6 col-sm-7 col-xs-12">
                                     <div class="form-group" style="display: ">
                                       <div class="input-daterange input-group">
-                                        <input id="tanggal1" class="form-control input-sm datepicker2 " name="tanggal" type="text">
+                                        <input id="tanggal1" class="form-control input-sm datepicker1 " name="tanggal" type="text">
                                         <span class="input-group-addon">-</span>
-                                        <input id="tanggal2" class="input-sm form-control datepicker2" name="tanggal" type="text">
+                                        <input id="tanggal2" class="input-sm form-control datepicker2" name="tanggal" type="text" value="{{ date('d-m-Y') }}">
                                       </div>
                                     </div>
                                   </div>
@@ -230,33 +230,53 @@
   });
 
   $(document).on('click','.hapus',function(){
-      var pp_id = $(this).data('id'),
-          i_name = $(this).data('name');
-      if(!confirm("Hapus Rencana Produksi " +i_name+ " ?")) return false;
-      
-      $.ajax({
-          type: "get",
-          url : baseUrl + "/produksi/rencanaproduksi/hapus_rencana/"+pp_id,
-          dataType:"JSON",
-          success: function(data, textStatus, jqXHR)
-          {
-            // alert('s');
-              if(data.result ==1){
+    var pp_id = $(this).data('id'),
+              i_name = $(this).data('name'); 
+    iziToast.show({
+      color: 'red',
+      title: 'Peringatan',
+      message: 'Apakah anda yakin!',
+      position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+      progressBarColor: 'rgb(0, 255, 184)',
+      buttons: [
+        [
+          '<button>Ok</button>',
+          function (instance, toast) {
+            instance.hide({
+              transitionOut: 'fadeOutUp'
+            }, toast);   
+          $.ajax({
+              type: "get",
+              url : baseUrl + "/produksi/rencanaproduksi/hapus_rencana/"+pp_id,
+              dataType:"JSON",
+              success: function(data, textStatus, jqXHR){
+                if(data.result ==1){
                   var table = $('#data').DataTable();
                   table.ajax.reload( null, false );
-                  alert("Data berhasil dihapus");
-              }else{
-                  alert("Error. Data tidak bisa hapus : "+data.error+" error");
+                  iziToast.success({timeout: 5000, 
+                        position: "topRight",
+                        icon: 'fa fa-chrome', 
+                        title: '', 
+                        message: 'Rencana di hapus.'});
+                }else{
+                  iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'Rencana gagal di hapus.'});
+                }
               }
-
-          },
-          error: function(jqXHR, textStatus, errorThrown)
-          {
-              alert("Error!"+ textStatus+ "error");
+          });  
+        }
+        ],
+        [
+          '<button>Close</button>',
+           function (instance, toast) {
+            instance.hide({
+              transitionOut: 'fadeOutUp'
+            }, toast);
           }
-      });
-
-      
+        ]
+      ]
+    }); 
   });
 
   $(document).on('click','#btn-simpan',function(){
@@ -312,13 +332,16 @@
           type: "get",
           dataType:"JSON",
           data : $('#myForm').serialize() ,
-          success: function(data, textStatus, jqXHR)
-          {
+          success: function(data, textStatus, jqXHR){
             if(data.crud == 'tambah'){
               if(data.result == 1){
                       var table = $('#data').DataTable();
                       table.ajax.reload( null, false );
-                      alert("Data Tersimpan")
+                      iziToast.success({timeout: 5000, 
+                          position: "topRight",
+                          icon: 'fa fa-chrome', 
+                          title: '', 
+                          message: 'Rencana di simpan.'});
                       $("#myModal").modal('hide');
                       $("#btn_add").focus();
               }else{
@@ -330,7 +353,11 @@
                       //$.notify('Successfull update data');
                       var table = $('#data').DataTable();
                       table.ajax.reload( null, false );
-                      alert("Data Tersimpan")
+                      iziToast.success({timeout: 5000, 
+                          position: "topRight",
+                          icon: 'fa fa-chrome', 
+                          title: '', 
+                          message: 'Rencana di simpan.'});
                       $("#myModal").modal('hide');
                       $("#btn_add").focus();
               }else{
@@ -360,31 +387,55 @@
   });
 
 
-  $(".datepicker").datepicker({
-      dateFormat: "yy-mm-dd",
-      altFormat: "yy-mm-dd",
-      changeMonth: true,
-      changeYear: true
+  $( "#namaitem" ).focus(function(){
+        var key = 1;  
+    $( "#namaitem" ).autocomplete({
+        source: baseUrl+'/produksi/rencanaproduksi/produksi/autocomplete',
+        minLength: 1,
+        select: function(event,ui) 
+        {
+          $("#namaitem").val(ui.item.value);
+        }
+    });
+    $("#namaitem").val('');
   });
 
-  $('.datepicker2').on('changeDate', function(ev){
-    $(this).datepicker('hide');
-  });
-
-  $('.datepicker2').datepicker({
-      format:"dd-mm-yyyy"
-  }); 
-  
-  $( "#namaitem" ).autocomplete({
-      source: baseUrl+'/produksi/rencanaproduksi/produksi/autocomplete',
-      minLength: 1,
-      select: function(event,ui) 
-      {
-        $("#namaitem").val(ui.item.value);
+    $('#namaitem').keypress(function(e){
+      var charCode;
+      if ((e.which && e.which == 13)) {
+        charCode = e.which;
+      }else if (window.event) {
+          e = window.event;
+          charCode = e.keyCode;
       }
+      if ((e.which && e.which == 13)){
+        $("input[name='pp_qty']").focus();
+        return false;
+      }
+    });
+ 
+  var date = new Date();
+  var newdate = new Date(date);
 
-  });
-  
+  newdate.setDate(newdate.getDate()-3);
+  var nd = new Date(newdate);
+
+    $('.datepicker').datepicker({
+      format: "mm",
+      viewMode: "months",
+      minViewMode: "months"
+    });
+    $('.datepicker1').datepicker({
+      autoclose: true,
+      format:"dd-mm-yyyy",
+      endDate: 'today'
+    }).datepicker("setDate", nd);
+    $('.datepicker2').datepicker({
+      autoclose: true,
+      format:"dd-mm-yyyy",
+      endDate: 'today'
+    });//.datepicker("setDate", "0"); 
+
 });
   
 

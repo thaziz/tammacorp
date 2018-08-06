@@ -148,11 +148,12 @@
 
                                         </tbody>
                                     </table>
-
                                     </div>
+
                                   </div>
 
                               </div>
+                          
                       <!-- End DIv note-tab -->
                   </div>
              </div>     
@@ -165,7 +166,7 @@
     </div>
   @include('transfer.modal-transfer')    
 </div>  
-@include('transfer.penerimaan.modal-penerimaan')    
+@include('transfer.penerimaan.modal-penerimaan')  
 @endsection
 @section("extra_scripts")
   <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
@@ -222,9 +223,9 @@
       $('#ri_keterangan').focus()
     }) 
 
-    $('#myTransferPenerimaan').on('shown.bs.modal', function () {
-      $('.terima').focus()
-    }) 
+    // $('#myTransferPenerimaan').on('shown.bs.modal', function () {
+    //   $('.terima').focus()
+    // }) 
 
   });
 
@@ -408,7 +409,7 @@
                     timeout     : 10000,                                        
                     success     : function(response){
                         $('#Edit-data-transfer').html(response);
-                         $('#myTransferEdit').modal('show');
+                        $('#myTransferEdit').modal('show');
                         }
             });
      }
@@ -420,7 +421,7 @@
                 timeout     : 10000,                                        
                 success     : function(response){
                     $('#Edit-data-transfer').html(response);
-                     $('#myTransferEdit').modal('show');
+                    $('#myTransferEdit').modal('show');
                     }
         });
      }
@@ -489,7 +490,7 @@
                     timeout     : 10000,                                        
                     success     : function(response){
                         $('#data-penerimaan-transfer').html(response);
-                         $('#myTransferPenerimaan').modal('show');
+                        $('#myTransferPenerimaan').modal('show');
                         }
                     });
      }
@@ -497,12 +498,6 @@
 tablePenerimaan=$('#detail-terima').DataTable();
 
     function simpaPenerimaan(){
-      var terima = $('.qty-terima').val();
-      if (trima == '' ) {
-        iziToast.error({position: "topRight",
-                        title: '', 
-                        message: 'Harap mengisi jumlah barang.'});
-      }
       $.ajax({
         url         : baseUrl+'/transfer/penerimaan/simpa-penerimaan',
         type        : 'get',
