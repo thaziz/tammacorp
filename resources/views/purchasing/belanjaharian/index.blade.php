@@ -177,6 +177,8 @@
           key++;  
           i = randString(5);
         });
+        $('#m1a2-abrams').html('<a href="'+ baseUrl +'/purchasing/belanjaharian/print/'+id+'" target="_blank" class="btn btn-primary"><i class="fa fa-print"></i>&nbsp;Print</a>'+
+          '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
         $('#modal-detail').modal('show');
       },
       error: function (jqXHR, textStatus, errorThrown)
