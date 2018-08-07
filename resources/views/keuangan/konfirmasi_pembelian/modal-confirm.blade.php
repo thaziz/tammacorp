@@ -1,7 +1,7 @@
 <div class="modal fade" id="modal-confirm" role="dialog">
   <div class="modal-dialog" style="width: 90%;margin: auto;">
       
-    <form method="post" id="form-confirm-plan">
+    <form method="post" id="form-confirm-plan" name="formConfirmPlan">
       {{ csrf_field() }}
       <input type="hidden" name="idPlan" id="id_plan">
       <!-- Modal content-->
