@@ -697,80 +697,141 @@
     });
   }
 
-  function submitConfirm(id)
-  {
-    if(confirm('Anda yakin konfirmasi rencana pembelian ?'))
-    {
-      $('#button_confirm').text('Proses...'); //change button text
-      $('#button_confirm').attr('disabled',true); //set button disable 
-      $.ajax({
-          url : baseUrl + "/keuangan/konfirmasipembelian/confirm-plan-submit",
-          type: "post",
-          dataType: "JSON",
-          data: $('#form-confirm-plan').serialize(),
-          success: function(response)
-          {
-            if(response.status == "sukses")
+ 
+  function submitConfirm(id) {
+    iziToast.question({
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      //zindex: 999, //jika form pd modal, jgn digunakan
+      title: 'Konfirmasi rencana pembelian',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          $('#button_confirm').text('Proses...');
+          $('#button_confirm').attr('disabled',true);
+          $.ajax({
+            url : baseUrl + "/keuangan/konfirmasipembelian/confirm-plan-submit",
+            type: "post",
+            dataType: "JSON",
+            data: $('#form-confirm-plan').serialize(),
+            success: function(response)
             {
-                alert(response.pesan);
-                $('#modal-confirm').modal('hide');
-                $('#button_confirm').text('Konfirmasi'); //change button text
-                $('#button_confirm').attr('disabled',false); //set button enable 
-                $('#tbl-daftar').DataTable().ajax.reload();
-            }
-            else
-            {
-                alert(response.pesan);
-                $('#modal-confirm').modal('hide');
-                $('#button_confirm').text('Konfirmasi'); //change button text
-                $('#button_confirm').attr('disabled',false); //set button enable 
-                $('#tbl-daftar').DataTable().ajax.reload();
-            }
-          },
-          error: function (jqXHR, textStatus, errorThrown)
-          {
-            alert('Error updating data');
-          }
-      });
-    }
+              if(response.status == "sukses")
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.success({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#modal-confirm').modal('hide');
+                    $('#button_confirm').text('Konfirmasi'); 
+                    $('#button_confirm').attr('disabled',false); 
+                    $('#tbl-daftar').DataTable().ajax.reload();
+                  }
+                });
+              }
+              else
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.error({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#modal-confirm').modal('hide');
+                    $('#button_confirm').text('Konfirmasi'); //change button text
+                    $('#button_confirm').attr('disabled',false); //set button enable 
+                    $('#tbl-daftar').DataTable().ajax.reload();
+                  }
+                }); 
+              }
+            },
+            error: function(){
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+              iziToast.warning({
+                icon: 'fa fa-times',
+                message: 'Terjadi Kesalahan!'
+              });
+            },
+            async: false
+          });
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
   }
 
-  function submitOrderConfirm(id)
-  {
-    if(confirm('Anda yakin konfirmasi order pembelian ?'))
-    {
-      $('#button_confirm_order').text('Proses...'); //change button text
-      $('#button_confirm_order').attr('disabled',true); //set button disable 
-      $.ajax({
-          url : baseUrl + "/keuangan/konfirmasipembelian/confirm-order-submit",
-          type: "post",
-          dataType: "JSON",
-          data: $('#form-confirm-order').serialize(),
-          success: function(response)
-          {
-            if(response.status == "sukses")
+  function submitOrderConfirm(id) {
+    iziToast.question({
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      //zindex: 999, //jika form pd modal, jgn digunakan
+      title: 'Konfirmasi PO',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          $('#button_confirm_order').text('Proses...');
+          $('#button_confirm_order').attr('disabled',true);
+          $.ajax({
+            url : baseUrl + "/keuangan/konfirmasipembelian/confirm-order-submit",
+            type: "post",
+            dataType: "JSON",
+            data: $('#form-confirm-order').serialize(),
+            success: function(response)
             {
-                alert(response.pesan);
-                $('#modal-confirm-order').modal('hide');
-                $('#button_confirm_order').text('Konfirmasi'); //change button text
-                $('#button_confirm_order').attr('disabled',false); //set button enable 
-                $('#tbl-order').DataTable().ajax.reload();
-            }
-            else
-            {
-                alert(response.pesan);
-                $('#modal-confirm-order').modal('hide');
-                $('#button_confirm_order').text('Konfirmasi'); //change button text
-                $('#button_confirm_order').attr('disabled',false); //set button enable 
-                $('#tbl-order').DataTable().ajax.reload();
-            }
-          },
-          error: function (jqXHR, textStatus, errorThrown)
-          {
-            alert('Error updating data');
-          }
-      });
-    }
+              if(response.status == "sukses")
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.success({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#modal-confirm-order').modal('hide');
+                    $('#button_confirm_order').text('Konfirmasi');
+                    $('#button_confirm_order').attr('disabled',false); 
+                    $('#tbl-order').DataTable().ajax.reload();
+                  }
+                });
+              }
+              else
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.error({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#modal-confirm-order').modal('hide');
+                    $('#button_confirm_order').text('Konfirmasi');
+                    $('#button_confirm_order').attr('disabled',false); 
+                    $('#tbl-order').DataTable().ajax.reload();
+                  }
+                }); 
+              }
+            },
+            error: function(){
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+              iziToast.warning({
+                icon: 'fa fa-times',
+                message: 'Terjadi Kesalahan!'
+              });
+            },
+            async: false
+          });
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
   }
 
   function submitReturnConfirm(id)
@@ -811,42 +872,140 @@
     }
   }
 
-  function submitBelanjaConfirm(id)
-  {
-    if(confirm('Anda yakin konfirmasi Belanja Harian ?'))
-    {
-      $('#button_confirm_belanja').text('Proses...'); //change button text
-      $('#button_confirm_belanja').attr('disabled',true); //set button disable 
-      $.ajax({
-          url : baseUrl + "/keuangan/konfirmasipembelian/confirm-belanjaharian-submit",
-          type: "post",
-          dataType: "JSON",
-          data: $('#form-confirm-belanjaharian').serialize(),
-          success: function(response)
-          {
-            if(response.status == "sukses")
+  function submitReturnConfirm(id) {
+    iziToast.question({
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      //zindex: 999, //jika form pd modal, jgn digunakan
+      title: 'Konfirmasi Retur Pembelian',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          $('#button_confirm_return').text('Proses...'); //change button text
+          $('#button_confirm_return').attr('disabled',true); //set button disable 
+          $.ajax({
+            url : baseUrl + "/keuangan/konfirmasipembelian/confirm-return-submit",
+            type: "post",
+            dataType: "JSON",
+            data: $('#form-confirm-return').serialize(),
+            success: function(response)
             {
-                alert(response.pesan);
-                $('#modal-confirm-belanjaharian').modal('hide');
-                $('#button_confirm_belanja').text('Konfirmasi'); //change button text
-                $('#button_confirm_belanja').attr('disabled',false); //set button enable 
-                $('#tbl-belanjaharian').DataTable().ajax.reload();
-            }
-            else
+              if(response.status == "sukses")
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.success({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#modal-confirm-return').modal('hide');
+                    $('#button_confirm_return').text('Konfirmasi'); //change button text
+                    $('#button_confirm_return').attr('disabled',false); //set button enable 
+                    $('#tbl-return').DataTable().ajax.reload();
+                  }
+                });
+              }
+              else
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.error({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#modal-confirm-return').modal('hide');
+                    $('#button_confirm_return').text('Konfirmasi'); //change button text
+                    $('#button_confirm_return').attr('disabled',false); //set button enable 
+                    $('#tbl-return').DataTable().ajax.reload();
+                  }
+                }); 
+              }
+            },
+            error: function(){
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+              iziToast.warning({
+                icon: 'fa fa-times',
+                message: 'Terjadi Kesalahan!'
+              });
+            },
+            async: false
+          });
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
+  }
+
+  function submitBelanjaConfirm(id) {
+    iziToast.question({
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      //zindex: 999, //jika form pd modal, jgn digunakan
+      title: 'Konfirmasi Belanja Harian',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          $('#button_confirm_belanja').text('Proses...'); 
+          $('#button_confirm_belanja').attr('disabled',true); 
+          $.ajax({
+            url : baseUrl + "/keuangan/konfirmasipembelian/confirm-belanjaharian-submit",
+            type: "post",
+            dataType: "JSON",
+            data: $('#form-confirm-belanjaharian').serialize(),
+            success: function(response)
             {
-                alert(response.pesan);
-                $('#modal-confirm-belanjaharian').modal('hide');
-                $('#button_confirm_belanja').text('Konfirmasi'); //change button text
-                $('#button_confirm_belanja').attr('disabled',false); //set button enable 
-                $('#tbl-belanjaharian').DataTable().ajax.reload();
-            }
-          },
-          error: function (jqXHR, textStatus, errorThrown)
-          {
-            alert('Error updating data');
-          }
-      });
-    }
+              if(response.status == "sukses")
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.success({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#modal-confirm-belanjaharian').modal('hide');
+                    $('#button_confirm_belanja').text('Konfirmasi'); //change button text
+                    $('#button_confirm_belanja').attr('disabled',false); //set button enable 
+                    $('#tbl-belanjaharian').DataTable().ajax.reload();
+                  }
+                });
+              }
+              else
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.error({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#modal-confirm-belanjaharian').modal('hide');
+                    $('#button_confirm_belanja').text('Konfirmasi'); //change button text
+                    $('#button_confirm_belanja').attr('disabled',false); //set button enable 
+                    $('#tbl-belanjaharian').DataTable().ajax.reload();
+                  }
+                }); 
+              }
+            },
+            error: function(){
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+              iziToast.warning({
+                icon: 'fa fa-times',
+                message: 'Terjadi Kesalahan!'
+              });
+            },
+            async: false
+          });
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
   }
 
   function convertDecimalToRupiah(decimal) 
