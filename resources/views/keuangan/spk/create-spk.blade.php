@@ -72,7 +72,7 @@
                     <th width="5%">Satuan</th>
                     <th>Stok</th>
                     <th width="5%">Satuan</th>
-                    <th>Purchase</th>
+                    <th>Sisa</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -85,8 +85,8 @@
         <div class="modal-footer">
           <button class="btn btn-link" type="button"><i class="glyphicon glyphicon-print"></i>&nbsp;Print</button>
           <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-          <button class="btn btn-primary" type="button" onclick="draft('D')">Draft</button>
-          <button class="btn btn-primary" type="button" onclick="final('FN')">Final</button>
+          <button class="btn btn-primary draft" type="button" onclick="draft('DR')">Draft</button>
+          <button class="btn btn-primary final" type="button" onclick="final('FN')">Final</button>
           
         </div>
 

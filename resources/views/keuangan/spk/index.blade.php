@@ -51,6 +51,94 @@
 @section("extra_scripts")
 <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
 <script type="text/javascript">
+  $(document).ready(function() {
+    var extensions = {
+         "sFilterInput": "form-control input-sm",
+        "sLengthSelect": "form-control input-sm"
+    }
+    // Used when bJQueryUI is false
+    $.extend($.fn.dataTableExt.oStdClasses, extensions);
+    // Used when bJQueryUI is true
+    $.extend($.fn.dataTableExt.oJUIClasses, extensions);
+
+    var date = new Date();
+    var newdate = new Date(date);
+    newdate.setDate(newdate.getDate()-3);
+    var nd = new Date(newdate);
+
+    $('.datepicker1').datepicker({
+      autoclose: true,
+      format:"dd-mm-yyyy",
+      endDate: 'today'
+    }).datepicker("setDate", nd);
+
+    $('.datepicker2').datepicker({
+      autoclose: true,
+      format:"dd-mm-yyyy",
+      endDate: 'today'
+    });
+        
+    $('.datepicker').datepicker({
+      format: "mm",
+      viewMode: "months",
+      minViewMode: "months"
+    });
+
+    $('#create-data').on('shown.bs.modal', function () {
+      total();
+    }) 
+
+  });
+
+    //datatable
+    var indexTable = $('#table-index').DataTable({
+      "destroy": true,
+      "processing" : true,
+      "serverside" : true,
+      "ajax": {
+          url : baseUrl + "/keuangan/spk/get-data-tabel-index",
+          type: 'GET'
+      },
+      "columns": [
+        // {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"},
+        {"data" : 'pp_date', name: 'spk_date', "width" : "10%"},
+        {"data" : 'i_name', name: 'spk_code', "width" : "25%"},
+        {"data" : 'pp_qty', name: 'i_name', "width" : "10%"},
+        {"data" : "action", orderable: false, searchable: false, "width" : "5%"},
+      ],
+      "language": {
+        "searchPlaceholder": "Cari Data",
+        "emptyTable": "Tidak ada data",
+        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+        "sSearch": '<i class="fa fa-search"></i>',
+        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+        "infoEmpty": "",
+        "paginate": {
+                "previous": "Sebelumnya",
+                "next": "Selanjutnya",
+             }
+      }
+    });
+
+  function total(inField, e){
+    $('.final').removeAttr('disabled','disabled');
+    var a = 0;
+    $('input.f_value:text').each(function(evt){
+      var getIndex = a;
+      var dataValue = $('input.f_value:text:eq('+getIndex+')').val();
+      var dataStok = $('input.d_stock:text:eq('+getIndex+')').val();
+      dataStok = parseFloat(dataStok);
+      dataValue = parseFloat(dataValue);
+      var hasil = dataStok - dataValue;
+      hasil = parseFloat(hasil).toFixed(2);
+      if (hasil <= 0) {
+         $('.final').attr('disabled','disabled');
+      }
+      $('input.hasil:text:eq('+getIndex+')').val(hasil);
+
+    a++;
+    })
+  }
 
   function BuatSpk(id,tgl,jumlah,iditem){
     $.ajax({
@@ -60,6 +148,27 @@
       dataType    :'json',
       success     : function(response){
         console.log(response);
+        if(response.status=='sukses'){
+          $('#id_spk').val(response.id_spk);
+          $('#create-data').modal('show');
+          $('#id_plan').val(id);
+          $('#tgl_plan').val(tgl);
+          $('#iditem').val(iditem);
+          $('#item').val(response.i_name.i_name);
+          $('#jumlah').val(jumlah); 
+          tabelFormmula(iditem, jumlah); 
+        }
+      }
+    });
+  }
+
+  function editSpk(id){
+    $.ajax({
+      url         : baseUrl+'/produksi/spk/edit/'+id,
+      type        : 'get',
+      timeout     : 10000,                          
+      dataType    :'json',
+      success     : function(response){
         if(response.status=='sukses'){
           $('#id_spk').val(response.id_spk);
           $('#create-data').modal('show');
@@ -100,168 +209,94 @@
     $('#table-production-plan').modal('show');
   }
 
-  function editSpk(id){       
-    $('#create-data').modal('show');
-    $.ajax({
-      url : baseUrl+'/keuangan/spk/get-data-spk-byid/' + id,
-      type : 'get',
-      timeout : 10000,                          
-      dataType :'json',
-      success : function(response)
-      {
-        if(response.status =='sukses')
-        {
-            $('#tgl_plan').val(response.data[0].pp_date);
-            $('#id_plan').val(response.data[0].spk_ref);
-            $('#iditem').val(response.data[0].spk_item);
-            $('#item').val(response.data[0].i_name);
-            $('#jumlah').val(response.data[0].pp_qty);
-            $('#id_spk').val(response.data[0].spk_code);
-            $('#tgl_spk').val(response.data[0].spk_date);
-            // location.reload();
-        }
-      }
-    });
-  }
+  // function editSpk(id){       
+  //   // $('#create-data').modal('show');
+  //   $.ajax({
+  //     url : baseUrl+'/keuangan/spk/get-data-spk-byid/' + id,
+  //     type : 'get',
+  //     timeout : 10000,                          
+  //     dataType :'json',
+  //     success : function(response){
+  //       if(response.status =='sukses'){
+  //           $('#tgl_plan').val(response.data[0].pp_date);
+  //           $('#id_plan').val(response.data[0].spk_ref);
+  //           $('#iditem').val(response.data[0].spk_item);
+  //           $('#item').val(response.data[0].i_name);
+  //           $('#jumlah').val(response.data[0].pp_qty);
+  //           $('#id_spk').val(response.data[0].spk_code);
+  //           $('#tgl_spk').val(response.data[0].spk_date);
+  //       }
+  //     }
+  //   });
+  // }
 
   function draft(status){
+    $('.draft').attr('disabled','disabled');
     var dataPlan=$('#data-product-plan :input').serialize(); //spk.create-spk
     var dataSpk=$('#data-spk :input').serialize(); //spk.create-spk
+    var idformula=$('#formula :input').serialize();
       $.ajax({
-        url         : baseUrl+'/produksi/spk/simpan-spk',
+        url         : baseUrl + '/produksi/spk/draft/simpan-spk',
         type        : 'get',
         timeout     : 10000,                          
         dataType    :'json',
-        data        :dataPlan+'&'+dataSpk+'&status='+status,
+        data        :dataPlan+'&'+dataSpk+'&status='+status+'&'+idformula,
         success     : function(response){
           if(response.status=='sukses') {
-            $('#id_spk').val(response.id_spk);
-            $('#create').modal('show');
-            $('#id_plan').val(id);
-            $('#tgl_plan').val(tgl);
-            $('#iditem').val(iditem);
-            $('#item').val(item);
-            $('#jumlah').val(jumlah);
-            $('#tgl_spk').val(tgl);
-            location.reload();
+            iziToast.success({timeout: 5000, 
+                        position: "topRight",
+                        icon: 'fa fa-chrome', 
+                        title: '', 
+                        message: 'SPK di setujui sebagi draft.'});
+            $('#create-data').modal('hide');
+            indexTable.ajax.reload();
+            $('.draft').removeAttr('disabled','disabled');
+          }else{
+            iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'SPK gagal di setujui.'});
+            $('.draft').removeAttr('disabled','disabled')
           }
         }
       });
     }
 
   function final(status){
+    $('.final').attr('disabled','disabled');
     var dataPlan=$('#data-product-plan :input').serialize(); //spk.create-spk
     var dataSpk=$('#data-spk :input').serialize(); //spk.create-spk
     var idformula=$('#formula :input').serialize();
     $.ajax({
-      url         : baseUrl+'/produksi/spk/simpan-spk',
+      url         : baseUrl+'/produksi/spk/final/simpan-spk',
       type        : 'get',
       timeout     : 10000,                          
       dataType    :'json',
       data        :dataPlan+'&'+dataSpk+'&status='+status+'&'+idformula,
       success     : function(response) {
         if(response.status=='sukses'){
-          alert('Data rencana berhasil disimpan');
+          iziToast.success({timeout: 5000, 
+                        position: "topRight",
+                        icon: 'fa fa-chrome', 
+                        title: '', 
+                        message: 'SPK berhasil di setujui.'});
           $('#create-data').modal('hide');
-          location.reload(true);
+          indexTable.ajax.reload();
+          $('.final').removeAttr('disabled','disabled');
         }else{
-          alert('Gagal merubah spk!');
+          iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'SPK gagal di setujui.'});
+          $('.final').removeAttr('disabled','disabled');
         }
       }
     });
   }
 
-  $(document).ready(function() {
-    var extensions = {
-      "sFilterInput": "form-control input-sm",
-      "sLengthSelect": "form-control input-sm"
-    }
-    // Used when bJQueryUI is false
-    $.extend($.fn.dataTableExt.oStdClasses, extensions);
-    // Used when bJQueryUI is true
-    $.extend($.fn.dataTableExt.oJUIClasses, extensions);
-    
-    //datatable
-    var indexTable = $('#table-index').DataTable({
-      "destroy": true,
-      "processing" : true,
-      "serverside" : true,
-      "ajax": {
-          url : baseUrl + "/keuangan/spk/get-data-tabel-index",
-          type: 'GET'
-      },
-      "columns": [
-        {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"},
-        {"data" : 'pp_date', name: 'spk_date', "width" : "10%"},
-        {"data" : 'i_name', name: 'spk_code', "width" : "25%"},
-        {"data" : 'pp_qty', name: 'i_name', "width" : "10%"},
-        {"data" : "action", orderable: false, searchable: false, "width" : "5%"},
-      ],
-      "language": {
-        "searchPlaceholder": "Cari Data",
-        "emptyTable": "Tidak ada data",
-        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-        "sSearch": '<i class="fa fa-search"></i>',
-        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-        "infoEmpty": "",
-        "paginate": {
-                "previous": "Sebelumnya",
-                "next": "Selanjutnya",
-             }
-      }
-    });
-
-    // data3 dataTable
-    $('#data3').dataTable({
-      "responsive":true,
-      "pageLength": 10,
-      "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
-      "language": 
-      {
-        "searchPlaceholder": "Cari Data",
-        "emptyTable": "Tidak ada data",
-        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-        "sSearch": '<i class="fa fa-search"></i>',
-        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-        "infoEmpty": "",
-        "paginate": 
-        {
-          "previous": "Sebelumnya",
-          "next": "Selanjutnya",
-        }
-      }
-    });
-
-  });
-
-  var date = new Date();
-  var newdate = new Date(date);
-  newdate.setDate(newdate.getDate()-3);
-  var nd = new Date(newdate);
-
-  $('.datepicker1').datepicker({
-    autoclose: true,
-    format:"dd-mm-yyyy",
-    endDate: 'today'
-  }).datepicker("setDate", nd);
-
-  $('.datepicker2').datepicker({
-    autoclose: true,
-    format:"dd-mm-yyyy",
-    endDate: 'today'
-  });
-      
-  $('.datepicker').datepicker({
-    format: "mm",
-    viewMode: "months",
-    minViewMode: "months"
-  });
-
   function cariTanggalSpk(){
     var tgl1 = $('#tanggal1').val();
     var tgl2 = $('#tanggal2').val();
     var tampil = $('#tampil_data').val();
-    var spkTable = $('#table-spk').DataTable({
+    spkTable = $('#table-spk').DataTable({
       "destroy": true,
       "processing" : true,
       "serverside" : true,
@@ -298,24 +333,27 @@
   })
 
   function ubahStatus(id){
-    if(confirm('Anda yakin ubah status transaksi ?')){
-      $.ajax({
-          url : baseUrl + "/keuangan/spk/get-data-spk-byid/" + id,
-          type: "get",
-          dataType: "JSON",
-          success: function(response){
-            if(response.status == "sukses")
-            {
-              alert(response.pesan);
-              refreshTabel();
-              refreshTabelSpk();
-            }
-          },
-          error: function (jqXHR, textStatus, errorThrown){
-            alert('Error updating data');
-          }
-      });
-    }
+    $('.status'+id).attr('disabled','disabled');
+    $.ajax({
+      url : baseUrl + "/keuangan/spk/get-data-spk-byid/" + id,
+      type: "get",
+      dataType: "JSON",
+      success: function(response){
+        if(response.status == "sukses"){
+          iziToast.success({timeout: 5000, 
+                        position: "topRight",
+                        icon: 'fa fa-chrome', 
+                        title: '', 
+                        message: 'Status berhasil di update.'});
+          spkTable.ajax.reload();
+        }else{
+          iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'Status gagal du update.'});
+          $('.status'+id).removeAttr('disabled','disabled');
+        }
+      }
+    });
   } 
 
   function refreshTabel() {
