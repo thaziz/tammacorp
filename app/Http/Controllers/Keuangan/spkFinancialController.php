@@ -9,9 +9,13 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 use App\d_formula;
 use App\d_formula_result;
+use App\spk_formula;
 use App\m_item;
+use App\d_stock;
+use App\d_stock_mutation;
 use DataTables;
 use App\d_spk;
+use App\lib\mutasi;
 
 class spkFinancialController extends Controller
 {
@@ -26,6 +30,7 @@ class spkFinancialController extends Controller
     $productplan =DB::table('d_productplan')
                   ->join('m_item','pp_item','=','i_id')
                   ->where('pp_isspk','N')
+                  ->orderBy('pp_date','ASC')
                   ->get();
     // dd($spk);    
     json_encode($productplan);
@@ -33,8 +38,10 @@ class spkFinancialController extends Controller
     ->addIndexColumn()
     ->addColumn('action', function($data){
         return '<div class="text-center">
-                  <button class="btn btn-warning btn-sm" title="Buat SPK" onclick=BuatSpk("'.$data->pp_id.'","'.date('d-m-Y',strtotime($data->pp_date)).'","'.$data->pp_qty.'","'.$data->pp_item.'")>
-                    <i class="fa fa-plus"></i>
+                  <button class="btn btn-warning btn-sm" 
+                          title="Buat SPK" 
+                          onclick=BuatSpk("'.$data->pp_id.'","'.date('d-m-Y',strtotime($data->pp_date)).'","'.$data->pp_qty.'","'.$data->pp_item.'")>
+                          <i class="fa fa-plus"></i>
                   </button>
               </div>';
     })
@@ -62,14 +69,22 @@ class spkFinancialController extends Controller
     if ($tampil == 'semua') {
       $spk = d_spk::join('m_item','spk_item','=','i_id')
                   ->join('d_productplan','pp_id','=','spk_ref')
-                  ->select('spk_id', 'spk_date','i_name','pp_qty','spk_code','spk_status')
+                  ->select('spk_id', 'spk_date','i_name','pp_qty','spk_code','spk_status','pp_item')
+                  ->whereBetween('spk_date', [$tanggal1, $tanggal2])
+                  ->orderBy('spk_date', 'DESC')
+                  ->get();
+    }elseif ($tampil == 'draft') {
+      $spk = d_spk::join('m_item','spk_item','=','i_id')
+                  ->join('d_productplan','pp_id','=','spk_ref')
+                  ->select('spk_id', 'spk_date','i_name','pp_qty','spk_code','spk_status','pp_item')
+                  ->where('spk_status', '=', 'DR')
                   ->whereBetween('spk_date', [$tanggal1, $tanggal2])
                   ->orderBy('spk_date', 'DESC')
                   ->get();
     }elseif ($tampil == 'progress') {
       $spk = d_spk::join('m_item','spk_item','=','i_id')
                   ->join('d_productplan','pp_id','=','spk_ref')
-                  ->select('spk_id', 'spk_date','i_name','pp_qty','spk_code','spk_status')
+                  ->select('spk_id', 'spk_date','i_name','pp_qty','spk_code','spk_status','pp_item')
                   ->where('spk_status', '=', 'FN')
                   ->whereBetween('spk_date', [$tanggal1, $tanggal2])
                   ->orderBy('spk_date', 'DESC')
@@ -77,7 +92,7 @@ class spkFinancialController extends Controller
     }else{
       $spk = d_spk::join('m_item','spk_item','=','i_id')
                   ->join('d_productplan','pp_id','=','spk_ref')
-                  ->select('spk_id', 'spk_date','i_name','pp_qty','spk_code','spk_status')
+                  ->select('spk_id', 'spk_date','i_name','pp_qty','spk_code','spk_status','pp_item')
                   ->where('spk_status', '=', 'CL')
                   ->whereBetween('spk_date', [$tanggal1, $tanggal2])
                   ->orderBy('spk_date', 'DESC')
@@ -86,48 +101,43 @@ class spkFinancialController extends Controller
     
     return DataTables::of($spk)
     ->addIndexColumn()
-    ->editColumn('status', function ($data) 
-      {
-      if ($data->spk_status == "FN") 
-      {
+    ->editColumn('status', function ($data) {
+      if ($data->spk_status == "DR") {
+        return '<span class="label label-warning">Draft</span>';
+      }elseif ($data->spk_status == "FN") {
         return '<span class="label label-info">Proses</span>';
-      }
-      elseif ($data->spk_status == "CL") 
-      {
+      }elseif ($data->spk_status == "CL") {
         return '<span class="label label-success">Selesai</span>';
       }
     })
-    ->addColumn('action', function($data)
-      {
-        if ($data->spk_status == 'FN') 
-        {
+    ->addColumn('action', function($data){
+        if ($data->spk_status == 'CL') {
           return '<div class="text-center">
-                      <button class="btn btn-sm btn-success" title="Detail"
-                          onclick=detailManSpk("'.$data->spk_id.'")><i class="fa fa-eye"></i> 
-                      </button>
-                      &nbsp;
-                      <button class="btn btn-sm btn-info" title="Ubah Status"
-                          onclick=ubahStatus("'.$data->spk_id.'")><i class="glyphicon glyphicon-ok"></i>
-                      </button>
-                      &nbsp;
-                      <button class="btn btn-sm btn-warning" title="Edit Bahan"
-                          onclick=editSpk("'.$data->spk_id.'")><i class="glyphicon glyphicon-edit"></i>
+                      <button class="btn btn-sm btn-success" 
+                              title="Detail"
+                              onclick=detailManSpk("'.$data->spk_id.'")>
+                              <i class="fa fa-eye"></i> 
                       </button>
                   </div>';
-        }
-        else 
-        {
+        }elseif ($data->spk_status == 'FN') {
           return '<div class="text-center">
-                      <button class="btn btn-sm btn-success" title="Detail"
-                          onclick=detailManSpk("'.$data->spk_id.'")><i class="fa fa-eye"></i> 
+                      <button class="btn btn-sm btn-success" 
+                              title="Detail"
+                              onclick=detailManSpk("'.$data->spk_id.'")>
+                              <i class="fa fa-eye"></i> 
                       </button>
-                      &nbsp;
-                      <button class="btn btn-sm btn-info" title="Ubah Status"
-                          onclick=ubahStatus("'.$data->spk_id.'")><i class="glyphicon glyphicon-ok"></i>
+                      <button class="btn btn-sm btn-info status'.$data->spk_id.'" 
+                              title="Ubah Status"
+                              onclick=ubahStatus("'.$data->spk_id.'")>
+                              <i class="glyphicon glyphicon-ok"></i>
                       </button>
-                      &nbsp;
-                      <button class="btn btn-sm btn-warning" title="Edit Bahan"
-                          onclick=editSpk("'.$data->spk_id.'") disabled><i class="glyphicon glyphicon-edit"></i>
+                  </div>';
+        }else{
+          return '<div class="text-center">
+                      <button class="btn btn-sm btn-warning" 
+                              title="Edit Bahan"
+                              onclick=editSpk("'.$data->spk_id.'")>
+                              <i class="glyphicon glyphicon-edit"></i>
                       </button>
                   </div>';
         }
@@ -140,22 +150,24 @@ class spkFinancialController extends Controller
     ->make(true);
   }
 
-  public function getDataSpkById($idSpk)
-  {
-    //$spk = d_spk::find($spk_id);
-    $spk = d_spk::join('m_item','spk_item','=','i_id')
-                ->join('d_productplan','pp_id','=','spk_ref')
-                ->select('pp_date', 'spk_ref', 'spk_item', 'i_name', 'pp_qty','spk_code', 'spk_date')
-                ->get();           
+  public function getDataSpkById($idSpk){
+    DB::beginTransaction();
+    try {     
 
+    DB::commit();
     return response()->json([
-        'status' => 'sukses',
-        'data' => $spk,
+        'status' => 'sukses'
     ]);
+    } catch (\Exception $e) {
+    DB::rollback();
+    return response()->json([
+        'status' => 'gagal',
+        'data' => $e
+    ]);
+    }
   }
 
-  public function spkCreateId()
-  {
+  public function spkCreateId(){
     $year = carbon::now()->format('y');
     $month = carbon::now()->format('m');
     $date = carbon::now()->format('d');
@@ -168,30 +180,12 @@ class spkFinancialController extends Controller
       }                
     $idSpk = 'SPK'  . $year . $month . $date . $idSpk;
 
-    $data=['status'=>'sukses','id_spk'=>$idSpk];
-     return json_encode($data);
-  }
-
-  public function simpanSpk(Request $request){
-    $request->tgl_spk=date('Y-m-d',strtotime($request->tgl_spk));
-    $spk_id=d_spk::max('spk_id')+1;
-      d_spk::create([
-            'spk_id' =>$spk_id,
-            'spk_ref' =>$request->id_plan,
-            'spk_date' =>$request->tgl_spk,
-            'spk_item' =>$request->iditem,
-            'spk_code' =>$request->id_spk,
-            'spk_qty' =>$request->jumlah,
-            'spk_status'=>$request->status,
-      ]);
-    $productplan=DB::table('d_productplan')->where('pp_id',$request->id_plan);
-    $productplan->update([
-        'pp_isspk'=>'Y'
-    ]);
-
-    $data=['status'=>'sukses'];
+    $data=[ 'status'=>'sukses',
+            'id_spk'=>$idSpk
+          ];
     return json_encode($data);
   }
+
 
   public function ubahStatusSpk($spk_id)
   {
@@ -267,26 +261,31 @@ class spkFinancialController extends Controller
       return '<input  name="id_value[]" 
                       readonly 
                       class="form-control text-right f_value" 
-                      value="'.number_format($data->butuh,2,',','.').'">';
+                      onkeyup="total(this, event)";
+                      value="'.round($data->butuh, 2).'">';
     })
 
     ->editColumn('m_sname', function ($data) {
-      return '<input  name="id_value[]" 
+      return '<input  name="" 
                       readonly 
                       class="form-control" 
-                      value="'.$data->m_sname.'">';
+                      value="'.$data->m_sname.'">
+              <input  name="scale[]" 
+                      readonly 
+                      class="form-control hidden" 
+                      value="'.$data->i_sat1.'">';
     })
 
     ->addColumn('d_stock', function($data){
-      return  '<input name="id_formula[]" 
+      return  '<input name="d_stock[]" 
                       class="form-control text-right d_stock"  
                       readonly 
-                      value="'.$data->s_qty.'">'; 
+                      value="'.round($data->s_qty, 2).'">'; 
     })
 
     ->addColumn('purchesing', function($data){
-      return  '<input name="id_formula[]" 
-                      class="form-control text-right" 
+      return  '<input name="" 
+                      class="form-control text-right hasil" 
                       readonly value="">';
     })
     ->addIndexColumn()
@@ -294,6 +293,122 @@ class spkFinancialController extends Controller
     ->make(true);
   }
 
+  public function simpanSpk(Request $request){
+    // dd($request->all());
+  DB::beginTransaction();
+  try {
+    $formula = $request->id_formula;
+    $value = $request->id_value;
+    $scale = $request->f_scale;
+    $request->tgl_spk = date('Y-m-d',strtotime($request->tgl_spk));
+
+    $spk_id = d_spk::max('spk_id')+1;
+      d_spk::create([
+            'spk_id' =>$spk_id,
+            'spk_ref' =>$request->id_plan,
+            'spk_date' =>Carbon::now(),
+            'spk_item' =>$request->iditem,
+            'spk_code' =>$request->id_spk,
+            'spk_qty' =>$request->jumlah,
+            'spk_status'=>$request->status,
+      ]);
+
+    $productplan=DB::table('d_productplan')->where('pp_id',$request->id_plan);
+    $productplan->update([
+        'pp_isspk'=>'Y'
+    ]);
+
+    for ($i=0; $i < count($formula) ; $i++) { 
+      spk_formula::insert([
+                    'fr_spk' => $spk_id,
+                    'fr_detailid' => $i+1,
+                    'fr_formula'  => $formula[$i],
+                    'fr_value' => $value[$i],
+                    'fr_scale' => $scale[$i]
+      ]);
+
+    if(mutasi::mutasiStok($formula[$i],$value[$i],$comp=3,$position=3,$flag='',$spk_id)){
+      
+    }
+
+    }
+
+
+    DB::commit();
+    return response()->json([
+        'status' => 'sukses'
+    ]);
+    } catch (\Exception $e) {
+    DB::rollback();
+    return response()->json([
+        'status' => 'gagal',
+        'data' => $e
+    ]);
+    }
+  }
+
+  public function simpanDraftSpk(Request $request){
+    // dd($request->all());
+  DB::beginTransaction();
+  try {
+    $formula = $request->id_formula;
+    $value = $request->id_value;
+    $scale = $request->f_scale;
+    $request->tgl_spk = date('Y-m-d',strtotime($request->tgl_spk));
+
+    $spk_id = d_spk::max('spk_id')+1;
+      d_spk::create([
+            'spk_id' =>$spk_id,
+            'spk_ref' =>$request->id_plan,
+            'spk_date' =>Carbon::now(),
+            'spk_item' =>$request->iditem,
+            'spk_code' =>$request->id_spk,
+            'spk_qty' =>$request->jumlah,
+            'spk_status'=>$request->status,
+      ]);
+
+    $productplan=DB::table('d_productplan')->where('pp_id',$request->id_plan);
+    $productplan->update([
+        'pp_isspk'=>'Y'
+    ]);
+
+    for ($i=0; $i < count($formula) ; $i++) { 
+      spk_formula::insert([
+                    'fr_spk' => $spk_id,
+                    'fr_detailid' => $i+1,
+                    'fr_formula'  => $formula[$i],
+                    'fr_value' => $value[$i],
+                    'fr_scale' => $scale[$i]
+      ]);
+    }
+
+    DB::commit();
+    return response()->json([
+        'status' => 'sukses'
+    ]);
+    } catch (\Exception $e) {
+    DB::rollback();
+    return response()->json([
+        'status' => 'gagal',
+        'data' => $e
+    ]);
+    }
+  }
+
+  public function editSpk($id){
+
+    
+    $data = d_spk::where('spk_id',$id)
+      ->join('spk_formula','fr_spk','=','spk_id')
+      ->join('m_item','i_id','=','fr_formula')
+      ->first();
+    dd($data);
+    $data=[ 'status'=>'sukses',
+            'id_spk'=>$idSpk,
+            'i_name'=>$m_item ];
+
+    return json_encode($data);
+  }
 }
 
 

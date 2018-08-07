@@ -414,7 +414,10 @@ Route::get('/keuangan/analisabottom/analisa7', 'Keuangan\KeuanganController@anal
 Route::get('/keuangan/analisaroe/analisa8', 'Keuangan\KeuanganController@analisa8');
 Route::get('/keuangan/spk/create-id', 'Keuangan\spkFinancialController@spkCreateId');
 Route::get('/keuangan/spk/data-produc-plan', 'Keuangan\spkFinancialController@productplan');
-Route::get('/keuangan/spk/simpan-spk', 'Keuangan\spkFinancialController@simpanSpk');
+// Route::get('/keuangan/spk/simpan-spk', 'Keuangan\spkFinancialController@simpanSpk');
+Route::get('/produksi/spk/final/simpan-spk', 'Keuangan\spkFinancialController@simpanSpk');
+Route::get('/produksi/spk/draft/simpan-spk', 'Keuangan\spkFinancialController@simpanDraftSpk');
+Route::get('/produksi/spk/edit/{id}', 'Keuangan\spkFinancialController@editSpk');
 // rizky
 Route::get('/keuangan/p_hasilproduksi/pembatalanPenerimaan', 'Keuangan\KeuanganController@pembatalanPenerimaan');
 Route::get('/keuangan/p_hasilproduksi/ubah_status_transaksi/{id}/{id2}', 'Keuangan\KeuanganController@ubahStatusTransaksi');
@@ -495,7 +498,6 @@ Route::get('/produksi/spk/tabelspk', 'Produksi\spkProductionController@tabelSpk'
 Route::get('/produksi/spk/spk', 'Produksi\spkProductionController@spk');
 Route::get('/produksi/spk/create-id/{x}', 'Produksi\spkProductionController@spkCreateId');
 Route::get('/produksi/spk/data-produc-plan', 'Produksi\spkProductionController@productplan');
-Route::get('/produksi/spk/simpan-spk', 'Produksi\spkProductionController@simpanSpk');
 Route::get('/produksi/spk/cari-data-plan', 'Produksi\spkProductionController@cariDataSpk');
 // spk Production Selesai
 //Master Data Suplier

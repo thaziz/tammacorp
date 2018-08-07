@@ -160,54 +160,6 @@ class spkProductionController extends Controller
     ->make(true);   
   }
 
-  public function simpanSpk(Request $request){
-    // dd($request->all());
-  DB::beginTransaction();
-  try {
-    $formula = $request->id_formula;
-    $value = $request->id_value;
-    $scale = $request->f_scale;
-    $request->tgl_spk = date('Y-m-d',strtotime($request->tgl_spk));
-
-    $spk_id = d_spk::max('spk_id')+1;
-      d_spk::create([
-            'spk_id' =>$spk_id,
-            'spk_ref' =>$request->id_plan,
-            'spk_date' =>$request->tgl_spk,
-            'spk_item' =>$request->iditem,
-            'spk_code' =>$request->id_spk,
-            'spk_qty' =>$request->jumlah,
-            'spk_status'=>$request->status,
-      ]);
-
-    $productplan=DB::table('d_productplan')->where('pp_id',$request->id_plan);
-    $productplan->update([
-        'pp_isspk'=>'Y'
-    ]);
-
-    for ($i=0; $i < count($formula) ; $i++) { 
-      spk_formula::insert([
-                    'fr_spk' => $spk_id,
-                    'fr_detailid' => $i+1,
-                    'fr_formula'  => $formula[$i],
-                    'fr_value' => $value[$i],
-                    'fr_scale' => $scale[$i]
-      ]);
-    }
-
-    DB::commit();
-    return response()->json([
-        'status' => 'sukses'
-    ]);
-    } catch (\Exception $e) {
-    DB::rollback();
-    return response()->json([
-        'status' => 'gagal',
-        'data' => $e
-    ]);
-    }
-  }
-
   public function ubahStatusSpk($spk_id)
   {
 
