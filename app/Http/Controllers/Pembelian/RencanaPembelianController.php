@@ -36,12 +36,12 @@ class RencanaPembelianController extends Controller
           foreach($query as $k)
           {
             $tmp = ((int)$k->kode_max)+1;
-            $kd = sprintf("%06s", $tmp);
+            $kd = sprintf("%05s", $tmp);
           }
         }
         else
         {
-          $kd = "000001";
+          $kd = "00001";
         }
 
         // $idPlan = $id;

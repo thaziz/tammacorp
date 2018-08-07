@@ -1,12 +1,15 @@
 @extends('main')
 @section('content')
 <style type="text/css">
-   .ui-autocomplete { z-index:2147483647; }
-   .error { border: 1px solid #f00; }
-   .valid { border: 1px solid #8080ff; }
-   .has-error .select2-selection {
+  .ui-autocomplete { z-index:2147483647; }
+  .error { border: 1px solid #f00; }
+  .valid { border: 1px solid #8080ff; }
+  .has-error .select2-selection {
     border: 1px solid #f00 !important;
-}
+  }
+  .has-valid .select2-selection {
+    border: 1px solid #8080ff !important;
+  }
 </style>
 <!--BEGIN PAGE WRAPPER-->
 <div id="page-wrapper">
@@ -283,8 +286,23 @@
           }
       });
 
-      $('#ip_sat').keypress(function(event) {
-         addItemRow();
+      $('#ip_sat').keypress(function(e) {
+        if(e.which == 13)
+        {
+          if ($(this).val() == "") { $(this).val(0) };
+          //call function and focus ke form nama barang
+          addItemRow();
+          $('#ip_barang').focus();
+          return false;  
+        }
+      });
+
+      $('#cari_sup').change(function(event) {
+        if($(this).val() != ""){
+          $('#divSelectSup').removeClass('has-error').addClass('has-valid');
+        }else{
+          $('#divSelectSup').addClass('has-error').removeClass('has-valid');
+        }
       });
 
    });
@@ -364,32 +382,32 @@
                 data: $('#form_order_plan').serialize(),
                 success: function(response)
                 {
-                    if(response.status == "sukses")
-                    {
-                        iziToast.success({
-                           position: 'center',
-                           title: 'Pemberitahuan',
-                           message: response.pesan,
-                           onClosing: function(instance, toast, closedBy){
-                              $('#button_save').text('Simpan Data'); 
-                              $('#button_save').attr('disabled',false); 
-                              window.location.href = baseUrl+"/purchasing/rencanapembelian/rencana";
-                           }
-                        });
-                    }
-                    else
-                    {
-                        iziToast.error({
-                           position: 'center',
-                           title: 'Pemberitahuan',
-                           message: "Data Gagal disimpan !",
-                           onClosing: function(instance, toast, closedBy){
-                              $('#button_save').text('Simpan Data');
-                              $('#button_save').attr('disabled',false);
-                              window.location.href = baseUrl+"/purchasing/rencanapembelian/rencana";
-                           }
-                        }); 
-                     }
+                  if(response.status == "sukses")
+                  {
+                    iziToast.success({
+                       position: 'center',
+                       title: 'Pemberitahuan',
+                       message: response.pesan,
+                       onClosing: function(instance, toast, closedBy){
+                          $('#button_save').text('Simpan Data'); 
+                          $('#button_save').attr('disabled',false); 
+                          window.location.href = baseUrl+"/purchasing/rencanapembelian/rencana";
+                       }
+                    });
+                  }
+                  else
+                  {
+                    iziToast.error({
+                      position: 'center',
+                      title: 'Pemberitahuan',
+                      message: "Data Gagal disimpan !",
+                      onClosing: function(instance, toast, closedBy){
+                        $('#button_save').text('Simpan Data');
+                        $('#button_save').attr('disabled',false);
+                        window.location.href = baseUrl+"/purchasing/rencanapembelian/rencana";
+                      }
+                    }); 
+                  }
                 },
                 error: function (jqXHR, textStatus, errorThrown)
                 {

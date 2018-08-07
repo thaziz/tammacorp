@@ -112,8 +112,8 @@
 						</td>
 						<td>
 							No. Form : <label class="bold">{{$dataHeader[$i]['d_pcsh_code']}}</label><br>
-							Tanggal : <label class="bold">{{$dataHeader[$i]['d_pcsh_date']}}</label><br>
-							Suplier : <label class="bold">{{$dataHeader[$i]['s_name']}}</label>
+							Tanggal : <label class="bold">{{$tanggal}}</label><br>
+							Suplier : <label class="bold">{{$dataHeader[$i]['s_company']}}</label>
 						</td>
 					</tr>
 				</table>

@@ -131,10 +131,11 @@
           var totalPembelianNett = data.data_header[0].d_pcs_total_net;
           var totalDisc = parseInt(data.data_header[0].d_pcs_disc_value) + parseInt(data.data_header[0].d_pcs_discount);
           var taxPercent = data.data_header[0].d_pcs_tax_percent;
-
-          var date = data.data_header[0].d_pcs_duedate;
-          var newDueDate = date.split("-").reverse().join("-");
-
+          if(data.data_header[0].d_pcs_method != "CASH")
+          {
+            var date = data.data_header[0].d_pcs_duedate;
+            var newDueDate = date.split("-").reverse().join("-");
+          }
           //console.log(totalDisc);
           $('#head_nota_txt').val($('#head_nota_purchase').text());
           $('#head_supplier').val(data.data_header[0].s_company);

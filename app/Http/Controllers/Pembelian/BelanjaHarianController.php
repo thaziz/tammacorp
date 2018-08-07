@@ -44,7 +44,7 @@ class BelanjaHarianController extends Controller
         $kd = "00001";
       }
 
-      $codePH = "PH-".date('myd')."-".$kd;
+      $codePH = "PH-".date('ym')."-".$kd;
       $staff['nama'] = Auth::user()->m_name;
       $staff['id'] = Auth::User()->m_id;
       return view ('/purchasing/belanjaharian/tambah_belanja',compact('codePH', 'staff'));
@@ -142,7 +142,7 @@ class BelanjaHarianController extends Controller
 
     public function tambahMasterSupplier(Request $request)
     {
-      dd($request->all());
+      //dd($request->all());
       DB::beginTransaction();
       try {
         //insert to table d_supplier
@@ -633,6 +633,8 @@ class BelanjaHarianController extends Controller
 
       $dataIsi = array_chunk($dataList, 7);
 
+      $tanggal = with(new Carbon($dataHeader[0]['d_pcsh_date']))->format('d M Y');
+
       // return $dataHeader;
       // return $dataIsi;
 
@@ -640,6 +642,6 @@ class BelanjaHarianController extends Controller
         {{$hitungTotal->total_totalharga;}}
       }
 
-      return view('purchasing/belanjaharian/print', compact('dataHeader', 'dataIsi', 'hitungTotal'));
+      return view('purchasing/belanjaharian/print', compact('dataHeader', 'dataIsi', 'hitungTotal', 'tanggal'));
     }
 }

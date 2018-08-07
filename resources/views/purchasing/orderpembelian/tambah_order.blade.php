@@ -1,5 +1,16 @@
 @extends('main')
 @section('content')
+<style type="text/css">
+  .ui-autocomplete { z-index:2147483647; }
+  .error { border: 1px solid #f00; }
+  .valid { border: 1px solid #8080ff; }
+  .has-error .select2-selection {
+    border: 1px solid #f00 !important;
+  }
+  .has-valid .select2-selection {
+    border: 1px solid #8080ff !important;
+  }
+</style>
   <!--BEGIN PAGE WRAPPER-->
   <div id="page-wrapper">
     <!--BEGIN TITLE & BREADCRUMB PAGE-->
@@ -47,8 +58,7 @@
              
             
                   <div class="col-md-12 col-sm-12 col-xs-12">
-                    <form method="POST" id="form_create_po">
-                      
+                    <form method="POST" id="form_create_po" name="formCreatePo">
                       {{ csrf_field() }}
                       <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="padding-bottom: 10px;padding-top: 20px;margin-bottom: 15px;">
                         
@@ -102,9 +112,9 @@
                         </div>
 
                         <div class="col-md-3 col-sm-12 col-xs-12">
-                          <div class="form-group">
+                          <div class="form-group" id="divSelectSup">
                             <select class="form-control input-sm" id="cari_sup" name="cariSup" style="width: 100%;">
-                              <option> - Pilih Supplier</option>
+                              <option value=""> - Pilih Supplier</option>
                             </select>
                           </div>
                         </div>
@@ -114,9 +124,9 @@
                         </div>
 
                         <div class="col-md-3 col-sm-12 col-xs-12">
-                          <div class="form-group">
+                          <div class="form-group" id="divSelectPlan">
                             <select class="form-control input-sm" id="cari_kode_plan" name="cariKodePlan" style="width: 100%;">
-                              <option> - Pilih Kode Rencana</option>
+                              <option value=""> - Pilih Kode Rencana</option>
                             </select>
                           </div>
                         </div>
@@ -462,6 +472,38 @@
       return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
     });
 
+    //validasi
+    $("#form_create_po").validate({
+      rules:{
+        tanggal: "required",
+        method_bayar: "required",
+        cariSup: "required",
+        cariKodePlan: "required"
+      },
+      errorPlacement: function() {
+        return false;
+      },
+      submitHandler: function(form) {
+        form.submit();
+      }
+    });
+
+    $('#cari_sup').change(function(event) {
+      if($(this).val() != ""){
+        $('#divSelectSup').removeClass('has-error').addClass('has-valid');
+      }else{
+        $('#divSelectSup').addClass('has-error').removeClass('has-valid');
+      }
+    });
+
+    $('#cari_kode_plan').change(function(event) {
+      if($(this).val() != ""){
+        $('#divSelectPlan').removeClass('has-error').addClass('has-valid');
+      }else{
+        $('#divSelectPlan').addClass('has-error').removeClass('has-valid');
+      }
+    });
+
   //end jquery  
   });
   
@@ -543,39 +585,80 @@
   }
 
   function simpanPo()
+  {
+    var IsValid = $("form[name='formCreatePo']").valid();
+    if(IsValid)
     {
-      if(confirm('Simpan Data ?'))
+      var countRow = $('#tabel-form-po tr').length;
+      if(countRow > 1)
       {
-        $('#button_save').text('Menyimpan...'); //change button text
-        $('#button_save').attr('disabled',true); //set button disable 
+        $('#divSelectSup').removeClass('has-error');
+        $('#divSelectPlan').removeClass('has-error');
+        $('#button_save').text('Menyimpan...');
+        $('#button_save').attr('disabled',true); 
         $.ajax({
             url : baseUrl + "/purchasing/orderpembelian/simpan-po",
-            type: "post",
+            type: "POST",
             dataType: "JSON",
             data: $('#form_create_po').serialize(),
             success: function(response)
             {
-                if(response.status == "sukses")
-                {
-                    alert(response.pesan);
-                    $('#button_save').text('Simpan Data'); //change button text
-                    $('#button_save').attr('disabled',false); //set button enable 
+              if(response.status == "sukses")
+              {
+                iziToast.success({
+                  position: 'center',
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#button_save').text('Simpan Data');
+                    $('#button_save').attr('disabled',false); 
                     window.location.href = baseUrl+"/purchasing/orderpembelian/order";
-                }
-                else
-                {
-                    alert(response.pesan);
-                    $('#button_save').text('Simpan Data'); //change button text
-                    $('#button_save').attr('disabled',false); //set button enable 
-                    window.location.href = baseUrl+"/purchasing/orderpembelian/order";
-                }
+                  }
+                });
+              }
+              else
+              {
+                iziToast.error({
+                  position: 'center',
+                  title: 'Pemberitahuan',
+                  message: "Data Gagal disimpan !",
+                  onClosing: function(instance, toast, closedBy){
+                    $('#button_save').text('Simpan Data');
+                    $('#button_save').attr('disabled',false);
+                    window.location.href = baseUrl+"/purchasing/rencanapembelian/rencana";
+                  }
+                });
+              }
             },
             error: function (jqXHR, textStatus, errorThrown)
             {
-                alert('Error updating data');
+              iziToast.error({
+                position: 'topRight',
+                title: 'Pemberitahuan',
+                message: "Data gagal disimpan !"
+              });
             }
-          });
+        });
       }
+      else
+      {
+        iziToast.warning({
+          position: 'center',
+          message: "Mohon isi data pada tabel form !"
+        });
+      }
+    }
+    else //else validation
+    {
+      iziToast.warning({
+        position: 'center',
+        message: "Mohon Lengkapi data form !",
+        onClosing: function(instance, toast, closedBy){
+          $('#divSelectSup').addClass('has-error');
+          $('#divSelectPlan').addClass('has-error');
+        }
+      });
+    }
   }
 
 </script>

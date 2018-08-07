@@ -9,12 +9,12 @@
           </div>
 
           <div class="modal-body">
-            <form action="#" method="POST" id="form-master-supplier">
+            <form method="POST" id="form-master-supplier" name="formMasterSupplier">
               {{ csrf_field() }}
               <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 15px;padding-top: 15px; ">
                                   
                 <div class="col-md-4 col-sm-4 col-xs-12">
-                  <label class="tebal">Nama Toko/Vendor</label>
+                  <label class="tebal">Nama Toko/Vendor <span style="color: red">*</span></label>
                 </div>
 
                 <div class="col-md-8 col-sm-8 col-xs-12">
@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="col-md-4 col-sm-4 col-xs-12">
-                  <label class="tebal">Nama Pemilik</label>
+                  <label class="tebal">Nama Pemilik <span style="color: red">*</span></label>
                 </div>
 
                 <div class="col-md-8 col-sm-8 col-xs-12">
@@ -34,7 +34,7 @@
                 </div>
 
                 <div class="col-md-4 col-sm-4 col-xs-12">
-                  <label class="tebal">Alamat Toko/vendor</label>
+                  <label class="tebal">Alamat Toko/vendor <span style="color: red">*</span></label>
                 </div>
 
                 <div class="col-md-8 col-sm-8 col-xs-12">
@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="col-md-4 col-sm-4 col-xs-12">
-                  <label class="tebal">No. Telp</label>
+                  <label class="tebal">No. Telp <span style="color: red">*</span></label>
                 </div>
 
                 <div class="col-md-8 col-sm-8 col-xs-12">
@@ -64,7 +64,7 @@
                 </div>
 
                 <div class="col-md-4 col-sm-4 col-xs-12">
-                  <label class="tebal">Keterangan Toko</label>
+                  <label class="tebal">Keterangan Toko <span style="color: red">*</span></label>
                 </div>
 
                 <div class="col-md-8 col-sm-8 col-xs-12">
@@ -75,6 +75,9 @@
 
               </div>
             </form>
+            <div class="col-md-12 col-sm-4 col-xs-12">
+              <label class="tebal" style="color: red">Keterangan : * Wajib diisi.</label>
+            </div>
           </div>
                             
           <div class="modal-footer" style="border-top: none;">

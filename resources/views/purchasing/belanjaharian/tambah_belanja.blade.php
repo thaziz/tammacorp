@@ -2,6 +2,14 @@
 @section('content')
 <style type="text/css">
   .ui-autocomplete { z-index:2147483647; }
+  .error { border: 1px solid #f00; }
+  .valid { border: 1px solid #8080ff; }
+  .has-error .select2-selection {
+    border: 1px solid #f00 !important;
+  }
+  .has-valid .select2-selection {
+    border: 1px solid #8080ff !important;
+  }
 </style>
   <!--BEGIN PAGE WRAPPER-->
   <div id="page-wrapper">
@@ -50,7 +58,7 @@
                      </div>
                     </div>
 
-                    <form action="#" method="post" id="form-belanja">
+                    <form action="#" method="post" id="form-belanja" name="formBelanja">
                       {{ csrf_field() }}
                       <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-top:30px;padding-bottom:20px;">
                         
@@ -104,16 +112,6 @@
                               <input type="text" class="form-control input-sm" name="noReff">
                           </div>
                         </div>
-
-                        <div class="col-md-2 col-sm-3 col-xs-12">
-                          <label class="tebal">Jumlah Yang Dibayarkan</label>
-                        </div>
-
-                        <div class="col-md-4 col-sm-9 col-xs-12">
-                          <div class="form-group">
-                              <input type="text"  class="form-control input-sm" name="totalBayar" id="total_bayar">
-                          </div>
-                        </div>
                         
                         <div class="col-md-2 col-sm-3 col-xs-12">
                           <label class="tebal">Supplier</label>
@@ -142,7 +140,7 @@
                               <th style="text-align: center;" width="5%">Aksi</th>
                             </tr>
                           </thead>
-                          <tbody>
+                          <tbody id="div_item">
                             <tr>
                               <td style="text-align: center;"><strong>#</strong></td>
                               <td>
@@ -150,7 +148,6 @@
                                   <input type="hidden" id="ip_item" class="form-control" value="" name="ipItem">
                                   <div class="input-group input-group-sm" style="width: 100%;">
                                     <input type="text" id="ip_barang" class="form-control ui-autocomplete-input input-sm" placeholder="Masukkan nama barang" autocomplete="off" name="ipBarang">
-                                    <!-- <span class="input-group-btn"><button  type="button" class="btn btn-info btn-sm btn_add_barang" data-toggle="modal" data-target="#modal-barang"><i class="fa fa-plus"></i></button></span> -->
                                     <span class="input-group-btn"><button  type="button" class="btn btn-info btn-sm btn_add_barang" onclick="tambahMasterBarang()"><i class="fa fa-plus"></i></button></span>
                                   </div>
                               </td>
@@ -167,7 +164,7 @@
                                   <input type="text" id="ip_harga_total" class="form-control input-sm" value="" name="ipHargaTotal" readonly>
                               </td>
                               <td>
-                                  <button id="add_item" type="button" class="btn btn-info btn-sm" title="tambah"><i class="fa fa-plus"></i></button>
+                                  <button id="add_item" type="button" onclick="addItemRow()" class="btn btn-info btn-sm" title="tambah"><i class="fa fa-plus"></i></button>
                               </td>
                             </tr>
                           </tbody>
@@ -314,51 +311,10 @@
       $('#button_save').attr('disabled', false);
     });
 
-    var i = randString(5);
-    var no = 1;
-    $('#add_item').click(function() {
-        var ambilSatuanId = $("#ip_satuan option:selected").val();
-        var ambilSatuanTxt = $("#ip_satuan option:selected").text();
-        $('#ip_satuan').empty();
-        var ambilIdBarang = $('#ip_item').val();
-        var ambilBarang = $('#ip_barang').val();
-        var ambilQty = $('#ip_qty').val();
-        var ambilHarga = $('#ip_harga').val();
-        var ambilHargaTotal = $('#ip_harga_total').val();
-        if (ambilIdBarang == "" || ambilBarang == "" || ambilQty == "" || ambilSatuanId == "" ) 
-        {
-            alert('Terdapat kolom yang kosong, dimohon cek lagi!!');
-        }
-        else
-        {
-            $('#tabel-belanja').append('<tr class="tbl_form_row" id="row'+i+'">'
-                                    +'<td style="text-align:center">'+no+'</td>'
-                                    +'<td><input type="text" name="fieldIpBarang[]" value="'+ambilBarang+'" id="field_ip_barang" class="form-control" required readonly>'
-                                    +'<input type="hidden" name="fieldIpItem[]" value="'+ambilIdBarang+'" id="field_ip_item" class="form-control"></td>'
-                                    +'<td><input type="text" name="fieldIpQty[]" value="'+ambilQty+'" id="field_ip_qty" class="form-control" required readonly></td>'
-                                    +'<td><input type="text" name="fieldIpSatTxt[]" value="'+ambilSatuanTxt+'" id="field_ip_sat_txt" class="form-control" required readonly>'
-                                    +'<input type="hidden" name="fieldIpSatId[]" value="'+ambilSatuanId+'" id="field_ip_sat_id" class="form-control" required readonly></td>'
-                                    +'<td><input type="text" name="fieldIpHarga[]" value="'+ambilHarga+'" id="field_ip_harga" class="form-control" required readonly></td>'
-                                    +'<td><input type="text" name="fieldIpHargaTot[]" value="'+ambilHargaTotal+'" id="field_ip_harga_tot" class="form-control hargaTotalItem" required readonly></td>'
-                                    +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button></td>'
-                                    +'</tr>');
-            i = randString(5);
-            no++;
-            //kosongkan field setelah append row
-            $('#ip_satuan').val("");
-            $('#ip_barang').val("");
-            $('#ip_qty').val("");
-            $('#ip_item').val("");
-            $('#ip_harga').val("");
-            $('#ip_harga_total').val("");
-            totalPembelian();
-        } 
-    });
-
     $(document).on('click', '.btn_remove', function(){
-        var button_id = $(this).attr('id');
-        $('#row'+button_id+'').remove();
-        totalPembelian();
+      var button_id = $(this).attr('id');
+      $('#row'+button_id+'').remove();
+      totalPembelian();
     });
 
     //force integer input in textfield
@@ -366,40 +322,55 @@
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
     });
 
-    $('#code_group').change(function(){
-      var id = $(this).val();
-      var bid = $('#code_group').find(':selected').data('val');
-      console.log(id);
-      $.ajax({
-         type: "get",
-         url: '{{ route('kode_barang') }}',
-         data: {id},
-         success: function(data){
-          $('#kode_barang').val(data);
-         
-         },
-         error: function(){
-        
-         },
-         async: false
-      });
+    //validasi
+    $("#form-belanja").validate({
+      rules:{
+        tanggalBeli: "required",
+        noReff: "required",
+        namaSupplier: "required",
+        totalBiaya: "required"
+      },
+      errorPlacement: function() {
+          return false;
+      },
+      submitHandler: function(form) {
+        form.submit();
+      }
+    });
+
+    $('#ip_harga').keypress(function(e) {
+      if(e.which == 13)
+      {
+        if ($(this).val() == "") { $(this).val(0) };
+        //call event #ip_harga.blur()
+        $("#ip_harga").trigger( "blur" );
+        //call function and focus ke form nama barang
+        addItemRow();
+        $('#ip_barang').focus();
+        return false;  
+      }
     });
 
     // fungsi jika modal hidden
-    /*$(".modal").on("hidden.bs.modal", function(){
-      
-    });*/
+    $(".modal").on("hidden.bs.modal", function(){
+      //reset all input txt field
+      $('#form-master-barang')[0].reset();
+      $('#form-master-supplier')[0].reset();
+      //remove class all jquery validation error
+      $('.form-group').find('.error').removeClass('error');
+    });
 
+    //=======================================jquery handling modal master barang========================================
     //mask money
     $.fn.maskFunc = function(){
       $('.currency').inputmask("currency", {
-          radixPoint: ",",
-          groupSeparator: ".",
-          digits: 2,
-          autoGroup: true,
-          prefix: '', //Space after $, this will not truncate the first character.
-          rightAlign: false,
-          oncleared: function () { self.Value(''); }
+        radixPoint: ".",
+        groupSeparator: ".",
+        digits: 2,
+        autoGroup: true,
+        prefix: '', //Space after $, this will not truncate the first character.
+        rightAlign: false,
+        oncleared: function () { self.Value(''); }
       });
     }
 
@@ -424,159 +395,396 @@
       });
     });
 
-    //event focus on isi_sat3
+    //event focus on isi_sat2
     $(document).on('focus', '#isi_sat2',  function(e){
-      $('#isi_sat2').attr('readonly', false);
-      $('#isi_sat3').attr('readonly', false);
-      $('#harga_beli1').val('').attr('readonly', true);
+      $('#harga_beli1').val('');
       $('#harga_beli2').val('');
       $('#harga_beli3').val('');
     });
 
     //event focus on isi_sat3
     $(document).on('focus', '#isi_sat3',  function(e){
-      $('#isi_sat2').attr('readonly', false);
-      $('#isi_sat3').attr('readonly', false);
-      $('#harga_beli1').val('').attr('readonly', true);
+      $('#harga_beli1').val('');
       $('#harga_beli2').val('');
       $('#harga_beli3').val('');
     });
 
-    //event onblur harga isi_sat3
-    $(document).on('blur', '#isi_sat3',  function(e){
-      $('#harga_beli1').attr('readonly', false);
+    //event focus on harga_beli1
+    $(document).on('focus', '#harga_beli1',  function(e){
+      $(this).attr('readonly', false).val(0);
+      $('#harga_beli2').attr('readonly', true).val(0);
+      $('#harga_beli3').attr('readonly', true).val(0);
     });
 
-    //event focus on harga beli1
-    $(document).on('focus', '#harga_beli1',  function(e){
-      $('#isi_sat2').attr('readonly', true);
-      $('#isi_sat3').attr('readonly', true);
+    //event focus on harga_beli2
+    $(document).on('focus', '#harga_beli2',  function(e){
+      $(this).attr('readonly', false).val(0);
+      $('#harga_beli1').attr('readonly', true).val(0);
+      $('#harga_beli3').attr('readonly', true).val(0);
+    });
+
+    //event focus on harga_beli3
+    $(document).on('focus', '#harga_beli3',  function(e){
+      $(this).attr('readonly', false).val(0);
+      $('#harga_beli1').attr('readonly', true).val(0);
+      $('#harga_beli2').attr('readonly', true).val(0);
     });
 
     //event onblur harga beli1
     $(document).on('blur', '#harga_beli1',  function(e){
-      var harga1 = convertToAngka($(this).val());
-      // console.log(harga1);
+      var harga1 = $(this).val();
+      harga1 = harga1.replace(/,/g, "");
+      //console.log(parseFloat(harga1));
       var isi2 = $('#isi_sat2').val();
       var isi3 = $('#isi_sat3').val();
-      var harga2 = parseInt(harga1 * isi2);
-      var harga3 = parseInt(harga1 * isi3);
-      // console.log(harga2);
-      // console.log(harga3);
+      var harga2 = parseFloat(harga1 * isi2);
+      var harga3 = parseFloat(harga1 * isi3);
       $('#harga_beli2').val(harga2);
       $('#harga_beli3').val(harga3);
     });
 
+    //event onblur harga beli2
+    $(document).on('blur', '#harga_beli2',  function(e){
+      //cari harga sat 1
+      var harga2 = $(this).val();
+      harga2 = harga2.replace(/,/g, "");
+      var isi2 = $('#isi_sat2').val();
+      var isi3 = $('#isi_sat3').val();
+      var harga1 = parseFloat(harga2 / isi2);
+      //cari harga sat 3
+      var harga3 = parseFloat(harga1 * isi3);
+      $('#harga_beli1').val(harga1);
+      $('#harga_beli3').val(harga3);
+    });
+
+    //event onblur harga beli3
+    $(document).on('blur', '#harga_beli3',  function(e){
+      //cari harga sat 1
+      var harga3 = $(this).val();
+      harga3 = harga3.replace(/,/g, "");
+      var isi2 = $('#isi_sat2').val();
+      var isi3 = $('#isi_sat3').val();
+      var harga1 = parseFloat(harga3 / isi3);
+      //cari harga sat 2
+      var harga2 = parseFloat(harga1 * isi2);
+      $('#harga_beli1').val(harga1);
+      $('#harga_beli2').val(harga2);
+    });
+
     $('#change_function').on("click", "#save_barang",function(){
-      if(confirm('Simpan Data Barang ?'))
-      {
-        $('#save_barang').text('Menyimpan...'); //change button text
-        $('#save_barang').attr('disabled',true); //set button disable 
+      var IsValid = $("form[name='formMasterBarang']").valid();
+      if(IsValid){
         $.ajax({
-          type: "get",
+          type: "POST",
           url: '{{ route('simpan_barang') }}',
           data: $('#form-master-barang').serialize(),
           success: function(response)
           {
             if(response.status == "sukses")
             {
-              // alert(response.pesan);
-              toastr.success(response.pesan, 'Pemberitahuan');
-              $('#save_barang').text('Simpan Data'); //change button text
-              $('#save_barang').attr('disabled',false); //set button enable
-              $('#modal-barang').modal('hide');
+              iziToast.success({
+                position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                title: 'Pemberitahuan',
+                message: response.pesan,
+                onClosing: function(instance, toast, closedBy){
+                  $('#save_barang').text('Simpan Data');
+                  $('#save_barang').attr('disabled',false);
+                  $('#modal-barang').modal('hide');
+                }
+              });
             }
             else
             {
-              toastr.error(response.pesan, 'Pemberitahuan');
-              $('#save_barang').text('Simpan Data'); //change button text
-              $('#save_barang').attr('disabled',false); //set button enable
-              $('#modal-barang').modal('hide');
+              iziToast.error({
+                position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                title: 'Pemberitahuan',
+                message: "Data Gagal disimpan !",
+                onClosing: function(instance, toast, closedBy){
+                  $('#save_barang').text('Simpan Data');
+                  $('#save_barang').attr('disabled',false);
+                  $('#modal-barang').modal('hide');
+                }
+              });
             }              
           },
           error: function()
           {
-            toastr.error('Data Tidak Tersimpan!','Pemberitahuan') 
+            iziToast.error({
+              position: 'topRight', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+              title: 'Pemberitahuan',
+              message: "Data gagal disimpan !"
+            });
           },
           async: false
         });
       }
+      else //else validation
+      {
+        iziToast.warning({
+          position: 'center',
+          message: "Mohon Lengkapi data form !"
+        });
+      }
     });
 
+    //validasi
+    $("#form-master-barang").validate({
+      rules:{
+          nama: "required",
+          type: "required",
+          code_group: "required",
+          min_stock: "required",
+          satuan1: "required",
+          isi_sat1: "required",
+          satuan2: "required",
+          isi_sat2: "required",
+          satuan3: "required",
+          isi_sat3: "required",
+          hargaBeli1: "required",
+          hargaBeli2: "required",
+          hargaBeli3: "required"
+      },
+      errorPlacement: function() {
+          return false;
+      },
+      submitHandler: function(form) {
+        form.submit();
+      }
+    });
+
+    //=======================================jquery handling modal master barang========================================
+    //validasi
+    $("#form-master-supplier").validate({
+      rules:{
+        fNamaSupplier: "required",
+        fNamaPemilik: "required",
+        fNamaAlamat: "required",
+        fTelp: "required",
+        fKeterangan: 'required'
+      },
+      errorPlacement: function() {
+          return false;
+      },
+      submitHandler: function(form) {
+        form.submit();
+      }
+    });
 
   //end jquery
   });
 
-  function save_supplier() 
+  function addItemRow() 
   {
-    if(confirm('Simpan Data Supplier ?'))
+    var i = randString(5);
+    var no = 1;
+    var ambilSatuanId = $("#ip_satuan option:selected").val();
+    var ambilSatuanTxt = $("#ip_satuan option:selected").text();
+    $('#ip_satuan').empty();
+    var ambilIdBarang = $('#ip_item').val();
+    var ambilBarang = $('#ip_barang').val();
+    var ambilQty = $('#ip_qty').val();
+    var ambilHarga = $('#ip_harga').val();
+    var ambilHargaTotal = $('#ip_harga_total').val();
+    if (ambilIdBarang == "" || ambilBarang == "" || ambilQty == "" || ambilSatuanId == "" ) 
     {
-        $('#btn-simpan-supplier').text('Menyimpan...'); //change button text
-        $('#btn-simpan-supplier').attr('disabled',true); //set button disable 
-        $.ajax({
-            url : baseUrl + "/purchasing/belanjaharian/buat-master-supplier",
-            type: "post",
-            dataType: "JSON",
-            data: $('#form-master-supplier').serialize(),
-            success: function(response)
-            {
-                if(response.status == "sukses")
-                {
-                    alert(response.pesan);
-                    $('#btn-simpan-supplier').text('Simpan Data'); //change button text
-                    $('#btn-simpan-supplier').attr('disabled',false); //set button enable
-                    $('#modal-supplier').modal('hide');
-                }
-                else
-                {
-                    alert(response.pesan);
-                    $('#btn-simpan-supplier').text('Simpan Data'); //change button text
-                    $('#btn-simpan-supplier').attr('disabled',false); //set button enable
-                    $('#modal-supplier').modal('hide');
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
-                alert('Error updating data');
-            }
-        });
+      iziToast.warning({
+        position: 'center',
+        title: 'Pemberitahuan',
+        message: "Terdapat kolom yang kosong, dimohon cek lagi !"
+      });
+    } 
+    else
+    {
+      $('#tabel-belanja').append('<tr class="tbl_form_row" id="row'+i+'">'
+                                +'<td style="text-align:center">'+no+'</td>'
+                                +'<td><input type="text" name="fieldIpBarang[]" value="'+ambilBarang+'" id="field_ip_barang" class="form-control" required readonly>'
+                                +'<input type="hidden" name="fieldIpItem[]" value="'+ambilIdBarang+'" id="field_ip_item" class="form-control"></td>'
+                                +'<td><input type="text" name="fieldIpQty[]" value="'+ambilQty+'" id="field_ip_qty" class="form-control" required readonly></td>'
+                                +'<td><input type="text" name="fieldIpSatTxt[]" value="'+ambilSatuanTxt+'" id="field_ip_sat_txt" class="form-control" required readonly>'
+                                +'<input type="hidden" name="fieldIpSatId[]" value="'+ambilSatuanId+'" id="field_ip_sat_id" class="form-control" required readonly></td>'
+                                +'<td><input type="text" name="fieldIpHarga[]" value="'+ambilHarga+'" id="field_ip_harga" class="form-control" required readonly></td>'
+                                +'<td><input type="text" name="fieldIpHargaTot[]" value="'+ambilHargaTotal+'" id="field_ip_harga_tot" class="form-control hargaTotalItem" required readonly></td>'
+                                +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button></td>'
+                                +'</tr>');
+      i = randString(5);
+      no++;
+      //kosongkan field setelah append row
+      $('#ip_satuan').val("");
+      $('#ip_barang').val("");
+      $('#ip_qty').val("");
+      $('#ip_item').val("");
+      $('#ip_harga').val("");
+      $('#ip_harga_total').val("");
+      totalPembelian();
     }
   }
 
-  function simpanBelanja()
-  {
-    if(confirm('Simpan Data Belanja ?'))
-    {
-        $('#button_save').text('Menyimpan...'); //change button text
-        $('#button_save').attr('disabled',true); //set button disable 
-        $.ajax({
-            url : baseUrl + "/purchasing/belanjaharian/simpan-data-belanja",
-            type: "post",
-            dataType: "JSON",
-            data: $('#form-belanja').serialize(),
-            success: function(response)
-            {
+  function save_supplier() {
+    iziToast.question({
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      //zindex: 999,
+      title: 'Simpan Master Supplier',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          var IsValid = $("form[name='formMasterSupplier']").valid();
+          if(IsValid)
+          {
+            $('#btn-simpan-supplier').text('Menyimpan...');
+            $('#btn-simpan-supplier').attr('disabled',true); 
+            $.ajax({
+              url : baseUrl + "/purchasing/belanjaharian/buat-master-supplier",
+              type: "post",
+              dataType: "JSON",
+              data: $('#form-master-supplier').serialize(),
+              success: function(response)
+              {
                 if(response.status == "sukses")
                 {
-                    alert(response.pesan);
-                    $('#button_save').text('Simpan Data'); //change button text
-                    $('#button_save').attr('disabled',false); //set button enable
-                     window.location.href = baseUrl+"/purchasing/belanjaharian/belanja";
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.success({
+                    position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                    title: 'Pemberitahuan',
+                    message: response.pesan,
+                    onClosing: function(instance, toast, closedBy){
+                      $('#btn-simpan-supplier').text('Simpan Data'); //change button text
+                      $('#btn-simpan-supplier').attr('disabled',false); //set button enable
+                      $('#modal-supplier').modal('hide');
+                    }
+                  });
                 }
                 else
                 {
-                    alert(response.pesan);
-                    $('#button_save').text('Simpan Data'); //change button text
-                    $('#button_save').attr('disabled',false); //set button enable
-                    window.location.href = baseUrl+"/purchasing/belanjaharian/belanja";
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.error({
+                    position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                    title: 'Pemberitahuan',
+                    message: response.pesan,
+                    onClosing: function(instance, toast, closedBy){
+                      $('#btn-simpan-supplier').text('Simpan Data'); //change button text
+                      $('#btn-simpan-supplier').attr('disabled',false); //set button enable
+                      $('#modal-supplier').modal('hide');
+                    }
+                  }); 
                 }
-            },
-            error: function (jqXHR, textStatus, errorThrown)
+              },
+              error: function(){
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.warning({
+                  icon: 'fa fa-times',
+                  message: 'Terjadi Kesalahan!'
+                });
+              },
+              async: false
+            });
+          }
+          else
+          {
+            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            iziToast.warning({
+              position: 'center',
+              message: "Mohon Lengkapi data form !"
+            });
+          } //end check valid
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
+  }
+
+  function simpanBelanja() {
+    iziToast.question({
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      zindex: 999,
+      title: 'Simpan Belanja Harian',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          var IsValid = $("form[name='formBelanja']").valid();
+          if(IsValid)
+          {
+            var countRow = $('#div_item tr').length;
+            if(countRow > 1)
             {
-                alert('Error updating data');
+              $('#button_save').text('Menyimpan...');
+              $('#button_save').attr('disabled',true); 
+              $.ajax({
+                url : baseUrl + "/purchasing/belanjaharian/simpan-data-belanja",
+                type: "post",
+                dataType: "JSON",
+                data: $('#form-belanja').serialize(),
+                success: function(response)
+                {
+                  if(response.status == "sukses")
+                  {
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    iziToast.success({
+                      position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                      title: 'Pemberitahuan',
+                      message: response.pesan,
+                      onClosing: function(instance, toast, closedBy){
+                        $('#button_save').text('Simpan Data');
+                        $('#button_save').attr('disabled',false);
+                        window.location.href = baseUrl+"/purchasing/belanjaharian/belanja";
+                      }
+                    });
+                  }
+                  else
+                  {
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    iziToast.error({
+                      position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                      title: 'Pemberitahuan',
+                      message: response.pesan,
+                      onClosing: function(instance, toast, closedBy){
+                        $('#button_save').text('Simpan Data');
+                        $('#button_save').attr('disabled',false);
+                        window.location.href = baseUrl+"/purchasing/belanjaharian/belanja";
+                      }
+                    }); 
+                  }
+                },
+                error: function(){
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.warning({
+                    icon: 'fa fa-times',
+                    message: 'Terjadi Kesalahan!'
+                  });
+                },
+                async: false
+              });
             }
-        });
-    }
+            else
+            {
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+              iziToast.warning({
+                 position: 'center',
+                 message: "Mohon isi data pada tabel form !"
+              });
+            }//end check count form table
+          }
+          else
+          {
+            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            iziToast.warning({
+              position: 'center',
+              message: "Mohon Lengkapi data form !"
+            });
+          } //end check valid
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
   }
 
   function tambahMasterBarang() 
