@@ -138,19 +138,10 @@
               </tbody>
             </table>
           </div>
-
-          <!-- <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="padding-top:15px;margin-bottom: 25px;">
-            <input type="checkbox" name="">&nbsp;Di tolak&nbsp;<input type="checkbox" name="">&nbsp;Di Setujui&nbsp;<input type="checkbox" name="">&nbsp;Di revisi<br>
-            <div class="col-md-8 col-sm-8 col-xs-12" style="margin-top: 10px;">
-              <div class="form-group">  
-                <textarea class="form-control"></textarea>
-              </div>
-            </div>
-          </div> -->
-          
         </div>
     
         <div class="modal-footer" style="border-top: none;">
+          <button type="button" class="btn btn-info" data-target="#">Cetak</button>
           <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
         </div>
 

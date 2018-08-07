@@ -454,40 +454,68 @@
 
   function submitEdit()
   {
-    if(confirm('Update Data ?'))
-    {
-        $('#btn_update').text('Updating...'); //change button text
-        $('#btn_update').attr('disabled',true); //set button disable 
-        $.ajax({
+    iziToast.question({
+      timeout: 20000,
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      title: 'Ubah Status',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          $.ajax({
             url : baseUrl + "/purchasing/orderpembelian/update-data-order",
             type: "post",
             dataType: "JSON",
             data: $('#form-edit-order').serialize(),
             success: function(response)
             {
-                if(response.status == "sukses")
-                {
-                    alert(response.pesan);
-                    $('#btn_update').text('Update'); //change button text
-                    $('#btn_update').attr('disabled',false); //set button enable
+              if(response.status == "sukses")
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.success({
+                  position: 'center',
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#btn_update').text('Update'); 
+                    $('#btn_update').attr('disabled',false);
                     $('#modal-edit').modal('hide');
                     $('#tbl-index').DataTable().ajax.reload();
-                }
-                else
-                {
-                    alert(response.pesan);
-                    $('#btn_update').text('Update'); //change button text
-                    $('#btn_update').attr('disabled',false); //set button enable
+                  }
+                });
+              }
+              else
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.error({
+                  position: 'center', 
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#btn_update').text('Update');
+                    $('#btn_update').attr('disabled',false);
                     $('#modal-edit').modal('hide');
                     $('#tbl-index').DataTable().ajax.reload();
-                }
+                  }
+                }); 
+              }
             },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
-                alert('Error updating data');
-            }
-        });
-    }
+            error: function(){
+              iziToast.warning({
+                icon: 'fa fa-times',
+                message: 'Terjadi Kesalahan!'
+              });
+            },
+            async: false
+          });
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
   }
 
   function deleteOrder(idPo, idPlan) 

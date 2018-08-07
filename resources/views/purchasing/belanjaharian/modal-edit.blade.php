@@ -1,7 +1,7 @@
 <div class="modal fade" id="modal-edit" role="dialog">
   <div class="modal-dialog" style="width: 90%;margin: auto;">
       
-    <form method="post" action="#" id="form-belanja-edit">
+    <form method="post" id="form-belanja-edit" name="formBelanjaEdit">
       {{ csrf_field() }}
       <!-- Modal content-->
       <div class="modal-content">
@@ -63,16 +63,6 @@
             <div class="col-md-3 col-sm-12 col-xs-12">
               <div class="form-group">
                 <input id="no_reff_edit" class="form-control input-sm" name="noReffEdit" type="text" value="">
-              </div>
-            </div>
-
-            <div class="col-md-3 col-sm-12 col-xs-12">
-              <label class="tebal">Jumlah Yang Dibayarkan</label>
-            </div>
-
-            <div class="col-md-3 col-sm-12 col-xs-12">
-              <div class="form-group">
-                <input id="total_bayar_edit" class="form-control input-sm" name="totalBayarEdit" type="text" value="">
               </div>
             </div>
 

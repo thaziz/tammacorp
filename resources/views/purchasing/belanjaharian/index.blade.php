@@ -140,6 +140,19 @@
       $('#txt_span_status_edit').removeClass();
     });
 
+    $("#form-belanja-edit").validate({
+      rules:{
+        tanggalBeliEdit: "required",
+        noReffEdit: "required"
+      },
+      errorPlacement: function() {
+          return false;
+      },
+      submitHandler: function(form) {
+        form.submit();
+      }
+    });
+
     //load fungsi
     lihatBelanjaByTanggal();
   //end jquery
@@ -206,7 +219,6 @@
         $('#id_belanja_edit').val(data.header[0].d_pcsh_id);
         $('#total_biaya_edit').val(convertDecimalToRupiah(data.header[0].d_pcsh_totalprice));
         $('#no_reff_edit').val(data.header[0].d_pcsh_noreff);
-        $('#total_bayar_edit').val(convertDecimalToRupiah(data.header[0].d_pcsh_totalpaid));
         $('#nama_supplier_edit').val(data.header[0].s_company);
         $('#id_supplier_edit').val(data.header[0].s_id);
         //loop data
@@ -235,42 +247,84 @@
     });
   }
 
-  function submitEdit()
-  {
-    if(confirm('Update Data ?'))
-    {
-        $('#btn_update').text('Updating...'); //change button text
-        $('#btn_update').attr('disabled',true); //set button disable 
-        $.ajax({
-            url : baseUrl + "/purchasing/belanjaharian/update-data-belanja",
-            type: "post",
-            dataType: "JSON",
-            data: $('#form-belanja-edit').serialize(),
-            success: function(response)
-            {
+  function submitEdit() {
+    iziToast.question({
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      zindex: 999,
+      title: 'Update Belanja Harian',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          var IsValid = $("form[name='formBelanjaEdit']").valid();
+          if(IsValid)
+          {
+            $('#btn_update').text('Updating...');
+            $('#btn_update').attr('disabled',true); 
+            $.ajax({
+              url : baseUrl + "/purchasing/belanjaharian/update-data-belanja",
+              type: "post",
+              dataType: "JSON",
+              data: $('#form-belanja-edit').serialize(),
+              success: function(response)
+              {
                 if(response.status == "sukses")
                 {
-                    alert(response.pesan);
-                    $('#btn_update').text('Update'); //change button text
-                    $('#btn_update').attr('disabled',false); //set button enable
-                    $('#modal-edit').modal('hide');
-                    $('#data').DataTable().ajax.reload();
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.success({
+                    position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                    title: 'Pemberitahuan',
+                    message: response.pesan,
+                    onClosing: function(instance, toast, closedBy){
+                      $('#btn_update').text('Update'); //change button text
+                      $('#btn_update').attr('disabled',false); //set button enable
+                      $('#modal-edit').modal('hide');
+                      $('#data').DataTable().ajax.reload();
+                    }
+                  });
                 }
                 else
                 {
-                    alert(response.pesan);
-                    $('#btn_update').text('Update'); //change button text
-                    $('#btn_update').attr('disabled',false); //set button enable
-                    $('#modal-edit').modal('hide');
-                    $('#data').DataTable().ajax.reload();
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.error({
+                    position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                    title: 'Pemberitahuan',
+                    message: response.pesan,
+                    onClosing: function(instance, toast, closedBy){
+                      $('#btn_update').text('Update'); //change button text
+                      $('#btn_update').attr('disabled',false); //set button enable
+                      $('#modal-edit').modal('hide');
+                      $('#data').DataTable().ajax.reload();
+                    }
+                  }); 
                 }
-            },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
-                alert('Error updating data');
-            }
-        });
-    }
+              },
+              error: function(){
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.warning({
+                  icon: 'fa fa-times',
+                  message: 'Terjadi Kesalahan!'
+                });
+              },
+              async: false
+            });
+          }
+          else
+          {
+            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            iziToast.warning({
+              position: 'center',
+              message: "Mohon Lengkapi data form !"
+            });
+          } //end check valid
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
   }
 
   function deleteBeliHarian(idBeli) 
