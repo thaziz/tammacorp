@@ -1,8 +1,7 @@
 <!-- detail order-->
-<div class="modal fade" id="create-data" role="dialog">
+<div class="modal fade" id="edit-data" role="dialog">
   <div class="modal-dialog modal-lg"">
   
-    
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header" style="background-color: #e77c38;">
@@ -21,7 +20,7 @@
             </div>
              <div class="col-md-8 col-sm-3 col-xs-12">
               <div class="form-group">
-                <input class="form-control" readonly="" type="text" name="tgl_plan" id="tgl_plan"> 
+                <input class="form-control" readonly="" type="text" name="tgl_plan" id="tgl_planD"> 
                  <input class="form-control" type="hidden" name="id_plan" id="id_plan">               
               </div>
             </div>
@@ -34,7 +33,7 @@
             <div class="col-md-8 col-sm-3 col-xs-12">
               <div class="form-group">                
                 <input class="form-control" readonly="" type="hidden" name="iditem" id="iditem">                
-                <input class="form-control" readonly="" type="text" name="item" id="item">                
+                <input class="form-control" readonly="" type="text" name="item" id="itemD">                
               </div>
             </div>
 
@@ -45,7 +44,7 @@
             </div>
             <div class="col-md-8 col-sm-3 col-xs-12">
               <div class="form-group">
-                <input class="form-control" readonly="" type="text" name="jumlah" id="jumlah">                
+                <input class="form-control" readonly="" type="text" name="jumlah" id="jumlahD">                
               </div>
             </div>
 
@@ -56,7 +55,7 @@
             </div>
             <div class="col-md-8 col-sm-3 col-xs-12">
               <div class="form-group">
-                <input class="form-control" readonly="" type="text" name="id_spk" id="id_spk">               
+                <input class="form-control" readonly="" type="text" name="id_spk" id="id_spkD">               
               </div>
             </div> 
 
@@ -64,7 +63,7 @@
 
           <div class="table-responsive">
             <form id="formula">
-              <table class="table tabelan table-hover table-bordered" id="tableFormula">
+              <table class="table tabelan table-hover table-bordered" id="tabelDraftFormula">
                 <thead>
                   <tr>
                     <th>Bahan Baku</th>
@@ -85,15 +84,14 @@
         <div class="modal-footer">
           <button class="btn btn-link" type="button"><i class="glyphicon glyphicon-print"></i>&nbsp;Print</button>
           <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-          <button class="btn btn-primary draft" type="button" onclick="draft('DR')">Draft</button>
           <button class="btn btn-primary final" type="button" onclick="final('FN')">Final</button>
           
         </div>
 
       </div>
     
+    </div>
   </div>
-</div>
 </div>
 <!-- end detail order-->
 

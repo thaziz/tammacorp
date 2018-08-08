@@ -14,6 +14,7 @@ use App\d_send_productdt;
 use App\d_productplan;
 use App\d_spk;
 use App\m_produksi;
+use App\lib\mutasi;
 use Response;
 use DataTables;
 use App\Http\Requests;
@@ -75,57 +76,6 @@ class ManOutputProduksiController extends Controller
     return Response::json($d_spk);
   }
 
-  public function tabelHasil(){
-
-    $data = d_productresult::
-        select('d_productresult.pr_id',
-               'd_productresult.pr_date', 
-               'd_spk.spk_code',
-               'm_item.i_name')
-      ->join('d_spk', 'd_productresult.pr_spk', '=', 'd_spk.spk_id')
-      ->join('m_item', 'd_productresult.pr_item', '=', 'm_item.i_id')
-      ->get();
-
-    return DataTables::of($data)
-
-    ->addColumn('action_belum', function ($data) {
-        return '<div class="text-center">
-                  <button style="margin-left:5px;" 
-                          title="Edit" 
-                          type="button"
-                          data-toggle="modal"
-                          data-target="#modalDetailProduksi"
-                          onclick="lihatDetail('.$data->pr_id.')" 
-                          class="btn btn-info fa fa-eye btn-sm"
-                  </button>
-                </div>';
-
-      })
-
-    ->addColumn('action_sudah', function ($data) {
-        return '<div class="text-center">
-                  <button style="margin-left:5px;" 
-                          title="Edit" 
-                          type="button" 
-                          data-toggle="modal"
-                          data-target="#modalDetailProduksiKirim"
-                          onclick="lihatDetailKirim('.$data->pr_id.')"
-                          class="btn btn-success fa fa-eye btn-sm"
-                  </button>
-                </div>';
-
-      })
-
-    ->editColumn('pr_date', function ($user) {
-        return $user->pr_date ? with(new Carbon($user->pr_date))->format('d M Y') : '';
-      })
-
-    ->rawColumns(['action_belum',
-                  'action_sudah'
-      ])
-
-    ->make(true);
-  }
 
   public function tabelDetail(Request $request){
     $getid = DB::table('d_productresult')
@@ -145,136 +95,6 @@ class ManOutputProduksiController extends Controller
 
     return view('produksi.o_produksi.detailKirim', compact('getid'));
    }
-
-  // public function detail(Request $request, $x){
-  //   $data = d_productresult_dt::
-  //     select( 'd_productresult_dt.prdt_productresult',
-  //             'd_productresult_dt.prdt_detail',
-  //             'd_spk.spk_code',
-  //             'm_item.i_name',
-  //             'd_productresult_dt.prdt_date',
-  //             'd_productresult_dt.prdt_time',
-  //             'd_productresult_dt.prdt_qty',
-  //             'd_productresult_dt.prdt_status')
-  //     ->join('d_productresult','d_productresult_dt.prdt_productresult', '=', 'd_productresult.pr_id')
-  //     ->join('d_spk', 'd_productresult.pr_spk', '=', 'd_spk.spk_id')
-  //     ->join('m_item', 'd_productresult.pr_item', '=', 'm_item.i_id')
-  //     ->where('prdt_status','RD')
-  //     ->where('prdt_productresult','=', $x)
-  //     ->get();
-
-  //   return DataTables::of($data)
-
-  //   ->addColumn('action', function ($data) {
-  //       return '<div class="text-center">
-  //                 <button style="margin-left:5px;" 
-  //                         title="Edit" 
-  //                         type="button"
-  //                         onclick="edit('.$data->prdt_productresult.','.$data->prdt_detail.')"  
-  //                         data-toggle="modal" 
-  //                         data-target="#myModal"
-  //                         class="btn btn-warning btn-sm">
-  //                         <i class="fa fa-pencil"></i>
-  //                 </button>
-  //                 <button style="margin-left:5px;" 
-  //                         type="button" 
-  //                         onclick="kirim('.$data->prdt_productresult.','.$data->prdt_detail.')" 
-  //                         class="btn btn-info btn-sm buttonKirim" 
-  //                         title="Kirim">
-  //                         <i class="fa fa-paper-plane" aria-hidden="true"></i>  
-  //                 </button>
-  //                 <button style="margin-left:5px;" 
-  //                         type="button" 
-  //                         onclick="hapus('.$data->prdt_productresult.','.$data->prdt_detail.')" 
-  //                         class="btn btn-danger btn-sm" 
-  //                         title="Hapus">
-  //                         <i class="fa fa-trash-o"></i>
-  //                 </button>
-  //               </div>';
-
-  //     })
-
-  //   ->editColumn('prdt_date', function ($user) {
-  //       return $user->prdt_date ? with(new Carbon($user->prdt_date))->format('d M Y') : '';
-  //     })
-
-  //   ->editColumn('prdt_status', function ($inquiry) {
-  //       if ($inquiry->prdt_status == 'RD') 
-  //         return 'Belum Terkirim';
-  //     })
-
-  //   ->make(true);
-  //  }
-
-  // public function detailKirim(Request $request, $y){
-  //   $term = $request->term;
-  //   $data = d_productresult_dt::select('d_productresult_dt.prdt_productresult',
-  //                                     'd_productresult_dt.prdt_detail',
-  //                                     'd_spk.spk_code',
-  //                                     'm_item.i_name',
-  //                                     'd_productresult_dt.prdt_date',
-  //                                     'd_productresult_dt.prdt_time',
-  //                                     'd_productresult_dt.prdt_qty',
-  //                                     'd_productresult_dt.prdt_status')
-  //     ->join('d_productresult','d_productresult_dt.prdt_productresult', '=', 'd_productresult.pr_id')
-  //     ->join('d_spk', 'd_productresult.pr_spk', '=', 'd_spk.spk_id')
-  //     ->join('m_item', 'd_productresult.pr_item', '=', 'm_item.i_id')
- 
-  //     ->where(function ($d) use ($term) {
-  //         $d    ->orWhere('prdt_status','PR')
-  //               ->orWhere('prdt_status','FN')
-  //               ->orWhere('prdt_status','RC');
-  //     })
-  //     ->where('prdt_productresult','=', $y)
-  //     ->get();
-
-  //   return DataTables::of($data)
-
-  //   ->editColumn('prdt_date', function ($user) {
-  //       return $user->prdt_date ? with(new Carbon($user->prdt_date))->format('d M Y') : '';
-  //   })
-
-  //   ->editColumn('prdt_status', function ($inquiry) {
-  //       if ($inquiry->prdt_status == 'PR') 
-  //         return 'Proses';
-  //       if ($inquiry->prdt_status == 'FN') 
-  //         return 'Di Kirim';
-  //       if ($inquiry->prdt_status == 'RC') 
-  //         return 'Di Terima';
-  //   })
-
-  //   ->make(true);
-  //  }
-
-  // public function sending( Request $request, $id1, $id2){
-  // DB::beginTransaction();
-  //       try { 
-  //   $data = d_productresult_dt::
-  //       where('prdt_productresult',$id1)
-  //     ->where('prdt_detail',$id2)
-  //     ->first();
-
-  //   if ($data->prdt_status == 'RD') {
-
-  //   $data2 = DB::table('d_productresult_dt')
-  //     ->where('prdt_productresult',$id1)
-  //     ->where('prdt_detail',$id2)
-  //     ->update(['prdt_status' => 'PR']);
-
-  //    }
-     
-  // DB::commit();
-  // return response()->json([
-  //       'status' => 'sukses'
-  //     ]);
-  //   } catch (\Exception $e) {
-  // DB::rollback();
-  // return response()->json([
-  //     'status' => 'gagal',
-  //     'data' => $e
-  //     ]);
-  //   } 
-  // }
 
   public function distroy($id1,$id2){
     $d_productresult_dt = d_productresult_dt::
@@ -318,51 +138,6 @@ class ManOutputProduksiController extends Controller
       return Response::json($data);
     }
 
-  public function editQty(Request $request){
-    DB::beginTransaction();
-        try {
-    $d_productresult_dt = d_productresult_dt::
-        where('prdt_productresult',$request->prdt_productresult)
-      ->where('prdt_detail',$request->prdt_detail)
-      ->first();
-
-    $gudangProduksi = d_stock::
-        where('s_comp','6') 
-      ->where('s_position','6')
-      ->where('s_item',$d_productresult_dt->prdt_item)
-      ->first();
-
-    $setStok = $gudangProduksi->s_qty - $d_productresult_dt->prdt_qty;
-
-    d_productresult_dt::
-        where('prdt_productresult',$request->prdt_productresult)
-      ->where('prdt_detail',$request->prdt_detail)
-      ->update([
-        'prdt_qty' => $request->prdt_qty
-      ]);
-
-    $stokBaru = $setStok + $request->prdt_qty;
-
-    d_stock::
-        where('s_comp','6') 
-      ->where('s_position','6')
-      ->where('s_item',$d_productresult_dt->prdt_item)
-      ->update([
-        's_qty' => $request->prdt_qty
-      ]);
-  DB::commit();
-  return response()->json([
-        'status' => 'sukses'
-      ]);
-    } catch (\Exception $e) {
-  DB::rollback();
-  return response()->json([
-      'status' => 'gagal',
-      'data' => $e
-      ]);
-    } 
-  }
-
   public function tabel(){
     $data = DB::table('d_productresult_dt')
       ->select( 'pr_date',
@@ -389,20 +164,10 @@ class ManOutputProduksiController extends Controller
         if ($data->prdt_status == 'RD') {
           return '<div class="text-center">
                   <button style="margin-left:5px;" 
-                          title="Edit" 
+                          title="Menunggu" 
                           type="button"
-                          onclick="edit('.$data->prdt_productresult.','.$data->prdt_detail.')"  
-                          data-toggle="modal" 
-                          data-target="#myModal"
                           class="btn btn-warning btn-sm">
-                          <i class="fa fa-pencil fa-lg"></i>
-                  </button>
-                  <button style="margin-left:5px;" 
-                          type="button" 
-                          onclick="hapus('.$data->prdt_productresult.','.$data->prdt_detail.')" 
-                          class="btn btn-danger btn-sm" 
-                          title="Hapus">
-                          <i class="fa fa-trash-o"></i>
+                          <i class="fa fa-cubes" aria-hidden="true"></i>
                   </button>
                 </div>';
 
@@ -419,7 +184,7 @@ class ManOutputProduksiController extends Controller
                     <button id="status" 
                             class="btn btn-primary btn-sm" 
                             title="Dikirim">
-                            <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                            <i class="fa fa-car" aria-hidden="true"></i>
                     </button>
                   </div>';
         }
@@ -436,18 +201,28 @@ class ManOutputProduksiController extends Controller
 
     ->editColumn('prdt_status', function ($inquiry) {
         if ($inquiry->prdt_status == 'RD') 
-          return 'Belum Terkirim';
+          return '<div class="text-center">
+                    <span class="label label-red">Digudang</span>
+                  </div>';
         if ($inquiry->prdt_status == 'FN') 
-          return 'Di Kirim';
+          return  '<div class="text-center">
+                    <span class="label label-yellow">Dikirim</span>
+                  </div>';
         if ($inquiry->prdt_status == 'RC') 
-          return 'Di Terima';
+          return '<div class="text-center">
+                    <span class="label label-success">Diterima</span>
+                  </div>';
       })
+    ->rawColumns(['prdt_status',
+                  'action'
+      ])
 
     ->make(true);
 
   }
 
   public function store(Request $request){
+    // dd($request->all());
   DB::beginTransaction();
         try { 
     $cek = DB::table('d_productresult')
@@ -459,20 +234,20 @@ class ManOutputProduksiController extends Controller
       ->first();
 
     $maxid1 = DB::Table('d_productresult_dt')->select('prdt_detail')->max('prdt_detail');
-
     if ($maxid1 <= 0 || $maxid1 == '') {
       $maxid1  = 1;
     }else{
       $maxid1 += 1;
     }
- 
-    if (count($cek) == 0) {
-      $maxid = DB::Table('d_productresult')->select('pr_id')->max('pr_id');
+    // dd($cek);
+    $maxid = DB::Table('d_productresult')->select('pr_id')->max('pr_id');
       if ($maxid <= 0 || $maxid == '') {
         $maxid  = 1;
       }else{
         $maxid += 1;
       }
+
+    if (count($cek) == 0) {
 
       $pr = d_productresult::insert([
           'pr_id' => $maxid,
@@ -494,11 +269,27 @@ class ManOutputProduksiController extends Controller
         ]);
 
     }else{
-
+      
       $pr = d_productresult::where('pr_spk',$request->spk_id)
         ->get();
 
-      $prdt = d_productresult_dt::insert([
+      $prdt = d_productresult_dt::where('prdt_productresult',$pr[0]->pr_id)
+        ->where('prdt_status','RD')
+        ->first();
+      // dd($prdt);
+      if ($prdt != null) {
+
+        $hasil = $prdt->prdt_qty + $request->spk_qty;
+
+          d_productresult_dt::where('prdt_productresult',$pr[0]->pr_id)
+            ->where('prdt_status','RD')
+            ->update([
+              'prdt_qty' => $hasil,
+            ]);
+
+      }else{
+
+        d_productresult_dt::insert([
           'prdt_productresult' => $pr[0]->pr_id,
           'prdt_detail' => $maxid1,
           'prdt_item' => $request->spk_item,
@@ -509,6 +300,7 @@ class ManOutputProduksiController extends Controller
           'prdt_time' => $request->time
 
         ]);
+      }
 
     }
 
@@ -539,10 +331,12 @@ class ManOutputProduksiController extends Controller
             'sm_detailid' =>1,
             'sm_date' => Carbon::now(),
             'sm_comp' => 6,
+            'sm_position' => 6,
             'sm_mutcat' => 9,
             'sm_item' => $request->spk_item,
             'sm_qty' => $request->spk_qty,
             'sm_qty_used' => 0,
+            'sm_qty_sisa' => $request->spk_qty,
             'sm_qty_expired' => 0,
             'sm_detail' => 'PENAMBAHAN',
             'sm_reff' => $nota->spk_code,
@@ -567,10 +361,12 @@ class ManOutputProduksiController extends Controller
             'sm_detailid' =>$sm_detailid,
             'sm_date' => Carbon::now(),
             'sm_comp' => 6,
+            'sm_position' => 6,
             'sm_mutcat' => 9,
             'sm_item' => $request->spk_item,
             'sm_qty' => $request->spk_qty,
             'sm_qty_used' => 0,
+            'sm_qty_sisa' => $request->spk_qty,
             'sm_qty_expired' => 0,
             'sm_detail' => 'PENAMBAHAN',
             'sm_reff' => $nota->spk_code,

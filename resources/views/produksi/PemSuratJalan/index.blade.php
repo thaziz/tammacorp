@@ -46,29 +46,18 @@
 
                         <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="padding-bottom: 10px;padding-top: 20px;margin-bottom: 15px;">
                           <form id="formDelivery1">
-                            <div class="col-md-3 col-sm-12 col-xs-12">
-                                <label class="tebal">Tanggal Pengiriman</label>
-                            </div>
-                            <div class="col-md-3 col-sm-12 col-xs-12">
-                              <div class="form-group">
-                                <input type="text" name="TanggalKirim" readonly="" class="form-control input-sm" name="" value="{{ date('d-m-Y') }}">
-                              </div>
-                            </div>  
-
-                            <div class="col-md-3 col-sm-12 col-xs-12">  
-                              <label class="tebal">Nama Pengirim</label>
-                            </div>
-                            <div class="col-md-3 col-sm-12 col-xs-12">
-                              <div class="form-group">
-                                <input value="" name="NamaPengirim" readonly="" class="form-control input-sm" type="text">
-                              </div>
-                            </div>
+                            
                             <div class="col-md-3 col-sm-12 col-xs-12">
                                 <label class="tebal">Tujuan Gudang<font color="red">*</font></label>
                             </div>
                             <div class="col-md-3 col-sm-12 col-xs-12">
                               <div class="form-group">
-                                <input type="text" name="TujuanGudang" class="form-control input-sm" name="" value="">
+                                <select class="form-control input-sm" id="prdt_produksi" name="prdt_produksi" style="width: 100%;">
+                               {{--    <option class="form-control" value="">- Pilih Tujuan</option> --}}
+                                  @foreach ($data as $gudang)
+                                    <option class="form-control" value="{{ $gudang->cg_id }}">- {{ $gudang->cg_cabang }}</option>
+                                  @endforeach
+                                </select>
                               </div>
                             </div>
                           </form> 

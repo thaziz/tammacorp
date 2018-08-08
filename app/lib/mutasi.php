@@ -178,7 +178,7 @@ $totalPermintaan=abs($awaltotalPermintaan);
                             }
                           }
 
-               
+
 
             for ($sm=0; $sm <count($hapusMutasi); $sm++) { 
                     if($hapusMutasi[$sm]['sm_qty']==0){
