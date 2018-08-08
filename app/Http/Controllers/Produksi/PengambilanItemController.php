@@ -7,7 +7,10 @@ use Carbon\Carbon;
 use App\d_productresult_dt;
 use App\d_delivery_order;
 use App\d_delivery_orderdt;
+use App\d_stock_mutation;
 use App\d_stock;
+use App\lib\mutasi;
+use App\d_gudangcabang;
 use DB;
 use DataTables;
 use App\Http\Controllers\Controller;
@@ -15,9 +18,9 @@ use App\Http\Controllers\Controller;
 class PengambilanItemController extends Controller
 {
   public function SuratJalan(){
+    $data = d_gudangcabang::where('cg_gudang','GG')->get();
 
-
-  return view('produksi.PemSuratJalan.index');
+  return view('produksi.PemSuratJalan.index', compact('data'));
   }
 
   public function tabelDelivery(Request $request){
@@ -50,8 +53,9 @@ class PengambilanItemController extends Controller
   }
 
   function store(Request $request){
-  DB::beginTransaction();
-      try {  
+    // dd($request->all());
+  // DB::beginTransaction();
+  //     try {  
     $dt = Carbon::now('Asia/Jakarta');
     // nota do
     $year = carbon::now()->format('y');
@@ -75,8 +79,7 @@ class PengambilanItemController extends Controller
         $maxid += 1;
       }
 
-    d_delivery_order::
-      insert([
+    d_delivery_order::insert([
         'do_id' => $maxid,
         'do_nota' => $nota_do,
         'do_date_send' => date('Y-m-d',strtotime($request->TanggalKirim)),
@@ -109,8 +112,7 @@ class PengambilanItemController extends Controller
         'prdt_status' => 'FN'
       ]);
 
-    $stokProduksi = d_stock::
-        where('s_comp','6')
+    $stokProduksi = d_stock::where('s_comp','6')
       ->where('s_position','6')
       ->where('s_item',$data[2])
       ->first();
@@ -125,37 +127,65 @@ class PengambilanItemController extends Controller
       $maxidd_stock += 1;
     }
     //end add id d_stock
-    d_stock::
-        insert([
+    d_stock::where('s_comp','6')
+        ->where('s_position','6')
+        ->where('s_item',$data[2])
+        ->update([
+          's_qty' => $stokBaru 
+        ]);
+
+    d_stock::insert([
           's_id' => $maxidd_stock,
           's_comp' => 2,
           's_position' => 5,
           's_item' => $data[2],
           's_qty' => $data[3]
         ]);
+    // dd($data[3]);
+    if(mutasi::mutasiStok($data[2],
+                          $data[3],
+                          $comp=6,
+                          $position=6,
+                          $flag='',
+                          $nota_do)){ dd('sukses');}
 
-    d_stock::
-          where('s_comp','6')
-        ->where('s_position','6')
-        ->where('s_item',$data[2])
-        ->update([
-          's_qty' => $stokBaru 
-        ]);
+    $sm_detailid = d_stock_mutation::select('sm_detailid')
+          ->where('sm_item',$data[2])
+          ->where('sm_comp','2')
+          ->where('sm_comp','5')
+          ->max('sm_detailid')+1;
+
+    d_stock_mutation::insert([
+          'sm_stock' => $maxidd_stock,
+          'sm_detailid' => 1,
+          'sm_date' => Carbon::now(),
+          'sm_comp' => 2,
+          'sm_position' => 5,
+          'sm_mutcat' => 9,
+          'sm_item' => $data[2],
+          'sm_qty' => $data[3],
+          'sm_qty_used' => 0,
+          'sm_qty_sisa' => $data[3],
+          'sm_qty_expired' => 0,
+          'sm_detail' => 'PENAMBAHAN',
+          'sm_reff' => $nota_do,
+          'sm_insert' => Carbon::now()
+      ]);
     }
     
     d_delivery_orderdt::insert($dodt);
 
-  DB::commit();
-  return response()->json([
-        'status' => 'sukses'
-      ]);
-    } catch (\Exception $e) {
-  DB::rollback();
-  return response()->json([
-      'status' => 'gagal',
-      'data' => $e
-      ]);
-    }
+  // DB::commit();
+  // return response()->json([
+  //       'status' => 'sukses'
+  //     ]);
+  //   } catch (\Exception $e) {
+  // DB::rollback();
+  // return response()->json([
+  //     'status' => 'gagal',
+  //     'data' => $e
+  //     ]);
+  //   }
   }
 
   public function tabelKirim($tgl1, $tgl2){

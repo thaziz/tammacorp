@@ -45,6 +45,9 @@
   <!-- Modal -->
   @include('keuangan.spk.create-spk')
   <!-- End Modal -->
+  <!-- Modal -->
+  @include('keuangan.spk.edit-spk')
+  <!-- End Modal -->
 
 @endsection
 
@@ -85,6 +88,10 @@
     });
 
     $('#create-data').on('shown.bs.modal', function () {
+      total();
+    }) 
+
+    $('#edit-data').on('shown.bs.modal', function () {
       total();
     }) 
 
@@ -147,7 +154,6 @@
       timeout     : 10000,                          
       dataType    :'json',
       success     : function(response){
-        console.log(response);
         if(response.status=='sukses'){
           $('#id_spk').val(response.id_spk);
           $('#create-data').modal('show');
@@ -156,34 +162,13 @@
           $('#iditem').val(iditem);
           $('#item').val(response.i_name.i_name);
           $('#jumlah').val(jumlah); 
-          tabelFormmula(iditem, jumlah); 
+          tabelFormula(iditem, jumlah); 
         }
       }
     });
   }
 
-  function editSpk(id){
-    $.ajax({
-      url         : baseUrl+'/produksi/spk/edit/'+id,
-      type        : 'get',
-      timeout     : 10000,                          
-      dataType    :'json',
-      success     : function(response){
-        if(response.status=='sukses'){
-          $('#id_spk').val(response.id_spk);
-          $('#create-data').modal('show');
-          $('#id_plan').val(id);
-          $('#tgl_plan').val(tgl);
-          $('#iditem').val(iditem);
-          $('#item').val(response.i_name.i_name);
-          $('#jumlah').val(jumlah); 
-          tabelFormmula(iditem, jumlah); 
-        }
-      }
-    });
-  }
-
-  function tabelFormmula(iditem, jumlah){
+  function tabelFormula(iditem, jumlah){
     $('#tableFormula').DataTable({
       responsive:true,
       destroy: true,
@@ -203,32 +188,55 @@
         ],
       });
   }
+
+  function editSpk(id){
+    $.ajax({
+      url         : baseUrl+'/produksi/spk/edit/'+id,
+      type        : 'get',                      
+      dataType    :'json',
+      success     : function(response){
+        if(response.status=='sukses'){
+          $('#edit-data').modal('show');
+          $('#id_spkD').val(response.data.spk_code);
+          $('#id_plan').val(id);
+          $('#tgl_planD').val(response.data.pp_date);
+          $('#iditem').val(iditem);
+          $('#itemD').val(response.data.i_name);
+          $('#jumlahD').val(response.data.pp_qty); 
+          var iditem = response.data.pp_item;
+          var jumlah = response.data.pp_qty;
+          tabelDraftFormula(iditem, jumlah); 
+        }
+      }
+    })
+  }
+
+  function tabelDraftFormula(iditem, jumlah){
+    $('#tabelDraftFormula').DataTable({
+      responsive:true,
+      destroy: true,
+      processing: true,
+      serverSide: true,
+        ajax: {
+            url : baseUrl + "/produksi/lihatadonan/tabel/"+iditem+'/'+jumlah,
+        },
+        columns: [
+        // {data : 'DT_Row_Index', orderable: true, searchable: false},
+        {data: 'f_bb', name: 'f_bb'},
+        {data: 'f_value', name: 'f_value'},
+        {data: 'm_sname', name: 'm_sname'},
+        {data: 'd_stock', name: 'd_stock', orderable: false},
+        {data: 'm_sname', name: 'm_sname'},
+        {data: 'purchesing', name: 'purchesing', orderable: false},
+        ],
+      });
+  }
+
   
   function tambahSpk(){
     cariTanggal();       
     $('#table-production-plan').modal('show');
   }
-
-  // function editSpk(id){       
-  //   // $('#create-data').modal('show');
-  //   $.ajax({
-  //     url : baseUrl+'/keuangan/spk/get-data-spk-byid/' + id,
-  //     type : 'get',
-  //     timeout : 10000,                          
-  //     dataType :'json',
-  //     success : function(response){
-  //       if(response.status =='sukses'){
-  //           $('#tgl_plan').val(response.data[0].pp_date);
-  //           $('#id_plan').val(response.data[0].spk_ref);
-  //           $('#iditem').val(response.data[0].spk_item);
-  //           $('#item').val(response.data[0].i_name);
-  //           $('#jumlah').val(response.data[0].pp_qty);
-  //           $('#id_spk').val(response.data[0].spk_code);
-  //           $('#tgl_spk').val(response.data[0].spk_date);
-  //       }
-  //     }
-  //   });
-  // }
 
   function draft(status){
     $('.draft').attr('disabled','disabled');

@@ -397,15 +397,20 @@ class spkFinancialController extends Controller
 
   public function editSpk($id){
 
-    
-    $data = d_spk::where('spk_id',$id)
-      ->join('spk_formula','fr_spk','=','spk_id')
-      ->join('m_item','i_id','=','fr_formula')
+    $spk = d_spk::select( 'pp_date',
+                          'i_name',
+                          'pp_item',
+                          'pp_qty',
+                          'spk_code',
+                          'spk_id')
+      ->where('spk_id',$id)
+      ->join('m_item','i_id','=','spk_item')
+      ->join('d_productplan','pp_id','=','spk_ref')
       ->first();
-    dd($data);
+
+    // dd($spk);
     $data=[ 'status'=>'sukses',
-            'id_spk'=>$idSpk,
-            'i_name'=>$m_item ];
+            'data'=>$spk ];
 
     return json_encode($data);
   }
