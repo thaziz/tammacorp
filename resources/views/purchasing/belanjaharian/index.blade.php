@@ -1,5 +1,16 @@
 @extends('main')
 @section('content')
+<style type="text/css">
+  .ui-autocomplete { z-index:2147483647; }
+  .error { border: 1px solid #f00; }
+  .valid { border: 1px solid #8080ff; }
+  .has-error .select2-selection {
+    border: 1px solid #f00 !important;
+  }
+  .has-valid .select2-selection {
+    border: 1px solid #8080ff !important;
+  }
+</style>
   <!--BEGIN PAGE WRAPPER-->
   <div id="page-wrapper">
     <!--BEGIN TITLE & BREADCRUMB PAGE-->
@@ -138,6 +149,8 @@
       //remove span class in modal detail
       $("#txt_span_status_detail").removeClass();
       $('#txt_span_status_edit').removeClass();
+      //remove class all jquery validation error
+      $('.form-group').find('.error').removeClass('error');
     });
 
     $("#form-belanja-edit").validate({
@@ -252,7 +265,7 @@
       close: false,
       overlay: true,
       displayMode: 'once',
-      zindex: 999,
+      //zindex: 999, //jika form pd modal, jgn digunakan
       title: 'Update Belanja Harian',
       message: 'Apakah anda yakin ?',
       position: 'center',
@@ -327,34 +340,64 @@
     });
   }
 
-  function deleteBeliHarian(idBeli) 
-  {
-    if(confirm('Yakin hapus data ?'))
-    {
-      $.ajax({
-        url : baseUrl + "/purchasing/belanjaharian/delete-data-belanja",
-        type: "POST",
-        dataType: "JSON",
-        data: {idBeli:idBeli, "_token": "{{ csrf_token() }}"},
-        success: function(response)
-        {
-          if(response.status == "sukses")
-          {
-            alert(response.pesan);
-            $('#data').DataTable().ajax.reload();
-          }
-          else
-          {
-            alert(response.pesan);
-            $('#data').DataTable().ajax.reload();
-          }
-        },
-        error: function (jqXHR, textStatus, errorThrown)
-        {
-            alert('Error updating data');
-        }
-      });
-    }
+  function deleteBeliHarian(idBeli) {
+    iziToast.question({
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      //zindex: 999,
+      title: 'Hapus data belanja harian',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          $.ajax({
+            url : baseUrl + "/purchasing/belanjaharian/delete-data-belanja",
+            type: "POST",
+            dataType: "JSON",
+            data: {idBeli:idBeli, "_token": "{{ csrf_token() }}"},
+            success: function(response)
+            {
+              if(response.status == "sukses")
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.success({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#data').DataTable().ajax.reload();
+                  }
+                });
+              }
+              else
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.error({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#data').DataTable().ajax.reload();
+                  }
+                }); 
+              }
+            },
+            error: function(){
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+              iziToast.warning({
+                icon: 'fa fa-times',
+                message: 'Terjadi Kesalahan!'
+              });
+            },
+            async: false
+          }); 
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
   }
 
   function convertDecimalToRupiah(decimal) 

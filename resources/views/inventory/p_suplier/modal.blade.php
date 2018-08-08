@@ -1,7 +1,7 @@
 <div class="modal fade" id="modal_terima_beli" role="dialog">
   <div class="modal-dialog" style="width: 90%;margin: auto;">
     
-    <form method="post" id="form-terima-beli">
+    <form method="post" id="form-terima-beli" name="formTerimaBeli">
       {{ csrf_field() }}
       <!-- Modal content-->
       <div class="modal-content">
@@ -18,7 +18,7 @@
             </div>
 
             <div class="col-md-4 col-sm-12 col-xs-12">
-              <div class="form-group">
+              <div class="form-group" id="divSelectNota">
                 <select class="form-control input-sm select2" id="head_nota_purchase" name="headNotaPurchase" style="width: 100% !important;">
                 </select>
                 <input type="hidden" name="headNotaTxt" id="head_nota_txt" class="form-control input-sm">

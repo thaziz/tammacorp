@@ -17,7 +17,6 @@ class d_purchasingharian extends Model
         'd_pcsh_date',
         'd_pcsh_noreff',
         'd_pcsh_totalprice',
-        'd_pcsh_totalpaid',
         'd_pcsh_staff',
         'd_pcsh_status',
         'd_pcsh_supid',
