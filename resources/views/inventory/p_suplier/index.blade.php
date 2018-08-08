@@ -2,6 +2,14 @@
 @section('content')
 <style type="text/css">
   .ui-autocomplete { z-index:2147483647; }
+  .error { border: 1px solid #f00; }
+  .valid { border: 1px solid #8080ff; }
+  .has-error .select2-selection {
+    border: 1px solid #f00 !important;
+  }
+  .has-valid .select2-selection {
+    border: 1px solid #8080ff !important;
+  }
 </style>
 <!--BEGIN PAGE WRAPPER-->
 <div id="page-wrapper">
@@ -264,7 +272,10 @@
       //remove appending div
       $('#appending div').remove();
       //set datepicker to today 
-      $('.datepicker2').datepicker('setDate', 'today');  
+      $('.datepicker2').datepicker('setDate', 'today');
+      //remove class all jquery validation error
+      $('.form-group').find('.error').removeClass('error');
+      $('.form-group').removeClass('has-valid has-error');
     });
 
     //event focus on input qty
@@ -294,6 +305,28 @@
       console.log(getid);
       if (val > qtyRemain || $(this).val() == "" || val == 0) {
         $(this).val(qtyRemain);
+      }
+    });
+
+    //validasi
+    $("#form-terima-beli").validate({
+      rules:{
+        headTglTerima: "required",
+        headNotaPurchase: "required",
+      },
+      errorPlacement: function() {
+          return false;
+      },
+      submitHandler: function(form) {
+        form.submit();
+      }
+    });
+
+    $('#head_nota_purchase').change(function(event) {
+      if($(this).val() != ""){
+        $('#divSelectNota').removeClass('has-error').addClass('has-valid');
+      }else{
+        $('#divSelectNota').addClass('has-error').removeClass('has-valid');
       }
     });
 
@@ -345,7 +378,8 @@
       {
         var key = 1;
         var date = data.header[0].d_pcs_duedate;
-        var newDueDate = date.split("-").reverse().join("-");
+        if(date != null) { var newDueDate = date.split("-").reverse().join("-"); }
+        
         //ambil data ke json->modal
         $('#lblNotaPembelian').text(data.header[0].d_pcs_code);
         $('#lblNotaPenerimaan').text(data.header[0].d_tb_code);
@@ -414,72 +448,160 @@
     });
   }
 
-  function submitTerima()
-  {
-    if(confirm('Simpan Data ?'))
-    {
-        $('#btn_simpan').text('Updating...'); //change button text
-        $('#btn_simpan').attr('disabled',true); //set button disable 
-        $.ajax({
-            url : baseUrl + "/inventory/p_suplier/simpan-penerimaan",
+  function submitTerima() {
+    iziToast.question({
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      //zindex: 999,
+      title: 'Terima data pembelian',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          var IsValid = $("form[name='formTerimaBeli']").valid();
+          if(IsValid)
+          {
+            var countRow = $('#div_item tr').length;
+            if(countRow > 0)
+            {
+              $('#divSelectNota').removeClass('has-error');
+              $('#btn_simpan').text('Updating...');
+              $('#btn_simpan').attr('disabled',true);
+              $.ajax({
+                url : baseUrl + "/inventory/p_suplier/simpan-penerimaan",
+                type: "POST",
+                dataType: "JSON",
+                data: $('#form-terima-beli').serialize(),
+                success: function(response)
+                {
+                  if(response.status == "sukses")
+                  {
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    iziToast.success({
+                      position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                      title: 'Pemberitahuan',
+                      message: response.pesan,
+                      onClosing: function(instance, toast, closedBy){
+                        $('#btn_simpan').text('Submit'); //change button text
+                        $('#btn_simpan').attr('disabled',false); //set button enable
+                        $('#modal_terima_beli').modal('hide');
+                        $('#tbl-daftar').DataTable().ajax.reload();
+                      }
+                    });
+                  }
+                  else
+                  {
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    iziToast.error({
+                      position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                      title: 'Pemberitahuan',
+                      message: response.pesan,
+                      onClosing: function(instance, toast, closedBy){
+                        $('#btn_simpan').text('Submit'); //change button text
+                        $('#btn_simpan').attr('disabled',false); //set button enable
+                        $('#modal_terima_beli').modal('hide');
+                        $('#tbl-daftar').DataTable().ajax.reload();
+                      }
+                    }); 
+                  }
+                },
+                error: function(){
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.warning({
+                    icon: 'fa fa-times',
+                    message: 'Terjadi Kesalahan!'
+                  });
+                },
+                async: false
+              }); 
+            }
+            else
+            {
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+              iziToast.warning({
+                position: 'center',
+                message: "Mohon maaf, form pada tabel dilarang kosong !"
+              });
+            }//end check table form
+          }
+          else
+          {
+            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            iziToast.warning({
+              position: 'center',
+              message: "Mohon Lengkapi data form !",
+              onClosing: function(instance, toast, closedBy){
+                $('#divSelectNota').addClass('has-error');
+              }
+            });
+          } //end check valid
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
+  }
+
+  function deletePenerimaan(id) {
+    iziToast.question({
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      //zindex: 999,
+      title: 'Hapus data penerimaan',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          $.ajax({
+            url : baseUrl + "/inventory/p_suplier/delete-data-penerimaan",
             type: "POST",
             dataType: "JSON",
-            data: $('#form-terima-beli').serialize(),
+            data: {id:id, "_token": "{{ csrf_token() }}"},
             success: function(response)
             {
               if(response.status == "sukses")
               {
-                  alert(response.pesan);
-                  $('#btn_simpan').text('Submit'); //change button text
-                  $('#btn_simpan').attr('disabled',false); //set button enable
-                  $('#modal_terima_beli').modal('hide');
-                  $('#tbl-daftar').DataTable().ajax.reload();
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.success({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#tbl-daftar').DataTable().ajax.reload();
+                  }
+                });
               }
               else
               {
-                  alert(response.pesan);
-                  $('#btn_simpan').text('Submit'); //change button text
-                  $('#btn_simpan').attr('disabled',false); //set button enable
-                  $('#modal_terima_beli').modal('hide');
-                  $('#tbl-daftar').DataTable().ajax.reload();
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.error({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#tbl-daftar').DataTable().ajax.reload();
+                  }
+                }); 
               }
             },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
-                alert('Error updating data');
-            }
-        });
-    }
-  }
-
-  function deletePenerimaan(id) 
-  {
-    if(confirm('Yakin hapus data ?'))
-    {
-      $.ajax({
-          url : baseUrl + "/inventory/p_suplier/delete-data-penerimaan",
-          type: "POST",
-          dataType: "JSON",
-          data: {id:id, "_token": "{{ csrf_token() }}"},
-          success: function(response)
-          {
-            if(response.status == "sukses")
-            {
-              alert(response.pesan);
-              $('#tbl-daftar').DataTable().ajax.reload();
-            }
-            else
-            {
-              alert(response.pesan);
-              $('#tbl-daftar').DataTable().ajax.reload();
-            }
-          },
-          error: function (jqXHR, textStatus, errorThrown)
-          {
-              alert('Error updating data');
-          }
-      });
-    }
+            error: function(){
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+              iziToast.warning({
+                icon: 'fa fa-times',
+                message: 'Terjadi Kesalahan!'
+              });
+            },
+            async: false
+          }); 
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
   }
 
   function listWaitingByTgl()
