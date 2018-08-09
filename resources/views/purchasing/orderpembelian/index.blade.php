@@ -280,6 +280,9 @@
           key++;  
           i = randString(5);
         });
+        $('#btn-modal').html('<a target="_blank" class="btn btn-primary" href="'+ 
+          baseUrl +'/purchasing/orderpembelian/print/'+ id +'"><i class="fa fa-print"></i>&nbsp;Print</a>'+
+          '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
         $('#modal-detail').modal('show');
       },
       error: function (jqXHR, textStatus, errorThrown)

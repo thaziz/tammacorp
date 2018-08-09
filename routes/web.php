@@ -105,6 +105,9 @@ Route::post('/purchasing/orderpembelian/update-data-order', 'Pembelian\OrderPemb
 Route::post('/purchasing/orderpembelian/delete-data-order', 'Pembelian\OrderPembelianController@deleteDataOrder');
 Route::get('/purchasing/orderpembelian/get-data-tabel-history/{tgl1}/{tgl2}/{tampil}', 'Pembelian\OrderPembelianController@getDataTabelHistory');
 Route::get('/purchasing/orderpembelian/get-penerimaan-peritem/{id}', 'Pembelian\OrderPembelianController@getPenerimaanPerItem');
+// Ari
+Route::get('/purchasing/orderpembelian/print/{id}', 'Pembelian\OrderPembelianController@print');
+// irA
 //rencana pembelian
 Route::get('/purchasing/rencanapembelian/rencana', 'Pembelian\RencanaPembelianController@rencana');
 Route::get('/purchasing/rencanapembelian/create', 'Pembelian\RencanaPembelianController@create');

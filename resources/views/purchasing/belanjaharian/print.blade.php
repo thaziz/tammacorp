@@ -81,6 +81,9 @@
 			border:none !important;
 		}
 		@media print{
+			.btn-print{
+				display: none;
+			}
 		}
 		@page{
 			size: landscape;
@@ -92,9 +95,16 @@
 		.border-hidden tr, .border-hidden td{
 			border: hidden;
 		}
+		.btn-print{
+			right: 10px;
+			position: absolute;
+		}
 </style>
 </head>
 <body>
+	<div class="btn-print">
+		<button onclick="javascript:window.print();">Print</button>
+	</div>
 	<div class="div-width">
 
 	@for($i=0; $i < count($dataIsi); $i++)
