@@ -401,6 +401,8 @@
                           +'</tr>');
           key++;
         });
+        $('#apdsfs').html('<a href="'+ baseUrl +'/inventory/p_suplier/print/'+ id +'" class="btn btn-primary" target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'+
+        '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
         $('#modal_detail').modal('show');
       },
       error: function (jqXHR, textStatus, errorThrown)

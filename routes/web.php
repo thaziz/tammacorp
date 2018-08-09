@@ -209,6 +209,9 @@ Route::get('/inventory/p_suplier/cari_nota', 'Inventory\penerimaanbarang_supCont
 Route::get('/inventory/p_suplier/get_data_po', 'Inventory\PenerimaanBrgSupController@get_data_po');
 Route::get('/inventory/p_suplier/list_po', 'Inventory\PenerimaanBrgSupController@list_po');
 //end rizky
+// Ari
+Route::get('/inventory/p_suplier/print/{id}', 'Inventory\PenerimaanBrgSupController@print');
+// irA
 /*End Inventory*/
 /*Produksi*/
 Route::get('/produksi/spk/spk', 'ProduksiController@spk');
