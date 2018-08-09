@@ -351,6 +351,7 @@ class PenerimaanBrgSupController extends Controller
                   'sm_detailid' => $hasil_id,
                   'sm_date' => Carbon::now(),
                   'sm_comp' => $grup,
+                  'sm_position' => $grup,
                   'sm_mutcat' => '14',
                   'sm_item' => $request->fieldItemId[$i],
                   'sm_qty' => $hasilConvert,
