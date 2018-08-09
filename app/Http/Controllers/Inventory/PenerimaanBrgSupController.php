@@ -716,5 +716,30 @@ class PenerimaanBrgSupController extends Controller
       }
     }
 
+    public function print($id)
+    {
+
+        $dataHeader = d_terima_pembelian::join('d_purchasing','d_terima_pembelian.d_tb_pid','=','d_purchasing.d_pcs_id')
+            ->join('d_supplier','d_terima_pembelian.d_tb_sup','=','d_supplier.s_id')
+            ->join('d_mem','d_terima_pembelian.d_tb_staff','=','d_mem.m_id')
+            ->select('d_terima_pembelian.*', 'd_supplier.s_id', 'd_supplier.s_name', 'd_supplier.s_company', 'd_purchasing.*', 'd_mem.m_name')
+            ->where('d_terima_pembelian.d_tb_id', '=', $id)
+            ->orderBy('d_tb_created', 'DESC')
+            ->get()->toArray();
+
+        $dataIsi = d_terima_pembelian_dt::join('d_terima_pembelian', 'd_terima_pembelian_dt.d_tbdt_idtb', '=', 'd_terima_pembelian.d_tb_id')
+                ->join('m_item', 'd_terima_pembelian_dt.d_tbdt_item', '=', 'm_item.i_id')
+                ->join('m_satuan', 'd_terima_pembelian_dt.d_tbdt_sat', '=', 'm_satuan.m_sid')
+                ->join('d_purchasing_dt', 'd_terima_pembelian_dt.d_tbdt_idpcsdt', '=', 'd_purchasing_dt.d_pcsdt_id')
+                ->select('d_terima_pembelian_dt.*', 'm_item.*', 'd_terima_pembelian.d_tb_code', 'm_satuan.m_sid', 'm_satuan.m_sname', 'd_purchasing_dt.d_pcsdt_qtyconfirm')
+                ->where('d_terima_pembelian_dt.d_tbdt_idtb', '=', $id)
+                ->orderBy('d_terima_pembelian_dt.d_tbdt_created', 'DESC')
+                ->get()->toArray();
+
+        $dataIsi = array_chunk($dataIsi, 14);
+           
+        return view('inventory.p_suplier.print', compact('dataHeader', 'dataIsi'));
+    }
+
     // ============================================================================================================== //
 }
