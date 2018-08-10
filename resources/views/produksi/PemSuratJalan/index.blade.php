@@ -53,7 +53,7 @@
                             <div class="col-md-3 col-sm-12 col-xs-12">
                               <div class="form-group">
                                 <select class="form-control input-sm" id="prdt_produksi" name="prdt_produksi" style="width: 100%;">
-                               {{--    <option class="form-control" value="">- Pilih Tujuan</option> --}}
+                                  <option class="form-control" value="">- Pilih Tujuan</option>
                                   @foreach ($data as $gudang)
                                     <option class="form-control" value="{{ $gudang->cg_id }}">- {{ $gudang->cg_cabang }}</option>
                                   @endforeach
@@ -80,9 +80,10 @@
                           </div> 
                       </form>
                         <div class="col-md-12 col-sm-12 col-xs-12">
-                          <button style="margin-top: 20px; margin-right:10px; " class="btn btn-warning pull-right kirim" type="button" onclick="saveDelevery()">Cetak
+                          <a  style="margin-top: 20px; margin-right:10px; " class="btn btn-primary pull-right" href="{{url('produksi/suratjalan/print')}}" target="_blank" onclick="question()"><i class="fa fa-print"></i>&nbsp;Cetak</a>
+                          {{-- <button style="margin-top: 20px; margin-right:10px; " class="btn btn-warning pull-right kirim" type="button" onclick="saveDelevery()">Cetak
                             <i class="fa fa-print"></i>
-                          </button>
+                          </button> --}}
                         </div> 
                         </div>
                       </div>
@@ -220,6 +221,38 @@ $('.datepicker2').datepicker({
       {data: 'prdt_qty', name: 'prdt_qty', orderable: false},
       ],
     });
+
+  function question(){
+    iziToast.question({
+    timeout: false,
+    close: false,
+    overlay: true,
+    displayMode: 'once',
+    id: 'question',
+    zindex: 999,
+    title: '<i class="fa fa-print"></i>',
+    message: 'Print sudah selesai?',
+    position: 'center',
+    buttons: [
+        ['<button onclick="saveDelevery()"><b>Sudah</b></button>', function (instance, toast) {
+ 
+            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+ 
+        }, true],
+        ['<button>Belum</button>', function (instance, toast) {
+ 
+            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+ 
+        }],
+    ],
+    onClosing: function(instance, toast, closedBy){
+        console.info('Closing | closedBy: ' + closedBy);
+    },
+    onClosed: function(instance, toast, closedBy){
+        console.info('Closed | closedBy: ' + closedBy);
+    }
+});
+  }
 
   function saveDelevery(){
     $('.kirim').attr('disabled','disabled');

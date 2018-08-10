@@ -90,7 +90,7 @@
 			margin: 0;
 		}
 		.div-page-break{
-			page-break-after: avoid;
+			page-break-after: always;
 		}
 		.border-hidden tr, .border-hidden td{
 			border: hidden;
