@@ -233,8 +233,7 @@ class spkFinancialController extends Controller
                 'm_sname',
                 'i_sat1',
                 DB::raw('(f_value * '.$butuh.') as butuh'),
-                DB::raw('coalesce(s_qty, 0) as s_qty')
-              )
+                DB::raw('coalesce(s_qty, 0) as s_qty'))
         ->join('m_item','m_item.i_id','=','d_formula.f_bb')
         ->join('d_formula_result','d_formula_result.fr_id','=','f_id')
         ->join('m_satuan','m_sid','=','f_scale')
@@ -299,7 +298,7 @@ class spkFinancialController extends Controller
   try {
     $formula = $request->id_formula;
     $value = $request->id_value;
-    $scale = $request->f_scale;
+    $scale = $request->scale;
     $request->tgl_spk = date('Y-m-d',strtotime($request->tgl_spk));
 
     $spk_id = d_spk::max('spk_id')+1;
@@ -327,9 +326,12 @@ class spkFinancialController extends Controller
                     'fr_scale' => $scale[$i]
       ]);
 
-    if(mutasi::mutasiStok($formula[$i],$value[$i],$comp=3,$position=3,$flag='',$spk_id)){
-      
-    }
+    if(mutasi::mutasiStok(  $formula[$i],
+                            $value[$i],
+                            $comp=3,
+                            $position=3,
+                            $flag=2,
+                            $request->id_spk)){}
 
     }
 

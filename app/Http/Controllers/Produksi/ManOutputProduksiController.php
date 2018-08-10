@@ -348,6 +348,7 @@ class ManOutputProduksiController extends Controller
         $sm_detailid = d_stock_mutation::select('sm_detailid')
           ->where('sm_item',$request->spk_item)
           ->where('sm_comp','6')
+          ->where('sm_position','6')
           ->max('sm_detailid')+1;
 
         $stokBaru = $stockProduksi->s_qty + $request->spk_qty;

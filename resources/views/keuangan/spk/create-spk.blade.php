@@ -49,7 +49,7 @@
               </div>
             </div>
 
-                      <div class="col-md-4 col-sm-3 col-xs-12">
+            <div class="col-md-4 col-sm-3 col-xs-12">
               <div class="">
                 <label class="tebal">No SPK :</label>
               </div>
@@ -61,7 +61,11 @@
             </div> 
 
           </div>
-
+          <div align="right">
+            <button type="button" class="btn btn-box-tool" title="Tambahkan Data Item" onclick="total()">
+              <i class="fa fa-plus">&nbsp;</i>Hitung Stok
+            </button>
+          </div>
           <div class="table-responsive">
             <form id="formula">
               <table class="table tabelan table-hover table-bordered" id="tableFormula">
@@ -71,7 +75,7 @@
                     <th>Kebutuhan</th>
                     <th width="5%">Satuan</th>
                     <th>Stok</th>
-                    <th width="5%">Satuan</th>
+                  {{--   <th width="5%">Satuan</th> --}}
                     <th>Sisa</th>
                   </tr>
                 </thead>

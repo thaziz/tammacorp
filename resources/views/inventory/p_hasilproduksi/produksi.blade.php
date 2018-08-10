@@ -181,8 +181,6 @@ var save_method;
   $(document).ready(function() { 
     //fix to issue select2 on modal when opening in firefox
     $.fn.modal.Constructor.prototype.enforceFocus = function() {};
-
-    console.log('tsr');
     var extensions = {
         "sFilterInput": "form-control input-sm",
         "sLengthSelect": "form-control input-sm"
@@ -237,18 +235,6 @@ var save_method;
     $('.datepicker2').on('changeDate', function(ev){
       $(this).datepicker('hide');
     });
-    
-    // cariTanggal();
-    // cariTanggal2();
-     
-    // $( "#namaitem" ).autocomplete({
-    //     source: baseUrl+'/produksi/rencanaproduksi/produksi/autocomplete',
-    //     minLength: 1,
-    //     select: function(event,ui) 
-    //     {
-    //       $("#namaitem").val(ui.item.value);
-    //     }
-    // });
 
     //force integer input in textfield
     $('input.numberinput').bind('keypress', function (e) {
@@ -346,257 +332,259 @@ var save_method;
     $('#data2').DataTable();
     $('#data3').DataTable();
     $('#data4').DataTable();
+
+    $('#modalTerima').on('shown.bs.modal', function () {
+      $('#qtyDiterima').focus()
+    }) 
     
 });
 
-function randString(angka) 
-{
-  var text = "";
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-  for (var i = 0; i < angka; i++)
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-  return text;
-}
-
-function terimaHasilProduksi(id,id2)
-{
-  save_method = 'add';
-  $.ajax({
-        url : baseUrl+"/inventory/p_hasilproduksi/terima_hasil_produksi/"+id+"/"+id2,
-        type: "GET",
-        dataType: "JSON",
-        success: function(data)
-        {
-            $('#idItemMasuk').val(data[0].dod_item);
-            $('#namaItemMasuk').val(data[0].i_name);
-            $('[name="qtyMasuk"]').val(data[0].dod_qty_send);
-            $('#noNotaMasuk').val(data[0].do_nota);
-            $('#detailId').val(data[0].dod_detailid);
-            $('#doId').val(data[0].dod_do);
-            $('#prdtId').val(data[0].dod_prdt_productresult);
-            $('#prdtDetailId').val(data[0].dod_prdt_detail);
-            $('[name="qtyMasukPrev"]').val("0");
-            $('#modalTerima').modal('show');
-        },
-        error: function (jqXHR, textStatus, errorThrown)
-        {
-            alert('Error get data from ajax');
-        }
+  $('#time').keypress(function(e){
+    var charCode;
+    if ((e.which && e.which == 13)) {
+      charCode = e.which;
+    }else if (window.event) {
+        e = window.event;
+        charCode = e.keyCode;
+    }
+    if ((e.which && e.which == 13)){
+      $("input[name='qtyDiterima']").focus();
+      return false;
+    }
   });
-}
 
-function editHasilProduksi(id,id2) 
-{
-  save_method = 'update';
-  $.ajax({
-        url : baseUrl+"/inventory/p_hasilproduksi/edit_hasil_produksi/"+id+"/"+id2,
-        type: "GET",
-        dataType: "JSON",
-        success: function(data)
-        {
-            //ambil data ke json->modal
-            $('#idItemMasuk').val(data[0].dod_item);
-            $('#namaItemMasuk').val(data[0].i_name);
-            $('[name="qtyMasuk"]').val(data[0].dod_qty_send);
-            $('#noNotaMasuk').val(data[0].do_nota);
-            $('#detailId').val(data[0].dod_detailid);
-            $('#doId').val(data[0].dod_do);
-            $('#prdtId').val(data[0].dod_prdt_productresult);
-            $('#prdtDetailId').val(data[0].dod_prdt_detail);
-            $('[name="qtyDiterima"]').val(data[0].dod_qty_received);
-            $('[name="qtyMasukPrev"]').val(data[0].dod_qty_received);
-            $('[name="tglMasuk"]').val(data[0].dod_date_received);
-            $('[name="jamMasuk"]').val(data[0].dod_time_received);
-            $('#modalTerima').modal('show');
-        },
-        error: function (jqXHR, textStatus, errorThrown)
-        {
-            alert('Error get data from ajax');
-        }
-  });
-}
+  function randString(angka) {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-function save_update()
-{
-  $('#btn-simpan').prop('disabled', true);
-  if(save_method == 'add') 
-  {
-      url = baseUrl + "/inventory/p_hasilproduksi/simpan_update_data";
-  } 
-  else 
-  {
-      url = baseUrl + "/inventory/p_hasilproduksi/update_data";
+    for (var i = 0; i < angka; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
   }
-  var data = $('#update-terima-produk :input').serialize();
-  $.ajax({
-    url : url,
-    type: 'post',
-    dataType: 'JSON',
-    data: data,
-    success:function(response)
-    {
-      if(response.status == "Sukses")
-      {
-        $('#update-terima-produk')[0].reset();
-        alert(response.pesan);
-        $('#modalTerima').modal('hide');
-        $('#btn-simpan').prop('disabled', false);
-        $('#data2').DataTable().ajax.reload();
+
+  function terimaHasilProduksi(id,id2){
+    save_method = 'add';
+    $.ajax({
+          url : baseUrl+"/inventory/p_hasilproduksi/terima_hasil_produksi/"+id+"/"+id2,
+          type: "GET",
+          dataType: "JSON",
+          success: function(data){
+              $('#idItemMasuk').val(data[0].dod_item);
+              $('#namaItemMasuk').val(data[0].i_name);
+              $('[name="qtyMasuk"]').val(data[0].dod_qty_send);
+              $('#noNotaMasuk').val(data[0].do_nota);
+              $('#detailId').val(data[0].dod_detailid);
+              $('#doId').val(data[0].dod_do);
+              $('#prdtId').val(data[0].dod_prdt_productresult);
+              $('#prdtDetailId').val(data[0].dod_prdt_detail);
+              $('[name="qtyMasukPrev"]').val("0");
+              $('#modalTerima').modal('show');
+          }
+    });
+  }
+
+  function editHasilProduksi(id,id2) {
+    save_method = 'update';
+    $.ajax({
+          url : baseUrl+"/inventory/p_hasilproduksi/edit_hasil_produksi/"+id+"/"+id2,
+          type: "GET",
+          dataType: "JSON",
+          success: function(data)
+          {
+              //ambil data ke json->modal
+              $('#idItemMasuk').val(data[0].dod_item);
+              $('#namaItemMasuk').val(data[0].i_name);
+              $('[name="qtyMasuk"]').val(data[0].dod_qty_send);
+              $('#noNotaMasuk').val(data[0].do_nota);
+              $('#detailId').val(data[0].dod_detailid);
+              $('#doId').val(data[0].dod_do);
+              $('#prdtId').val(data[0].dod_prdt_productresult);
+              $('#prdtDetailId').val(data[0].dod_prdt_detail);
+              $('[name="qtyDiterima"]').val(data[0].dod_qty_received);
+              $('[name="qtyMasukPrev"]').val(data[0].dod_qty_received);
+              $('[name="tglMasuk"]').val(data[0].dod_date_received);
+              $('[name="jamMasuk"]').val(data[0].dod_time_received);
+              $('#modalTerima').modal('show');
+          },
+          error: function (jqXHR, textStatus, errorThrown)
+          {
+              alert('Error get data from ajax');
+          }
+    });
+  }
+
+  function save_update(){
+    $('#btn-simpan').prop('disabled', true);
+    url = baseUrl + "/inventory/p_hasilproduksi/simpan_update_data";
+    var data = $('#update-terima-produk :input').serialize();
+    $.ajax({
+      url : url,
+      type: 'POST',
+      dataType: 'JSON',
+      data: data,
+      success:function(response){
+        if(response.status == "Sukses"){
+          $('#update-terima-produk')[0].reset();
+          $('#modalTerima').modal('hide');
+          $('#btn-simpan').prop('disabled', false);
+          $('#data2').DataTable().ajax.reload();
+          $('#data4').DataTable().ajax.reload();
+          iziToast.success({timeout: 5000, 
+                          position: "topRight",
+                          icon: 'fa fa-chrome', 
+                          title: '', 
+                          message: 'Berhasil menyimpan item produksi.'});
+        }else{
+          $('#btn-simpan').prop('disabled', false);
+          $('#modalTerima').modal('hide');
+          iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'Gagal menyimpan item produksi.'});
+        }
+      }         
+    });
+  }
+
+  // function ubahStatus(id, id2){
+  //     if(confirm('Anda yakin ubah status transaksi ?')){
+  //         // ajax delete data to database
+  //         $.ajax({
+  //             url : baseUrl + "/inventory/p_hasilproduksi/ubah_status_transaksi/"+id+"/"+id2,
+  //             type: "get",
+  //             dataType: "JSON",
+  //             success: function(response){
+  //                 if(response.status == "sukses"){
+  //                   $('#data4').DataTable().ajax.reload();
+  //                 }
+  //             },
+  //             error: function (jqXHR, textStatus, errorThrown)
+  //             {
+  //                 alert('Error updating data');
+  //             }
+  //         });
+  //     }
+  // }
+
+  // function ubahStatus2(id, id2){
+  //     if(confirm('Anda yakin ubah status transaksi ?'))
+  //     {
+  //         // ajax delete data to database
+  //         $.ajax({
+  //             url : baseUrl + "/inventory/p_hasilproduksi/ubah_status_transaksi/"+id+"/"+id2,
+  //             type: "get",
+  //             dataType: "JSON",
+  //             success: function(response){
+  //               if(response.status == "sukses"){
+  //                 $('#data4').DataTable().ajax.reload();
+  //               }
+  //             },
+  //             error: function (jqXHR, textStatus, errorThrown)
+  //             {
+  //                 alert('Error updating data');
+  //             }
+  //         });
+  //     }
+  // }
+
+  function cariTanggal()
+  {
+    var tgl1 = $('#tanggal1').val();
+    var tgl2 = $('#tanggal2').val();
+    var akses = 'inventory'; 
+    $('#data3').DataTable({
+      "destroy": true,
+      "processing" : true,
+      "serverside" : true,
+      "ajax" : {
+        url : baseUrl + "/inventory/p_hasilproduksi/get_penerimaan_by_tgl/"+tgl1+'/'+tgl2+'/'+akses,
+        type: 'GET'
+      },
+      "columns" : [
+        {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
+        {"data" : "do_nota", "width" : "15%"},
+        {"data" : "i_name", "width" : "25%"},
+        {"data" : "dod_qty_send", "width" : "5%"},
+        {"data" : "dod_qty_received", "width" : "5%"},
+        {"data" : "tanggalTerima", "width" : "10%"},
+        {"data" : "jamTerima", "width" : "10%"},
+        {"data" : "status", "width" : "10%"},
+      ],
+      "language": {
+        "searchPlaceholder": "Cari Data",
+        "emptyTable": "Tidak ada data",
+        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+        "sSearch": '<i class="fa fa-search"></i>',
+        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+        "infoEmpty": "",
+        "paginate": {
+                "previous": "Sebelumnya",
+                "next": "Selanjutnya",
+             }
+        }
+    });
+  }
+
+  function cariTanggal2()
+  {
+    var tgl1 = $('#tanggal3').val();
+    var tgl2 = $('#tanggal4').val();
+    $('#data4').DataTable({
+      "destroy": true,
+      "processing" : true,
+      "serverside" : true,
+      "ajax" : {
+        url : baseUrl + "/inventory/p_hasilproduksi/get_list_waiting_by_tgl/"+tgl1+'/'+tgl2,
+        type: 'GET'
+      },
+      "columns" : [
+        {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
+        {"data" : "do_nota", "width" : "15%"},
+        {"data" : "i_name", "width" : "25%"},
+        {"data" : "dod_qty_send", "width" : "5%"},
+        {"data" : "dod_qty_received", "width" : "5%"},
+        {"data" : "tanggalTerima", "width" : "10%"},
+        {"data" : "jamTerima", "width" : "10%"},
+        {"data" : "status", "width" : "10%"},
+        {"data" : "action", orderable: false, searchable: false, "width" : "15%"}
+      ],
+      "language": {
+        "searchPlaceholder": "Cari Data",
+        "emptyTable": "Tidak ada data",
+        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+        "sSearch": '<i class="fa fa-search"></i>',
+        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+        "infoEmpty": "",
+        "paginate": {
+            "previous": "Sebelumnya",
+            "next": "Selanjutnya",
+         }
       }
-      else
-      {
-        alert("data gagal disimpan "+response.data);
-        $('#btn-simpan').prop('disabled', false);
-        $('#modalTerima').modal('hide');
-      }
-      // $('#proses').modal('hide');
-      
-      //window.location.href = baseUrl+"/tamma/inventory/p_hasilproduksi/produksi";
-    }         
-  });
-}
+    });
+  }
 
-function ubahStatus(id, id2)
-{
-    if(confirm('Anda yakin ubah status transaksi ?'))
-    {
-        // ajax delete data to database
-        $.ajax({
-            url : baseUrl + "/inventory/p_hasilproduksi/ubah_status_transaksi/"+id+"/"+id2,
-            type: "get",
-            dataType: "JSON",
-            success: function(response)
-            {
-                if(response.status == "sukses")
-                {
-                  alert(response.pesan);
-                  //call function
-                  $('#data2').DataTable().ajax.reload();
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
-                alert('Error updating data');
-            }
-        });
+  function refreshTabelIndex(){
+    $('#data2').DataTable().ajax.reload();
+  }
+
+  function refreshTabel() {
+    $('#data3').DataTable().ajax.reload();
+  }
+
+  function refreshTabel2() {
+    $('#data4').DataTable().ajax.reload();
+  }
+
+  function bandingQty(){
+    var terima = parseInt($('#qtyDiterima').val());
+    var kirim = parseInt($('#qtyMasuk').val());
+    if (terima > kirim) {
+      $('#qtyDiterima').val(kirim);
+      iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'Jumlah melebihi pengiriman.'});
     }
-}
-
-function ubahStatus2(id, id2)
-{
-    if(confirm('Anda yakin ubah status transaksi ?'))
-    {
-        // ajax delete data to database
-        $.ajax({
-            url : baseUrl + "/inventory/p_hasilproduksi/ubah_status_transaksi/"+id+"/"+id2,
-            type: "get",
-            dataType: "JSON",
-            success: function(response)
-            {
-                if(response.status == "sukses")
-                {
-                  alert(response.pesan);
-                  //call function
-                  $('#data4').DataTable().ajax.reload();
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
-                alert('Error updating data');
-            }
-        });
-    }
-}
-
-function cariTanggal()
-{
-  var tgl1 = $('#tanggal1').val();
-  var tgl2 = $('#tanggal2').val();
-  var akses = 'inventory'; 
-  $('#data3').DataTable({
-    "destroy": true,
-    "processing" : true,
-    "serverside" : true,
-    "ajax" : {
-      url : baseUrl + "/inventory/p_hasilproduksi/get_penerimaan_by_tgl/"+tgl1+'/'+tgl2+'/'+akses,
-      type: 'GET'
-    },
-    "columns" : [
-      {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
-      {"data" : "do_nota", "width" : "15%"},
-      {"data" : "i_name", "width" : "25%"},
-      {"data" : "dod_qty_send", "width" : "5%"},
-      {"data" : "dod_qty_received", "width" : "5%"},
-      {"data" : "tanggalTerima", "width" : "10%"},
-      {"data" : "jamTerima", "width" : "10%"},
-      {"data" : "status", "width" : "10%"},
-    ],
-    "language": {
-      "searchPlaceholder": "Cari Data",
-      "emptyTable": "Tidak ada data",
-      "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-      "sSearch": '<i class="fa fa-search"></i>',
-      "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-      "infoEmpty": "",
-      "paginate": {
-              "previous": "Sebelumnya",
-              "next": "Selanjutnya",
-           }
-      }
-  });
-}
-
-function cariTanggal2()
-{
-  var tgl1 = $('#tanggal3').val();
-  var tgl2 = $('#tanggal4').val();
-  $('#data4').DataTable({
-    "destroy": true,
-    "processing" : true,
-    "serverside" : true,
-    "ajax" : {
-      url : baseUrl + "/inventory/p_hasilproduksi/get_list_waiting_by_tgl/"+tgl1+'/'+tgl2,
-      type: 'GET'
-    },
-    "columns" : [
-      {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
-      {"data" : "do_nota", "width" : "15%"},
-      {"data" : "i_name", "width" : "25%"},
-      {"data" : "dod_qty_send", "width" : "5%"},
-      {"data" : "dod_qty_received", "width" : "5%"},
-      {"data" : "tanggalTerima", "width" : "10%"},
-      {"data" : "jamTerima", "width" : "10%"},
-      {"data" : "status", "width" : "10%"},
-      {"data" : "action", orderable: false, searchable: false, "width" : "15%"}
-    ],
-    "language": {
-      "searchPlaceholder": "Cari Data",
-      "emptyTable": "Tidak ada data",
-      "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-      "sSearch": '<i class="fa fa-search"></i>',
-      "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-      "infoEmpty": "",
-      "paginate": {
-          "previous": "Sebelumnya",
-          "next": "Selanjutnya",
-       }
-    }
-  });
-}
-
-function refreshTabelIndex(){
-  $('#data2').DataTable().ajax.reload();
-}
-
-function refreshTabel() {
-  $('#data3').DataTable().ajax.reload();
-}
-
-function refreshTabel2() {
-  $('#data4').DataTable().ajax.reload();
-}
+  }
   
 </script>
 @endsection
