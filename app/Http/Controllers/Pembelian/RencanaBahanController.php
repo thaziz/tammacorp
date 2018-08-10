@@ -53,53 +53,56 @@ class RencanaBahanController extends Controller
                 ->whereBetween('d_spk.spk_date', [$tanggal1, $tanggal2])
                 ->orderBy('d_spk.spk_date', 'DESC')
                 ->get();
-
-      foreach ($dataHeader as $val) 
-      {
-        //cek item type
-        $itemType[] = DB::table('m_item')->select('i_type', 'i_id')->where('i_id','=', $val->i_id)->first();
-        //get satuan utama
-        $sat1[] = $val->i_sat1;
-      }
-
-      $counter = 0;
-      for ($i=0; $i <count($itemType); $i++) 
-      { 
-        if ($itemType[$i]->i_type == "BJ") //brg jual
-        {
-          $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '".$itemType[$i]->i_id."' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
-          $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $sat1[$counter])->first();
-
-          $data['stok'][$i] = $query[0]->qtyStok;
-          $data['satuan'][$i] = $satUtama->m_sname;
-          $counter++;
-        }
-        elseif ($itemType[$i]->i_type == "BB") //bahan baku
-        {
-          $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '".$itemType[$i]->i_id."' AND s_comp = '3' AND s_position = '3' limit 1) ,'0') as qtyStok"));
-          $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $sat1[$counter])->first();
-
-          $data['stok'][$i] = $query[0]->qtyStok;
-          $data['satuan'][$i] = $satUtama->m_sname;
-          $counter++;
-        }
-        elseif ($itemType[$i]->i_type == "BP") //bahan baku
-        {
-          $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '".$itemType[$i]->i_id."' AND s_comp = '6' AND s_position = '6' limit 1) ,'0') as qtyStok"));
-          $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $sat1[$counter])->first();
-
-          $data['stok'][$i] = $query[0]->qtyStok;
-          $data['satuan'][$i] = $satUtama->m_sname;
-          $counter++;
-        }
-      }
-
-      for ($j=0; $j < count($dataHeader); $j++) 
-      { 
-        $dataHeader[$j]['stok'] = $data['stok'][$j];
-        $dataHeader[$j]['satuan'] = $data['satuan'][$j];
-      }
       
+      if (count($dataHeader) > 0) 
+      {
+        foreach ($dataHeader as $val) 
+        {
+          //cek item type
+          $itemType[] = DB::table('m_item')->select('i_type', 'i_id')->where('i_id','=', $val->i_id)->first();
+          //get satuan utama
+          $sat1[] = $val->i_sat1;
+        }
+
+        $counter = 0;
+        for ($i=0; $i <count($itemType); $i++) 
+        { 
+          if ($itemType[$i]->i_type == "BJ") //brg jual
+          {
+            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '".$itemType[$i]->i_id."' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
+            $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $sat1[$counter])->first();
+
+            $data['stok'][$i] = $query[0]->qtyStok;
+            $data['satuan'][$i] = $satUtama->m_sname;
+            $counter++;
+          }
+          elseif ($itemType[$i]->i_type == "BB") //bahan baku
+          {
+            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '".$itemType[$i]->i_id."' AND s_comp = '3' AND s_position = '3' limit 1) ,'0') as qtyStok"));
+            $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $sat1[$counter])->first();
+
+            $data['stok'][$i] = $query[0]->qtyStok;
+            $data['satuan'][$i] = $satUtama->m_sname;
+            $counter++;
+          }
+          elseif ($itemType[$i]->i_type == "BP") //bahan baku
+          {
+            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '".$itemType[$i]->i_id."' AND s_comp = '6' AND s_position = '6' limit 1) ,'0') as qtyStok"));
+            $satUtama = DB::table('m_item')->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')->select('m_satuan.m_sname')->where('m_item.i_sat1', '=', $sat1[$counter])->first();
+
+            $data['stok'][$i] = $query[0]->qtyStok;
+            $data['satuan'][$i] = $satUtama->m_sname;
+            $counter++;
+          }
+        }
+
+        for ($j=0; $j < count($dataHeader); $j++) 
+        { 
+          $dataHeader[$j]['stok'] = $data['stok'][$j];
+          $dataHeader[$j]['satuan'] = $data['satuan'][$j];
+        }
+      }
+
       return DataTables::of($dataHeader)
       ->addIndexColumn()
       ->editColumn('tglSpk', function ($data) 
