@@ -736,9 +736,33 @@ class PenerimaanBrgSupController extends Controller
                 ->orderBy('d_terima_pembelian_dt.d_tbdt_created', 'DESC')
                 ->get()->toArray();
 
+        foreach ($dataIsi as $val) 
+        {
+          $itemType[] = DB::table('m_item')->select('i_type', 'i_id')->where('i_id','=', $val['i_id'])->first();
+          //get satuan utama
+          $sat1[] = $val['i_sat1'];
+        }
+
+        //variabel untuk count array
+        $counter = 0;
+        //ambil value stok by item type
+        $dataStok = $this->getStokByType($itemType, $sat1, $counter);
+
+        $val_stock = [];
+        $txt_satuan = [];
+
+        $val_stock = array_chunk($dataStok['val_stok'], 14);
+        $txt_satuan = array_chunk($dataStok['txt_satuan'], 14);
+
+        // return $val_stock;
+        // return $txt_satuan;
+
+        
+
+
         $dataIsi = array_chunk($dataIsi, 14);
            
-        return view('inventory.p_suplier.print', compact('dataHeader', 'dataIsi'));
+        return view('inventory.p_suplier.print', compact('dataHeader', 'dataIsi', 'val_stock', 'txt_satuan'));
     }
 
     // ============================================================================================================== //
