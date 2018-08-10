@@ -134,6 +134,24 @@
 
   tableResep = $('#resep-detail').DataTable();
 
+  $('#myModal').on('shown.bs.modal', function () {
+    $('#namaitem').focus()
+  }) 
+
+  $('#hasil_item').keypress(function(e){
+    var charCode;
+    if ((e.which && e.which == 13)) {
+      charCode = e.which;
+    }else if (window.event) {
+        e = window.event;
+        charCode = e.keyCode;
+    }
+    if ((e.which && e.which == 13)){
+      $("input[name='bahan_baku']").focus();
+      return false;
+    }
+  });
+
   $(".modal").on("hidden.bs.modal", function(){
     $('#i_id').val('');
     $('#i_name').val('');
