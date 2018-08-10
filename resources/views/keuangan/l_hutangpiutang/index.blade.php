@@ -150,8 +150,12 @@
         var key = 1;
         var datePo = data.header[0].d_pcs_date_created;
         var newDatePo = datePo.split("-").reverse().join("-");
-        var dueDate = data.header[0].d_pcs_duedate;
-        var newDueDate = dueDate.split("-").reverse().join("-");
+        
+        if (data.header[0].d_pcs_method != "CASH") 
+        {
+          var dueDate = data.header[0].d_pcs_duedate;
+          var newDueDate = dueDate.split("-").reverse().join("-");
+        } 
         var totalDisc = parseInt(data.header[0].d_pcs_disc_value) + parseInt(data.header[0].d_pcs_discount);
 
         $('#lblNoPo').text(data.header[0].d_pcs_code);

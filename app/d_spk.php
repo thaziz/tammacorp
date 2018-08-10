@@ -12,11 +12,12 @@ class d_spk extends Model
     const UPDATED_AT = 'spk_update';
     
       protected $fillable = ['spk_id',
-      						 'spk_ref',
-      						 'spk_date', 
-      						 'spk_item', 
-      						 'spk_code',
-      						 'spk_status'];
+                   'spk_ref',
+                   'spk_date', 
+                   'spk_item', 
+                   'spk_code',
+                   'spk_status',
+                   'spk_ispo'];
 }
-	
-	
+  
+  

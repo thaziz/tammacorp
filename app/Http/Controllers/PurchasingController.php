@@ -1,9 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Pembelian;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use DB;
+use DataTables;
 
 class PurchasingController extends Controller
 {
@@ -22,30 +26,30 @@ class PurchasingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function order()
+    /*public function order()
     {
         return view('purchasing/orderpembelian/order');
-    }
+    }*/
 
-    public function rencana()
+    /*public function rencana()
     {
         return view('/purchasing/rencanapembelian/rencana');
-    }
+    }*/
     
-    public function belanja()
+    /*public function belanja()
     {
         return view('/purchasing/belanjaharian/belanja');
-    }
+    }*/
 
-    public function tambah_belanja()
+    /*public function tambah_belanja()
     {
         return view('/purchasing/belanjaharian/tambah_belanja');
-    }
+    }*/
 
-    public function pembelian()
+    /*public function pembelian()
     {
         return view('/purchasing/returnpembelian/pembelian');
-    }
+    }*/
 
     public function suplier()
     {
@@ -65,14 +69,14 @@ class PurchasingController extends Controller
     {
         return view('/purchasing/belanjapasar/pasar');
     }
-    public function create()
+    /*public function create()
     {
         return view('/purchasing/rencanapembelian/create');
-    }
-    public function tambah_pembelian()
+    }*/
+    /*public function tambah_pembelian()
     {
         return view('/purchasing/returnpembelian/tambah_pembelian');
-    }
+    }*/
     public function tambah_order()
     {
         return view ('/purchasing/orderpembelian/tambah_order');

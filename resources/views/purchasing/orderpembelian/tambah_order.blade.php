@@ -108,18 +108,6 @@
                         </div>
 
                         <div class="col-md-3 col-sm-12 col-xs-12">
-                          <label class="tebal">Suplier</label>
-                        </div>
-
-                        <div class="col-md-3 col-sm-12 col-xs-12">
-                          <div class="form-group" id="divSelectSup">
-                            <select class="form-control input-sm" id="cari_sup" name="cariSup" style="width: 100%;">
-                              <option value=""> - Pilih Supplier</option>
-                            </select>
-                          </div>
-                        </div>
-
-                        <div class="col-md-3 col-sm-12 col-xs-12">
                           <label class="tebal">Kode Rencana</label>
                         </div>
 
@@ -127,6 +115,18 @@
                           <div class="form-group" id="divSelectPlan">
                             <select class="form-control input-sm" id="cari_kode_plan" name="cariKodePlan" style="width: 100%;">
                               <option value=""> - Pilih Kode Rencana</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div class="col-md-3 col-sm-12 col-xs-12">
+                          <label class="tebal">Suplier</label>
+                        </div>
+
+                        <div class="col-md-3 col-sm-12 col-xs-12">
+                          <div class="form-group" id="divSelectSup">
+                            <select class="form-control input-sm" id="cari_sup" name="cariSup" style="width: 100%;">
+                              <option value=""> - Pilih Supplier</option>
                             </select>
                           </div>
                         </div>

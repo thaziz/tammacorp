@@ -54,10 +54,6 @@ class mutasi{
                             ]);
 
 
-
-
-
-
                         	$newMutasi[$k]['sm_stock']=$getBarang[$k]->sm_stock;
                             $newMutasi[$k]['sm_detailid'] = $sm_detailidInsert;
                             $newMutasi[$k]['sm_date'] = date('Y-m-d');
@@ -232,9 +228,6 @@ $totalPermintaan=abs($awaltotalPermintaan);
           $getBarang=d_stock_mutation::where('sm_item',$item)->where('sm_comp',$comp)
                        ->where('sm_position',$position)->where('sm_reff',$sm_reff)
                        ->orderBy('sm_detailid','DESC')->get();
-            
-            
-
 
     }
 }
