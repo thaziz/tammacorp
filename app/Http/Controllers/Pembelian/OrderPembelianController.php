@@ -810,7 +810,8 @@ class OrderPembelianController extends Controller
         $counter = 0;
         //ambil value stok by item type
         $dataStok = $this->getStokByType($itemType, $sat1, $counter);
-      $dataIsi = array_chunk($dataIsi, 7);
+        $dataStok = array_chunk($dataStok['val_stok'], 10);
+      $dataIsi = array_chunk($dataIsi, 10);
 
       // return $dataStok;
 

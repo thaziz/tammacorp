@@ -90,7 +90,7 @@
 			margin: 0;
 		}
 		.div-page-break{
-			page-break-after: avoid;
+			page-break-after: always;
 		}
 		.border-hidden tr, .border-hidden td{
 			border: hidden;
@@ -146,7 +146,11 @@
 							<td>{{$dataIsi[$i][$j]['i_name']}}</td>
 							<td width="1%" class="text-center">{{$dataIsi[$i][$j]['m_sname']}}</td>
 							<td width="1%">{{$dataIsi[$i][$j]['d_pcsdt_qty']}}</td>
-							<td width="1%">0{{-- {{$dataStok->val_stok[$i]['qtyStok']}} --}}</td>
+							<td width="1%">
+								
+								{{$dataStok[$i][$j]->qtyStok}}
+								
+							</td>
 							<td width="15%">
 								<div class="float-left">
 									Rp.
