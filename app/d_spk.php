@@ -19,5 +19,3 @@ class d_spk extends Model
                    'spk_status',
                    'spk_ispo'];
 }
-  
-  

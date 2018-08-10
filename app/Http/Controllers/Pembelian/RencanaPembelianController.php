@@ -389,7 +389,7 @@ class RencanaPembelianController extends Controller
                     // ->select(DB::raw('MAX(sm_hpp) as hargaPrev'))
                     ->select('sm_hpp')
                     ->where('sm_item', '=', $idItem)
-                    ->where('sm_mutcat', '=', "12")
+                    ->where('sm_mutcat', '=', "14")
                     ->orderBy('sm_date', 'desc')
                     ->limit(1)
                     ->get();

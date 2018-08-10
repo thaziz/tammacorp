@@ -1,0 +1,25 @@
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class d_keluar_bharian_dt extends Model
+{
+    protected $table = 'd_keluar_bharian_dt';
+    protected $primaryKey = 'd_kbhdt_id';
+    const CREATED_AT = 'd_kbhdt_created';
+    const UPDATED_AT = 'd_kbhdt_updated';
+    
+    protected $fillable = [
+        'd_kbhdt_id',
+        'd_kbhdt_idkbh', 
+        'd_kbhdt_item', 
+        'd_kbhdt_sat',
+        'd_kbhdt_qty',
+        'd_kbhdt_price',
+        'd_kbhdt_pricetotal',
+        'd_kbhdt_created',
+        'd_kbhdt_updated'
+    ];
+}

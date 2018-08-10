@@ -201,8 +201,8 @@ class BelanjaHarianController extends Controller
       $results = array();
       $queries = DB::table('m_item')
         ->where('i_name', 'LIKE', '%'.$term.'%')
-        ->where('i_type', '<>', 'BP')
-        ->take(8)->get();
+        ->where('i_type', '=', 'BL')
+        ->take(5)->get();
       
       if ($queries == null) 
       {
@@ -212,16 +212,10 @@ class BelanjaHarianController extends Controller
       {
         foreach ($queries as $val) 
         {
-          if ($val->i_type == "BJ") //brg jual
+          if ($val->i_type == "BL") //brg lain2
           {
             //ambil stok berdasarkan type barang
             $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
-            $stok = $query[0]->qtyStok;
-          }
-          elseif ($val->i_type == "BB") //bahan baku
-          {
-            //ambil stok berdasarkan type barang
-            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '3' AND s_position = '3' limit 1) ,'0') as qtyStok"));
             $stok = $query[0]->qtyStok;
           }
 
@@ -231,7 +225,7 @@ class BelanjaHarianController extends Controller
                     // ->select(DB::raw('MAX(sm_hpp) as hargaPrev'))
                     ->select('sm_hpp')
                     ->where('sm_item', '=', $idItem)
-                    ->where('sm_mutcat', '=', "12")
+                    ->where('sm_mutcat', '=', "15")
                     ->orderBy('sm_date', 'desc')
                     ->limit(1)
                     ->get();
@@ -272,7 +266,6 @@ class BelanjaHarianController extends Controller
         $dataHeader->d_pcsh_date = date('Y-m-d',strtotime($request->tanggalBeli));
         $dataHeader->d_pcsh_noreff = $request->noReff;
         $dataHeader->d_pcsh_totalprice = $this->konvertRp($request->totalBiaya);
-        $dataHeader->d_pcsh_totalpaid = $this->konvertRp($request->totalBayar);
         $dataHeader->d_pcsh_staff = $request->idStaff;
         $dataHeader->d_pcsh_supid = $request->idSupplier;
         $dataHeader->d_pcsh_updated = Carbon::now();
@@ -318,6 +311,88 @@ class BelanjaHarianController extends Controller
       }
     }
 
+    public function simpanDataBarang(Request $request)
+    {
+      //dd($request->all());
+      DB::beginTransaction();
+      try 
+      {
+        $tanggal = date("Y-m-d h:i:s");
+        $data_item = DB::table('m_item')
+            ->insert([
+                'i_code'=>$request->kode_barang,
+                'i_type' => $request->typeId,
+                'i_code_group'=> $request->code_group,
+                'i_name'=> $request->nama,
+                'i_sat1'=>$request->satuan1,
+                'i_sat_isi1'=> $request->isi_sat1,
+                'i_sat2'=>$request->satuan2,
+                'i_sat_isi2'=> $request->isi_sat2,
+                'i_sat3'=>$request->satuan3,
+                'i_sat_isi3'=> $request->isi_sat3,
+                'i_det'=>$request->detail,
+                'i_insert'=>$tanggal
+            ]);
+
+        //-----insert m_price------//
+        $get_itemid = DB::table('m_item')->select('i_id')->where('i_code','=', $request->kode_barang)->first();
+        $data_price = DB::table('m_price')
+            ->insert([
+                'm_pitem' => $get_itemid->i_id,
+                'm_pbuy1' => str_replace(',', '', $request->hargaBeli1),
+                'm_pbuy2' => str_replace(',', '', $request->hargaBeli2),
+                'm_pbuy3' => str_replace(',', '', $request->hargaBeli3),
+                'm_pcreated' => $tanggal
+            ]);
+
+        //-----update/insert d_stock------//
+        //cek ada tidaknya record pada tabel
+        $rows = DB::table('d_stock')->select('s_id')
+                ->where('s_comp', '2')
+                ->where('s_position', '2')
+                ->where('s_item', $get_itemid->i_id)
+                ->exists();
+   
+        if($rows !== FALSE) //jika terdapat record, maka lakukan update
+        {
+            //update stok minimum
+            $update = DB::table('d_stock')
+                ->where('s_comp', '2')
+                ->where('s_position', '2')
+                ->where('s_item', $get_itemid->i_id)
+                ->update(['s_qty_min' => $request->min_stock]);
+        }
+        else //jika tidak ada record, maka lakukan insert
+        {
+            //get last id
+            $id_stock = DB::table('d_stock')->max('s_id') + 1;
+            //insert value ke tbl d_stock
+            DB::table('d_stock')->insert([
+                's_id' => $id_stock,
+                's_comp' => '2',
+                's_position' => '2',
+                's_item' => $get_itemid->i_id,
+                's_qty' => 0,
+                's_qty_min' => $request->min_stock,
+            ]);
+        } 
+    
+        DB::commit();
+        return response()->json([
+          'status' => 'sukses',
+          'pesan' => 'Data Master Barang Berhasil Disimpan'
+        ]);
+      } 
+      catch (\Exception $e) 
+      {
+        DB::rollback();
+        return response()->json([
+            'status' => 'gagal',
+            'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
+        ]);
+      }
+    }
+
     public function getDetailBelanja($id)
     {
         $dataHeader = d_purchasingharian::join('d_supplier','d_purchasingharian.d_pcsh_supid','=','d_supplier.s_id')
@@ -348,7 +423,6 @@ class BelanjaHarianController extends Controller
         {
             $data = array(
                 'hargaTotalBeli' => 'Rp. '.number_format($val->d_pcsh_totalprice,2,",","."),
-                'hargaTotalBayar' => 'Rp. '.number_format($val->d_pcsh_totalpaid,2,",","."),
                 'tanggalBeli' => date('Y-m-d',strtotime($val->d_pcsh_date))
             );
         }
@@ -431,7 +505,6 @@ class BelanjaHarianController extends Controller
         $pharian->d_pcsh_noreff = $request->noReffEdit;
         $pharian->d_pcsh_staff = $request->idStaffEdit;
         $pharian->d_pcsh_totalprice = $this->konvertRp($request->totalBiayaEdit);
-        $pharian->d_pcsh_totalpaid = $this->konvertRp($request->totalBayarEdit);
         $pharian->d_pcsh_updated = Carbon::now();
         $pharian->save();
         

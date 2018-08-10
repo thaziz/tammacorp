@@ -6,10 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Response;
 use DB;
 use DataTables;
-use App\d_delivery_order;
-use App\d_delivery_orderdt;
+use Auth;
+use App\d_keluar_bharian;
+use App\d_keluar_bharian_dt;
+use App\d_purchasingharian;
+use App\d_purchasingharian_dt;
 
 class PemakaianBrgGdgController extends Controller
 {
@@ -31,7 +35,7 @@ class PemakaianBrgGdgController extends Controller
     
     public function barang()
     {
-        return view('inventory/b_digunakan/barang');
+        return view('inventory/b_digunakan/index');
     }
 
     public function tambah_barang()
@@ -84,83 +88,41 @@ class PemakaianBrgGdgController extends Controller
         //return view('/inventory/p_hasilproduksi/tabel_penerimaan',compact('query'));
     }
 
-    public function get_tabel_data($id)
+    public function getDataTabelIndex()
     {
-        $query = d_delivery_orderdt::select(
-                    'd_delivery_order.do_nota', 
-                    'd_delivery_orderdt.dod_do',
-                    'd_delivery_orderdt.dod_detailid',
-                    'm_item.i_name',
-                    'd_delivery_orderdt.dod_qty_send',
-                    'd_delivery_orderdt.dod_qty_received',
-                    'd_delivery_orderdt.dod_date_received',
-                    'd_delivery_orderdt.dod_time_received',
-                    'd_delivery_orderdt.dod_status')
-            ->join('d_delivery_order', 'd_delivery_orderdt.dod_do', '=', 'd_delivery_order.do_id')
-            ->join('m_item', 'd_delivery_orderdt.dod_item', '=', 'm_item.i_id')
-            ->where('d_delivery_order.do_nota', '=', $id)
-            ->where('d_delivery_orderdt.dod_status', '=', 'WT')
-            ->orderBy('d_delivery_orderdt.dod_update', 'desc')
+        $query = d_keluar_bharian::leftJoin('d_keluar_bharian_dt', 'd_keluar_bharian_dt.d_kbhdt_idkbh', '=', 'd_keluar_bharian.d_kbh_id')
+            ->join('d_mem', 'd_keluar_bharian.d_kbh_staff', '=', 'd_mem.m_id')
+            ->select(DB::raw('count(d_keluar_bharian_dt.d_kbhdt_item) as itung, d_keluar_bharian.*, d_keluar_bharian_dt.d_kbhdt_idkbh, d_mem.m_id, d_mem.m_name'))
+            ->orderBy('d_keluar_bharian.d_kbh_created', 'desc')
+            ->groupBy('d_keluar_bharian.d_kbh_id')
             ->get();
 
         return DataTables::of($query)
         ->addIndexColumn()
         ->addColumn('action', function($data)
         {
-            if ($data->dod_qty_received == '0' && $data->dod_date_received == null && $data->dod_time_received == null) 
-            {
-                return '<div class="text-center">
-                            <a class="btn btn-sm btn-success" href="javascript:void(0)" title="Terima"
-                                onclick=terimaHasilProduksi("'.$data->dod_do.'","'.$data->dod_detailid.'")><i class="fa fa-plus"></i> 
-                            </a>&nbsp;
-                            <a class="btn btn-sm btn-info" href="javascript:void(0)" title="Ubah Status"
-                                onclick=ubahStatus("'.$data->dod_do.'","'.$data->dod_detailid.'")><i class="glyphicon glyphicon-ok"></i>
-                            </a>
-                        </div>';
-            }
-            else
-            {
-                return '<div class="text-center">
-                            <a class="btn btn-sm btn-warning" href="javascript:void(0)" title="Edit"
-                                onclick=editHasilProduksi("'.$data->dod_do.'","'.$data->dod_detailid.'")><i class="fa fa-edit"></i>  
-                            </a>&nbsp;
-                            <a class="btn btn-sm btn-info" href="javascript:void(0)" title="Ubah Status"
-                                onclick=ubahStatus("'.$data->dod_do.'","'.$data->dod_detailid.'")><i class="glyphicon glyphicon-ok"></i>
-                            </a>
-                        </div>';
-            }     
+            return '<div class="text-center">
+                        <a class="btn btn-sm btn-success" href="javascript:void(0)" title="Detail"
+                            onclick=editTrans("'.$data->d_kbh_id.'")>
+                            '.$data->itung.' items
+                        </a>&nbsp;
+                        <a class="btn btn-sm btn-warning" href="javascript:void(0)" title="Edit"
+                            onclick=editTrans("'.$data->d_kbh_id.'")><i class="fa fa-edit"></i>  
+                        </a>&nbsp;
+                        <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Ubah Status"
+                            onclick=deleteTrans("'.$data->d_kbh_id.'")><i class="glyphicon glyphicon-remove"></i>
+                        </a>
+                    </div>';   
         })
-        ->editColumn('tanggalTerima', function ($data) 
+        ->editColumn('tanggal', function ($data) 
         {
-            if ($data->dod_date_received == null) 
+            if ($data->d_kbh_date == null) 
             {
                 return '-';
             }
             else 
             {
-                return $data->dod_date_received ? with(new Carbon($data->dod_date_received))->format('d M Y') : '';
-            }
-        })
-        ->editColumn('jamTerima', function ($data) 
-        {
-            if ($data->dod_time_received == null) 
-            {
-                return '-';
-            }
-            else 
-            {
-                return $data->dod_time_received;
-            }
-        })
-        ->editColumn('status', function ($data) 
-        {
-            if ($data->dod_status == "WT") 
-            {
-                return '<span class="label label-info">Waiting</span>';
-            }
-            elseif ($data->dod_status == "FN") 
-            {
-                return '<span class="label label-success">Final</span>';
+                return $data->d_kbh_date ? with(new Carbon($data->d_kbh_date))->format('d M Y') : '';
             }
         })
         //inisisai column status agar kode html digenerate ketika ditampilkan
