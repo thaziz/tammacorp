@@ -162,16 +162,16 @@
     $(".modal").on("hidden.bs.modal", function(){
       $('tr').remove('.tbl_modal_row');
     });
-    //
-    $.fn.dataTable.ext.errMode = 'none';
-    $('#data').on('error.dt', function(e, settings, techNote, message) {
-       console.log('An error has been reported by DataTables: ', message);
-       $('.dataTables_empty').text('Data pada tabel kosong...');
-    })
+    
+    // $.fn.dataTable.ext.errMode = 'none';
+    // $('#data').on('error.dt', function(e, settings, techNote, message) {
+    //    console.log('An error has been reported by DataTables: ', message);
+    //    $('.dataTables_empty').text('Data pada tabel kosong...');
+    // });
 
     $('#tampil_data').on('change', function() {
       lihatRencanaByTanggal();
-    })
+    });
 
   lihatRencanaByTanggal();
   });//end jquery
