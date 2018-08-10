@@ -87,12 +87,14 @@
       minViewMode: "months"
     });
 
-    $('#create-data').on('shown.bs.modal', function () {
-      total();
+    $('#edit-data').on('shown.bs.modal', function () {
+      $('.draft').attr('disabled','disabled');
+      $('.final').attr('disabled','disabled');
     }) 
 
-    $('#edit-data').on('shown.bs.modal', function () {
-      total();
+    $('#create-data').on('shown.bs.modal', function () {
+      $('.draft').attr('disabled','disabled');
+      $('.final').attr('disabled','disabled');
     }) 
 
   });
@@ -109,8 +111,8 @@
       "columns": [
         // {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"},
         {"data" : 'pp_date', name: 'spk_date', "width" : "10%"},
-        {"data" : 'i_name', name: 'spk_code', "width" : "25%"},
-        {"data" : 'pp_qty', name: 'i_name', "width" : "10%"},
+        {"data" : 'i_name', name: 'spk_code', "width" : "70%"},
+        {"data" : 'pp_qty', name: 'i_name', "width" : "10%", "className" : "right"},
         {"data" : "action", orderable: false, searchable: false, "width" : "5%"},
       ],
       "language": {
@@ -128,6 +130,7 @@
     });
 
   function total(inField, e){
+    $('.draft').removeAttr('disabled','disabled');
     $('.final').removeAttr('disabled','disabled');
     var a = 0;
     $('input.f_value:text').each(function(evt){
@@ -142,7 +145,6 @@
          $('.final').attr('disabled','disabled');
       }
       $('input.hasil:text:eq('+getIndex+')').val(hasil);
-
     a++;
     })
   }
@@ -183,7 +185,7 @@
         {data: 'f_value', name: 'f_value'},
         {data: 'm_sname', name: 'm_sname'},
         {data: 'd_stock', name: 'd_stock', orderable: false},
-        {data: 'm_sname', name: 'm_sname'},
+        // {data: 'm_sname', name: 'm_sname'},
         {data: 'purchesing', name: 'purchesing', orderable: false},
         ],
       });
@@ -226,7 +228,7 @@
         {data: 'f_value', name: 'f_value'},
         {data: 'm_sname', name: 'm_sname'},
         {data: 'd_stock', name: 'd_stock', orderable: false},
-        {data: 'm_sname', name: 'm_sname'},
+        // {data: 'm_sname', name: 'm_sname'},
         {data: 'purchesing', name: 'purchesing', orderable: false},
         ],
       });

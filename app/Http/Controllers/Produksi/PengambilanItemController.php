@@ -47,145 +47,177 @@ class PengambilanItemController extends Controller
               </div>';
 
     })
-  ->addIndexColumn()  
+  ->addColumn('prdt_qty', function ($data) {
+      return '<input  id="prdt_qty" 
+                      class="form-control text-right" 
+                      type="text" 
+                      name="prdt_qty[]" 
+                      readonly
+                      value="'.$data->prdt_qty.'">';
+
+    })
+->addColumn('prdt_item', function ($data) {
+      return ''.$data->i_name.'<input  id="prdt_productresult" 
+                      class="form-control hidden" 
+                      type="text" 
+                      name="prdt_productresult[]" 
+                      readonly
+                      value="'.$data->prdt_productresult.'">
+                <input  id="prdt_detail" 
+                      class="form-control hidden" 
+                      type="text" 
+                      name="prdt_detail[]" 
+                      readonly
+                      value="'.$data->prdt_detail.'">
+                <input  id="prdt_item" 
+                      class="form-control hidden" 
+                      type="text" 
+                      name="prdt_item[]" 
+                      readonly
+                      value="'.$data->prdt_item.'">';
+
+    })
+  ->addIndexColumn()
+
+  ->rawColumns(['prdt_qty','prdt_item'])  
 
   ->make(true);
   }
 
   function store(Request $request){
     // dd($request->all());
-  // DB::beginTransaction();
-  //     try {  
-    $dt = Carbon::now('Asia/Jakarta');
+  DB::beginTransaction();
+      try {  
     // nota do
     $year = carbon::now()->format('y');
     $month = carbon::now()->format('m');
     $date = carbon::now()->format('d');
 
-    $maxiddo = d_delivery_order::select('do_id')->max('do_id');
-
-    if ($maxiddo <= 0 || $maxiddo <= '') {
-      $maxiddo  = 1;
-    }else{
-      $maxiddo += 1;
-    }
+    $maxiddo = d_delivery_order::select('do_id')->max('do_id')+1;
 
     $nota_do = 'DO' . $year . $month . $date .'-' . '000' . '-' . $maxiddo;
     // end nota do
-    $maxid = d_delivery_order::select('do_id')->max('do_id');
-     if ($maxid <= 0 || $maxid <= '') {
-        $maxid  = 1;
-      }else{
-        $maxid += 1;
-      }
+    $maxid = d_delivery_order::select('do_id')->max('do_id')+1;
 
     d_delivery_order::insert([
         'do_id' => $maxid,
         'do_nota' => $nota_do,
-        'do_date_send' => date('Y-m-d',strtotime($request->TanggalKirim)),
-        'do_time' => $dt->toTimeString(),
-        'do_insert' => $dt
+        'do_date_send' => Carbon::now(),
+        'do_time' => Carbon::now(),
+        'do_insert' => Carbon::now()
       ]);
     
-    $dodt = [];
-    for ($i=0; $i < count($request->delivery); $i++) { 
-      $data = explode("|",$request->delivery[$i]);
-      $temp = array(
-        //d_delivery_orderdt
-        'dod_do' => $maxid,
-        'dod_detailid' => $i + 1,
-        'dod_prdt_productresult' => $data[0],
-        'dod_prdt_detail' => $data[1],
-        'dod_item' => $data[2],
-        'dod_qty_send' => $data[3],
-        'dod_date_send' => date('Y-m-d',strtotime($request->TanggalKirim)),
-        'dod_time_send' => $dt->toTimeString(),
-        'dod_status' => 'WT',
-        'dod_insert' => $dt
-      );
-      array_push($dodt, $temp);
+    for ($i=0; $i < count($request->prdt_item); $i++) { 
+        d_delivery_orderdt::insert([
+                'dod_do' => $maxid,
+                'dod_detailid' => $i+1,
+                'dod_prdt_productresult' => $request->prdt_productresult[$i],
+                'dod_prdt_detail' => $request->prdt_detail[$i],
+                'dod_item' => $request->prdt_item[$i],
+                'dod_qty_send' => $request->prdt_qty[$i], 
+                'dod_date_send' => Carbon::now(),
+                'dod_time_send' => Carbon::now(),
+                'dod_qty_received' => 0,
+                'dod_status' => 'WT'
+        ]);
 
-    d_productresult_dt::
-        where('prdt_productresult',$data[0])
-      ->where('prdt_detail',$data[1])
-      ->update([
-        'prdt_status' => 'FN'
-      ]);
+        d_productresult_dt::where('prdt_productresult',$request->prdt_productresult[$i])
+          ->where('prdt_detail',$request->prdt_detail[$i])
+          ->update([
+                'prdt_status' => 'FN'
+          ]);
+      if(mutasi::mutasiStok(  $request->prdt_item[$i],
+                              $request->prdt_qty[$i],
+                              $comp=6,
+                              $position=6,
+                              $flag=11,
+                              $nota_do)){}
 
-    $stokProduksi = d_stock::where('s_comp','6')
-      ->where('s_position','6')
-      ->where('s_item',$data[2])
-      ->first();
-
-    $stokBaru = $stokProduksi->s_qty - $data[3];
-
-    $maxidd_stock = d_stock::select('s_id')->max('s_id');
-
-    if ($maxidd_stock <= 0 || $maxidd_stock <= '') {
-      $maxidd_stock  = 1;
-    }else{
-      $maxidd_stock += 1;
-    }
-    //end add id d_stock
-    d_stock::where('s_comp','6')
+      $stokProduksi = d_stock::where('s_comp','6')
         ->where('s_position','6')
-        ->where('s_item',$data[2])
-        ->update([
-          's_qty' => $stokBaru 
+        ->where('s_item',$request->prdt_item[$i])
+        ->first();
+
+      $stokBaru = $stokProduksi->s_qty - $request->prdt_qty[$i];
+
+      $maxidd_stock = d_stock::select('s_id')->max('s_id')+1;
+      //end add id d_stock
+      $stock = d_stock::where('s_item',$request->prdt_item[$i])
+             ->where('s_comp',DB::raw('2'))
+             ->where('s_position',DB::raw('5'))
+             ->first();
+      // dd();
+      if ($stock == null) {
+        d_stock::insert([
+            's_id' => $maxidd_stock,
+            's_comp' => 2,
+            's_position' => 5,
+            's_item' => $request->prdt_item[$i],
+            's_qty' => $request->prdt_qty[$i]
+          ]);
+
+          d_stock_mutation::create([
+            'sm_stock' => $maxidd_stock,
+            'sm_detailid' =>1,
+            'sm_date' => Carbon::now(),
+            'sm_comp' => 2,
+            'sm_position' => 5,
+            'sm_mutcat' => 9,
+            'sm_item' => $request->prdt_item[$i],
+            'sm_qty' => $request->prdt_qty[$i],
+            'sm_qty_used' => 0,
+            'sm_qty_sisa' => $request->prdt_qty[$i],
+            'sm_qty_expired' => 0,
+            'sm_detail' => 'PENAMBAHAN',
+            'sm_reff' => $nota_do,
+            'sm_insert' => Carbon::now()
         ]);
 
-    d_stock::insert([
-          's_id' => $maxidd_stock,
-          's_comp' => 2,
-          's_position' => 5,
-          's_item' => $data[2],
-          's_qty' => $data[3]
-        ]);
-    // dd($data[3]);
-    if(mutasi::mutasiStok($data[2],
-                          $data[3],
-                          $comp=6,
-                          $position=6,
-                          $flag='',
-                          $nota_do)){ dd('sukses');}
+      }else{
 
-    $sm_detailid = d_stock_mutation::select('sm_detailid')
-          ->where('sm_item',$data[2])
+        $stockUpdate = $stock->s_qty + $request->prdt_qty[$i];
+
+        $stock->update([
+            's_qty' => $stockUpdate
+          ]);
+       
+        $sm_detailid = d_stock_mutation::select('sm_detailid')
+          ->where('sm_item',$request->prdt_item[$i])
           ->where('sm_comp','2')
-          ->where('sm_comp','5')
+          ->where('sm_position','5')
           ->max('sm_detailid')+1;
 
-    d_stock_mutation::insert([
-          'sm_stock' => $maxidd_stock,
-          'sm_detailid' => 1,
-          'sm_date' => Carbon::now(),
-          'sm_comp' => 2,
-          'sm_position' => 5,
-          'sm_mutcat' => 9,
-          'sm_item' => $data[2],
-          'sm_qty' => $data[3],
-          'sm_qty_used' => 0,
-          'sm_qty_sisa' => $data[3],
-          'sm_qty_expired' => 0,
-          'sm_detail' => 'PENAMBAHAN',
-          'sm_reff' => $nota_do,
-          'sm_insert' => Carbon::now()
-      ]);
+        d_stock_mutation::create([
+            'sm_stock' => $stock->s_id,
+            'sm_detailid' =>$sm_detailid,
+            'sm_date' => Carbon::now(),
+            'sm_comp' => 2,
+            'sm_position' => 5,
+            'sm_mutcat' => 9,
+            'sm_item' => $request->prdt_item[$i],
+            'sm_qty' => $request->prdt_qty[$i],
+            'sm_qty_used' => 0,
+            'sm_qty_sisa' => $request->prdt_qty[$i],
+            'sm_qty_expired' => 0,
+            'sm_detail' => 'PENAMBAHAN',
+            'sm_reff' => $nota_do,
+            'sm_insert' => Carbon::now()
+        ]);
+      }
+
     }
     
-    d_delivery_orderdt::insert($dodt);
-
-  // DB::commit();
-  // return response()->json([
-  //       'status' => 'sukses'
-  //     ]);
-  //   } catch (\Exception $e) {
-  // DB::rollback();
-  // return response()->json([
-  //     'status' => 'gagal',
-  //     'data' => $e
-  //     ]);
-  //   }
+  DB::commit();
+  return response()->json([
+        'status' => 'sukses'
+      ]);
+    } catch (\Exception $e) {
+  DB::rollback();
+  return response()->json([
+      'status' => 'gagal',
+      'data' => $e
+      ]);
+    }
   }
 
   public function tabelKirim($tgl1, $tgl2){

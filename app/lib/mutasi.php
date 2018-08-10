@@ -2,7 +2,7 @@
 namespace App\Lib;
 
 use App\d_stock_mutation;
-
+use Carbon\Carbon;
 use App\d_stock;
 
 use DB;
@@ -54,16 +54,22 @@ class mutasi{
                             ]);
 
 
+
+
+
+
                         	$newMutasi[$k]['sm_stock']=$getBarang[$k]->sm_stock;
                             $newMutasi[$k]['sm_detailid'] = $sm_detailidInsert;
-                            $newMutasi[$k]['sm_date'] = date('Y-m-d');
+                            $newMutasi[$k]['sm_date'] = Carbon::now();
                             $newMutasi[$k]['sm_comp'] = $comp;
                             $newMutasi[$k]['sm_position'] = $position;
+                            $newMutasi[$k]['sm_mutcat'] = $flag;
                             $newMutasi[$k]['sm_item'] = $item;
                             $newMutasi[$k]['sm_qty'] = -$totalPermintaan;
                             $newMutasi[$k]['sm_hpp'] = $getBarang[$k]->sm_hpp;
-                            $newMutasi[$k]['sm_detail'] = 'Penjualan Toko';
-                            $newMutasi[$k]['sm_reff'] = $sm_reff;               
+                            $newMutasi[$k]['sm_detail'] = 'PENGURANGAN';
+                            $newMutasi[$k]['sm_reff'] = $sm_reff; 
+                            $newMutasi[$k]['sm_insert'] = Carbon::now();              
                             $k = count($getBarang);
                         } elseif ($totalPermintaan > $totalQty) {
                         	$qty_used=$getBarang[$k]->sm_qty_used+$totalQty;
@@ -83,14 +89,16 @@ class mutasi{
 
                         	$newMutasi[$k]['sm_stock']=$getBarang[$k]->sm_stock;
                             $newMutasi[$k]['sm_detailid'] = $sm_detailidInsert;
-                            $newMutasi[$k]['sm_date'] = date('Y-m-d');
+                            $newMutasi[$k]['sm_date'] = Carbon::now();
                             $newMutasi[$k]['sm_comp'] = $comp;
                             $newMutasi[$k]['sm_position'] = $position;
+                            $newMutasi[$k]['sm_mutcat'] = $flag;
                             $newMutasi[$k]['sm_item'] = $item;
                             $newMutasi[$k]['sm_qty'] = -$totalQty;
                             $newMutasi[$k]['sm_hpp'] = $getBarang[$k]->sm_hpp;
-                            $newMutasi[$k]['sm_detail'] = 'Penjualan Toko';
+                            $newMutasi[$k]['sm_detail'] = 'PENGURANGAN';
                             $newMutasi[$k]['sm_reff'] = $sm_reff; 
+                            $newMutasi[$k]['sm_insert'] = Carbon::now();
                             $totalPermintaan = $totalPermintaan - $totalQty;
                         }
                     }
@@ -174,7 +182,7 @@ $totalPermintaan=abs($awaltotalPermintaan);
                             }
                           }
 
-
+               
 
             for ($sm=0; $sm <count($hapusMutasi); $sm++) { 
                     if($hapusMutasi[$sm]['sm_qty']==0){
@@ -228,6 +236,9 @@ $totalPermintaan=abs($awaltotalPermintaan);
           $getBarang=d_stock_mutation::where('sm_item',$item)->where('sm_comp',$comp)
                        ->where('sm_position',$position)->where('sm_reff',$sm_reff)
                        ->orderBy('sm_detailid','DESC')->get();
+            
+            
+
 
     }
 }

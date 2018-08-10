@@ -91,11 +91,6 @@ Route::post('/master/datapegawai/import', 'Master\PegawaiController@importPegawa
 Route::get('/master/datapegawai/master-import', 'Master\PegawaiController@getFile');
 /*Purchasing*/
 //rizky
-//rencana bahan baku
-Route::get('/purchasing/rencanabahanbaku/bahan', 'Pembelian\RencanaBahanController@index');
-Route::get('/purchasing/rencanabahanbaku/get-rencana-bytgl/{tgl1}/{tgl2}/{tampil}', 'Pembelian\RencanaBahanController@getRencanaByTgl');
-Route::get('/purchasing/rencanabahanbaku/get-detail-rencana/{id}', 'Pembelian\RencanaBahanController@getDetailRencana');
-Route::post('/purchasing/rencanabahanbaku/ubah-status-spk', 'Pembelian\RencanaBahanController@ubahStatus');
 //order pembelian
 Route::get('/purchasing/orderpembelian/order', 'Pembelian\OrderPembelianController@order');
 Route::get('/purchasing/orderpembelian/tambah_order', 'Pembelian\OrderPembelianController@tambah_order');
@@ -110,9 +105,6 @@ Route::post('/purchasing/orderpembelian/update-data-order', 'Pembelian\OrderPemb
 Route::post('/purchasing/orderpembelian/delete-data-order', 'Pembelian\OrderPembelianController@deleteDataOrder');
 Route::get('/purchasing/orderpembelian/get-data-tabel-history/{tgl1}/{tgl2}/{tampil}', 'Pembelian\OrderPembelianController@getDataTabelHistory');
 Route::get('/purchasing/orderpembelian/get-penerimaan-peritem/{id}', 'Pembelian\OrderPembelianController@getPenerimaanPerItem');
-// Ari
-Route::get('/purchasing/orderpembelian/print/{id}', 'Pembelian\OrderPembelianController@print');
-// irA
 //rencana pembelian
 Route::get('/purchasing/rencanapembelian/rencana', 'Pembelian\RencanaPembelianController@rencana');
 Route::get('/purchasing/rencanapembelian/create', 'Pembelian\RencanaPembelianController@create');
@@ -193,7 +185,7 @@ Route::get('/inventory/p_hasilproduksi/list_sj', 'Inventory\PenerimaanBrgProdCon
 Route::get('/inventory/p_hasilproduksi/terima_hasil_produksi/{id}/{id2}', 'Inventory\PenerimaanBrgProdController@terima_hasil_produksi');
 Route::get('/inventory/p_hasilproduksi/edit_hasil_produksi/{id}/{id2}', 'Inventory\PenerimaanBrgProdController@edit_hasil_produksi');
 Route::post('/inventory/p_hasilproduksi/simpan_update_data', 'Inventory\PenerimaanBrgProdController@simpan_update_data');
-Route::post('/inventory/p_hasilproduksi/update_data', 'Inventory\PenerimaanBrgProdController@update_data');
+// Route::post('/inventory/p_hasilproduksi/update_data', 'Inventory\PenerimaanBrgProdController@update_data');
 Route::get('/inventory/p_hasilproduksi/get_tabel_data/{id}', 'Inventory\PenerimaanBrgProdController@get_tabel_data');
 Route::get('/inventory/p_hasilproduksi/ubah_status_transaksi/{id}/{id2}', 'Inventory\PenerimaanBrgProdController@ubah_status_transaksi');
 Route::get('/inventory/p_hasilproduksi/get_penerimaan_by_tgl/{tgl1}/{tgl2}/{akses}', 'Inventory\PenerimaanBrgProdController@get_penerimaan_by_tgl');
@@ -217,9 +209,6 @@ Route::get('/inventory/p_suplier/cari_nota', 'Inventory\penerimaanbarang_supCont
 Route::get('/inventory/p_suplier/get_data_po', 'Inventory\PenerimaanBrgSupController@get_data_po');
 Route::get('/inventory/p_suplier/list_po', 'Inventory\PenerimaanBrgSupController@list_po');
 //end rizky
-// Ari
-Route::get('/inventory/p_suplier/print/{id}', 'Inventory\PenerimaanBrgSupController@print');
-// irA
 /*End Inventory*/
 /*Produksi*/
 Route::get('/produksi/spk/spk', 'ProduksiController@spk');

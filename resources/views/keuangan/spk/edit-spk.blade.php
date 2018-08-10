@@ -60,6 +60,12 @@
             </div> 
 
           </div>
+          <div align="right">
+            <button type="button" class="btn btn-box-tool" title="Tambahkan Data Item" onclick="total()">
+              <i class="fa fa-plus" aria-hidden="true"> &nbsp;</i>Hitung Stok
+            </button>
+          </div>
+
 
           <div class="table-responsive">
             <form id="formula">

@@ -1,4 +1,4 @@
-@extends('main') 
+ @extends('main') 
 @section('content')
   <!--BEGIN PAGE WRAPPER-->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -36,16 +36,16 @@
                     </div>
                     <ul id="generalTab" class="nav nav-tabs">
                       <li class="active"><a href="#alert-tab" data-toggle="tab">Item Siap Kirim</a></li>
-                      <li><a href="#alert-tab-itemkirim" data-toggle="tab">Item Terkirim</a></li>
+                      <li><a href="#alert-tab-itemkirim" data-toggle="tab" onclick="cariTanggalJual()">Item Terkirim</a></li>
                     </ul>
                     <div id="generalTabContent" class="tab-content responsive">
                           
                       <div id="alert-tab" class="tab-pane fade in active">
                         <div class="row">
                           <div class="col-md-12 col-sm-12 col-xs-12">   
-
+                      <form id="formDelivery1">
                         <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="padding-bottom: 10px;padding-top: 20px;margin-bottom: 15px;">
-                          <form id="formDelivery1">
+                          
                             
                             <div class="col-md-3 col-sm-12 col-xs-12">
                                 <label class="tebal">Tujuan Gudang<font color="red">*</font></label>
@@ -60,18 +60,17 @@
                                 </select>
                               </div>
                             </div>
-                          </form> 
+                           
                         </div>
 
                           <div class="table-responsive">
                             <table class="table tabelan table-hover table-bordered" width="100%" id="tableSuratJalan">
                               <thead>
                                 <tr>
-                                  <th width="5%">No</th>
-                                  <th>Kode Item</th>
+                               {{--    <th width="5%">No</th> --}}
+                                  <th width="20%">Kode Item</th>
                                   <th>Nama Item</th>
-                                  <th>Jumlah Item</th>
-                                  <th width="5%">Checklist</th>
+                                  <th width="15%">Jumlah Item</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -79,9 +78,9 @@
                               </tbody>
                             </table> 
                           </div> 
+                      </form>
                         <div class="col-md-12 col-sm-12 col-xs-12">
-                          <button style="margin-top: 20px; margin-right:10px; " class="btn btn-warning pull-right" 
-                            data-toggle="modal" data-target="#prosesProgres" type="button" onclick="saveDelevery()">Cetak
+                          <button style="margin-top: 20px; margin-right:10px; " class="btn btn-warning pull-right kirim" type="button" onclick="saveDelevery()">Cetak
                             <i class="fa fa-print"></i>
                           </button>
                         </div> 
@@ -215,37 +214,39 @@ $('.datepicker2').datepicker({
           url : baseUrl + "/produksi/suratjalan/create/delivery",
       },
       columns: [
-      {data: 'DT_Row_Index', name: 'DT_Row_Index', orderable: false, searchable: false},
+      // {data: 'DT_Row_Index', name: 'DT_Row_Index', orderable: false},
       {data: 'i_code', name: 'i_code'},
-      {data: 'i_name', name: 'i_name', orderable: false},
+      {data: 'prdt_item', name: 'prdt_item'},
       {data: 'prdt_qty', name: 'prdt_qty', orderable: false},
-      {data: 'action', name: 'action', orderable: false, searchable: false},
       ],
     });
 
   function saveDelevery(){
-    var formDelivery1 = $('#formDelivery1 :input').serialize();
-    var ar = $();
-        for (var i = 0; i < tableSuratJalan.rows()[0].length; i++) { 
-            ar = ar.add(tableSuratJalan.row(i).node());
+    $('.kirim').attr('disabled','disabled');
+    var formDelivery1 = $('#formDelivery1').serialize();
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-        var kirim = ar.find('input').serialize();
-
+    });
     $.ajax({
       url : baseUrl + "/produksi/suratjalan/save",
       type: 'get',
-      data: formDelivery1+'&'+kirim,
+      data: formDelivery1,
       success:function(response){
         if (response.status == 'sukses') {
-          alert('sukses');
           tableSuratJalan.ajax.reload( null, false );
+          iziToast.success({timeout: 5000, 
+                          position: "topRight",
+                          icon: 'fa fa-chrome', 
+                          title: '', 
+                          message: 'Item terkirim.'});
+          $('.kirim').removeAttr('disabled','disabled');
         }else{
-          alert('gagal');
+          iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'Item gagal terkirim.'});
+          $('.kirim').removeAttr('disabled','disabled');
         }
       }
     })

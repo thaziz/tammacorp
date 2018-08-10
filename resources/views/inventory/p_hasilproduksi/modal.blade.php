@@ -44,7 +44,7 @@
 
               <div class="col-md-8 col-sm-8 col-xs-12">
                 <div class="form-group">
-                  <input class="form-control input-sm datepicker2" name="tglMasuk" type="text">
+                  <input class="form-control input-sm datepicker2" id="date" name="tglMasuk" type="text" value="{{ date('d-m-Y') }}">
                 </div>
               </div>
 
@@ -54,7 +54,7 @@
 
               <div class="col-md-8 col-sm-8 col-xs-12">
                 <div class="form-group">  
-                  <input class="form-control input-sm timepicker" name="jamMasuk" type="text" id="time">
+                  <input class="form-control input-sm timepicker" name="jamMasuk" type="text" id="time" value="{{ date('h:i:s') }}">
                 </div>
               </div>
 
@@ -64,7 +64,7 @@
 
               <div class="col-md-8 col-sm-8 col-xs-12">
                 <div class="form-group">  
-                 <input style="text-align: right;" class="form-control input-sm numberinput" name="qtyMasuk" type="number" readonly>
+                 <input style="text-align: right;" class="form-control input-sm numberinput" name="qtyMasuk" type="number" readonly id="qtyMasuk">
                  <input style="text-align: right;" class="form-control input-sm numberinput" name="qtyMasukPrev" type="hidden" value="0">
                 </div>
               </div>
@@ -75,7 +75,7 @@
 
               <div class="col-md-8 col-sm-8 col-xs-12">
                 <div class="form-group">  
-                 <input style="text-align: right;" class="form-control input-sm numberinput" name="qtyDiterima" type="number" min="1" max="9999">
+                 <input style="text-align: right;" class="form-control input-sm" name="qtyDiterima" id="qtyDiterima" type="number" onkeyup="bandingQty()">
                 </div>
               </div>
 
