@@ -762,6 +762,7 @@ class OrderPembelianController extends Controller
       $data = array('val_stok' => $stok, 'txt_satuan' => $satuan);
       return $data;
     }
+    
     public function print($id)
     {
 
@@ -798,19 +799,19 @@ class OrderPembelianController extends Controller
       // return $dataIsi;
       
 
-       foreach ($dataIsi as $val) 
-        {
+      foreach ($dataIsi as $val) 
+      {
           //cek item type
           $itemType[] = DB::table('m_item')->select('i_type', 'i_id')->where('i_id','=', $val['i_id'])->first();
           //get satuan utama
           $sat1[] = $val['i_sat1'];
-        }
+      }
 
-        //variabel untuk count array
-        $counter = 0;
-        //ambil value stok by item type
-        $dataStok = $this->getStokByType($itemType, $sat1, $counter);
-        $dataStok = array_chunk($dataStok['val_stok'], 10);
+      //variabel untuk count array
+      $counter = 0;
+      //ambil value stok by item type
+      $dataStok = $this->getStokByType($itemType, $sat1, $counter);
+      $dataStok = array_chunk($dataStok['val_stok'], 10);
       $dataIsi = array_chunk($dataIsi, 10);
 
       // return $dataStok;

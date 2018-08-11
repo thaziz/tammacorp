@@ -357,6 +357,7 @@ class PenerimaanBrgSupController extends Controller
                   'sm_qty' => $hasilConvert,
                   'sm_qty_used' => '0',
                   'sm_qty_expired' => '0',
+                  'sm_qty_sisa' => $hasilConvert,
                   'sm_detail' => "PENAMBAHAN",
                   'sm_hpp' => $request->fieldHargaTotalRaw[$i],
                   'sm_sell' => '0',

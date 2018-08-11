@@ -476,7 +476,7 @@
       if(IsValid){
         $.ajax({
           type: "POST",
-          url: '{{ route('simpan_barang') }}',
+          url : baseUrl + "/purchasing/belanjaharian/simpan-barang",
           data: $('#form-master-barang').serialize(),
           success: function(response)
           {

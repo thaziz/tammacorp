@@ -29,11 +29,8 @@
 
                 <div class="col-md-9 col-sm-12 col-xs-12">
                   <div class="form-group">
-                    <select class="form-control" name="type" id="type">
-                       <option selected value="">- Pilih Dahulu -</option>
-                       <option value="BB">BAHAN BAKU</option>
-                       <option value="BJ">BARANG JUAL</option>
-                     </select>                               
+                    <input type="text" id="type" name="type" class="form-control input-sm" value="BARANG LAIN-LAIN" readonly>
+                    <input type="hidden" id="type_id" name="typeId" class="form-control input-sm" value="BL">
                   </div>
                 </div>
 
