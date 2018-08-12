@@ -46,12 +46,12 @@
                               <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="TableFormula">
                                 <thead>
                                   <tr>
-                                    <th>No</th>
+                                    <th width="5%">No</th>
                                     <th>Kode Item</th>
                                     <th>Nama Item</th>
                                     <th>Hasil</th>
                                     <th>Satuan</th>
-                                    <th>Aksi</th>
+                                    <th width="15%">Aksi</th>
                                   </tr>
                                 </thead>
                                 <tbody>

@@ -74,37 +74,37 @@
                         </div> 
                       </form>
                         <div class="table-responsive">
-                          <table class="table tabelan table-bordered table-hover dt-responsive" id="detail-transfer" style="width:100%" >
+                          <table class="table tabelan table-bordered table-hover dt-responsive" id="detail-transfer" width="100%" >
                            <thead align="right">
                             <tr>
-                              <th width="10%">Kode</th>
-                             <th width="70%">Nama Item</th>
-                             <th width="10%">Jumlah</th>                            
-                             <th width="10%"><button class="hidden" >add</button></th>
+                              <th width="20%">Kode</th>
+                              <th width="70%">Nama Item</th>
+                              <th width="5%">Jumlah</th>                            
+                              <th hidden><button class="hidden" >add</button></th>
                             </tr>
                            </thead> 
                            <tbody>
                               @foreach($transferItemDt as $data)
-                                    <tr>
-                                      <td>{{$data->i_code}}</td>
-                                      <td>{{$data->i_name}}</td>
-                                      <td>
-                                  <input style="width: 100%" class="text-right" type="hidden" name="tidt_id[]" value="{{$data->tidt_id}}">
-                                  <input style="width: 100%" class="text-right" type="hidden" name="tidt_detail[]" value="{{$data->tidt_detail}}">
-                                  <input style="width: 100%" class="text-right" type="hidden" name="kode_item[]" value="{{$data->tidt_item}}">
-                                    <input style="width: 100%" class="text-right" type="" name="sd_qty[]" value="{{$data->tidt_qty}}">
-                                      </td>
-                                      <td class="text-center">
-                                        <button type="button" class="btn btn-danger hapus btn-xs" onclick="rhapus(this)"><i class="fa fa-trash-o"></i></button>
-                                      </td>
-                                    </tr>
+                            <tr>
+                              <td>{{$data->i_code}}</td>
+                              <td>{{$data->i_name}}</td>
+                              <td>
+                                  <input class="text-right form-control" type="hidden" name="tidt_id[]" value="{{$data->tidt_id}}">
+                                  <input class="text-right form-control" type="hidden" name="tidt_detail[]" value="{{$data->tidt_detail}}">
+                                  <input class="text-right form-control" type="hidden" name="kode_item[]" value="{{$data->tidt_item}}">
+                                  <input class="text-right form-control" readonly="true" type="number" name="sd_qty[]" value="{{$data->tidt_qty}}">
+                              </td>
+                              <td class="text-center" hidden>
+                                <button type="button" class="btn btn-danger hapus btn-xs" onclick="rhapus(this)"><i class="fa fa-trash-o"></i></button>
+                              </td>
+                            </tr>
                               @endforeach
                            </tbody>
                           </table>
                         </div>
-                     <div class="modal-footer">
+                  <div class="modal-footer">
                     <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-                    <button class="btn btn-primary" type="button" onclick="updateTransfer('{{$transferItem->ti_id}}')">Perbarui</button> 
+      {{--               <button class="btn btn-primary" type="button" onclick="updateTransfer('{{$transferItem->ti_id}}')">Perbarui</button>  --}}
                   </div>
                   
 

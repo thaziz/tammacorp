@@ -11,6 +11,7 @@ use Validator;
 use Carbon\Carbon;
 use App\d_stock;
 use App\d_stock_mutation;
+use App\lib\mutasi;
 use Auth;
 use Response;
 use DataTables;
@@ -357,9 +358,9 @@ class transferItemController extends Controller
       else
 
         return '<div class="text-center">
-                  <a  onclick="lihatPenerimaan('.$data->ti_id.')" 
+                  <a  onclick="lihatRC('.$data->ti_id.')" 
                       class="btn btn-warning btn-sm" 
-                      title="Penerimaan Barang">
+                      title="Lihat Penerimaan">
                       <i class="fa fa-eye"></i> &nbsp;Terima
                   </a>
                 </div>';
@@ -398,11 +399,25 @@ public function simpaPenerimaan(Request $request){
 
     $tidt_item = $request->tidt_item;
     $s_id = d_stock::select('s_id')->max('s_id');
+
     for ($i=0; $i <count($tidt_item) ; $i++) { 
+      d_transferItemDt::where('tidt_id',$request->tidt_id[$i])
+        ->where('tidt_item',$tidt_item[$i])
+        ->update([
+          'tidt_qty_received' => $request->qtyRecieved[$i],
+          'tidt_receivedtime' => Carbon::now()
+        ]);
       $stock = d_stock::where('s_item',$tidt_item[$i])
              ->where('s_comp',DB::raw('1'))
              ->where('s_position',DB::raw('1'));
-             
+      
+      if(mutasi::mutasiStok(  $request->tidt_item[$i],
+                              $request->qtyRecieved[$i],
+                              $comp=1,
+                              $position=5,
+                              $flag=10,
+                              $request->ri_nomor)){}
+
       if($stock->first()){
         $stock->update([
             's_qty'=>$stock->first()->s_qty+$request->qtyRecieved[$i]
@@ -422,17 +437,20 @@ public function simpaPenerimaan(Request $request){
               'sm_detailid' =>$sm_detailid,
               'sm_date' => Carbon::now(),
               'sm_comp' => 1,
+              'sm_position' => 1,
               'sm_mutcat' => 9,
               'sm_item' => $request->tidt_item[$i],
               'sm_qty' => $request->qtyRecieved[$i],
               'sm_qty_used' => 0,
+              'sm_qty_sisa' => $request->qtyRecieved[$i],
               'sm_qty_expired' => 0,
               'sm_detail' => 'PENAMBAHAN',
-              'sm_reff' => $transferItem->ti_code,
+              'sm_reff' => $request->ri_nomor,
               'sm_insert' => Carbon::now()
         ]);
 
       }else{
+
         $s_id=d_stock::max('s_id');
         d_stock::create([
                 's_id'      =>$s_id+1,
@@ -447,13 +465,15 @@ public function simpaPenerimaan(Request $request){
               'sm_detailid' =>$i+1,
               'sm_date' => Carbon::now(),
               'sm_comp' => 1,
+              'sm_position' => 1,
               'sm_mutcat' => 9,
               'sm_item' => $request->tidt_item[$i],
               'sm_qty' => $request->qtyRecieved[$i],
               'sm_qty_used' => 0,
+              'sm_qty_sisa' => $request->qtyRecieved[$i],
               'sm_qty_expired' => 0,
               'sm_detail' => 'PENAMBAHAN',
-              'sm_reff' => $transferItem->ti_code,
+              'sm_reff' => $request->ri_nomor,
               'sm_insert' => Carbon::now()
         ]);
       }
@@ -527,6 +547,21 @@ public function simpaPenerimaan(Request $request){
       'data' => $e
       ]);
     }
+  }
+
+  public function lihatPenerimaanRc($id){
+    $transferItem = d_transferItem::where('ti_id',$id)->first();
+    $transferItemDt = d_transferItemDt::
+                    join('m_item','d_transferitem_dt.tidt_item','=','m_item.i_id')->
+                    leftjoin('d_stock',function($join){
+                    $join->on('i_id', '=', 's_item');        
+                    $join->on('s_comp', '=', 's_position');                
+                    $join->on('s_comp', '=',DB::raw("'1'"));           
+                    })
+                    ->where('tidt_id',$id)
+                    ->get();
+    
+    return view('transfer.penerimaan.table-received', compact('transferItem','transferItemDt'));
   }
 
 }

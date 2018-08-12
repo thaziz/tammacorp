@@ -487,6 +487,15 @@
       }
     });
 
+    $('#myTransfer').on('shown.bs.modal', function () {
+      $('#ri_keterangan').focus()
+    }) 
+
+    $('#save_request').submit(function(event){
+      return false;
+    })
+
+
   discpercentEdit();
   discvalueEdit();
   UpdateTotal();
@@ -1070,16 +1079,39 @@
   tableReq=$('#detail-req').DataTable();
 
   //transfer thoriq
-  $("#rnamaitem").autocomplete({
-    source: baseUrl+'/penjualan/POSretail/retail/transfer-item',
-    minLength: 1,
-      select: function(event, ui) {  
-        $('#rnamaitem').val(ui.item.label);        
-        $('#rkode').val(ui.item.code);
-        $('#rdetailnama').val(ui.item.name);        
-        $('#rqty').val(ui.item.qty);
-        $("input[name='rqty']").focus();
-      }
+      //transfer thoriq
+    $("#rnamaitem").autocomplete({
+        source: baseUrl+'/penjualan/POSretail/retail/transfer-item',
+        minLength: 1,
+        select: function(event, ui) {        
+          $('#rnamaitem').val(ui.item.label);   
+          $('#code').val(ui.item.code);
+          $('#rkode').val(ui.item.id);
+          $('#rdetailnama').val(ui.item.name);        
+          $('#rqty').val(ui.item.qty);
+          $("input[name='rqty']").focus();
+        }
+      });
+
+    $( "#rnamaitem" ).focus(function(){
+      var key = 1;
+      $("#rnamaitem").autocomplete({
+        source: baseUrl+'/penjualan/POSretail/retail/transfer-item',
+        minLength: 1,
+        select: function(event, ui) {
+          $('#rnamaitem').val(ui.item.label);   
+          $('#code').val(ui.item.code);
+          $('#rkode').val(ui.item.id);
+          $('#rdetailnama').val(ui.item.name);        
+          $('#rqty').val(ui.item.qty);
+          $("input[name='rqty']").focus();
+        }
+      });
+      $("#rnamaitem").val('');
+      $("#code" ).val('');
+      $('#rkode').val('');
+      $("#rqty").val('');
+      $("#rdetailnama").val('');
     });
 
   //End transfer thoriq
@@ -1106,56 +1138,104 @@
       }
     });
 
-  var rindex=0;
-  var rtamp=[];
-  function tambahreq() {   
-    var kode  = $('#rkode').val();      
-    var nama  = $('#rdetailnama').val();                                
-    var qty   = parseInt($('#rqty').val());        
-    var Hapus = '<button type="button" class="btn btn-danger hapus" onclick="rhapus(this)"><i class="fa fa-trash-o"></i></button>';
-    var rindex = rtamp.indexOf(kode);
-      if ( rindex == -1){     
-        tableReq.row.add([
-
-          kode,
-          nama+'<input type="hidden" name="kode_item[]" class="kode_item kode" value="'+kode+'"><input type="hidden" name="nama_item[]" class="nama_item" value="'+nama+'"> ',
-          '<input size="30" style="text-align:right;" type="text"  name="sd_qty[]" class="sd_qty form-control r_qty-'+kode+'" value="'+qty+'"> ',
-          
-          Hapus
-          ]);
-
-      tableReq.draw();
-      rindex++;
-
-    rtamp.push(kode);
-      }else{
-      var qtyLawas= parseInt($(".r_qty-"+kode).val());
-      $(".r_qty-"+kode).val(qtyLawas+qty);
+    $('#ri_keterangan').keypress(function(e){
+      var charCode;
+      if ((e.which && e.which == 13)) {
+        charCode = e.which;
+      }else if (window.event) {
+          e = window.event;
+          charCode = e.keyCode;
       }
+      if ((e.which && e.which == 13)){
+        $("input[name='rnamaitem']").focus();
+        return false;
+      }
+    });
 
-    var kode  =$('#rkode').val('');      
-    var nama  =$('#rdetailnama').val('');
-    }
+    $('#rnamaitem').keypress(function(e){
+      var charCode;
+      if ((e.which && e.which == 13)) {
+        charCode = e.which;
+      }else if (window.event) {
+          e = window.event;
+          charCode = e.keyCode;
+      }
+      if ((e.which && e.which == 13)){
+        return false;
+      }
+    });
 
-  function simpanTransfer() {
-    var item = $('#save_request :input').serialize();
-    var data = tableReq.$('input').serialize();
-      $.ajax({
-      url : baseUrl + "/penjualan/POSretail/retail/simpan-transfer",
-        type: 'get',
-        data: item+'&'+data,
-        dataType:'json',
-        success:function(response){
-          if(response.status=='sukses'){
-          $("input[name='ri_nomor']").val('');
-          $("input[name='ri_admin']").val('');              
-          $("input[name='ri_ketetangan']").val('');
-          alert('Proses Telah Terkirim');                
-          $('#myTransfer').modal('hide');
-          }    
+   var rindex=0;
+    var rtamp=[];
+      function tambahreq() {   
+        var kode  =$('#rkode').val();      
+        var code  =$('#code').val();      
+        var nama  =$('#rdetailnama').val();                                
+        var qty   =parseInt($('#rqty').val());        
+        var Hapus = '<button type="button" class="btn btn-danger hapus" onclick="rhapus(this)"><i class="fa fa-trash-o"></i></button>';
+        var rindex = rtamp.indexOf(kode);
+
+        if ( rindex == -1){     
+            tableReq.row.add([
+              code,
+              nama+'<input type="hidden" name="kode_item[]" class="kode_item kode" value="'+kode+'"><input type="hidden" name="nama_item[]" class="nama_item" value="'+nama+'"> ',
+              '<input size="30" style="text-align:right;" type="number"  name="sd_qty[]" class="sd_qty form-control r_qty-'+kode+'" value="'+qty+'"> ',
+              
+              Hapus
+              ]);
+
+            tableReq.draw();
+        rindex++;
+        // console.log(rtamp);
+        rtamp.push(kode);
+            }else{
+            var qtyLawas= parseInt($(".r_qty-"+kode).val());
+            $(".r_qty-"+kode).val(qtyLawas+qty);
+            }
+
+          var kode  =$('#rkode').val('');      
+          var nama  =$('#rdetailnama').val('');
         }
-      })
+
+   function simpanTransfer() {
+    $('.simpan-transfer').attr('disabled','disabled'); 
+    $.ajaxSetup({
+    headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+    });
+    var item = $('#save_request').serialize();
+    $.ajax({
+      url : baseUrl + "/penjualan/POSretail/retail/simpan-transfer",
+      type: 'get',
+      data: item,
+      dataType:'json',
+      success:function(response, nota){
+        if(response.status=='sukses'){
+          var nota = response.nota;
+          iziToast.success({timeout: 5000, 
+                          position: "topRight",
+                          icon: 'fa fa-chrome', 
+                          title: nota, 
+                          message: 'Telah terkirim.'});
+          $('#myTransfer').modal('hide');
+          tableReq.row().clear().draw(false);
+          var inputs = document.getElementsByClassName( 'kode' ),
+          names  = [].map.call(inputs, function( input ) {
+              return input.value;
+          });
+          rtamp = names;
+          $('#save_request')[0].reset();
+          $('.simpan-transfer').removeAttr('disabled','disabled');
+        }else{  
+          iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'Mohon melengkapi data.'});                              
+          $('.simpan-transfer').removeAttr('disabled','disabled');
+        }  
     }
+    })
+  }
 
   function rhapus(a){
     var par = a.parentNode.parentNode;
@@ -1410,7 +1490,7 @@
 
         "columns" : [
           // {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
-          {"data" : "sDate", "width" : "5%"},
+          {"data" : "i_code", "width" : "5%"},
           {"data" : "i_name", "width" : "20%"},
           {"data" : "type", "width" : "5%"},
           {"data" : "m_gname", "width" : "5%"},
@@ -1494,6 +1574,32 @@
       ]
     }); 
   }
+
+  function noNota(){
+    $.ajax({
+      url         : baseUrl+'/transfer/no-nota',
+      type        : 'get',
+      timeout     : 10000,
+      dataType    :'json',
+      success     : function(response){
+          $('#myTransfer').modal('show');
+          }
+      });
+    }
+
+    $('#ri_keterangan').keypress(function(e){
+      var charCode;
+      if ((e.which && e.which == 13)) {
+        charCode = e.which;
+      }else if (window.event) {
+          e = window.event;
+          charCode = e.keyCode;
+      }
+      if ((e.which && e.which == 13)){
+        $("input[name='rnamaitem']").focus();
+        return false;
+      }
+    });
 
 </script>
 @endsection()

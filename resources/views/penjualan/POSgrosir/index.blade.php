@@ -316,7 +316,7 @@
                                 </div>
                                 <div class="modal-footer">
                                   <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-                                  <button type="button" class="btn btn-primary" onclick="saveStatus()">Simpan</button>
+                                  <button type="button" class="btn btn-primary status" onclick="saveStatus()">Simpan</button>
                                 </div>
                               </div>
                               
@@ -1412,7 +1412,7 @@ function uniKeyCode(event) {
 }
 
   function saveStatus() {
-    
+    $('.status').attr('disabled','disabled');
     var id = $('#idSales').val();
     console.log(id);
     var status = $('#setStatus').val();
@@ -1425,11 +1425,23 @@ function uniKeyCode(event) {
           timeout     : 10000,  
           data        : { id:id, status:status, oldStatus:oldStatus },
           success     : function(response){
-            cariTanggal();
-            toastr.warning('Status berhasil di ubah!');         
-            $('#modalStatus').modal('hide');
-          }
-      });
+            if (response.status=='sukses') {
+              cariTanggal();
+              iziToast.success({timeout: 5000, 
+                          position: "topRight",
+                          icon: 'fa fa-chrome', 
+                          title: '', 
+                          message: 'Status berhasil di update.'});       
+              $('#modalStatus').modal('hide');
+              $('.status').removeAttr('disabled','disabled');
+            }else{
+              iziToast.error({position: "topRight",
+                        title: '', 
+                        message: 'Status gagal di update.'});
+              $('.status').removeAttr('disabled','disabled');
+            }
+      }
+    });
   }
 
   function cariRiwayat(){
@@ -1538,11 +1550,11 @@ function cariTanggalJual(){
           },
         "columns" : [
           // {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
-          {"data" : "sDate", "width" : "5%"},
-          {"data" : "i_name", "width" : "15%"},
-          {"data" : "type", "width" : "20%"},
-          {"data" : "m_gname", "width" : "10%"},
-          {"data" : "jumlah", "width" : "10%","className" : "right"},
+          {"data" : "i_code", "width" : "5%"},
+          {"data" : "i_name", "width" : "20%"},
+          {"data" : "type", "width" : "5%"},
+          {"data" : "m_gname", "width" : "5%"},
+          {"data" : "jumlah", "width" : "5%","className" : "right"},
         ],
         "language": {
             "searchPlaceholder": "Cari Data",
