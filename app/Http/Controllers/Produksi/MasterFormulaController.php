@@ -26,13 +26,20 @@ class MasterFormulaController extends Controller
                                 'm_sname',
                                 'fr_id')
                 ->join('m_item','i_id','=','fr_adonan')
-                ->join('m_satuan','m_sid','=','fr_id')
+                ->join('m_satuan','m_sid','=','fr_scale')
                 ->get();
                 // dd($data);
     return DataTables::of($data)
 
     ->addColumn('formula', function ($data) {
     return '<div class="text-center">
+            </div>';
+
+    })
+
+    ->addColumn('fr_result', function ($data) {
+    return '<div class="text-right">
+              '.$data->fr_result.'
             </div>';
 
     })
@@ -68,7 +75,8 @@ class MasterFormulaController extends Controller
     })
 
     ->rawColumns(['formula',
-                'action'
+                  'action',
+                  'fr_result'
     ])
 
     ->addIndexColumn()  

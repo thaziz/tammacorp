@@ -154,19 +154,43 @@
 
                               </div>
                           
-                      <!-- End DIv note-tab -->
+                              <!-- End DIv note-tab -->
+                          </div>
+                     </div>     
+          
+                    </div>
+                  <!-- End div generalTab -->
                   </div>
-             </div>     
-  
-            </div>
-        <!-- End div generalTab -->
-        </div>
-      </div>
-      @include('penjualan.POSretail.StokRetail.transfer')
-    </div>
-  @include('transfer.modal-transfer')    
-</div>  
-@include('transfer.penerimaan.modal-penerimaan')  
+                </div>
+                          <div class="modal fade" id="myReceived" role="dialog">
+                            <div class="modal-dialog modal-lg">
+                            
+                              <!-- Modal content-->
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                  <h4 class="modal-title">Detail terima</h4>
+                                </div>
+                              <div class="modal-body">
+
+                                <div id="dataReceived">
+                                  
+                                </div>
+                                  
+                              </div>
+                              
+                            </div>
+
+                          </div>
+
+                          </div>
+
+                  @include('penjualan.POSretail.StokRetail.transfer')
+              </div>
+                @include('transfer.modal-transfer')    
+            </div>  
+            @include('transfer.penerimaan.modal-penerimaan') 
+
 @endsection
 @section("extra_scripts")
   <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
@@ -251,6 +275,19 @@
       }
       if ((e.which && e.which == 13)){
         $("input[name='rnamaitem']").focus();
+        return false;
+      }
+    });
+
+    $('#rnamaitem').keypress(function(e){
+      var charCode;
+      if ((e.which && e.which == 13)) {
+        charCode = e.which;
+      }else if (window.event) {
+          e = window.event;
+          charCode = e.keyCode;
+      }
+      if ((e.which && e.which == 13)){
         return false;
       }
     });
@@ -410,6 +447,18 @@
                     success     : function(response){
                         $('#Edit-data-transfer').html(response);
                         $('#myTransferEdit').modal('show');
+                        }
+            });
+     }
+
+     function lihatRC($id){
+            $.ajax({
+                    url         : baseUrl+'/transfer/lihat-transfer/'+$id,
+                    type        : 'get',
+                    timeout     : 10000,                                        
+                    success     : function(response){
+                        $('#dataReceived').html(response);
+                        $('#myReceived').modal('show');
                         }
             });
      }

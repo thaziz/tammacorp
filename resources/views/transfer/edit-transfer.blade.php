@@ -84,19 +84,19 @@
                            </thead> 
                            <tbody>
                               @foreach($transferItemDt as $data)
-                                    <tr>
-                                      <td>{{$data->i_code}}</td>
-                                      <td>{{$data->i_name}}</td>
-                                      <td>
-                                  <input style="width: 100%" class="text-right" type="hidden" name="tidt_id[]" value="{{$data->tidt_id}}">
-                                  <input style="width: 100%" class="text-right" type="hidden" name="tidt_detail[]" value="{{$data->tidt_detail}}">
-                                  <input style="width: 100%" class="text-right" type="hidden" name="kode_item[]" value="{{$data->tidt_item}}">
-                                    <input style="width: 100%" class="text-right" type="" name="sd_qty[]" value="{{$data->tidt_qty}}">
-                                      </td>
-                                      <td class="text-center">
-                                        <button type="button" class="btn btn-danger hapus btn-xs" onclick="rhapus(this)"><i class="fa fa-trash-o"></i></button>
-                                      </td>
-                                    </tr>
+                                <tr>
+                                  <td>{{$data->i_code}}</td>
+                                  <td>{{$data->i_name}}</td>
+                                  <td>
+                                    <input class="text-right form-control" type="hidden" name="tidt_id[]" value="{{$data->tidt_id}}">
+                                    <input class="text-right form-control" type="hidden" name="tidt_detail[]" value="{{$data->tidt_detail}}">
+                                    <input class="text-right form-control" type="hidden" name="kode_item[]" value="{{$data->tidt_item}}">
+                                    <input class="text-right form-control" type="number" name="sd_qty[]" value="{{$data->tidt_qty}}">
+                                  </td>
+                                  <td class="text-center">
+                                    <button type="button" class="btn btn-danger hapus btn-xs" onclick="rhapus(this)"><i class="fa fa-trash-o"></i></button>
+                                  </td>
+                                  </tr>
                               @endforeach
                            </tbody>
                           </table>
@@ -174,7 +174,7 @@
               code,
               nama+
               '<input type="hidden" name="tidt_id[]" class="tidt_id" ><input type="hidden" name="tidt_detail[]" class="tidt_detail" ><input type="hidden" name="kode_item[]" class="kode_item kode" value="'+kode+'"><input type="hidden" name="" class="nama_item" value="'+nama+'">',
-              '<input style="text-align:right;width:100%" type="text"  name="sd_qty[]" class="sd_qty form-control r_qty-'+kode+'" value="'+qty+'"> ',
+              '<input style="text-align:right;width:100%" type="number"  name="sd_qty[]" class="sd_qty form-control r_qty-'+kode+'" value="'+qty+'"> ',
               
               Hapus
               ]);

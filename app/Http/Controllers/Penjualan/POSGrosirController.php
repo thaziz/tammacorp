@@ -13,6 +13,7 @@ use App\d_sales;
 use App\d_sales_payment;
 use App\d_sales_dt;
 use DataTables;
+use App\lib\mutasi;
 use URL;
 
 class POSGrosirController extends Controller
@@ -913,6 +914,7 @@ class POSGrosirController extends Controller
                                   'i_name',
                                   'm_gname',
                                   'i_type', 
+                                  'i_code',
                                   DB::raw("sum(sd_qty) as jumlah"))
       ->join('m_item', 'm_item.i_id', '=' , 'd_sales_dt.sd_item')
       ->join('m_group','m_group.m_gcode','=','m_item.i_code_group')
@@ -996,25 +998,25 @@ class POSGrosirController extends Controller
   public function statusMove(Request $request){
     $sales = DB::Table('d_sales')
       ->where('s_id',$request->id)
-      ->get();
+      ->first();
 
     $response ='';
     if($request->status == 'SN'){
-      $response = '<input type="text" class="hide" name="idSales" id="idSales" value="'.$sales[0]->s_id.'">
-                    <input type="text" class="hide" name="oldStatus" id="oldStatus" value="'.$sales[0]->s_status.'">
+      $response = '<input type="text" class="hide" name="idSales" id="idSales" value="'.$sales->s_id.'">
+                    <input type="text" class="hide" name="oldStatus" id="oldStatus" value="'.$sales->s_status.'">
                     <select id="setStatus" style="width: 75%; " class="pull-right">
                            <option value="RC">Received</option>
                     </select>';
     }elseif($request->status == 'PC'){
-      $response = '<input type="text" class="hide" name="idSales" id="idSales" value="'.$sales[0]->s_id.'">
-                    <input type="text" class="hide" name="oldStatus" id="oldStatus" value="'.$sales[0]->s_status.'">
+      $response = '<input type="text" class="hide" name="idSales" id="idSales" value="'.$sales->s_id.'">
+                    <input type="text" class="hide" name="oldStatus" id="oldStatus" value="'.$sales->s_status.'">
                     <select id="setStatus" style="width: 75%; " class="pull-right">
                            <option value="SN">Sending</option>
                            <option value="RC">Received</option>
                     </select>';
     }else{
-      $response = '<input type="text" class="hide" name="idSales" id="idSales" value="'.$sales[0]->s_id.'">
-                    <input type="text" class="hide" name="oldStatus" id="oldStatus" value="'.$sales[0]->s_status.'">
+      $response = '<input type="text" class="hide" name="idSales" id="idSales" value="'.$sales->s_id.'">
+                    <input type="text" class="hide" name="oldStatus" id="oldStatus" value="'.$sales->s_status.'">
                     <select id="setStatus" style="width: 75%; " class="pull-right">
                            <option value="PC">Packing</option>
                            <option value="SN">Sending</option>
@@ -1024,151 +1026,522 @@ class POSGrosirController extends Controller
     return $response;
   }
 
-  public function changeStatus(Request $request){   
+  public function changeStatus(Request $request){ 
+  // dd($request->all());  
+    DB::beginTransaction();
+      try {
       $update = DB::Table('d_sales')
         ->where('s_id',$request->id)
         ->update([
           's_status' => $request->status,
         ]);
 
+      $nota = d_sales::select('s_note')
+        ->where('s_id',$request->id)
+        ->first();
+
       $salesDt = DB::Table('d_sales_dt')
         ->where('sd_sales',$request->id)
         ->get();
       if(count($salesDt) > 0){
-        
+        // dd($salesDt);
         if($request->status == 'PC'){
           foreach ($salesDt as $value) {
-            $updateStock = DB::Table('d_stock')
-              ->where('s_item',$value->sd_item)
-              ->where(function ($query){
-                $query->where('s_comp',2)
-                      ->where('s_position',2);
-                })
-              ->decrement('s_qty',$value->sd_qty);
-        
-            $maxid = DB::Table('d_stock')->select('s_id')->max('s_id');
-            if ($maxid <= 0 || $maxid == '') {
-              $maxid  = 1;
-            }else{
-              $maxid += 1;
-            }        
 
-            $insertStock = DB::Table('d_stock')
-              ->insert([
+            $maxid = DB::Table('d_stock')->select('s_id')->max('s_id')+1;
+
+            $cek = d_stock::select('s_id','s_qty')
+              ->where('s_item',$value->sd_item)
+              ->where('s_comp','4')
+              ->where('s_position','2')
+              ->first();
+
+            if(mutasi::mutasiStok(  $value->sd_item,
+                                    $value->sd_qty,
+                                    $comp=2,
+                                    $position=2,
+                                    $flag=1,
+                                    $nota->s_note)){}
+            
+            if ($cek == null) {
+              d_stock::insert([
                 's_id'      => $maxid,
                 's_comp'    => 4,
                 's_position'=> 2,
                 's_item'    => $value->sd_item,
                 's_qty'     => $value->sd_qty,
                 's_insert'  => Carbon::now(),
-                's_update'  => Carbon::now(),
+                's_update'  => Carbon::now()
               ]);
+
+              d_stock_mutation::create([
+                'sm_stock' => $maxid,
+                'sm_detailid' =>1,
+                'sm_date' => Carbon::now(),
+                'sm_comp' => 4,
+                'sm_position' => 2,
+                'sm_mutcat' => 1,
+                'sm_item' => $value->sd_item,
+                'sm_qty' => $value->sd_qty,
+                'sm_qty_used' => 0,
+                'sm_qty_sisa' => $value->sd_qty,
+                'sm_qty_expired' => 0,
+                'sm_detail' => 'PACKING',
+                'sm_reff' => $nota->s_note,
+                'sm_insert' => Carbon::now()
+              ]);
+
+            }else{
+
+              $hasil = $cek->s_qty + $value->sd_qty;
+              $cek->update([
+                's_qty'     => $hasil
+              ]);
+
+              $sm_detailid = d_stock_mutation::select('sm_detailid')
+                ->where('sm_item',$value->sd_item)
+                ->where('sm_comp','4')
+                ->where('sm_position','2')
+                ->max('sm_detailid')+1;
+
+              d_stock_mutation::create([
+                'sm_stock' => $cek->s_id,
+                'sm_detailid' => $sm_detailid,
+                'sm_date' => Carbon::now(),
+                'sm_comp' => 4,
+                'sm_position' => 2,
+                'sm_mutcat' => 1,
+                'sm_item' => $value->sd_item,
+                'sm_qty' => $value->sd_qty,
+                'sm_qty_used' => 0,
+                'sm_qty_sisa' => $value->sd_qty,
+                'sm_qty_expired' => 0,
+                'sm_detail' => 'PACKING',
+                'sm_reff' => $nota->s_note,
+                'sm_insert' => Carbon::now()
+              ]);
+
+            }
+            
 
           }
         }
         if($request->status == 'SN' && $request->oldStatus != 'PC'){
+          // dd($request->all());
           foreach ($salesDt as $value) {
-            $updateStock = DB::Table('d_stock')
-              ->where('s_item',$value->sd_item)
-              ->where(function ($query){
-                $query->where('s_comp',4)
-                      ->where('s_position',5);
-                })
-              ->decrement('s_qty',$value->sd_qty);
             
-            $maxid = DB::Table('d_stock')->select('s_id')->max('s_id');
-            if ($maxid <= 0 || $maxid == '') {
-              $maxid  = 1;
-            }else{
-              $maxid += 1;
-            }
+            $maxid = DB::Table('d_stock')->select('s_id')->max('s_id')+1;
 
-            $insertStock = DB::Table('d_stock')
-              ->insert([
+            if(mutasi::mutasiStok(  $value->sd_item,
+                                    $value->sd_qty,
+                                    $comp=2,
+                                    $position=2,
+                                    $flag=1,
+                                    $nota->s_note)){}
+
+            $cek = d_stock::select('s_id','s_qty')
+              ->where('s_item',$value->sd_item)
+              ->where('s_comp','4')
+              ->where('s_position','5')
+              ->first();
+
+            if ($cek == null) {
+              d_stock::insert([
                 's_id'      => $maxid,
                 's_comp'    => 4,
                 's_position'=> 5,
                 's_item'    => $value->sd_item,
                 's_qty'     => $value->sd_qty,
                 's_insert'  => Carbon::now(),
-                's_update'  => Carbon::now(),
+                's_update'  => Carbon::now()
               ]);
+
+              d_stock_mutation::create([
+                'sm_stock' => $maxid,
+                'sm_detailid' =>1,
+                'sm_date' => Carbon::now(),
+                'sm_comp' => 4,
+                'sm_position' => 5,
+                'sm_mutcat' => 1,
+                'sm_item' => $value->sd_item,
+                'sm_qty' => $value->sd_qty,
+                'sm_qty_used' => 0,
+                'sm_qty_sisa' => $value->sd_qty,
+                'sm_qty_expired' => 0,
+                'sm_detail' => 'PENGIRIMAN',
+                'sm_reff' => $nota->s_note,
+                'sm_insert' => Carbon::now()
+              ]);
+
+            }else{
+
+              $hasil = $cek->s_qty + $value->sd_qty;
+              $cek->update([
+                's_qty'     => $hasil
+              ]);
+
+              $sm_detailid = d_stock_mutation::select('sm_detailid')
+                ->where('sm_item',$value->sd_item)
+                ->where('sm_comp','4')
+                ->where('sm_position','5')
+                ->max('sm_detailid')+1;
+
+              d_stock_mutation::create([
+                'sm_stock' => $cek->s_id,
+                'sm_detailid' => $sm_detailid,
+                'sm_date' => Carbon::now(),
+                'sm_comp' => 4,
+                'sm_position' => 5,
+                'sm_mutcat' => 1,
+                'sm_item' => $value->sd_item,
+                'sm_qty' => $value->sd_qty,
+                'sm_qty_used' => 0,
+                'sm_qty_sisa' => $value->sd_qty,
+                'sm_qty_expired' => 0,
+                'sm_detail' => 'PENGIRIMAN',
+                'sm_reff' => $nota->s_note,
+                'sm_insert' => Carbon::now()
+              ]);
+
+            }
           }
         }
         if($request->status == 'SN' && $request->oldStatus == 'PC'){
+          // dd($request->all());
           foreach ($salesDt as $value) {
-            $updateStock = DB::Table('d_stock')
+
+            $maxid = DB::Table('d_stock')->select('s_id')->max('s_id')+1;
+
+            if(mutasi::mutasiStok(  $value->sd_item,
+                                    $value->sd_qty,
+                                    $comp=4,
+                                    $position=2,
+                                    $flag=1,
+                                    $nota->s_note)){}
+
+            $cek = d_stock::select('s_id','s_qty')
               ->where('s_item',$value->sd_item)
-              ->where(function ($query){
-                $query->where('s_comp',4)
-                      ->where('s_position',5);
-                })
-              ->update([
-                's_position' => 5,
+              ->where('s_comp','4')
+              ->where('s_position','5')
+              ->first();
+
+            if ($cek == null) {
+              d_stock::insert([
+                's_id'      => $maxid,
+                's_comp'    => 4,
+                's_position'=> 5,
+                's_item'    => $value->sd_item,
+                's_qty'     => $value->sd_qty,
+                's_insert'  => Carbon::now(),
+                's_update'  => Carbon::now()
               ]);
+
+              d_stock_mutation::create([
+                'sm_stock' => $maxid,
+                'sm_detailid' =>1,
+                'sm_date' => Carbon::now(),
+                'sm_comp' => 4,
+                'sm_position' => 5,
+                'sm_mutcat' => 1,
+                'sm_item' => $value->sd_item,
+                'sm_qty' => $value->sd_qty,
+                'sm_qty_used' => 0,
+                'sm_qty_sisa' => $value->sd_qty,
+                'sm_qty_expired' => 0,
+                'sm_detail' => 'PENGIRIMAN',
+                'sm_reff' => $nota->s_note,
+                'sm_insert' => Carbon::now()
+              ]);
+
+            }else{
+
+              $hasil = $cek->s_qty + $value->sd_qty;
+              $cek->update([
+                's_qty'     => $hasil
+              ]);
+
+              $sm_detailid = d_stock_mutation::select('sm_detailid')
+                ->where('sm_item',$value->sd_item)
+                ->where('sm_comp','4')
+                ->where('sm_position','5')
+                ->max('sm_detailid')+1;
+
+              d_stock_mutation::create([
+                'sm_stock' => $cek->s_id,
+                'sm_detailid' => $sm_detailid,
+                'sm_date' => Carbon::now(),
+                'sm_comp' => 4,
+                'sm_position' => 5,
+                'sm_mutcat' => 1,
+                'sm_item' => $value->sd_item,
+                'sm_qty' => $value->sd_qty,
+                'sm_qty_used' => 0,
+                'sm_qty_sisa' => $value->sd_qty,
+                'sm_qty_expired' => 0,
+                'sm_detail' => 'PENGIRIMAN',
+                'sm_reff' => $nota->s_note,
+                'sm_insert' => Carbon::now()
+              ]);
+
+            }
           }
         }
         if($request->status == 'RC'  && $request->oldStatus != 'SN' && $request->oldStatus != 'PC'){
           foreach ($salesDt as $value) {
-            $updateStock = DB::Table('d_stock')
+            $maxid = DB::Table('d_stock')->select('s_id')->max('s_id')+1;
+
+            if(mutasi::mutasiStok(  $value->sd_item,
+                                    $value->sd_qty,
+                                    $comp=2,
+                                    $position=2,
+                                    $flag=1,
+                                    $nota->s_note)){}
+
+            $cek = d_stock::select('s_id','s_qty')
               ->where('s_item',$value->sd_item)
-              ->where(function ($query){
-                $query->where('s_comp',2)
-                      ->where('s_position',2);
-                })
-              ->decrement('s_qty',$value->sd_qty);
+              ->where('s_comp','4')
+              ->where('s_position','4')
+              ->first();
 
-            $maxid = DB::Table('d_stock')->select('s_id')->max('s_id');
-            if ($maxid <= 0 || $maxid == '') {
-              $maxid  = 1;
-            }else{
-              $maxid += 1;
-            }
 
-            $insertStock = DB::Table('d_stock')
-              ->insert([
+            if ($cek == null) {
+              d_stock::insert([
                 's_id'      => $maxid,
                 's_comp'    => 4,
                 's_position'=> 4,
                 's_item'    => $value->sd_item,
                 's_qty'     => $value->sd_qty,
                 's_insert'  => Carbon::now(),
-                's_update'  => Carbon::now(),
+                's_update'  => Carbon::now()
               ]);
+
+              d_stock_mutation::create([
+                'sm_stock' => $maxid,
+                'sm_detailid' =>1,
+                'sm_date' => Carbon::now(),
+                'sm_comp' => 4,
+                'sm_position' => 4,
+                'sm_mutcat' => 1,
+                'sm_item' => $value->sd_item,
+                'sm_qty' => $value->sd_qty,
+                'sm_qty_used' => 0,
+                'sm_qty_sisa' => $value->sd_qty,
+                'sm_qty_expired' => 0,
+                'sm_detail' => 'DI TERIMA',
+                'sm_reff' => $nota->s_note,
+                'sm_insert' => Carbon::now()
+              ]);
+
+            }else{
+
+              $hasil = $cek->s_qty + $value->sd_qty;
+              $cek->update([
+                's_qty'     => $hasil
+              ]);
+
+              $sm_detailid = d_stock_mutation::select('sm_detailid')
+                ->where('sm_item',$value->sd_item)
+                ->where('sm_comp','4')
+                ->where('sm_position','4')
+                ->max('sm_detailid')+1;
+
+              d_stock_mutation::create([
+                'sm_stock' => $cek->s_id,
+                'sm_detailid' => $sm_detailid,
+                'sm_date' => Carbon::now(),
+                'sm_comp' => 4,
+                'sm_position' => 4,
+                'sm_mutcat' => 1,
+                'sm_item' => $value->sd_item,
+                'sm_qty' => $value->sd_qty,
+                'sm_qty_used' => 0,
+                'sm_qty_sisa' => $value->sd_qty,
+                'sm_qty_expired' => 0,
+                'sm_detail' => 'DI TERIMA',
+                'sm_reff' => $nota->s_note,
+                'sm_insert' => Carbon::now()
+              ]);
+
+            }
+
           }
         }
 
         if($request->status == 'RC'  && $request->oldStatus == 'SN'){
           foreach ($salesDt as $value) {
-            $updateStock = DB::Table('d_stock')
+            // dd($request->all());
+
+            $maxid = DB::Table('d_stock')->select('s_id')->max('s_id')+1;
+
+            if(mutasi::mutasiStok(  $value->sd_item,
+                                    $value->sd_qty,
+                                    $comp=4,
+                                    $position=5,
+                                    $flag=1,
+                                    $nota->s_note)){}
+
+            $cek = d_stock::select('s_id','s_qty')
               ->where('s_item',$value->sd_item)
-              ->where(function ($query){
-                $query->where('s_comp',4)
-                      ->where('s_position',5);
-                })
-              ->update([
-                's_position' => 4,
+              ->where('s_comp','4')
+              ->where('s_position','4')
+              ->first();
+
+
+            if ($cek == null) {
+              d_stock::insert([
+                's_id'      => $maxid,
+                's_comp'    => 4,
+                's_position'=> 4,
+                's_item'    => $value->sd_item,
+                's_qty'     => $value->sd_qty,
+                's_insert'  => Carbon::now(),
+                's_update'  => Carbon::now()
               ]);
+
+              d_stock_mutation::create([
+                'sm_stock' => $maxid,
+                'sm_detailid' =>1,
+                'sm_date' => Carbon::now(),
+                'sm_comp' => 4,
+                'sm_position' => 4,
+                'sm_mutcat' => 1,
+                'sm_item' => $value->sd_item,
+                'sm_qty' => $value->sd_qty,
+                'sm_qty_used' => 0,
+                'sm_qty_sisa' => $value->sd_qty,
+                'sm_qty_expired' => 0,
+                'sm_detail' => 'DI TERIMA',
+                'sm_reff' => $nota->s_note,
+                'sm_insert' => Carbon::now()
+              ]);
+
+            }else{
+
+              $hasil = $cek->s_qty + $value->sd_qty;
+              $cek->update([
+                's_qty'     => $hasil
+              ]);
+
+              $sm_detailid = d_stock_mutation::select('sm_detailid')
+                ->where('sm_item',$value->sd_item)
+                ->where('sm_comp','4')
+                ->where('sm_position','4')
+                ->max('sm_detailid')+1;
+
+              d_stock_mutation::create([
+                'sm_stock' => $cek->s_id,
+                'sm_detailid' => $sm_detailid,
+                'sm_date' => Carbon::now(),
+                'sm_comp' => 4,
+                'sm_position' => 4,
+                'sm_mutcat' => 1,
+                'sm_item' => $value->sd_item,
+                'sm_qty' => $value->sd_qty,
+                'sm_qty_used' => 0,
+                'sm_qty_sisa' => $value->sd_qty,
+                'sm_qty_expired' => 0,
+                'sm_detail' => 'DI TERIMA',
+                'sm_reff' => $nota->s_note,
+                'sm_insert' => Carbon::now()
+              ]);
+
+            }
           }
         }
         if($request->status == 'RC'  && $request->oldStatus == 'PC'){
           foreach ($salesDt as $value) {
-            $updateStock = DB::Table('d_stock')
+            // dd($request->all());
+            $maxid = DB::Table('d_stock')->select('s_id')->max('s_id')+1;
+
+            if(mutasi::mutasiStok(  $value->sd_item,
+                                    $value->sd_qty,
+                                    $comp=4,
+                                    $position=2,
+                                    $flag=1,
+                                    $nota->s_note)){}
+
+            $cek = d_stock::select('s_id','s_qty')
               ->where('s_item',$value->sd_item)
-              ->where(function ($query){
-                $query->where('s_comp',4)
-                      ->where('s_position',2);
-                })
-              ->update([
-                's_position' => 4,
+              ->where('s_comp','4')
+              ->where('s_position','4')
+              ->first();
+
+
+            if ($cek == null) {
+              d_stock::insert([
+                's_id'      => $maxid,
+                's_comp'    => 4,
+                's_position'=> 4,
+                's_item'    => $value->sd_item,
+                's_qty'     => $value->sd_qty,
+                's_insert'  => Carbon::now(),
+                's_update'  => Carbon::now()
               ]);
+
+              d_stock_mutation::create([
+                'sm_stock' => $maxid,
+                'sm_detailid' =>1,
+                'sm_date' => Carbon::now(),
+                'sm_comp' => 4,
+                'sm_position' => 4,
+                'sm_mutcat' => 1,
+                'sm_item' => $value->sd_item,
+                'sm_qty' => $value->sd_qty,
+                'sm_qty_used' => 0,
+                'sm_qty_sisa' => $value->sd_qty,
+                'sm_qty_expired' => 0,
+                'sm_detail' => 'DI TERIMA',
+                'sm_reff' => $nota->s_note,
+                'sm_insert' => Carbon::now()
+              ]);
+
+            }else{
+
+              $hasil = $cek->s_qty + $value->sd_qty;
+              $cek->update([
+                's_qty'     => $hasil
+              ]);
+
+              $sm_detailid = d_stock_mutation::select('sm_detailid')
+                ->where('sm_item',$value->sd_item)
+                ->where('sm_comp','4')
+                ->where('sm_position','4')
+                ->max('sm_detailid')+1;
+
+              d_stock_mutation::create([
+                'sm_stock' => $cek->s_id,
+                'sm_detailid' => $sm_detailid,
+                'sm_date' => Carbon::now(),
+                'sm_comp' => 4,
+                'sm_position' => 4,
+                'sm_mutcat' => 1,
+                'sm_item' => $value->sd_item,
+                'sm_qty' => $value->sd_qty,
+                'sm_qty_used' => 0,
+                'sm_qty_sisa' => $value->sd_qty,
+                'sm_qty_expired' => 0,
+                'sm_detail' => 'DI TERIMA',
+                'sm_reff' => $nota->s_note,
+                'sm_insert' => Carbon::now()
+              ]);
+
+            }
+
           }
         }
         
       }
-    
-      
-    return $updateStock;
+      DB::commit();
+    return response()->json([
+          'status' => 'sukses'
+        ]);
+      } catch (\Exception $e) {
+    DB::rollback();
+    return response()->json([
+        'status' => 'gagal',
+        'data' => $e
+        ]);
+      }
   }
 
   public function print($id){

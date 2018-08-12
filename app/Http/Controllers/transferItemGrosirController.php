@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\d_transferItem;
 use App\d_transferItemDt;
 use App\d_stock_mutation;
+use App\lib\mutasi;
 use DB;
 use Validator;
 use Carbon\Carbon;
@@ -167,6 +168,7 @@ class transferItemGrosirController extends Controller
   }
 
   public function simpanApprove(Request $request){
+    // dd($request->all());
   DB::beginTransaction();
     try {  
     $tglAppr='';
@@ -188,9 +190,8 @@ class transferItemGrosirController extends Controller
                 
             }
     
-        $transferItemDt=d_transferItemDt::                        
-                        where('tidt_id',$request->tidt_id[$i])->
-                        where('tidt_detail',$request->tidt_detail[$i]);
+        $transferItemDt = d_transferItemDt::where('tidt_id',$request->tidt_id[$i])
+                        ->where('tidt_detail',$request->tidt_detail[$i]);
         if($transferItemDt->first()){
             $qtyAwal=$transferItemDt->first()->tidt_qty_send;
         }
@@ -204,37 +205,78 @@ class transferItemGrosirController extends Controller
 
 
         //update qty grosir 3/3
-        $stockGrosir=d_stock::                        
-               where('s_item',$request->tidt_item[$i])->
-               where('s_comp',DB::raw('2'))->
-               where('s_position',DB::raw('2'));
+        $stockGrosir = d_stock::where('s_item',$request->tidt_item[$i])
+             ->where('s_comp',DB::raw('1'))
+             ->where('s_position',DB::raw('5'))
+             ->first();
+        // dd($stockGrosir);
 
-        if($stockGrosir->first()){
-                    $stockGrosir->update([
-                        's_qty'=>($stockGrosir->first()->s_qty+$qtyAwal)-$request->qtySend[$i]
-                    ]);
-        }
-
-        $stockRetailInGrosir=d_stock::                        
-               where('s_item',$request->tidt_item[$i])->
-               where('s_comp',DB::raw('11'))->
-               where('s_position',DB::raw('3'));
+        if(mutasi::mutasiStok(  $request->tidt_item[$i],
+                                $request->qtySend[$i],
+                                $comp=2,
+                                $position=2,
+                                $flag=11,
+                                $request->ri_nomor)){}
                
-        if($stockRetailInGrosir->first()){
-          $stockRetailInGrosir->update([
-              's_qty'=>($stockRetailInGrosir->first()->s_qty-$qtyAwal)+$request->qtySend[$i]
-          ]);
-        }else{
-          $s_id = d_stock::max('s_id');
-          d_stock::create([
-                  's_id'      =>$s_id+1,
-                  's_comp'    =>1,
-                  's_position' =>5,
-                  's_item'    =>$request->tidt_item[$i],
-                  's_qty'     =>$request->qtySend[$i],
+        if($stockGrosir == null){
+            $s_id = d_stock::max('s_id')+1;
+            d_stock::create([
+                    's_id'      =>$s_id,
+                    's_comp'    =>1,
+                    's_position' =>5,
+                    's_item'    =>$request->tidt_item[$i],
+                    's_qty'     =>$request->qtySend[$i],
 
-          ]);
-        }
+            ]);
+
+            d_stock_mutation::create([
+                'sm_stock' => $s_id,
+                'sm_detailid' =>1,
+                'sm_date' => Carbon::now(),
+                'sm_comp' => 1,
+                'sm_position' => 5,
+                'sm_mutcat' => 1,
+                'sm_item' => $request->tidt_item[$i],
+                'sm_qty' => $request->qtySend[$i],
+                'sm_qty_used' => 0,
+                'sm_qty_sisa' => $request->qtySend[$i],
+                'sm_qty_expired' => 0,
+                'sm_detail' => 'TRANSFER RETAIL',
+                'sm_reff' => $request->ri_nomor,
+                'sm_insert' => Carbon::now()
+              ]);
+
+      }else{
+        
+        $hasil = $stockGrosir->s_qty + $request->qtySend[$i];
+              $stockGrosir->update([
+                's_qty'     => $hasil
+              ]);
+            
+        $sm_detailid = d_stock_mutation::select('sm_detailid')
+                ->where('sm_item',$request->tidt_item[$i])
+                ->where('sm_comp','1')
+                ->where('sm_position','5')
+                ->max('sm_detailid')+1;
+
+              d_stock_mutation::create([
+                'sm_stock' => $stockGrosir->s_id,
+                'sm_detailid' => $sm_detailid,
+                'sm_date' => Carbon::now(),
+                'sm_comp' => 1,
+                'sm_position' => 5,
+                'sm_mutcat' => 1,
+                'sm_item' => $request->tidt_item[$i],
+                'sm_qty' => $request->qtySend[$i],
+                'sm_qty_used' => 0,
+                'sm_qty_sisa' => $request->qtySend[$i],
+                'sm_qty_expired' => 0,
+                'sm_detail' => 'TRANSFER RETAIL',
+                'sm_reff' => $request->ri_nomor,
+                'sm_insert' => Carbon::now()
+              ]);
+
+      }
     }
 
       if(count($request->tidt_id)==$ttlAppr){
@@ -266,22 +308,19 @@ class transferItemGrosirController extends Controller
   }
 
   public function simpanTransferGrosir(Request $request){
+    // dd($request->all());
   DB::beginTransaction();
       try {
+      //set no req
       $year = carbon::now()->format('y');
       $month = carbon::now()->format('m');
       $date = carbon::now()->format('d');
 
-      $idreq = d_transferItem::select('ti_id')->max('ti_id');        
-          if ($idreq <= 0 || $idreq <= '') {
-            $idreq  = 1;
-          }else{
-            $idreq += 1;
-          }                
-      $idreq = 'REQ'  . $year . $month . $date . $idreq;
+      $ti_id = d_transferItem::max('ti_id')+1;     
+
+      $idreq = 'REQ'  . $year . $month . $date . $ti_id;
       //end no req
-      
-    $ti_id = d_transferItem::max('ti_id')+1;
+
     d_transferItem::create([
                 'ti_id'         =>$ti_id,
                 'ti_time'       =>date('Y-m-d',strtotime($request->tf_tanggal)), 
@@ -290,7 +329,6 @@ class transferItemGrosirController extends Controller
                 'ti_note'       =>$request->tf_keterangan,
                 'ti_isapproved' =>'Y',
                 'ti_issent' =>'Y',
-                
     ]);
 
     for ($i=0; $i <count($request->kode_item) ; $i++) { 
@@ -301,46 +339,85 @@ class transferItemGrosirController extends Controller
           'tidt_item'    =>$request->kode_item[$i], 
           'tidt_qty'     =>$request->sd_qty[$i],
           'tidt_qty_appr'=>$request->sd_qty[$i],
-          'tidt_apprtime'=>date('Y-m-d g:i:s'),
+          'tidt_apprtime'=>Carbon::now(),
           'tidt_qty_send'=>$request->sd_qty[$i],
-          'tidt_sendtime'=>date('Y-m-d g:i:s'),
+          'tidt_sendtime'=>Carbon::now(),
       ]);
 
-        $stockGrosir=d_stock::                        
-             where('s_item',$request->kode_item[$i])->
-             where('s_comp',DB::raw('2'))->
-             where('s_position',DB::raw('2'));
-
-      if($stockGrosir->first()){
-                  $stockGrosir->update([
-                      's_qty'=>$stockGrosir->first()->s_qty-$request->sd_qty[$i]
-                  ]);
-      }else{
-                  DB::rollback();
-                  $data=['status'=>'Gagal','info'=>'Stok Tidak Mencukupi'];
-                  return json_encode($data);
-      }
        //stock 11/3
-      $stockRetailInGrosir = d_stock::where('s_item',$request->kode_item[$i])
+      $stockGrosir = d_stock::where('s_item',$request->kode_item[$i])
              ->where('s_comp',DB::raw('1'))
-             ->where('s_position',DB::raw('5'));
-             
-      if($stockRetailInGrosir->first()){
-                  $stockRetailInGrosir->update([
-                      's_qty'=>$stockRetailInGrosir->first()->s_qty+$request->sd_qty[$i]
-                  ]);
-          }else{
-                  $s_id=d_stock::max('s_id');
-                  d_stock::create([
-                          's_id'      =>$s_id+1,
-                          's_comp'    =>1,
-                          's_position' =>5,
-                          's_item'    =>$request->kode_item[$i],
-                          's_qty'     =>$request->sd_qty[$i],
+             ->where('s_position',DB::raw('5'))
+             ->first();
+      // dd($stockGrosir);
 
-                  ]);
-          }
-        }
+      if(mutasi::mutasiStok(  $request->kode_item[$i],
+                              $request->sd_qty[$i],
+                              $comp=2,
+                              $position=2,
+                              $flag=11,
+                              $idreq)){}
+             
+      if($stockGrosir == null){
+            $s_id = d_stock::max('s_id')+1;
+            d_stock::create([
+                    's_id'      =>$s_id,
+                    's_comp'    =>1,
+                    's_position' =>5,
+                    's_item'    =>$request->kode_item[$i],
+                    's_qty'     =>$request->sd_qty[$i],
+
+            ]);
+
+            d_stock_mutation::create([
+                'sm_stock' => $s_id,
+                'sm_detailid' =>1,
+                'sm_date' => Carbon::now(),
+                'sm_comp' => 1,
+                'sm_position' => 5,
+                'sm_mutcat' => 1,
+                'sm_item' => $request->kode_item[$i],
+                'sm_qty' => $request->sd_qty[$i],
+                'sm_qty_used' => 0,
+                'sm_qty_sisa' => $request->sd_qty[$i],
+                'sm_qty_expired' => 0,
+                'sm_detail' => 'TRANSFER RETAIL',
+                'sm_reff' => $idreq,
+                'sm_insert' => Carbon::now()
+              ]);
+
+      }else{
+
+        $hasil = $stockGrosir->s_qty + $request->sd_qty[$i];
+              $stockGrosir->update([
+                's_qty'     => $hasil
+              ]);
+            
+        $sm_detailid = d_stock_mutation::select('sm_detailid')
+                ->where('sm_item',$request->kode_item[$i])
+                ->where('sm_comp','1')
+                ->where('sm_position','5')
+                ->max('sm_detailid')+1;
+
+              d_stock_mutation::create([
+                'sm_stock' => $stockGrosir->s_id,
+                'sm_detailid' => $sm_detailid,
+                'sm_date' => Carbon::now(),
+                'sm_comp' => 1,
+                'sm_position' => 5,
+                'sm_mutcat' => 1,
+                'sm_item' => $request->kode_item[$i],
+                'sm_qty' => $request->sd_qty[$i],
+                'sm_qty_used' => 0,
+                'sm_qty_sisa' => $request->sd_qty[$i],
+                'sm_qty_expired' => 0,
+                'sm_detail' => 'TRANSFER RETAIL',
+                'sm_reff' => $idreq,
+                'sm_insert' => Carbon::now()
+              ]);
+
+      }
+    }
     DB::commit();
     return response()->json([
         'status' => 'sukses',
@@ -413,17 +490,16 @@ class transferItemGrosirController extends Controller
       })
 
     ->addColumn('action', function($data){
-
+                //       <a  onclick="hapusTransferGrosir('.$data->ti_id.')" 
+                //     class="btn btn-danger btn-sm" 
+                //     title="Hapus">
+                //     <i class="glyphicon glyphicon-trash"></i>
+                // </a>
       return '<div class="text-center">
                 <a  onclick="editTransferGrosir('.$data->ti_id.')" 
                     class="btn btn-warning btn-sm" 
-                    title="Edit">
-                    <i class="glyphicon glyphicon-pencil"></i>
-                </a>
-                <a  onclick="hapusTransferGrosir('.$data->ti_id.')" 
-                    class="btn btn-danger btn-sm" 
-                    title="Hapus">
-                    <i class="glyphicon glyphicon-trash"></i>
+                    title="Lihat">
+                    <i class="fa fa-eye"></i>
                 </a>
               </div>';                  
 

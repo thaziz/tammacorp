@@ -91,11 +91,6 @@ Route::post('/master/datapegawai/import', 'Master\PegawaiController@importPegawa
 Route::get('/master/datapegawai/master-import', 'Master\PegawaiController@getFile');
 /*Purchasing*/
 //rizky
-//rencana bahan baku
-Route::get('/purchasing/rencanabahanbaku/bahan', 'Pembelian\RencanaBahanController@index');
-Route::get('/purchasing/rencanabahanbaku/get-rencana-bytgl/{tgl1}/{tgl2}/{tampil}', 'Pembelian\RencanaBahanController@getRencanaByTgl');
-Route::get('/purchasing/rencanabahanbaku/get-detail-rencana/{id}', 'Pembelian\RencanaBahanController@getDetailRencana');
-Route::post('/purchasing/rencanabahanbaku/ubah-status-spk', 'Pembelian\RencanaBahanController@ubahStatus');
 //order pembelian
 Route::get('/purchasing/orderpembelian/order', 'Pembelian\OrderPembelianController@order');
 Route::get('/purchasing/orderpembelian/tambah_order', 'Pembelian\OrderPembelianController@tambah_order');
@@ -110,9 +105,6 @@ Route::post('/purchasing/orderpembelian/update-data-order', 'Pembelian\OrderPemb
 Route::post('/purchasing/orderpembelian/delete-data-order', 'Pembelian\OrderPembelianController@deleteDataOrder');
 Route::get('/purchasing/orderpembelian/get-data-tabel-history/{tgl1}/{tgl2}/{tampil}', 'Pembelian\OrderPembelianController@getDataTabelHistory');
 Route::get('/purchasing/orderpembelian/get-penerimaan-peritem/{id}', 'Pembelian\OrderPembelianController@getPenerimaanPerItem');
-// Ari
-Route::get('/purchasing/orderpembelian/print/{id}', 'Pembelian\OrderPembelianController@print');
-// irA
 //rencana pembelian
 Route::get('/purchasing/rencanapembelian/rencana', 'Pembelian\RencanaPembelianController@rencana');
 Route::get('/purchasing/rencanapembelian/create', 'Pembelian\RencanaPembelianController@create');
@@ -140,7 +132,6 @@ Route::post('/purchasing/belanjaharian/update-data-belanja', 'Pembelian\BelanjaH
 Route::post('/purchasing/belanjaharian/delete-data-belanja', 'Pembelian\BelanjaHarianController@deleteDataBelanja');
 Route::get('/purchasing/belanjaharian/get-belanja-by-tgl/{tgl1}/{tgl2}', 'Pembelian\BelanjaHarianController@getBelanjaByTgl');
 Route::get('/purchasing/belanjaharian/get-data-masterbarang', 'Pembelian\BelanjaHarianController@getDataMasterBarang');
-Route::post('/purchasing/belanjaharian/simpan-barang', 'Pembelian\BelanjaHarianController@simpanDataBarang');
 // Ari
 Route::get('/purchasing/belanjaharian/print/{id}', 'Pembelian\BelanjaHarianController@print');
 // irA
@@ -187,10 +178,6 @@ Route::get('/inventory/POSgrosir/print_transfer/{id}', 'transferItemGrosirContro
 
 // End irA
 //rizky
-//barang_digunakan
-Route::get('/inventory/b_digunakan/barang', 'Inventory\PemakaianBrgGdgController@barang');
-Route::get('/inventory/b_digunakan/tambah_barang', 'Inventory\PemakaianBrgGdgController@tambah_barang');
-Route::get('/inventory/b_digunakan/get-data-tabel-index', 'Inventory\PemakaianBrgGdgController@getDataTabelIndex');
 //p_hasilproduksi
 Route::get('/inventory/p_hasilproduksi/produksi', 'Inventory\PenerimaanBrgProdController@produksi');
 Route::get('/inventory/p_hasilproduksi/get_data_sj', 'Inventory\PenerimaanBrgProdController@get_data_sj');
@@ -222,9 +209,6 @@ Route::get('/inventory/p_suplier/cari_nota', 'Inventory\penerimaanbarang_supCont
 Route::get('/inventory/p_suplier/get_data_po', 'Inventory\PenerimaanBrgSupController@get_data_po');
 Route::get('/inventory/p_suplier/list_po', 'Inventory\PenerimaanBrgSupController@list_po');
 //end rizky
-// Ari
-Route::get('/inventory/p_suplier/print/{id}', 'Inventory\PenerimaanBrgSupController@print');
-// irA
 /*End Inventory*/
 /*Produksi*/
 Route::get('/produksi/spk/spk', 'ProduksiController@spk');
@@ -261,9 +245,6 @@ Route::get('/produksi/pengambilanitem/kirim/tabel/{tgl1}/{tgl2}', 'Produksi\Peng
 Route::get('/produksi/pengambilanitem/cari/tabel/{tgl1}/{tgl2}', 'Produksi\PengambilanItemController@cariTabelKirim');
 Route::get('/produksi/pengambilanitem/itemkirim/tabel/{id}', 'Produksi\PengambilanItemController@itemTabelKirim');
 Route::get('/produksi/pengambilanitem/lihat/id', 'Produksi\PengambilanItemController@orderId');
-// Ari
-Route::get('/produksi/suratjalan/print', 'Produksi\PengambilanItemController@print');
-// irA
 //mas shomad
 /* Monitoring */
 Route::get('/produksi/monitoringprogress/monitoring', 'Produksi\MonitoringProgressController@monitoring');
@@ -488,11 +469,12 @@ Route::get('/system/hakakses/tambah_akses-group/simpan-group-detail', 'groupAkse
 //nota Transfer
 Route::get('transfer/no-nota', 'transferItemController@noNota');
 //transfer retail
-Route::get('transfer/lihat-penerimaan/datatable', 'transferItemController@transferDatatables');
+// Route::get('transfer/lihat-penerimaan/datatable', 'transferItemController@transferDatatables');
 Route::get('transfer/list-penerimaan/datatable', 'transferItemController@listDatatables');
 Route::get('transfer/data-transfer/{id}/lihat', 'transferItemController@lihatTransfer');
 Route::get('transfer/data-transfer/hapus/{id}', 'transferItemController@HapusTransfer');
 Route::get('transfer/lihat-penerimaan/{id}', 'transferItemController@lihatPenerimaan');
+Route::get('transfer/lihat-transfer/{id}', 'transferItemController@lihatPenerimaanRc');
 Route::get('transfer/penerimaan/simpa-penerimaan', 'transferItemController@simpaPenerimaan');
 Route::get('/transfer/penerimaan/table_transfer/{tgl1}/{tgl2}/{tampil}', 'transferItemController@dataTransfer');
 Route::get('transfer/penerimaan/terima_transfer/{tgl3}/{tgl4}/{tampil1}', 'transferItemController@dataPenerimaanTransfer');
