@@ -589,4 +589,9 @@ Route::get('/master/datatransaksi/edit', 'Keuangan\transaksiController@edit');
 // transaksi keuangan end
 // Route Keuangan End
 
+// Ari
+Route::get('/purchasing/orderpembelian/print/{id}', 'Pembelian\OrderPembelianController@print');
+Route::get('/inventory/p_suplier/print/{id}', 'Inventory\PenerimaanBrgSupController@print');
+
+// irA
 }); // End Route Groub middleware auth
