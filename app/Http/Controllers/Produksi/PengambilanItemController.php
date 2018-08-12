@@ -317,4 +317,34 @@ class PengambilanItemController extends Controller
 
     return view('produksi.PemSuratJalan.tabelItem',compact('data'));
   }
+
+  public function print()
+  {
+    $data = d_productresult_dt::select( 'm_item.i_code',
+                                        'm_item.i_name',
+                                        'd_productresult_dt.prdt_qty',
+                                        'd_productresult_dt.prdt_productresult',
+                                        'd_productresult_dt.prdt_detail',
+                                        'd_productresult_dt.prdt_item',
+                                        'm_price.m_psell1',
+                                        'm_price.m_psell2',
+                                        'm_price.m_psell3',
+                                        'm_satuan.m_sname'
+                                      )
+    ->join('d_productresult','d_productresult_dt.prdt_productresult', '=', 'd_productresult.pr_id')
+    ->join('d_spk', 'd_productresult.pr_spk', '=', 'd_spk.spk_id')
+    ->join('m_item', 'd_productresult.pr_item', '=', 'm_item.i_id')
+    ->join('m_satuan', 'm_item.i_sat1', '=', 'm_satuan.m_sid')
+    ->join('m_price', 'd_productresult.pr_item', '=', 'm_price.m_pitem')
+    ->where('prdt_status','RD')
+    ->get()->toArray();
+    $data = array_chunk($data, 10);
+    $total = d_productresult_dt::select(DB::raw('SUM(prdt_qty) as total_qty'))
+    ->where('prdt_status', 'RD')
+    ->get()->toArray();
+    // return $data;
+    // return $total;
+    return view('produksi.PemSuratJalan.print', compact('data', 'total'));
+  }
+  
 }
