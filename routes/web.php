@@ -224,6 +224,9 @@ Route::get('/produksi/spk/ubah-status-spk/{id}', 'Produksi\spkProductionControll
 Route::get('/produksi/spk/get_spk_by_tgl/{tgl1}/{tgl2}/{stat}', 'Produksi\spkProductionController@getSpkByTgl');
 //rizky
 //mahmud
+Route::get('produksi/spk/lihat-detail', 'Produksi\spkProductionController@lihatFormula');
+Route::get('produksi/spk/input-data', 'Produksi\spkProductionController@inputData');
+//mahmud
 Route::get('/produksi/o_produksi/index', 'Produksi\ManOutputProduksiController@OutputProduksi');
 Route::get('/produksi/o_produksi/tabel', 'Produksi\ManOutputProduksiController@tabel');
 Route::get('/produksi/o_produksi/store', 'Produksi\ManOutputProduksiController@store');
