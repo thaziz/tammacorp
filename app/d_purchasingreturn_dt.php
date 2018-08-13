@@ -14,7 +14,6 @@ class d_purchasingreturn_dt extends Model
     protected $fillable = [
         'd_pcsrdt_id',
         'd_pcsrdt_idpcsr',
-        'd_pcsrdt_smdetail',
         'd_pcsrdt_item',
         'd_pcsrdt_sat',
         'd_pcsrdt_qty',

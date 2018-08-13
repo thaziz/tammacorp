@@ -3,6 +3,14 @@
 <style type="text/css">
   .ui-autocomplete { z-index:2147483647; }
   .select2-container { margin: 0; }
+  .error { border: 1px solid #f00; }
+  .valid { border: 1px solid #8080ff; }
+  .has-error .select2-selection {
+    border: 1px solid #f00 !important;
+  }
+  .has-valid .select2-selection {
+    border: 1px solid #8080ff !important;
+  }
 </style>
   <!--BEGIN PAGE WRAPPER-->
   <div id="page-wrapper">
@@ -70,7 +78,7 @@
 
                   <!-- START div#header_form -->
                   <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top:15px;" id="header_form">
-                    <form method="post" id="form_return_pembelian">
+                    <form method="post" id="form_return_pembelian" name="formReturnPembelian">
                       {{ csrf_field() }}
                       <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 10px; padding-top:10px;padding-bottom:20px;" id="appending-form">
                       </div>
@@ -210,6 +218,7 @@
                                     +'<div class="col-md-4 col-sm-9 col-xs-12">'
                                       +'<div class="form-group">'
                                         +'<input type="text" name="nilaiTotalNett" readonly="" class="form-control input-sm" id="nilai_total_nett">'
+                                         +'<input type="hidden" name="nilaiTotalReturnRaw" readonly="" class="form-control input-sm" id="nilai_total_return_raw">'
                                       +'</div>'
                                     +'</div>'
                                     +'<div class="table-responsive">'
@@ -228,7 +237,7 @@
                                               +'<th width="5%">Aksi</th>'
                                             +'</tr>'
                                           +'</thead>'
-                                          +'<tbody>'
+                                          +'<tbody id="div_item">'
                                           +'</tbody>'
                                         +'</form>'
                                       +'</table>'
@@ -353,7 +362,7 @@
                                               +'<th width="5%">Aksi</th>'
                                             +'</tr>'
                                           +'</thead>'
-                                          +'<tbody>'
+                                          +'<tbody id="div_item">'
                                           +'</tbody>'
                                         +'</form>'
                                       +'</table>'
@@ -465,6 +474,7 @@
           }
         });
       });
+ 
     });
 
     $(document).on('click', '.btn_remove', function(){
@@ -476,9 +486,9 @@
 
     //event focus on input qty
     $(document).on('focus', '.field_qty',  function(e){
-        var qty = $(this).val();
-        $(this).val(qty);
-        $('#button_save').attr('disabled', true);
+      var qty = $(this).val();
+      $(this).val(qty);
+      $('#button_save').attr('disabled', true);
     });
 
     $(document).on('blur', '.field_qty',  function(e){
@@ -499,6 +509,19 @@
     $('input.numberinput').bind('keypress', function (e) {
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
     });
+
+    //validasi
+    $("#form_return_pembelian").validate({
+      rules:{
+        tanggal: "required"
+      },
+      errorPlacement: function() {
+          return false;
+      },
+      submitHandler: function(form) {
+        form.submit();
+      }
+    });
   //end jquery
   });
 
@@ -513,40 +536,94 @@
     return text;
   }
 
-  function simpanReturn()
-  {
-    if(confirm('Simpan Data ?'))
-    {
-      $('#button_save').text('Menyimpan...'); //change button text
-      $('#button_save').attr('disabled',true); //set button disable 
-      $.ajax({
-        url : baseUrl + "/purchasing/returnpembelian/simpan-data-return",
-        type: "POST",
-        dataType: "JSON",
-        data: $('#form_return_pembelian').serialize(),
-        success: function(response)
-        {
-          if(response.status == "sukses")
+  function simpanReturn() {
+    iziToast.question({
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      zindex: 999,
+      title: 'Simpan Retur Pembelian',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          var IsValid = $("form[name='formReturnPembelian']").valid();
+          if(IsValid)
           {
-            alert(response.pesan);
-            $('#button_save').text('Simpan Data'); //change button text
-            $('#button_save').attr('disabled',false); //set button enable 
-            window.location.href = baseUrl+"/purchasing/returnpembelian/pembelian";
+            var countRow = $('#div_item tr').length;
+            if(countRow > 1)
+            {
+              $('#button_save').text('Menyimpan...'); //change button text
+              $('#button_save').attr('disabled',true); //set button disable 
+              $.ajax({
+                url : baseUrl + "/purchasing/returnpembelian/simpan-data-return",
+                type: "POST",
+                dataType: "JSON",
+                data: $('#form_return_pembelian').serialize(),
+                success: function(response)
+                {
+                  if(response.status == "sukses")
+                  {
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    iziToast.success({
+                      position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                      title: 'Pemberitahuan',
+                      message: response.pesan,
+                      onClosing: function(instance, toast, closedBy){
+                        $('#button_save').text('Simpan Data'); //change button text
+                        $('#button_save').attr('disabled',false); //set button enable 
+                        window.location.href = baseUrl+"/purchasing/returnpembelian/pembelian";
+                      }
+                    });
+                  }
+                  else
+                  {
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    iziToast.error({
+                      position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                      title: 'Pemberitahuan',
+                      message: response.pesan,
+                      onClosing: function(instance, toast, closedBy){
+                        $('#button_save').text('Simpan Data'); //change button text
+                        $('#button_save').attr('disabled',false); //set button enable 
+                        window.location.href = baseUrl+"/purchasing/returnpembelian/pembelian";
+                      }
+                    }); 
+                  }
+                },
+                error: function(){
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.warning({
+                    icon: 'fa fa-times',
+                    message: 'Terjadi Kesalahan!'
+                  });
+                },
+                async: false
+              });
+            }
+            else
+            {
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+              iziToast.warning({
+                 position: 'center',
+                 message: "Mohon isi data pada tabel form !"
+              });
+            }//end check count form table
           }
           else
           {
-            alert(response.pesan);
-            $('#button_save').text('Simpan Data'); //change button text
-            $('#button_save').attr('disabled',false); //set button enable 
-            window.location.href = baseUrl+"/purchasing/returnpembelian/pembelian";
-          }
-        },
-        error: function (jqXHR, textStatus, errorThrown)
-        {
-          alert('Error updating data');
-        }
-      });
-    }
+            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+            iziToast.warning({
+              position: 'center',
+              message: "Mohon Lengkapi data form !"
+            });
+          } //end check valid
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
   }
 
   function convertDecimalToRupiah(decimal) 

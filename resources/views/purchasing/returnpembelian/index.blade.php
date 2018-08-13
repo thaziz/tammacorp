@@ -33,7 +33,7 @@
                     
           <ul id="generalTab" class="nav nav-tabs">
             <li class="active"><a href="#index-tab" data-toggle="tab">Return Pembelian</a></li>
-            <li><a href="#revisi-tab" data-toggle="tab" onclick="lihatRevisipoByTgl()">Revisi PO</a></li>
+            <li><a href="#revisi-tab" data-toggle="tab" onclick="lihatRevisiByTgl()">Revisi PO</a></li>
           </ul>
 
           <div id="generalTabContent" class="tab-content responsive" >
@@ -74,7 +74,7 @@
     var date = new Date();
     var newdate = new Date(date);
 
-    newdate.setDate(newdate.getDate()-3);
+    newdate.setDate(newdate.getDate()-30);
     var nd = new Date(newdate);
 
     $('.datepicker1').datepicker({
@@ -166,8 +166,52 @@
       $('#button_save').attr('disabled', false);
     });
 
+    $('#tampil_data').change(function(event) {
+      lihatRevisiByTgl();
+    });
+
   //end jquery
   });
+
+  function lihatRevisiByTgl()
+  {
+    var tgl1 = $('#tanggal1').val();
+    var tgl2 = $('#tanggal2').val();
+    var tampil = $('#tampil_data').val();
+    $('#tbl-history').dataTable({
+      "destroy": true,
+      "processing" : true,
+      "serverside" : true,
+      "ajax" : {
+        url: baseUrl + "/purchasing/returnpembelian/get-list-revisi-bytgl/"+tgl1+"/"+tgl2+"/"+tampil,
+        type: 'GET'
+      },
+      "columns" : [
+        {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
+        {"data" : "tglBuat", "width" : "10%"},
+        {"data" : "d_pcs_code", "width" : "10%"},
+        {"data" : "m_name", "width" : "10%"},
+        {"data" : "s_company", "width" : "15%"},
+        {"data" : "d_pcs_method", "width" : "10%"},
+        {"data" : "hargaTotalNet", "width" : "15%"},
+        {"data" : "tglTerima", "width" : "10%"},
+        {"data" : "status", "width" : "5%"},
+        {"data" : "action", "width" : "5%"}
+      ],
+      "language": {
+        "searchPlaceholder": "Cari Data",
+        "emptyTable": "Tidak ada data",
+        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+        "sSearch": '<i class="fa fa-search"></i>',
+        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+        "infoEmpty": "",
+        "paginate": {
+              "previous": "Sebelumnya",
+              "next": "Selanjutnya",
+           }
+      }
+    });
+  }
 
   function detailReturPembelian(id) 
   {
@@ -279,70 +323,132 @@
 
   function submitEdit()
   {
-    if(confirm('Update Data ?'))
-    {
-        $('#btn_update').text('Updating...'); //change button text
-        $('#btn_update').attr('disabled',true); //set button disable 
-        $.ajax({
+    iziToast.question({
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      //zindex: 999,
+      title: 'Update data Return',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          $('#btn_update').text('Updating...'); //change button text
+          $('#btn_update').attr('disabled',true); //set button disable 
+          $.ajax({
             url : baseUrl + "/purchasing/returnpembelian/update-data-return",
             type: "POST",
             dataType: "JSON",
             data: $('#form-edit-return').serialize(),
             success: function(response)
             {
-                if(response.status == "sukses")
-                {
-                    alert(response.pesan);
+              if(response.status == "sukses")
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.success({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
                     $('#btn_update').text('Update'); //change button text
                     $('#btn_update').attr('disabled',false); //set button enable
                     $('#modal-edit').modal('hide');
                     $('#tabel-return').DataTable().ajax.reload();
-                }
-                else
-                {
-                    alert(response.pesan);
+                  }
+                });
+              }
+              else
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.error({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
                     $('#btn_update').text('Update'); //change button text
                     $('#btn_update').attr('disabled',false); //set button enable
                     $('#modal-edit').modal('hide');
                     $('#tabel-return').DataTable().ajax.reload();
-                }
+                  }
+                }); 
+              }
             },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
-                alert('Error updating data');
-            }
-        });
-    }
+            error: function(){
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+              iziToast.warning({
+                icon: 'fa fa-times',
+                message: 'Terjadi Kesalahan!'
+              });
+            },
+            async: false
+          }); 
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
   }
 
-  function deleteReturPembelian(id) 
+  function deleteReturPembelian(id)
   {
-    if(confirm('Yakin hapus data ?'))
-    {
-        $.ajax({
+    iziToast.question({
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      //zindex: 999,
+      title: 'Hapus Data Retur',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          $.ajax({
             url : baseUrl + "/purchasing/returnpembelian/delete-data-return",
             type: "POST",
             dataType: "JSON",
             data: {id:id, "_token": "{{ csrf_token() }}"},
             success: function(response)
             {
-                if(response.status == "sukses")
-                {
-                    alert(response.pesan);
+              if(response.status == "sukses")
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.success({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
                     $('#tabel-return').DataTable().ajax.reload();
-                }
-                else
-                {
-                    alert(response.pesan);
+                  }
+                });
+              }
+              else
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.error({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
                     $('#tabel-return').DataTable().ajax.reload();
-                }
+                  }
+                }); 
+              }
             },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
-                alert('Error deleting data');
-            }
-        });
-    }
+            error: function(){
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+              iziToast.warning({
+                icon: 'fa fa-times',
+                message: 'Terjadi Kesalahan!'
+              });
+            },
+            async: false
+          }); 
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
   }
 
   function randString(angka) 
@@ -425,5 +531,9 @@
     $('[name="priceTotalRaw"]').val(total);
   }
 
+  function refreshTabelRevisi() 
+  {
+    $('#tbl-history').DataTable().ajax.reload();
+  }
 </script>
 @endsection
