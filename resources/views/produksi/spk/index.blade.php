@@ -231,6 +231,7 @@ $(document).ready(function() {
   }
 
   function detailManSpk(id){
+    
     $.ajax({
       url : baseUrl + "/produksi/spk/lihat-detail/",
       type: "get",

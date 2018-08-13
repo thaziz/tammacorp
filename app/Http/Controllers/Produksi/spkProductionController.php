@@ -223,7 +223,8 @@ class spkProductionController extends Controller
     $spk = d_spk::select( 'pp_date',
                           'i_name',
                           'pp_qty',
-                          'spk_code')
+                          'spk_code',
+                          'spk_id')
       ->where('spk_id',$request->x)
       ->join('m_item','i_id','=','spk_item')
       ->join('d_productplan','pp_id','=','spk_ref')
@@ -248,6 +249,32 @@ class spkProductionController extends Controller
       ->first();
 
     return view('produksi.spk.table-inputactual',compact('spk')); 
+  }
+  public function print($spk_id)
+  {
+    $spk = d_spk::select( 'pp_date',
+                          'i_name',
+                          'pp_qty',
+                          'spk_code')
+      ->where('spk_id',$spk_id)
+      ->join('m_item','i_id','=','spk_item')
+      ->join('d_productplan','pp_id','=','spk_ref')
+      ->get()->toArray();
+      // dd($spk);
+      // return $spk;
+    $formula = spk_formula::select( 'i_code',
+                                    'i_name',
+                                    'fr_value',
+                                    'm_sname')
+      ->where('fr_spk',$spk_id)
+      ->join('m_item','i_id','=','fr_formula')
+      ->join('m_satuan','m_sid','=','fr_scale')
+      ->get()->toArray();
+
+      $formula = array_chunk($formula, 14);
+
+      // return $formula;
+    return view('produksi.spk.print', compact('spk', 'formula'));
   }
 }
 
