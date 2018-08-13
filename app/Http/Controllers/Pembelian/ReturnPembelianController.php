@@ -14,6 +14,9 @@ use App\d_purchasing;
 use App\d_purchasing_dt;
 use App\d_purchasingreturn;
 use App\d_purchasingreturn_dt;
+use App\d_stock;
+use App\d_stock_mutation;
+use App\lib\mutasi;
 
 class ReturnPembelianController extends Controller
 {
@@ -213,6 +216,90 @@ class ReturnPembelianController extends Controller
     ]);
   }
 
+  public function getListRevisiByTgl($tgl1, $tgl2, $tampil)
+  {
+      $y = substr($tgl1, -4);
+      $m = substr($tgl1, -7,-5);
+      $d = substr($tgl1,0,2);
+      $tanggal1 = $y.'-'.$m.'-'.$d;
+
+      $y2 = substr($tgl2, -4);
+      $m2 = substr($tgl2, -7,-5);
+      $d2 = substr($tgl2,0,2);
+      $tanggal2 = $y2.'-'.$m2.'-'.$d2;
+
+      if ($tampil == 'revisied') { $indexStatus = "RV"; } elseif ($tampil == 'received') { $indexStatus = "RC"; }
+
+      $data = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
+            ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
+            ->select('d_pcs_date_created','d_pcs_id', 'd_pcsp_id','d_pcs_code','s_company','d_pcs_method','d_pcs_total_net','d_pcs_date_received','d_pcs_status','d_mem.m_id','d_mem.m_name')
+            ->where('d_purchasing.d_pcs_status','=',$indexStatus)
+            ->whereBetween('d_purchasing.d_pcs_date_created', [$tanggal1, $tanggal2])
+            ->orderBy('d_pcs_date_created', 'DESC')
+            ->get();
+
+      return DataTables::of($data)
+      ->addIndexColumn()
+      ->editColumn('status', function ($data)
+        {
+        if ($data->d_pcs_status == "RC") 
+        {
+          return '<span class="label label-default">Diterima</span>';
+        }
+        elseif ($data->d_pcs_status == "RV") 
+        {
+          return '<span class="label label-warning">Revisi</span>';
+        }
+      })
+      ->editColumn('tglBuat', function ($data) 
+      {
+          if ($data->d_pcs_date_created == null) 
+          {
+              return '-';
+          }
+          else 
+          {
+              return $data->d_pcs_date_created ? with(new Carbon($data->d_pcs_date_created))->format('d M Y') : '';
+          }
+      })
+      ->editColumn('tglTerima', function ($data) 
+      {
+          if ($data->d_pcs_date_received == null) 
+          {
+              return '-';
+          }
+          else 
+          {
+              return $data->d_pcs_date_received ? with(new Carbon($data->d_pcs_date_received))->format('d M Y') : '';
+          }
+      })
+      ->editColumn('hargaTotalNet', function ($data) 
+      {
+        return 'Rp. '.number_format($data->d_pcs_total_net,0,",",".");
+      })
+      ->addColumn('action', function($data)
+      {
+        if ($data->d_pcs_status == "RV") 
+        {
+          return '<div class="text-center">
+                    <button class="btn btn-sm btn-success" title="Detail"
+                        onclick=detailPoRev("'.$data->d_pcsdt_id.'")><i class="fa fa-eye"></i> 
+                    </button>
+                  </div>'; 
+        }
+        elseif ($data->d_pcs_status == "RC") 
+        {
+          return '<div class="text-center">
+                    <button class="btn btn-sm btn-success" title="Detail"
+                        onclick=detailPoRev("'.$data->d_pcsdt_id.'") disabled><i class="fa fa-eye"></i> 
+                    </button>
+                  </div>'; 
+        } 
+      })
+      ->rawColumns(['status', 'action'])
+      ->make(true);
+  }
+
   public function tambahReturn()
   {
     //code order
@@ -354,12 +441,6 @@ class ReturnPembelianController extends Controller
         }
 
         $grup = $this->getGroupGudang($request->fieldItemId[$i]);
-        $stokAkhir = (int)$request->fieldStokVal[$i] - (int)$hasilConvert;
-        DB::table('d_stock')
-          ->where('s_item', $request->fieldItemId[$i])
-          ->where('s_comp', $grup)
-          ->where('s_position', $grup)
-          ->update(['s_qty' => $stokAkhir]);
 
         //get id d_stock
         $dstock_id = DB::table('d_stock')
@@ -369,112 +450,18 @@ class ReturnPembelianController extends Controller
           ->where('s_position', $grup)
           ->first();
 
-        $lastIdSm = DB::select(DB::raw("SELECT IFNULL((SELECT sm_detailid FROM d_stock_mutation where sm_stock = '$dstock_id->s_id' ORDER BY sm_detailid DESC LIMIT 1) ,'0') as zz"));
-      
-        if ($lastIdSm[0]->zz == 0 || $lastIdSm[0]->zz == '0')
-        {
-          $hasil_id = 1;
-        }
-        else
-        {
-          $hasil_id = (int)$lastIdSm[0]->zz + 1 ;
-        }
-
-        //insert to d_stock_mutation
-        DB::table('d_stock_mutation')->insert([
-            'sm_stock' => $dstock_id->s_id,
-            'sm_detailid' => $hasil_id,
-            'sm_date' => Carbon::now(),
-            'sm_comp' => $grup,
-            'sm_mutcat' => '13',
-            'sm_item' => $request->fieldItemId[$i],
-            'sm_qty' => $hasilConvert,
-            'sm_qty_used' => '0',
-            'sm_qty_expired' => '0',
-            'sm_detail' => "PENGURANGAN",
-            'sm_hpp' => $request->fieldHargaTotalRaw[$i],
-            /*'sm_hpptax' => '0',
-            'sm_hppdisc' => '0',
-            'sm_hppnett' => $this->konvertRp($request->fieldHargaTotal[$i]),*/
-            'sm_reff' => $request->kodeReturn,
-            'sm_insert' => Carbon::now(),
-        ]);
-
-        //update d_stock_mutation qty_used (last qty + qty return) + insert
-        $getBarang = DB::table('d_stock_mutation')
-                        ->select('*')
-                        ->where('sm_stock', '=', $dstock_id->s_id)
-                        ->where('sm_qty', '>', 'sm_qty_used')
-                        ->where('sm_detail', '=', 'PENAMBAHAN')
-                        ->orderBy('sm_date')
-                        ->get();
-        //dd($getBarang);
-        $sm_hpp = $getBarang[0]->sm_hpp;
-        $total = [];
-        $total[0] = ([
-          'detailid' => 0,
-          'jumlah'   => 0,
-          'hpp'      => 0,
-        ]);
-        //dd(count($getBarang));
-
-        //ambil data, simpan dalam array untuk diolah pada proses update
-        $totalPermintaan = $hasilConvert;
-        for ($k = 0; $k < count($getBarang); $k++) 
-        {
-          $totalQty = $getBarang[$k]->sm_qty - $getBarang[$k]->sm_qty_used;
-          if ($totalPermintaan <= $totalQty) 
-          {
-            $total[$k]['detailid'] = $getBarang[$k]->sm_detailid;
-            $total[$k]['jumlah'] = $totalPermintaan;
-            $total[$k]['hpp'] = $getBarang[$k]->sm_hpp;
-            $k = count($getBarang);
-          } 
-          elseif ($totalPermintaan > $totalQty) 
-          {
-            $total[$k]['detailid'] = $getBarang[$k]->sm_detailid;
-            $total[$k]['jumlah'] = $totalQty;
-            $total[$k]['hpp'] = $getBarang[$k]->sm_hpp;
-            $totalPermintaan = $totalPermintaan - $totalQty;
-          }
-        }
-
-        for ($l = 0; $l < count($total); $l++) 
-        {
-          $getMaxDetail = DB::table('d_stock_mutation')
-              ->where('sm_stock', '=', $dstock_id->s_id)
-              ->select('sm_detailid')
-              ->max('sm_detailid');
-
-          if ($getMaxDetail == null) 
-          {
-            $detailid = 1;
-          } 
-          else 
-          {
-            $detailid = $getMaxDetail + 1;
-          }
-
-          $getSmUse = DB::table('d_stock_mutation')
-              ->select('sm_qty_used')
-              ->where('sm_stock', '=', $dstock_id->s_id)
-              ->where('sm_detailid', '=', $total[$l]['detailid'])
-              ->get();
-
-          $updateQty = $getSmUse[0]->sm_qty_used + $total[$l]['jumlah'];
-
-          DB::table('d_stock_mutation')
-              ->where('sm_stock', '=', $dstock_id->s_id)
-              ->where('sm_detailid', '=', $total[$l]['detailid'])
-              ->update(array(
-                  'sm_qty_used' => $updateQty
-              ));
-        }
+        if(mutasi::mutasiStok(
+          $request->fieldItemId[$i], //item id
+          $hasilConvert, //qty hasil convert satuan terpilih -> satuan primary 
+          $comp = $grup, //posisi gudang berdasarkan type item
+          $position = $grup, //posisi gudang berdasarkan type item
+          $flag = 13, //sm mutcat
+          $request->kodeReturn
+        )) {}
 
         //insert d_purchasingreturn_dt
         $dataIsi = new d_purchasingreturn_dt;
         $dataIsi->d_pcsrdt_idpcsr = $lastId;
-        $dataIsi->d_pcsrdt_smdetail = $hasil_id;
         $dataIsi->d_pcsrdt_item = $request->fieldItemId[$i];
         $dataIsi->d_pcsrdt_sat = $request->fieldSatuanId[$i];
         $dataIsi->d_pcsrdt_qty = $request->fieldQty[$i];
@@ -506,6 +493,88 @@ class ReturnPembelianController extends Controller
   }
 
   public function updateDataReturn(Request $request)
+  {
+    //dd($request->all());
+    DB::beginTransaction();
+    try {
+      //update to table d_purchasingreturn
+      $data_header = d_purchasingreturn::find($request->idReturn);
+      $data_header->d_pcsr_dateupdated = date('Y-m-d',strtotime(Carbon::now()));
+      $data_header->d_pcsr_updated = Carbon::now();
+      $data_header->d_pcsr_pricetotal = $request->priceTotalRaw;
+      if ($request->methodReturn == "PN") 
+      {
+        $data_header->d_pcsr_priceresult = $request->priceTotalNett - $request->priceTotalRaw;
+      }
+      else
+      {
+        $data_header->d_pcsr_priceresult = $request->priceTotalNett;
+      }
+      $data_header->save();
+
+      //variabel untuk cek jumlah field
+      $hitung_field_edit = count($request->fieldIdItem);
+      for ($i=0; $i < $hitung_field_edit; $i++) 
+      { 
+        //variabel u/ cek primary satuan
+        $primary_sat = DB::table('m_item')->select('m_item.*')->where('i_id', $request->fieldIdItem[$i])->first();        
+        //konversi stok setelah update
+        if ($primary_sat->i_sat1 == $request->fieldSatuanId[$i]) 
+        {
+          $hasilConvert = (int)$request->fieldQty[$i] * (int)$primary_sat->i_sat_isi1;
+          $hasilConvertLalu = (int)$request->fieldQtyLalu[$i] * (int)$primary_sat->i_sat_isi1;
+          $hasilSelisih = $hasilConvert - $hasilConvertLalu;
+        }
+        elseif ($primary_sat->i_sat2 == $request->fieldSatuanId[$i])
+        {
+          $hasilConvert = (int)$request->fieldQty[$i] * (int)$primary_sat->i_sat_isi2;
+          $hasilConvertLalu = (int)$request->fieldQtyLalu[$i] * (int)$primary_sat->i_sat_isi2;
+          $hasilSelisih = $hasilConvert - $hasilConvertLalu;
+        }
+        else
+        {
+          $hasilConvert = (int)$request->fieldQty[$i] * (int)$primary_sat->i_sat_isi3;
+          $hasilConvertLalu = (int)$request->fieldQtyLalu[$i] * (int)$primary_sat->i_sat_isi3;
+          $hasilSelisih = $hasilConvert - $hasilConvertLalu;
+        }
+
+        $grup = $this->getGroupGudang($request->fieldIdItem[$i]);
+        //update d_stock
+        if(mutasi::updateMutasi(
+          $request->fieldIdItem[$i], //item id
+          $hasilSelisih, //qty hasil convert satuan terpilih -> satuan primary 
+          $comp = $grup, //posisi gudang berdasarkan type item
+          $position = $grup, //posisi gudang berdasarkan type item
+          $flag = 13, //sm mutcat
+          $request->codeReturn
+        )) {}
+
+        //update to table d_purchasingreturn_dt
+        $data_isi = d_purchasingreturn_dt::find($request->fieldIdDt[$i]);
+        $data_isi->d_pcsrdt_qty = $request->fieldQty[$i];
+        $data_isi->d_pcsrdt_price = $request->fieldHargaRaw[$i];
+        $data_isi->d_pcsrdt_pricetotal = $request->fieldHargaTotalRaw[$i];
+        $data_isi->d_pcsrdt_updated = Carbon::now();
+        $data_isi->save();
+      } 
+      
+    DB::commit();
+    return response()->json([
+          'status' => 'sukses',
+          'pesan' => 'Data Retur Pembelian Berhasil Diupdate'
+      ]);
+    } 
+    catch (\Exception $e) 
+    {
+      DB::rollback();
+      return response()->json([
+          'status' => 'gagal',
+          'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
+      ]);
+    }
+  }
+
+  /*public function updateDataReturn(Request $request)
   {
     //dd($request->all());
     DB::beginTransaction();
@@ -573,6 +642,7 @@ class ReturnPembelianController extends Controller
 
         //update d_stock
         $grup2 = $this->getGroupGudang($request->fieldIdItem[$i]);
+
         $stokAkhir2 = (int)$stokAkhir - (int)$hasilConvert;
         DB::table('d_stock')
           ->where('s_item', $request->fieldIdItem[$i])
@@ -700,75 +770,89 @@ class ReturnPembelianController extends Controller
           'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
       ]);
     }
-  }
+  }*/
 
   public function deleteDataReturn(Request $request)
   {
     //dd($request->all());
     DB::beginTransaction();
     try {
-      //cari item & qty purchasingreturn_dt
-      $query = DB::table('d_purchasingreturn_dt')->select('d_pcsrdt_item', 'd_pcsrdt_qty', 'd_pcsrdt_smdetail', 'd_pcsrdt_sat')->where('d_pcsrdt_idpcsr', $request->id)->get();
-
-      foreach ($query as $value) 
+      //ambil code d_purchasing_return
+      $code_retur = DB::table('d_purchasingreturn')
+                      ->select('d_pcsr_code','d_pcsr_pcsid')
+                      ->where('d_pcsr_id', $request->id)
+                      ->first();
+      //ambil data d_stock_mutation 
+      $data_sm = DB::table('d_stock_mutation')
+                    ->where('sm_reff', $code_retur->d_pcsr_code)
+                    ->orderBy('sm_stock','ASC')
+                    ->orderBy('sm_detailid','ASC')
+                    ->get();
+      //ambil code d_purchasing 
+      $code_po = DB::table('d_purchasing')
+                    ->select('d_pcs_code')
+                    ->where('d_pcs_id', $code_retur->d_pcsr_pcsid)
+                    ->first();
+      //dd($data_sm);
+      foreach ($data_sm as $value) 
       {
-        //array variabel item m_item
-        $item[] = $value->d_pcsrdt_item;
-        //array variabel qty return
-        $qty_return[] = $value->d_pcsrdt_qty;
-        //array variabel sm_detailid
-        $id_smdetail[] = $value->d_pcsrdt_smdetail;
-        //array variabel satuanid
-        $id_satuan[] = $value->d_pcsrdt_sat;
+        //array variabel u/ simpan data stok mutasi
+        $sm_stock[] = $value->sm_stock;
+        $sm_detailid[] = $value->sm_detailid;
+        $sm_item[] = $value->sm_item;
+        $sm_qty[] = $value->sm_qty;
       }
 
-      $hitung_row = count($item);
-      for ($i=0; $i < $hitung_row; $i++) 
+      for ($i=0; $i < count($sm_stock); $i++) 
       { 
-        $grup = $this->getGroupGudang($item[$i]);
+        $grup = $this->getGroupGudang($sm_item[$i]);
         //cari id & s_qty d_stock
         $q_dstock = DB::table('d_stock')
           ->select('s_id', 's_qty')
-          ->where('s_item', $item[$i])
+          ->where('s_item', $sm_item[$i])
           ->where('s_comp', $grup)
           ->where('s_position', $grup)
           ->first();
-        //array variabel id_stock (d_stock)
-        $id_stock[] = $q_dstock->s_id;
         //array variabel qty_stock (d_stock)
-        $qty_stock[] = $q_dstock->s_qty;
-      }
-
-      for ($i=0; $i < $hitung_row ; $i++) 
-      {
-        //variabel u/ cek primary satuan
-        $primary_sat = DB::table('m_item')->select('m_item.*')->where('i_id', $item[$i])->first();
-        //konversi qty
-        if ($primary_sat->i_sat1 == $id_satuan[$i]) 
-        {
-          $hasilConvert = (int)$qty_return[$i] * (int)$primary_sat->i_sat_isi1;
-        }
-        elseif ($primary_sat->i_sat2 == $id_satuan[$i])
-        {
-          $hasilConvert = (int)$qty_return[$i] * (int)$primary_sat->i_sat_isi2;
-        }
-        else
-        {
-          $hasilConvert = (int)$qty_return[$i] * (int)$primary_sat->i_sat_isi3;
-        }
-
-        $grup2 = $this->getGroupGudang($item[$i]);
+        // $qty_stock[] = $q_dstock->s_qty;
         //kembalikan stok sebelum retur
-        $stokAkhir = (int)$hasilConvert + (int)$qty_stock[$i];
+        $stokAkhir = abs($sm_qty[$i]) + (int)$q_dstock->s_qty;
         // update d_stock
         DB::table('d_stock')
-          ->where('s_id', $id_stock[$i])
+          ->where('s_id', $sm_stock[$i])
           ->update(['s_qty' => $stokAkhir]);
+
+        //ambil data penerimaan d_stock_mutation 
+        $data_sm_masuk = DB::table('d_stock_mutation')
+                          ->where('sm_reff', $code_po->d_pcs_code)
+                          ->where('sm_qty_used', '>', 0)
+                          ->where('sm_mutcat', '14')
+                          ->orderBy('sm_stock','ASC')
+                          ->orderBy('sm_detailid','ASC')
+                          ->get();
+        // dd($data_sm_masuk);
+        for ($j=0; $j <count($data_sm_masuk); $j++) 
+        { 
+          if (abs($sm_qty[$j]) <= $data_sm_masuk[$j]->sm_qty_used) 
+          {
+            $qty_awal = (int)$data_sm_masuk[$j]->sm_qty_used + (int)$sm_qty[$j];
+            $qty_sisa = (int)$data_sm_masuk[$j]->sm_qty_sisa - (int)$sm_qty[$j];
+            // update d_stock_mutation
+            DB::table('d_stock_mutation')
+              ->where('sm_stock', '=', $data_sm_masuk[$j]->sm_stock)
+              ->where('sm_detailid', $data_sm_masuk[$j]->sm_detailid)
+              ->where('sm_mutcat', '14')
+              ->update(array(
+                  'sm_qty_used' => $qty_awal,
+                  'sm_qty_sisa' => $qty_sisa
+              ));
+          }
+        }
 
         //delete row table d_stock_mutation
         DB::table('d_stock_mutation')
-          ->where('sm_stock', '=', $id_stock[$i])
-          ->where('sm_detailid', '=', $id_smdetail[$i])
+          ->where('sm_stock', '=', $sm_stock[$i])
+          ->where('sm_detailid', '=', $sm_detailid[$i])
           ->delete();
       }
 

@@ -17,12 +17,12 @@
       </div>
 
       <div class="col-md-3 col-sm-3 col-xs-12" align="center">
-        <button class="btn btn-primary btn-sm btn-flat autoCari" type="button" onclick="lihatHistorybyTgl()">
+        <button class="btn btn-primary btn-sm btn-flat autoCari" type="button" onclick="lihatRevisiByTgl()">
           <strong>
             <i class="fa fa-search" aria-hidden="true"></i>
           </strong>
         </button>
-        <button class="btn btn-info btn-sm btn-flat refresh-data-history" type="button">
+        <button class="btn btn-info btn-sm btn-flat refresh-data-history" type="button" onclick="refreshTabelRevisi()">
           <strong>
             <i class="fa fa-undo" aria-hidden="true"></i>
           </strong>
@@ -31,10 +31,8 @@
 
       <div class="col-md-3 col-sm-3 col-xs-12" align="right">
         <select name="tampilData" id="tampil_data" class="form-control input-sm">
-          <option value="wait" class="form-control">Tampilkan Data : Waiting</option>
-          <option value="edit" class="form-control">Tampilkan Data : Dapat diedit</option>
-          <option value="confirm" class="form-control">Tampilkan Data : Disetujui</option>
-          <option value="received" class="form-control">Tampilkan Data : Selesai</option>
+          <option value="revisied" class="form-control">Tampilkan Data : Revisi</option>
+          <option value="received" class="form-control">Tampilkan Data : Diterima</option>
         </select>
       </div>
 
@@ -43,17 +41,16 @@
           <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="tbl-history">
             <thead>
               <tr>
-                <th class="wd-5p">No</th>
-                <th class="wd-15p">Id PO</th>
-                <th class="wd-15p">Nama Barang</th>
-                <th class="wd-10p">Satuan</th>
-                <th class="wd-15p">Supplier</th>
-                <th class="wd-10p">Tgl Pemintaan</th>
-                <th class="wd-5p">Qty</th>
-                <th class="wd-10p">Tgl Masuk</th>
-                <th class="wd-5p">Qty Masuk</th>
-                <th class="wd-10p">Status</th>
-                <th class="wd-5p">Aksi</th>
+                <th>No</th>
+                <th>Tgl Order</th>
+                <th>No Order</th>
+                <th>Staff</th>
+                <th>Supplier</th>
+                <th>Cara Bayar</th>
+                <th>Harga Total</th>
+                <th>Tgl Kirim</th>
+                <th>Status</th>
+                <th style="text-align: center;">Aksi</th>
               </tr>
             </thead>
 
