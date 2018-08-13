@@ -171,7 +171,8 @@ Route::get('/inventory/p_returncustomer/cust', 'Inventory\InventoryController@cu
 Route::get('/inventory/p_hasilproduksi/cari_nota', 'Inventory\InventoryController@cari_nota_produksi'); 
 Route::get('/inventory/p_returncustomer/cari_nota', 'Inventory\InventoryController@cari_nota_cust');
 /*End Inventory*/
-
+//mahmud stock opname
+Route::get('/inventory/stockopname/opname', 'Inventory\stockOpnameController@index');
 // Ari
 Route::get('/inventory/POSgrosir/print_setuju/{id}', 'transferItemGrosirController@print_setuju');
 Route::get('/inventory/POSgrosir/print_transfer/{id}', 'transferItemGrosirController@print_transfer');

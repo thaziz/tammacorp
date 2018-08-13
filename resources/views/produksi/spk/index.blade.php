@@ -33,11 +33,12 @@
         </ul>
 
         <div id="generalTabContent" class="tab-content responsive">
-          
+
+          @include('produksi.spk.formula-tab')
           <!-- /div index-tab -->
           @include('produksi.spk.index-tab')
           <!-- /div index-tab -->
-
+          @include('produksi.spk.inputdata-tab')
           <!-- div finishResult-tab -->
           @include('produksi.spk.finish-result-tab')
           <!-- End DIv finishResult-tab -->
@@ -66,36 +67,36 @@ $(document).ready(function() {
   cariTanggal();
 });
 
-  var indexTable = $('#data1').DataTable({
-      "destroy": true,
-      "processing" : true,
-      "serverside" : true,
-      "ajax": {
-          url : baseUrl + "/produksi/spk/tabelspk",
-          type: 'GET'
-      },
-      "columns": [
-        {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"},
-        {"data" : 'spk_date', name: 'spk_date', "width" : "10%"},
-        {"data" : 'spk_code', name: 'spk_code', "width" : "10%"},
-        {"data" : 'i_name', name: 'i_name', "width" : "25%"},
-        {"data" : 'pp_qty', name: 'pp_qty', "width" : "10%"},
-        {"data" : "status", "width" : "10%"},
-        {"data" : "action", orderable: false, searchable: false, "width" : "10%"},
-      ],
-      "language": {
-        "searchPlaceholder": "Cari Data",
-        "emptyTable": "Tidak ada data",
-        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-        "sSearch": '<i class="fa fa-search"></i>',
-        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-        "infoEmpty": "",
-        "paginate": {
-                "previous": "Sebelumnya",
-                "next": "Selanjutnya",
-             }
-      }
-  });
+  // var indexTable = $('#data1').DataTable({
+  //     "destroy": true,
+  //     "processing" : true,
+  //     "serverside" : true,
+  //     "ajax": {
+  //         url : baseUrl + "/produksi/spk/tabelspk",
+  //         type: 'GET'
+  //     },
+  //     "columns": [
+  //       {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"},
+  //       {"data" : 'spk_date', name: 'spk_date', "width" : "10%"},
+  //       {"data" : 'spk_code', name: 'spk_code', "width" : "10%"},
+  //       {"data" : 'i_name', name: 'i_name', "width" : "25%"},
+  //       {"data" : 'pp_qty', name: 'pp_qty', "width" : "10%"},
+  //       {"data" : "status", "width" : "10%"},
+  //       {"data" : "action", orderable: false, searchable: false, "width" : "10%"},
+  //     ],
+  //     "language": {
+  //       "searchPlaceholder": "Cari Data",
+  //       "emptyTable": "Tidak ada data",
+  //       "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+  //       "sSearch": '<i class="fa fa-search"></i>',
+  //       "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+  //       "infoEmpty": "",
+  //       "paginate": {
+  //               "previous": "Sebelumnya",
+  //               "next": "Selanjutnya",
+  //            }
+  //     }
+  // });
 
   var date = new Date();
   var newdateIndex = new Date(date);
@@ -198,21 +199,15 @@ $(document).ready(function() {
     });
   }
 
-  function ubahStatus(id)
-  {
-    if(confirm('Anda yakin ubah status transaksi ?'))
-    {
+  function ubahStatus(id){
+    if(confirm('Anda yakin ubah status transaksi ?')){
       // ajax delete data to database
       $.ajax({
           url : baseUrl + "/produksi/spk/ubah-status-spk/" + id,
           type: "get",
           dataType: "JSON",
-          success: function(response)
-          {
-            if(response.status == "sukses")
-            {
-              alert(response.pesan);
-              //call function
+          success: function(response){
+            if(response.status == "sukses"){
               refreshTabel();
               refreshTabel2();
             }
@@ -234,5 +229,29 @@ $(document).ready(function() {
   {
     $('#data3').DataTable().ajax.reload();
   }
+
+  function detailManSpk(id){
+    $.ajax({
+      url : baseUrl + "/produksi/spk/lihat-detail/",
+      type: "get",
+      data: {x:id},
+      success: function(response){
+        $('#view-formula').html(response);
+      }
+    })
+
+  }
+
+  function imputData(id){
+    $.ajax({
+      url : baseUrl + "/produksi/spk/input-data/",
+      type: "get",
+      data: {x:id},
+      success: function(response){
+        $('#view-actual').html(response);
+      }
+    })
+  }
+
 </script>
 @endsection()

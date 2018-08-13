@@ -64,45 +64,53 @@ class spkProductionController extends Controller
     return view('produksi.spk.data-plan',compact('productplan'));
   }
 
-  public function tabelSpk()
-  {
-    $spk = d_spk::join('m_item','spk_item','=','i_id')
-                ->join('d_productplan','pp_id','=','spk_ref')
-                ->select('spk_id', 'spk_date','i_name','pp_qty','spk_code','spk_status')
-                ->where('spk_status', '=', 'FN')
-                ->orderBy('spk_date', 'DESC')
-                ->get();
-    // dd($spk);    
-    return DataTables::of($spk)
-    ->addIndexColumn()
-    ->editColumn('status', function ($data) 
-      {
-      if ($data->spk_status == "FN") 
-      {
-        return '<span class="label label-info">Proses</span>';
-      }
-      elseif ($data->spk_status == "CL") 
-      {
-        return '<span class="label label-success">Selesai</span>';
-      }
-    })
-    ->addColumn('action', function($data)
-      {
-        return '<div class="text-center">
-                      <a class="btn btn-sm btn-success" href="javascript:void(0)" title="Detail"
-                          onclick=detailManSpk("'.$data->spk_id.'")><i class="fa fa-eye"></i> 
-                      </a>&nbsp;
-                      <a class="btn btn-sm btn-info" href="javascript:void(0)" title="Ubah Status"
-                          onclick=ubahStatus("'.$data->spk_id.'")><i class="glyphicon glyphicon-ok"></i>
-                      </a>
-                  </div>'; 
-      })
-    ->editColumn('spk_date', function ($user) {
-      return $user->spk_date ? with(new Carbon($user->spk_date))->format('d M Y') : '';
-    })
-    ->rawColumns(['status', 'action'])
-    ->make(true);
-  }
+  // public function tabelSpk()
+  // {
+  //   $spk = d_spk::join('m_item','spk_item','=','i_id')
+  //               ->join('d_productplan','pp_id','=','spk_ref')
+  //               ->select('spk_id', 'spk_date','i_name','pp_qty','spk_code','spk_status')
+  //               ->where('spk_status', '=', 'FN')
+  //               ->orderBy('spk_date', 'DESC')
+  //               ->get();
+  //   // dd($spk);    
+  //   return DataTables::of($spk)
+  //   ->addIndexColumn()
+  //   ->editColumn('status', function ($data) 
+  //     {
+  //     if ($data->spk_status == "FN") 
+  //     {
+  //       return '<span class="label label-info">Proses</span>';
+  //     }
+  //     elseif ($data->spk_status == "CL") 
+  //     {
+  //       return '<span class="label label-success">Selesai</span>';
+  //     }
+  //   })
+  //   ->addColumn('action', function($data)
+  //     {
+  //       return '<div class="text-center">
+  //                   <button class="btn btn-sm btn-success" 
+  //                             title="Detail" 
+  //                             type="button"
+  //                             data-toggle="modal"
+  //                             data-target="#myModalView"
+  //                             onclick=detailManSpk("'.$data->spk_id.'")>
+  //                             <i class="fa fa-eye"></i> 
+  //                     </button> &nbsp;
+  //                     <a      class="btn btn-sm btn-info" 
+  //                             href="javascript:void(0)" 
+  //                             title="Ubah Status"
+  //                             onclick=ubahStatus("'.$data->spk_id.'")>
+  //                             <i class="glyphicon glyphicon-ok"></i>
+  //                     </a>
+  //                 </div>'; 
+  //     })
+  //   ->editColumn('spk_date', function ($user) {
+  //     return $user->spk_date ? with(new Carbon($user->spk_date))->format('d M Y') : '';
+  //   })
+  //   ->rawColumns(['status', 'action'])
+  //   ->make(true);
+  // }
 
   public function getSpkByTgl($tgl1,$tgl2,$stat)
   {
@@ -115,7 +123,6 @@ class spkProductionController extends Controller
     $m2 = substr($tgl2, -7,-5);
     $d2 = substr($tgl2,0,2);
     $tanggal2 = $y2.'-'.$m2.'-'.$d2;
-    // dd(array($tanggal1, $tanggal2));
     
     $spk = d_spk::join('m_item','spk_item','=','i_id')
                 ->join('d_productplan','pp_id','=','spk_ref')
@@ -128,27 +135,50 @@ class spkProductionController extends Controller
       
     return DataTables::of($spk)
     ->addIndexColumn()
-    ->editColumn('status', function ($data) 
-      {
-        if ($data->spk_status == "FN") 
-      {
+    ->editColumn('status', function ($data) {
+        if ($data->spk_status == "FN") {
         return '<span class="label label-info">Proses</span>';
-      }
-      elseif ($data->spk_status == "CL") 
-      {
+      }elseif ($data->spk_status == "CL") {
         return '<span class="label label-success">Selesai</span>';
       }
     })
-    ->addColumn('action', function($data)
-      {
+    ->addColumn('action', function($data){
+      if ($data->spk_status == "FN") {
         return '<div class="text-center">
-                  <a class="btn btn-sm btn-success" href="javascript:void(0)" title="Detail"
-                      onclick=detailManSpk("'.$data->spk_id.'")><i class="fa fa-eye"></i> 
-                  </a>&nbsp;
-                  <a class="btn btn-sm btn-info" href="javascript:void(0)" title="Ubah Status"
-                      onclick=ubahStatus("'.$data->spk_id.'")><i class="glyphicon glyphicon-ok"></i>
-                  </a>
+                  <button class="btn btn-sm btn-success" 
+                          title="Detail" 
+                          type="button"
+                          data-toggle="modal"
+                          data-target="#myModalView"
+                          onclick=detailManSpk("'.$data->spk_id.'")>
+                          <i class="fa fa-eye"></i> 
+                  </button>&nbsp;
+                  <button class="btn btn-sm btn-info" 
+                          title="Ubah Status"
+                          onclick=ubahStatus("'.$data->spk_id.'")>
+                          <i class="glyphicon glyphicon-ok"></i>
+                  </button>
+          </div>'; 
+      }else{
+        return '<div class="text-center">
+                    <button class="btn btn-sm btn-success" 
+                              title="Detail" 
+                              type="button"
+                              data-toggle="modal"
+                              data-target="#myModalView"
+                              onclick=detailManSpk("'.$data->spk_id.'")>
+                              <i class="fa fa-eye"></i> 
+                    </button>&nbsp;
+                    <button class="btn btn-sm btn-info" 
+                            title=Input data"
+                            type="button"
+                            data-toggle="modal"
+                            data-target="#myModalActual"
+                            onclick=imputData("'.$data->spk_id.'")>
+                            <i class="fa fa-check-square-o"></i>
+                    </button>
                 </div>'; 
+      }
     })
 
     ->editColumn('spk_date', function ($user) {
@@ -187,6 +217,37 @@ class spkProductionController extends Controller
         'status' => 'sukses',
         'pesan' => 'Status SPK telah berhasil diubah',
     ]);
+  }
+
+  public function lihatFormula(Request $request){
+    $spk = d_spk::select( 'pp_date',
+                          'i_name',
+                          'pp_qty',
+                          'spk_code')
+      ->where('spk_id',$request->x)
+      ->join('m_item','i_id','=','spk_item')
+      ->join('d_productplan','pp_id','=','spk_ref')
+      ->get();
+      // dd($spk);
+    $formula = spk_formula::select( 'i_code',
+                                    'i_name',
+                                    'fr_value',
+                                    'm_sname')
+      ->where('fr_spk',$request->x)
+      ->join('m_item','i_id','=','fr_formula')
+      ->join('m_satuan','m_sid','=','fr_scale')
+      ->get();
+
+    return view('produksi.spk.detail-formula',compact('spk','formula'));
+
+  }
+
+  public function inputData(Request $request){
+    $spk = d_spk::select( 'spk_id')
+      ->where('spk_id',$request->x)
+      ->first();
+
+    return view('produksi.spk.table-inputactual',compact('spk')); 
   }
 }
 
