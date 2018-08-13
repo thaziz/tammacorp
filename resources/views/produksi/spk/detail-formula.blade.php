@@ -12,7 +12,7 @@
               <div class="form-group">
                 <input class="form-control" readonly type="text" name="tgl_plan" id="tgl_planD" 
                 value="{{ $item->pp_date }}"> 
-                 <input class="form-control" type="hidden" name="id_plan" id="id_plan">               
+                 <input class="form-control" type="hidden" name="id_plan" id="id_plan">
               </div>
             </div>
 
@@ -81,7 +81,7 @@
         </div>
             
         <div class="modal-footer">
-          <button class="btn btn-link" type="button"><i class="glyphicon glyphicon-print"></i>&nbsp;Print</button>
+          <a class="btn btn-primary" target="_blank" href="{{route('spk_print', ['spk_id' => $item->spk_id])}}"><i class="fa fa-print"></i>&nbsp;Print</a>
           <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
           
         </div>
