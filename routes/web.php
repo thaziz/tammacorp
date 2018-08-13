@@ -144,6 +144,11 @@ Route::post('/purchasing/belanjaharian/simpan-barang', 'Pembelian\BelanjaHarianC
 // Ari
 Route::get('/purchasing/belanjaharian/print/{id}', 'Pembelian\BelanjaHarianController@print');
 // irA
+//p_belanjaharian
+Route::get('/purchasing/p_belanjaharian/index', 'Pembelian\PenerimaanBrgHarianController@index');
+Route::get('/purchasing/p_belanjaharian/lookup-data-pembelian', 'Pembelian\PenerimaanBrgHarianController@lookupDataBelanja');
+Route::get('/purchasing/p_belanjaharian/get-data-form/{id}', 'Pembelian\PenerimaanBrgHarianController@getDataForm');
+Route::post('/purchasing/p_belanjaharian/simpan-penerimaan', 'Pembelian\PenerimaanBrgHarianController@simpanPenerimaan');
 //return pembelian
 Route::get('/purchasing/returnpembelian/pembelian', 'Pembelian\ReturnPembelianController@index');
 Route::get('/purchasing/returnpembelian/tambah-return', 'Pembelian\ReturnPembelianController@tambahReturn');
@@ -223,10 +228,10 @@ Route::get('/inventory/p_suplier/edit_pensuplier', 'Inventory\penerimaanbarang_s
 Route::get('/inventory/p_suplier/cari_nota', 'Inventory\penerimaanbarang_supController@cari_nota_sup');
 Route::get('/inventory/p_suplier/get_data_po', 'Inventory\PenerimaanBrgSupController@get_data_po');
 Route::get('/inventory/p_suplier/list_po', 'Inventory\PenerimaanBrgSupController@list_po');
-//end rizky
 // Ari
 Route::get('/inventory/p_suplier/print/{id}', 'Inventory\PenerimaanBrgSupController@print');
 // irA
+//end rizky
 /*End Inventory*/
 /*Produksi*/
 Route::get('/produksi/spk/spk', 'ProduksiController@spk');
