@@ -280,6 +280,7 @@ class PengambilanItemController extends Controller
                           type="button"
                           data-toggle="modal"
                           data-target="#modalDetailProduksi" 
+                          onclick="lihatItem('.$data->do_id.')"
                           class="btn btn-info fa fa-eye btn-sm"
                   </button>
                 </div>';
@@ -292,8 +293,8 @@ class PengambilanItemController extends Controller
   }
 
   public function itemTabelKirim($id){
-    $data = d_delivery_orderdt::
-        where('dod_do','=',$id)
+    $data = d_delivery_orderdt::where('dod_do','=',$id)
+        ->join('m_item','i_id','=','dod_item')
         ->get();
      
     return DataTables::of($data)
@@ -310,8 +311,7 @@ class PengambilanItemController extends Controller
   }
 
   public function orderId(Request $request){
-    $data = d_delivery_order::
-        select('do_id')
+    $data = d_delivery_order::select('do_id')
         ->where('do_id','=',$request->x)
         ->first();
 
