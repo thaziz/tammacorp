@@ -102,7 +102,7 @@
                   <th width="10%;">Satuan</th>
                   <th width="15%;">Harga Satuan</th>
                   <th class="15%;">Harga Total</th>
-                  <th class="15%;">Satuan</th>
+                  <th class="15%;">Stok</th>
                   <th width="5%;">Aksi</th>
                 </tr> 
               </thead>
