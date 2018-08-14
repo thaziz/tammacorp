@@ -34,6 +34,9 @@
               <!-- div manajemen-spk-tab -->
               @include('keuangan.spk.tab-manajemen-spk')
               <!-- /div manajemen-spk-tab -->
+              <!-- div manajemen-spk-tab -->
+              @include('keuangan.spk.detail-spk')
+              <!-- /div manajemen-spk-tab -->
             </div>
           </div>
         </div>
@@ -374,6 +377,16 @@
     $('#table-spk').DataTable().ajax.reload();
   }
 
+  function detailManSpk(id){
+    $.ajax({
+      url : baseUrl + "/keuangan/spk/lihat-detail/",
+      type: "get",
+      data: {x:id},
+      success: function(response){
+        $('#view-formula').html(response);
+      }
+    })
+  }
   
   
 </script>
