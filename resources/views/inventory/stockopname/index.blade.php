@@ -32,7 +32,7 @@
                       </ul>
 
                       <div id="generalTabContent" class="tab-content responsive">
-                  
+                      
                         <!-- Div #alert-tab -->
                         @include('inventory.stockopname.daftar')
                         <!-- End Div #alert-tab -->
@@ -65,70 +65,29 @@
 
 @endsection
 @section("extra_scripts")
+    <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
     <script type="text/javascript">
-     $(document).ready(function() {
-    var extensions = {
-        "sFilterInput": "form-control input-sm",
-        "sLengthSelect": "form-control input-sm"
-    }
-    // Used when bJQueryUI is false
-    $.extend($.fn.dataTableExt.oStdClasses, extensions);
-    // Used when bJQueryUI is true
-    $.extend($.fn.dataTableExt.oJUIClasses, extensions);
-    $('#data').dataTable({
-        "responsive":true,
-        "pageLength": 10,
-        "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
-        "language": {
-            "searchPlaceholder": "Cari Data",
-            "emptyTable": "Tidak ada data",
-            "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-            "sSearch": '<i class="fa fa-search"></i>',
-            "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-            "infoEmpty": "",
-            "paginate": {
-                    "previous": "Sebelumnya",
-                    "next": "Selanjutnya",
-                 }
-          }
+    $(document).ready(function() {
+      var extensions = {
+          "sFilterInput": "form-control input-sm",
+          "sLengthSelect": "form-control input-sm"
+      }
+      // Used when bJQueryUI is false
+      $.extend($.fn.dataTableExt.oStdClasses, extensions);
+      // Used when bJQueryUI is true
+      $.extend($.fn.dataTableExt.oJUIClasses, extensions);
 
-        });
-    $('#data2').dataTable({
-        "responsive":true,
-        "pageLength": 10,
-        "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
-        "language": {
-            "searchPlaceholder": "Cari Data",
-            "emptyTable": "Tidak ada data",
-            "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-            "sSearch": '<i class="fa fa-search"></i>',
-            "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-            "infoEmpty": "",
-            "paginate": {
-                    "previous": "Sebelumnya",
-                    "next": "Selanjutnya",
-                 }
-          }
+      $('#tabelOpname').DataTable();
+
     });
 
-    $('#data3').dataTable({
-        "responsive":true,
-        "pageLength": 10,
-        "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
-        "language": {
-            "searchPlaceholder": "Cari Data",
-            "emptyTable": "Tidak ada data",
-            "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-            "sSearch": '<i class="fa fa-search"></i>',
-            "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-            "infoEmpty": "",
-            "paginate": {
-                    "previous": "Sebelumnya",
-                    "next": "Selanjutnya",
-                 }
-          }
+    $( "#nama-item" ).autocomplete({
+      source: baseUrl+'/inventory/namaitem/autocomplete',
+      minLength: 1,
+      select: function(event, ui) {
+
+        }
     });
 
-});
-      </script>
+    </script>
 @endsection

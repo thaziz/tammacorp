@@ -109,27 +109,13 @@ class PenerimaanBrgProdController extends Controller
         ->addColumn('action', function($data)
         {
             if ($data->dod_qty_received == '0' && $data->dod_date_received == null && $data->dod_time_received == null) {
-                            // <button class="btn btn-sm btn-info" title="Ubah Status"
-                            //     onclick=ubahStatus("'.$data->dod_do.'","'.$data->dod_detailid.'") disabled><i class="glyphicon glyphicon-ok"></i>
-                            // </button>
                 return '<div class="text-center">
                             <button class="btn btn-sm btn-success" title="Terima"
                                 onclick=terimaHasilProduksi("'.$data->dod_do.'","'.$data->dod_detailid.'")><i class="fa fa-plus"></i> 
                             </button>&nbsp;
                             
                         </div>';
-            }
-            // else
-            // {
-            //     return '<div class="text-center">
-            //                 <button class="btn btn-sm btn-warning" title="Edit"
-            //                     onclick=editHasilProduksi("'.$data->dod_do.'","'.$data->dod_detailid.'")><i class="fa fa-edit"></i>  
-            //                 </button>&nbsp;
-            //                 <button class="btn btn-sm btn-info" title="Ubah Status"
-            //                     onclick=ubahStatus("'.$data->dod_do.'","'.$data->dod_detailid.'")><i class="glyphicon glyphicon-ok"></i>
-            //                 </button>
-            //             </div>';
-            // }     
+            }   
         })
         ->editColumn('tanggalTerima', function ($data) 
         {
@@ -335,26 +321,12 @@ class PenerimaanBrgProdController extends Controller
         return DataTables::of($query)
         ->addIndexColumn()
         ->addColumn('action', function($data){
-            // if ($data->dod_qty_received == '0') {
                 return '<div class="text-center">
                             <button class="btn btn-sm btn-success" title="Terima"
                                 onclick=terimaHasilProduksi("'.$data->dod_do.'","'.$data->dod_detailid.'")><i class="fa fa-plus"></i> 
                             </button>&nbsp;
                         </div>';
-            // <button class="btn btn-sm btn-info" title="Ubah Status"
-            //     onclick=ubahStatus("'.$data->dod_do.'","'.$data->dod_detailid.'") disabled><i class="glyphicon glyphicon-ok"></i>
-            // </button>
-            // }
-            // else{
-            //     return '<div class="text-center">
-            //                 <button class="btn btn-sm btn-warning" title="Edit"
-            //                     onclick=editHasilProduksi("'.$data->dod_do.'","'.$data->dod_detailid.'")><i class="fa fa-edit"></i>  
-            //                 </button>&nbsp;
-            //                 <button class="btn btn-sm btn-info" title="Ubah Status"
-            //                     onclick=ubahStatus("'.$data->dod_do.'","'.$data->dod_detailid.'")><i class="glyphicon glyphicon-ok"></i>
-            //                 </button>
-            //             </div>';
-            // }     
+
         })
         ->editColumn('tanggalTerima', function ($data) 
         {
@@ -567,7 +539,7 @@ class PenerimaanBrgProdController extends Controller
               ]);
 
               d_stock_mutation::create([
-                  'sm_stock' => $id_stock->s_id,
+                  'sm_stock' => $id_stock,
                   'sm_detailid' =>1,
                   'sm_date' => Carbon::now(),
                   'sm_comp' => 2,
@@ -613,154 +585,5 @@ class PenerimaanBrgProdController extends Controller
           ]);
       }
     }
-
-    // public function update_data(Request $request)
-    // {
-    //     //dd($request->all());
-    //     DB::beginTransaction();
-    //     try 
-    //     {
-    //         //get stock item gdg Sending
-    //         $stok_item_gs = DB::table('d_stock')
-    //             ->where('s_comp','2')
-    //             ->where('s_position','5')
-    //             ->where('s_item',$request->idItemMasuk)
-    //             ->first();
-
-    //         //get stock item gdg Produksi
-    //         $stok_item_gp = DB::table('d_stock')
-    //             ->where('s_comp','6')
-    //             ->where('s_position','6')
-    //             ->where('s_item',$request->idItemMasuk)
-    //             ->first();
-
-    //         //get stock item gdg Grosir
-    //         $stok_item_gg = DB::table('d_stock')
-    //             ->where('s_comp','2')
-    //             ->where('s_position','2')
-    //             ->where('s_item',$request->idItemMasuk)
-    //             ->first();
-            
-    //         //stok dikembalikan sebelum terjadinya penambahan
-    //         $stok_prev_gdgSending = $stok_item_gs->s_qty + $request->qtyMasukPrev;
-    //         $stok_prev_gdgProd = $stok_item_gp->s_qty + $request->qtyMasukPrev;
-    //         $stok_prev_gdgGrosir = $stok_item_gg->s_qty - $request->qtyMasukPrev;
-    //         //stok ditambahkan dengan inputan
-    //         $stok_akhir_gdgSending = $stok_prev_gdgSending - $request->qtyDiterima;
-    //         $stok_akhir_gdgProd = $stok_prev_gdgProd - $request->qtyDiterima;
-    //         $stok_akhir_gdgGrosir = $stok_prev_gdgGrosir + $request->qtyDiterima;
-
-    //         //update d_delivery_orderdt
-    //         $date = Carbon::parse($request->tglMasuk)->format('Y-m-d');
-    //         $time = $request->jamMasuk.":00";
-    //         $now = Carbon::now();
-    //         DB::table('d_delivery_orderdt')
-    //                 ->where('dod_detailid', $request->detailId)
-    //                 ->where('dod_do',$request->doId)
-    //                 ->update(['dod_qty_received' => $request->qtyDiterima, 'dod_date_received' => $date, 'dod_time_received' => $time, 'dod_update' => $now]);
-                        
-    //         //update gdg Grosir
-    //         DB::table('d_stock')
-    //                 ->where('s_item', $request->idItemMasuk)
-    //                 ->where('s_comp','2')
-    //                 ->where('s_position','2')
-    //                 ->update(['s_qty' => $stok_akhir_gdgGrosir]);
-             
-    //         //update gdg Sending
-    //         DB::table('d_stock')
-    //                 ->where('s_item', $request->idItemMasuk)
-    //                 ->where('s_comp','2')
-    //                 ->where('s_position','5')
-    //                 ->update(['s_qty' => $stok_akhir_gdgSending]);
-
-    //         //update gdg Produksi
-    //         // DB::table('d_stock')
-    //         //         ->where('s_item', $request->idItemMasuk)
-    //         //         ->where('s_comp','6')
-    //         //         ->where('s_position','6')
-    //         //         ->update(['s_qty' => $stok_akhir_gdgProd]);
-
-    //         // //cek qty mutasi
-    //         // $total_qty_mutasi = DB::table('d_stock_mutation')
-    //         //     ->selectRaw('sum(sm_qty) as totalMutasi')
-    //         //     ->where('sm_stock',$request->modalIdStockInput)
-    //         //     ->where('sm_item',$request->modalNamaItemInput)
-    //         //     ->where('sm_comp',"2")
-    //         //     ->first();
-                
-    //         // //jika jumlah qty pd mutasi sama dengan qty total pengiriman   
-    //         // if ($total_qty_mutasi->totalMutasi == $request->modalTotalKirim || $total_qty_mutasi->totalMutasi < $request->modalFieldBatasAtas) 
-    //         // {
-    //         //     //update status to finish
-    //         //     $update = DB::table('d_productresult')
-    //         //         ->where('pr_id', $request->modalIdProductResultInput)
-    //         //         ->update(['prdt_status' => "FN"]);
-    //         // }            
-
-    //         DB::commit();
-    //         return response()->json([
-    //             'status' => 'Sukses',
-    //             'pesan' => 'Data Telah Berhasil di Update'
-    //         ]);
-    //     } 
-    //     catch (\Exception $e) 
-    //     {
-    //         DB::rollback();
-    //         return response()->json([
-    //             'status' => 'gagal',
-    //             'data' => $e->getMessage()
-    //         ]);
-    //     }
-    // }
-
-    // public function ubah_status_transaksi($dod_do, $dod_detailid){
-    //     //get recent status DO
-    //     $recentStatusDo = DB::table('d_delivery_orderdt')
-    //                         ->where('dod_do',$dod_do)
-    //                         ->where('dod_detailid',$dod_detailid)
-    //                         ->first();
-
-    //     if ($recentStatusDo->dod_status == "WT") {
-    //         //update status to FN
-    //         DB::table('d_delivery_orderdt')
-    //             ->where('dod_do',$dod_do)
-    //             ->where('dod_detailid',$dod_detailid)
-    //             ->update(['dod_status' => "FN"]);
-    //     }else{
-    //         //update status to WT
-    //         DB::table('d_delivery_orderdt')
-    //             ->where('dod_do',$dod_do)
-    //             ->where('dod_detailid',$dod_detailid)
-    //             ->update(['dod_status' => "WT"]);
-    //     }
-
-    //     //get recent status Product Result detail
-    //     $recentStatusPrdt = DB::table('d_productresult_dt')
-    //                             ->where('prdt_productresult',$recentStatusDo->dod_prdt_productresult)
-    //                             ->where('prdt_detail',$recentStatusDo->dod_prdt_detail)
-    //                             ->first();
-
-    //     if ($recentStatusPrdt->prdt_status != "RC") 
-    //     {
-    //         //update status to RC
-    //         DB::table('d_productresult_dt')
-    //             ->where('prdt_productresult',$recentStatusPrdt->prdt_productresult)
-    //             ->where('prdt_detail',$recentStatusPrdt->prdt_detail)
-    //             ->update(['prdt_status' => "RC"]);
-    //     }
-    //     else
-    //     {
-    //         //update status to SN
-    //         DB::table('d_productresult_dt')
-    //             ->where('prdt_productresult',$recentStatusPrdt->prdt_productresult)
-    //             ->where('prdt_detail',$recentStatusPrdt->prdt_detail)
-    //             ->update(['prdt_status' => "SN"]);
-    //     }
-        
-    //     return response()->json([
-    //         'status' => 'sukses',
-    //         'pesan' => 'Status penerimaan telah berhasil diubah',
-    //     ]);
-    // }
 
 }

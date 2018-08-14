@@ -54,8 +54,7 @@ class spkFinancialController extends Controller
     ->make(true);
   }
 
-  public function getDataTabelSpk($tgl1,$tgl2,$tampil="semua")
-  {
+  public function getDataTabelSpk($tgl1,$tgl2,$tampil="semua"){
     $y = substr($tgl1, -4);
     $m = substr($tgl1, -7,-5);
     $d = substr($tgl1,0,2);
@@ -115,6 +114,9 @@ class spkFinancialController extends Controller
           return '<div class="text-center">
                       <button class="btn btn-sm btn-success" 
                               title="Detail"
+                              type="button"
+                              data-toggle="modal"
+                              data-target="#myModalView"
                               onclick=detailManSpk("'.$data->spk_id.'")>
                               <i class="fa fa-eye"></i> 
                       </button>
@@ -122,14 +124,12 @@ class spkFinancialController extends Controller
         }elseif ($data->spk_status == 'FN') {
           return '<div class="text-center">
                       <button class="btn btn-sm btn-success" 
-                              title="Detail"
+                              title="Detail" 
+                              type="button"
+                              data-toggle="modal"
+                              data-target="#myModalView"
                               onclick=detailManSpk("'.$data->spk_id.'")>
                               <i class="fa fa-eye"></i> 
-                      </button>
-                      <button class="btn btn-sm btn-info status'.$data->spk_id.'" 
-                              title="Ubah Status"
-                              onclick=ubahStatus("'.$data->spk_id.'")>
-                              <i class="glyphicon glyphicon-ok"></i>
                       </button>
                   </div>';
         }else{
@@ -415,6 +415,28 @@ class spkFinancialController extends Controller
             'data'=>$spk ];
 
     return json_encode($data);
+  }
+
+  public function detailSpk(Request $request){
+    $spk = d_spk::select( 'pp_date',
+                          'i_name',
+                          'pp_qty',
+                          'spk_code')
+      ->where('spk_id',$request->x)
+      ->join('m_item','i_id','=','spk_item')
+      ->join('d_productplan','pp_id','=','spk_ref')
+      ->get();
+      // dd($spk);
+    $formula = spk_formula::select( 'i_code',
+                                    'i_name',
+                                    'fr_value',
+                                    'm_sname')
+      ->where('fr_spk',$request->x)
+      ->join('m_item','i_id','=','fr_formula')
+      ->join('m_satuan','m_sid','=','fr_scale')
+      ->get();
+
+    return view('keuangan.spk.detail-formula',compact('spk','formula'));
   }
 }
 

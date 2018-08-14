@@ -111,7 +111,7 @@ class PenjualanController extends Controller
     }
       public function mutasi()
     {
-      return view('/penjualan/mutasistok/mutasi');
+      return view('/penjualan/mutasistok/index');
     }
     public function tambah_promosi2()
     {
