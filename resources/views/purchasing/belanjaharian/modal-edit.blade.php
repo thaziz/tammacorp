@@ -57,27 +57,22 @@
             </div>
 
             <div class="col-md-3 col-sm-12 col-xs-12">
-              <label class="tebal">No Reff</label>
+              <label class="tebal">Divisi Peminta</label>
             </div>
 
             <div class="col-md-3 col-sm-12 col-xs-12">
               <div class="form-group">
-                <input id="no_reff_edit" class="form-control input-sm" name="noReffEdit" type="text" value="">
+                <input id="peminta_edit" class="form-control input-sm" name="pemintaEdit" type="text" value="" readonly>
               </div>
             </div>
 
             <div class="col-md-3 col-sm-12 col-xs-12">
-              <label class="tebal">Supplier</label>
+              <label class="tebal">Keperluan</label>
             </div>
 
             <div class="col-md-3 col-sm-12 col-xs-12">
-              <div class="input-group input-group-sm" style="width: 100%;">
-                <input type="text" id="nama_supplier_edit" name="namaSupplierEdit" class="form-control" required readonly>
-                <input type="hidden" id="id_supplier_edit" name="idSupplierEdit" class="form-control">
-                <span class="input-group-btn">
-                  <button  type="button" class="btn btn-info btn-sm btn_add_supplier" disabled data-toggle="modal" data-target="#modal-supplier"><i class="fa fa-plus"></i>
-                  </button>
-                </span>
+              <div class="form-group">
+                <input id="keperluan_edit" class="form-control input-sm" name="keperluanEdit" type="text" value="" readonly>
               </div>
             </div>
           </div>

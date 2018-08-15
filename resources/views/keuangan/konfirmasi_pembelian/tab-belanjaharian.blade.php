@@ -16,7 +16,7 @@
             <th class="wd-15p">Tgl Belanja</th>
             <th class="wd-15p">Kode</th>
             <th class="wd-15p">Staff</th>
-            <th class="wd-15p">Suplier</th>
+            <th class="wd-15p">Peminta</th>
             <th class="wd-15p">Tgl Disetujui</th>
             <th class="wd-15p">Harga Total</th>
             <th class="wd-10p">Status</th>

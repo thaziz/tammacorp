@@ -46,8 +46,8 @@
             <th>Tanggal Belanja</th>
             <th>Staff</th>
             <th>Nota</th>
-            <th>No Reff</th>
-            <th>Supplier</th>
+            <th>Peminta</th>
+            <th>Keperluan</th>
             <th>Total Biaya</th>
             <th>Status</th>
             <th>Aksi</th>

@@ -54,6 +54,7 @@
                       </div>
 
                       <div class="col-md-7 col-sm-6 col-xs-4" align="right" style="margin-top:5px;margin-right: -25px;">
+                        <a class="btn" onclick="tambahMasterSatuan()"><i class="fa fa-plus"></i>&nbsp; Master satuan</a></a>
                         <a href="{{ url('purchasing/belanjaharian/belanja') }}" class="btn"><i class="fa fa-arrow-left"></i></a>
                      </div>
                     </div>
@@ -104,24 +105,22 @@
                         </div>
 
                         <div class="col-md-2 col-sm-3 col-xs-12">
-                          <label class="tebal">No Reff</label>
+                          <label class="tebal">Divisi Peminta</label>
                         </div>
 
                         <div class="col-md-4 col-sm-9 col-xs-12">
                           <div class="form-group">
-                              <input type="text" class="form-control input-sm" name="noReff">
+                              <input type="text" class="form-control input-sm" name="divisiPeminta">
                           </div>
                         </div>
                         
                         <div class="col-md-2 col-sm-3 col-xs-12">
-                          <label class="tebal">Supplier</label>
+                          <label class="tebal">Keperluan</label>
                         </div>
 
                         <div class="col-md-4 col-sm-9 col-xs-12">
-                          <div class="input-group input-group-sm" style="width: 100%;">
-                            <input type="text" id="nama_supplier" name="namaSupplier" class="form-control" required>
-                            <input type="hidden" id="id_supplier" name="idSupplier" class="form-control">
-                            <span class="input-group-btn"><button  type="button" class="btn btn-info btn-sm btn_add_supplier" data-toggle="modal" data-target="#modal-supplier"><i class="fa fa-plus"></i></button></span>
+                          <div class="form-group">
+                              <input type="text" class="form-control input-sm" name="keperluan">
                           </div>
                         </div>
 
@@ -190,10 +189,10 @@
     </div>
   </div>
   <!--END PAGE WRAPPER-->
-  <!-- modal-supplier -->
-  @include('purchasing.belanjaharian.modal-supplier')
   <!-- modal-barang -->
   @include('purchasing.belanjaharian.modal-barang')
+  <!-- modal-satuan -->
+  @include('purchasing.belanjaharian.modal-satuan')
 @endsection
 @section("extra_scripts")
 <script src="{{ asset("js/inputmask/inputmask.jquery.js") }}"></script>
@@ -221,21 +220,6 @@
 
     $('.datepicker2').datepicker({
         format:"dd-mm-yyyy"
-    });
-
-    //autocomplete
-    $( "#nama_supplier" ).focus(function() {
-      $( "#nama_supplier" ).autocomplete({
-          source: baseUrl+'/purchasing/belanjaharian/autocomplete-supplier',
-          minLength: 1,
-          select: function(event, ui) {
-              $('#id_supplier').val(ui.item.id);
-              $('#nama_supplier').val(ui.item.label);
-              $("input[name='totalBayar']").focus();
-          }
-      });
-      $('#nama_supplier').val("");
-      $('input[name="totalBayar"]').val(convertDecimalToRupiah('0.00'));
     });
 
     //autocomplete
@@ -327,8 +311,9 @@
       rules:{
         tanggalBeli: "required",
         noReff: "required",
-        namaSupplier: "required",
-        totalBiaya: "required"
+        totalBiaya: "required",
+        divisiPeminta: "required",
+        keperluan: "required"
       },
       errorPlacement: function() {
           return false;
@@ -355,7 +340,7 @@
     $(".modal").on("hidden.bs.modal", function(){
       //reset all input txt field
       $('#form-master-barang')[0].reset();
-      $('#form-master-supplier')[0].reset();
+      $('#form-master-satuan')[0].reset();
       //remove class all jquery validation error
       $('.form-group').find('.error').removeClass('error');
     });
@@ -554,13 +539,10 @@
 
     //=======================================jquery handling modal master barang========================================
     //validasi
-    $("#form-master-supplier").validate({
+    $("#form-master-satuan").validate({
       rules:{
-        fNamaSupplier: "required",
-        fNamaPemilik: "required",
-        fNamaAlamat: "required",
-        fTelp: "required",
-        fKeterangan: 'required'
+        fnamaSat: "required",
+        fketeranganSat: "required"
       },
       errorPlacement: function() {
           return false;
@@ -619,27 +601,27 @@
     }
   }
 
-  function save_supplier() {
+  function save_satuan() {
     iziToast.question({
       close: false,
       overlay: true,
       displayMode: 'once',
       //zindex: 999,
-      title: 'Simpan Master Supplier',
+      title: 'Simpan Master Satuan',
       message: 'Apakah anda yakin ?',
       position: 'center',
       buttons: [
         ['<button><b>Ya</b></button>', function (instance, toast) {
-          var IsValid = $("form[name='formMasterSupplier']").valid();
+          var IsValid = $("form[name='formMasterSatuan']").valid();
           if(IsValid)
           {
-            $('#btn-simpan-supplier').text('Menyimpan...');
-            $('#btn-simpan-supplier').attr('disabled',true); 
+            $('#btn-simpan-satuan').text('Menyimpan...');
+            $('#btn-simpan-satuan').attr('disabled',true); 
             $.ajax({
-              url : baseUrl + "/purchasing/belanjaharian/buat-master-supplier",
-              type: "post",
+              url : baseUrl + "/purchasing/belanjaharian/simpan-satuan",
+              type: "POST",
               dataType: "JSON",
-              data: $('#form-master-supplier').serialize(),
+              data: $('#form-master-satuan').serialize(),
               success: function(response)
               {
                 if(response.status == "sukses")
@@ -650,9 +632,9 @@
                     title: 'Pemberitahuan',
                     message: response.pesan,
                     onClosing: function(instance, toast, closedBy){
-                      $('#btn-simpan-supplier').text('Simpan Data'); //change button text
-                      $('#btn-simpan-supplier').attr('disabled',false); //set button enable
-                      $('#modal-supplier').modal('hide');
+                      $('#btn-simpan-satuan').text('Simpan Data'); //change button text
+                      $('#btn-simpan-satuan').attr('disabled',false); //set button enable
+                      $('#modal-satuan').modal('hide');
                     }
                   });
                 }
@@ -664,9 +646,9 @@
                     title: 'Pemberitahuan',
                     message: response.pesan,
                     onClosing: function(instance, toast, closedBy){
-                      $('#btn-simpan-supplier').text('Simpan Data'); //change button text
-                      $('#btn-simpan-supplier').attr('disabled',false); //set button enable
-                      $('#modal-supplier').modal('hide');
+                      $('#btn-simpan-satuan').text('Simpan Data'); //change button text
+                      $('#btn-simpan-satuan').attr('disabled',false); //set button enable
+                      $('#modal-satuan').modal('hide');
                     }
                   }); 
                 }
@@ -846,6 +828,24 @@
     });
   }
 
+  function tambahMasterSatuan() 
+  {
+    $.ajax({
+      url : baseUrl + "/purchasing/belanjaharian/get-data-kodesatuan",
+      type: "GET",
+      dataType: "JSON",
+      success: function(data)
+      {
+        $('#fkode_sat').val(data.kode);
+        $('#modal-satuan').modal('show');
+      },
+      error: function (jqXHR, textStatus, errorThrown)
+      {
+        alert('Error get data from ajax');
+      }
+    });
+  }
+
   function convertDecimalToRupiah(decimal) 
   {
     var angka = parseInt(decimal);
@@ -906,7 +906,6 @@
 
     total = convertToRupiah(total);
     $('[name="totalBiaya"]').val(total);
-  }
-  
+  }  
 </script>
 @endsection()
