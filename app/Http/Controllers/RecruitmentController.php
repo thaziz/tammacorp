@@ -53,10 +53,10 @@ class RecruitmentController extends Controller
 
 
             DB::commit();
-            return 'sukses';
+            return redirect('/recruitment#apply')->with(['sukses' => 'Data berhasil disimpan']);
 
         } catch (\Exception $e){
-            return $e;
+            return redirect('/recruitment#apply')->with(['gagal' => 'Data berhasil disimpan, Ulangi sekali lagi']);
         }
     }
 }

@@ -71,6 +71,17 @@
       <div class="container text-center">
         <div class="row">
           <div class="col-lg-10 mx-auto">
+            @if ($message = Session::get('sukses'))
+              <div class="alert alert-success alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Sukses!</strong> Data berhasil disimpan.
+              </div>
+            @elseif($message = Session::get('gagal'))
+              <div class="alert alert-danger alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Gagal!</strong> Silahkan coba beberapa saat lagi.
+              </div>
+            @endif
             <form class="formlamaran" action="{{ url('recruitment/save') }}" method="post">
                {{ csrf_field() }}
               <div class="form-group row">
@@ -231,6 +242,7 @@
     <script src="{{ asset('assets/recruitment/vendor/dobPicker.min.js') }}"></script>
 
     <script type="text/javascript">
+      
       $(document).ready(function(){
         $.dobPicker({
           // Selectopr IDs
@@ -249,6 +261,7 @@
           // Maximum age
           maximumAge: 80
         });
+
       });
     </script>
 
