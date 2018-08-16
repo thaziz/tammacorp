@@ -209,13 +209,36 @@
 
                     }
 
-                    function imputData(id) {
+                    function inputData(id) {
                         $.ajax({
                             url: baseUrl + "/produksi/spk/input-data/",
                             type: "get",
                             data: {x: id},
                             success: function (response) {
                                 $('#view-actual').html(response);
+                            }
+                        })
+                    }
+
+                    function saveActual(id) {
+                        var myForm = $('#myFormActual').serialize();
+                        $.ajax({
+                            url: baseUrl + "/produksi/o_produksi/save/actual/" + id,
+                            type: "get",
+                            data: myForm,
+                            success: function (response) {
+                                if (response.status == 'sukses') {
+                                    $('#myModalActual').modal('hide');
+                                    iziToast.success({timeout: 5000,
+                                        position: "topRight",
+                                        icon: 'fa fa-chrome',
+                                        title: '',
+                                        message: 'Data actual tersimpan.'});
+                                } else {
+                                    iziToast.error({position: "topRight",
+                                        title: '',
+                                        message: 'Data actual gagal tersimpan.'});
+                                }
                             }
                         })
                     }

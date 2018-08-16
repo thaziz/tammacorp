@@ -12,6 +12,7 @@ use App\m_item;
 use App\d_send_product;
 use App\d_productplan;
 use App\spk_formula;
+use App\spk_actual;
 use App\Http\Requests;
 use Illuminate\Http\Request;
 
@@ -129,7 +130,7 @@ class spkProductionController extends Controller
                             type="button"
                             data-toggle="modal"
                             data-target="#myModalActual"
-                            onclick=imputData("' . $data->spk_id . '")>
+                            onclick=inputData("' . $data->spk_id . '")>
                             <i class="fa fa-check-square-o"></i>
                     </button>
                 </div>';
@@ -179,7 +180,7 @@ class spkProductionController extends Controller
             ->join('m_item', 'i_id', '=', 'spk_item')
             ->join('d_productplan', 'pp_id', '=', 'spk_ref')
             ->get();
-        // dd($spk);
+
         $formula = spk_formula::select('i_code',
             'i_name',
             'fr_value',
@@ -199,7 +200,10 @@ class spkProductionController extends Controller
             ->where('spk_id', $request->x)
             ->first();
 
-        return view('produksi.spk.table-inputactual', compact('spk'));
+        $actual = spk_actual::where('ac_spk', $request->x)
+            ->first();
+
+        return view('produksi.spk.table-inputactual', compact('spk', 'actual'));
     }
 
     public function print($spk_id)
@@ -212,8 +216,7 @@ class spkProductionController extends Controller
             ->join('m_item', 'i_id', '=', 'spk_item')
             ->join('d_productplan', 'pp_id', '=', 'spk_ref')
             ->get()->toArray();
-        // dd($spk);
-        // return $spk;
+
         $formula = spk_formula::select('i_code',
             'i_name',
             'fr_value',
@@ -225,8 +228,48 @@ class spkProductionController extends Controller
 
         $formula = array_chunk($formula, 14);
 
-        // return $formula;
         return view('produksi.spk.print', compact('spk', 'formula'));
+    }
+
+    public function saveActual(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $data = spk_actual::where('ac_spk', $id)
+                ->first();
+            $ac_id = spk_actual::max('ac_id') + 1;
+
+            if ($data == null) {
+                spk_actual::insert([
+                    'ac_id' => $ac_id,
+                    'ac_spk' => $id,
+                    'ac_adonan' => $request->ac_adonan,
+                    'ac_adonan_scale' => 3,
+                    'ac_kriwilan' => $request->ac_kriwilan,
+                    'ac_kriwilan_scale' => 3,
+                    'ac_sampah' => $request->ac_kriwilan,
+                    'ac_sampah_scale' => 3,
+                    'ac_insert' => Carbon::now()
+                ]);
+            } else {
+                $data->update([
+                    'ac_adonan' => $request->ac_adonan,
+                    'ac_kriwilan' => $request->ac_kriwilan,
+                    'ac_sampah' => $request->ac_kriwilan
+                ]);
+            }
+
+            DB::commit();
+            return response()->json([
+                'status' => 'sukses'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'gagal',
+                'data' => $e
+            ]);
+        }
     }
 }
 

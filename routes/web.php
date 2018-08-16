@@ -247,6 +247,7 @@ Route::group(['middleware' => 'auth'], function () {
 //mahmud
     Route::get('produksi/spk/lihat-detail', 'Produksi\spkProductionController@lihatFormula');
     Route::get('produksi/spk/input-data', 'Produksi\spkProductionController@inputData');
+    Route::get('/produksi/o_produksi/save/actual/{id}', 'Produksi\spkProductionController@saveActual');
 //mahmud
     Route::get('/produksi/o_produksi/index', 'Produksi\ManOutputProduksiController@OutputProduksi');
     Route::get('/produksi/o_produksi/tabel', 'Produksi\ManOutputProduksiController@tabel');
