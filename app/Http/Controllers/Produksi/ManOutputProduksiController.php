@@ -232,7 +232,7 @@ class ManOutputProduksiController extends Controller
             $cek = DB::table('d_productresult')
                 ->where('pr_spk', $request->spk_id)
                 ->get();
-            d_productplan::where('pp_id',$request->spk_id)
+            d_productplan::where('pp_id', $request->spk_id)
                 ->update([
                     'pp_isspk' => 'P'
                 ]);
@@ -395,6 +395,11 @@ class ManOutputProduksiController extends Controller
                 'data' => $e
             ]);
         }
+    }
+
+    public function saveActual(Request $request)
+    {
+        dd($request->all());
     }
 
 }
