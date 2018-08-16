@@ -105,8 +105,10 @@
               </div>
               <div class="form-group row">
                 <label for="tanggallahir" class="col-sm-2 col-form-label font-weight-bold">Tanggal Lahir</label>
-                <div class="col-sm-10">
-                  <input type="text" class="form-control" id="tanggallahir" name="tanggallahir" placeholder="Tanggal Lahir">
+                <div class="col-sm-10 row form-group" style="margin-left: 0px; margin-bottom: -10px;">
+                  <select id="dobday" class="form-control col-sm-2" style="margin-right: 5px;" name="tanggal" id="tanggal"></select>
+                  <select id="dobmonth" class="form-control col-sm-4" style="margin-right: 5px;" name="bulan" id="bulan"></select>
+                  <select id="dobyear" class="form-control col-sm-3" style="margin-right: 5px;" name="tahun" id="tahun"></select>
                 </div>
               </div>
               <div class="form-group row">
@@ -226,6 +228,29 @@
 
     <!-- Custom scripts for this template -->
     <script src="{{ asset('assets/recruitment/js/stylish-portfolio.min.js') }}"></script>
+    <script src="{{ asset('assets/recruitment/vendor/dobPicker.min.js') }}"></script>
+
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $.dobPicker({
+          // Selectopr IDs
+          daySelector: '#dobday',
+          monthSelector: '#dobmonth',
+          yearSelector: '#dobyear',
+
+          // Default option values
+          dayDefault: 'Tangal',
+          monthDefault: 'Bulan',
+          yearDefault: 'Tahun',
+
+          // Minimum age
+          minimumAge: 10,
+
+          // Maximum age
+          maximumAge: 80
+        });
+      });
+    </script>
 
   </body>
 
