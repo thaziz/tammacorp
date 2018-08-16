@@ -48,11 +48,9 @@ class satuanController extends Controller
         }else{
           $kode +=1;
         }
-        $tanggal = date("ym");
-
         $kode = str_pad($kode, 5, '0', STR_PAD_LEFT);
 
-        $nota = 'ST-'.$kode.'/'.$tanggal;
+        $nota = 'ST-'.$kode;
 
         return view('/master/datasatuan/tambah_satuan',compact('nota'));
     }

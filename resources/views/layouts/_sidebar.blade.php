@@ -243,10 +243,6 @@
                                     Belanja Harian
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Penerimaan Belanja Harian','ma_read'))
-                                    Penerimaan Belanja Harian
-                                @endif
-
                                 @if(Auth::user()->punyaAkses('Return Pembelian','ma_read'))
                                     Return Pembelian
                                 @endif
@@ -273,10 +269,6 @@
                                 @if(Auth::user()->punyaAkses('Belanja Harian','ma_read'))
                                 <li class="{{ Request::is('purchasing/belanjaharian/belanja') ? 'active' : '' || Request::is('purchasing/belanjaharian/*') ? 'active' : '' }}">
                                 <a href="{{ url('/purchasing/belanjaharian/belanja') }}"><span class="submenu-title">Belanja Harian</span><span class="hidden">Purchasing</span></a>
-                                </li>
-                                @endif
-                                @if(Auth::user()->punyaAkses('Penerimaan Belanja Harian','ma_read'))
-                                <li class="{{ Request::is('purchasing/p_belanjaharian/index') ? 'active' : '' || Request::is('purchasing/p_belanjaharian/*') ? 'active' : '' }}"><a href="{{ url('/purchasing/p_belanjaharian/index') }}"><span class="submenu-title">Penerimaan Belanja Harian</span><span class="hidden">Inventory</span></a>
                                 </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Return Pembelian','ma_read'))
@@ -307,6 +299,10 @@
 
                                 @if(Auth::user()->punyaAkses('Penerimaan Barang Return Suplier','ma_read'))
                                     Penerimaan Barang Return Suplier
+                                @endif
+
+                                @if(Auth::user()->punyaAkses('Penerimaan Barang Return Customer','ma_read'))
+                                    Penerimaan Barang Return Customer
                                 @endif
 
                                 @if(Auth::user()->punyaAkses('Barang Digunakan','ma_read'))
@@ -345,6 +341,11 @@
 
                                 @if(Auth::user()->punyaAkses('Penerimaan Barang Return Suplier','ma_read'))
                                 <li class="{{ Request::is('inventory/p_returncustomer/cust') ? 'active' : '' || Request::is('inventory/p_returncustomer/*') ? 'active' : '' }}"><a href="{{ url('/inventory/p_returncustomer/cust') }}"><span class="submenu-title">Penerimaan Barang Return Suplier</span><span class="hidden">Inventory</span></a>
+                                </li>
+                                @endif
+
+                                @if(Auth::user()->punyaAkses('Penerimaan Barang Return Customer','ma_read'))
+                                <li class="{{ Request::is('inventory/p_returncustomer/cust') ? 'active' : '' || Request::is('inventory/p_returncustomer/*') ? 'active' : '' }}"><a href="{{ url('/inventory/p_returncustomer/cust') }}"><span class="submenu-title">Penerimaan Barang Return Customer</span><span class="hidden">Inventory</span></a>
                                 </li>
                                 @endif
 

@@ -36,22 +36,22 @@
             </div>
             
             <div class="col-md-3 col-sm-12 col-xs-12">
-              <label class="tebal">Staff</label>
+              <label class="tebal">Divisi Peminta</label>
             </div>
 
             <div class="col-md-3 col-sm-12 col-xs-12">
               <div class="form-group">
-                <label id="lblStaffBelanjaConfirm"></label>
+                <label id="lblPemintaBelanjaConfirm"></label>
               </div>
             </div>
 
             <div class="col-md-3 col-sm-12 col-xs-12">
-              <label class="tebal">Supplier</label>
+              <label class="tebal">Keperluan</label>
             </div>
 
             <div class="col-md-3 col-sm-12 col-xs-12">
               <div class="form-group">
-                <label id="lblSupplierBelanjaConfirm"></label>
+                <label id="lblKeperluanBelanjaConfirm"></label>
               </div>
             </div>
 
@@ -62,16 +62,6 @@
             <div class="col-md-3 col-sm-12 col-xs-12">
               <div class="form-group">
                 <label id="lblTotalBelanjaConfirm"></label>
-              </div>
-            </div>
-
-            <div class="col-md-3 col-sm-12 col-xs-12">
-              <label class="tebal">Total Bayar</label>
-            </div>
-
-            <div class="col-md-3 col-sm-12 col-xs-12">
-              <div class="form-group">
-                <label id="lblTotalBayarConfirm"></label>
               </div>
             </div>
 

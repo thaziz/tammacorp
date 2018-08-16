@@ -131,8 +131,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/purchasing/belanjaharian/belanja', 'Pembelian\BelanjaHarianController@belanja');
     Route::get('/purchasing/belanjaharian/tambah_belanja', 'Pembelian\BelanjaHarianController@tambah_belanja');
     Route::get('/purchasing/belanjaharian/get-data-tabel-index', 'Pembelian\BelanjaHarianController@getDataTabelIndex');
-    Route::post('/purchasing/belanjaharian/buat-master-supplier', 'Pembelian\BelanjaHarianController@tambahMasterSupplier');
-    Route::get('/purchasing/belanjaharian/autocomplete-supplier', 'Pembelian\BelanjaHarianController@autocompleteSupplier');
     Route::get('/purchasing/belanjaharian/autocomplete-barang', 'Pembelian\BelanjaHarianController@autocompleteBarang');
     Route::post('/purchasing/belanjaharian/simpan-data-belanja', 'Pembelian\BelanjaHarianController@simpanDataBelanja');
     Route::get('/purchasing/belanjaharian/get-detail-belanja/{id}', 'Pembelian\BelanjaHarianController@getDetailBelanja');
@@ -141,15 +139,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/purchasing/belanjaharian/delete-data-belanja', 'Pembelian\BelanjaHarianController@deleteDataBelanja');
     Route::get('/purchasing/belanjaharian/get-belanja-by-tgl/{tgl1}/{tgl2}', 'Pembelian\BelanjaHarianController@getBelanjaByTgl');
     Route::get('/purchasing/belanjaharian/get-data-masterbarang', 'Pembelian\BelanjaHarianController@getDataMasterBarang');
+    Route::get('/purchasing/belanjaharian/get-data-kodesatuan', 'Pembelian\BelanjaHarianController@getDataKodeSatuan');
     Route::post('/purchasing/belanjaharian/simpan-barang', 'Pembelian\BelanjaHarianController@simpanDataBarang');
+    Route::post('/purchasing/belanjaharian/simpan-satuan', 'Pembelian\BelanjaHarianController@simpanDataSatuan');
 // Ari
     Route::get('/purchasing/belanjaharian/print/{id}', 'Pembelian\BelanjaHarianController@print');
-// irA
-//p_belanjaharian
-    Route::get('/purchasing/p_belanjaharian/index', 'Pembelian\PenerimaanBrgHarianController@index');
-    Route::get('/purchasing/p_belanjaharian/lookup-data-pembelian', 'Pembelian\PenerimaanBrgHarianController@lookupDataBelanja');
-    Route::get('/purchasing/p_belanjaharian/get-data-form/{id}', 'Pembelian\PenerimaanBrgHarianController@getDataForm');
-    Route::post('/purchasing/p_belanjaharian/simpan-penerimaan', 'Pembelian\PenerimaanBrgHarianController@simpanPenerimaan');
 //return pembelian
     Route::get('/purchasing/returnpembelian/pembelian', 'Pembelian\ReturnPembelianController@index');
     Route::get('/purchasing/returnpembelian/tambah-return', 'Pembelian\ReturnPembelianController@tambahReturn');

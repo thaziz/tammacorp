@@ -54,32 +54,22 @@
             </div>
 
             <div class="col-md-3 col-sm-12 col-xs-12">
-              <label class="tebal">No Reff</label>
+              <label class="tebal">Divisi Peminta</label>
             </div>
 
             <div class="col-md-3 col-sm-12 col-xs-12">
               <div class="form-group">
-                <label id="lblNoReff"></label>
+                <label id="lblPeminta"></label>
               </div>
             </div>
 
             <div class="col-md-3 col-sm-12 col-xs-12">
-              <label class="tebal">Jumlah Yang Dibayarkan</label>
+              <label class="tebal">Keperluan</label>
             </div>
 
             <div class="col-md-3 col-sm-12 col-xs-12">
               <div class="form-group">
-                <label id="lblTotalBayar"></label>
-              </div>
-            </div>
-
-            <div class="col-md-3 col-sm-12 col-xs-12">
-              <label class="tebal">Supplier</label>
-            </div>
-
-            <div class="col-md-3 col-sm-12 col-xs-12">
-              <div class="form-group">
-                <label id="lblSupplier"></label>
+                <label id="lblKeperluan"></label>
               </div>
             </div>
           </div>

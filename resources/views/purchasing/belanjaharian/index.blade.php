@@ -62,8 +62,6 @@
   @include('purchasing.belanjaharian.modal-detail')
   <!-- modal-edit -->
   @include('purchasing.belanjaharian.modal-edit')
-  <!-- modal-supplier -->
-  @include('purchasing.belanjaharian.modal-supplier')
 @endsection
 @section("extra_scripts")
 <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
@@ -187,9 +185,8 @@
         $('#lblNoNota').text(data.header[0].d_pcsh_code);
         $('#lblTotalBiaya').text(data.header2.hargaTotalBeli);
         $('#lblStaff').text(data.header[0].m_name);
-        $('#lblNoReff').text(data.header[0].d_pcsh_noreff);
-        $('#lblTotalBayar').text(data.header2.hargaTotalBayar);
-        $('#lblSupplier').text(data.header[0].s_company);
+        $('#lblPeminta').text(data.header[0].d_pcsh_peminta);
+        $('#lblKeperluan').text(data.header[0].d_pcsh_keperluan);
         //loop data
         Object.keys(data.data_isi).forEach(function(){
           $('#tabel-detail-beli').append('<tr class="tbl_modal_row" id="row'+i+'">'
@@ -231,8 +228,8 @@
         $('#no_nota_edit').val(data.header[0].d_pcsh_code);
         $('#id_belanja_edit').val(data.header[0].d_pcsh_id);
         $('#total_biaya_edit').val(convertDecimalToRupiah(data.header[0].d_pcsh_totalprice));
-        $('#no_reff_edit').val(data.header[0].d_pcsh_noreff);
-        $('#nama_supplier_edit').val(data.header[0].s_company);
+        $('#peminta_edit').val(data.header[0].d_pcsh_peminta);
+        $('#keperluan_edit').val(data.header[0].d_pcsh_keperluan);
         $('#id_supplier_edit').val(data.header[0].s_id);
         //loop data
         Object.keys(data.data_isi).forEach(function(){
@@ -479,8 +476,8 @@
         {"data" : "tglBeli", "width" : "10%"},
         {"data" : "m_name", "width" : "10%"},
         {"data" : "d_pcsh_code", "width" : "10%"},
-        {"data" : "d_pcsh_noreff", "width" : "8%"},
-        {"data" : "s_company", "width" : "10%"},
+        {"data" : "d_pcsh_peminta", "width" : "8%"},
+        {"data" : "d_pcsh_keperluan", "width" : "10%"},
         {"data" : "hargaTotal", "width" : "10%"},
         {"data" : "status", "width" : "7%"},
         {"data" : "action", orderable: false, searchable: false, "width" : "13%"}

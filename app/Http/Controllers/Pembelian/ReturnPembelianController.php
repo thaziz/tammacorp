@@ -311,15 +311,15 @@ class ReturnPembelianController extends Controller
       foreach($query as $k)
       {
         $tmp = ((int)$k->kode_max)+1;
-        $kd = sprintf("%04s", $tmp);
+        $kd = sprintf("%05s", $tmp);
       }
     }
     else
     {
-      $kd = "0001";
+      $kd = "00001";
     }
 
-    $codeRP = "RTN-".date('myd')."-".$kd;
+    $codeRP = "RTR-".date('ym')."-".$kd;
     $staff['nama'] = Auth::user()->m_name;
     $staff['id'] = Auth::User()->m_id;
     return view ('/purchasing/returnpembelian/tambah-return',compact('codeRP', 'staff'));

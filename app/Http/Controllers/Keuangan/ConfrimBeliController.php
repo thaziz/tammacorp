@@ -685,9 +685,8 @@ class ConfrimBeliController extends Controller
 
   public function getDataBelanjaHarian()
   {
-    $data = d_purchasingharian::join('d_supplier','d_purchasingharian.d_pcsh_supid','=','d_supplier.s_id')
-            ->join('d_mem', 'd_purchasingharian.d_pcsh_staff','=','d_mem.m_id')
-            ->select('d_purchasingharian.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_mem.m_id', 'd_mem.m_name')
+    $data = d_purchasingharian::join('d_mem', 'd_purchasingharian.d_pcsh_staff','=','d_mem.m_id')
+            ->select('d_purchasingharian.*', 'd_mem.m_id', 'd_mem.m_name')
             ->orderBy('d_pcsh_created', 'DESC')
             ->get();
     //dd($data);    
@@ -759,9 +758,8 @@ class ConfrimBeliController extends Controller
 
   public function confirmBelanjaHarian($id,$type)
   {
-    $dataHeader = d_purchasingharian::join('d_supplier','d_purchasingharian.d_pcsh_supid','=','d_supplier.s_id')
-                ->join('d_mem', 'd_purchasingharian.d_pcsh_staff','=','d_mem.m_id')
-                ->select('d_purchasingharian.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_mem.m_name', 'd_mem.m_id')
+    $dataHeader = d_purchasingharian::join('d_mem', 'd_purchasingharian.d_pcsh_staff','=','d_mem.m_id')
+                ->select('d_purchasingharian.*', 'd_mem.m_name', 'd_mem.m_id')
                 ->where('d_pcsh_id', '=', $id)
                 ->orderBy('d_pcsh_created', 'DESC')
                 ->get();

@@ -551,7 +551,7 @@
           if(IsValid)
           {
             var countRow = $('#div_item tr').length;
-            if(countRow > 1)
+            if(countRow >= 1)
             {
               $('#button_save').text('Menyimpan...'); //change button text
               $('#button_save').attr('disabled',true); //set button disable 
