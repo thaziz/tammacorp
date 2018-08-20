@@ -184,13 +184,51 @@ class spkProductionController extends Controller
         $formula = spk_formula::select('i_code',
             'i_name',
             'fr_value',
+            'i_id',
+            'i_type',
             'm_sname')
             ->where('fr_spk', $request->x)
             ->join('m_item', 'i_id', '=', 'fr_formula')
             ->join('m_satuan', 'm_sid', '=', 'fr_scale')
             ->get();
 
-        return view('produksi.spk.detail-formula', compact('spk', 'formula'));
+        foreach ($formula as $val) {
+            //cek type barang
+            if ($val->i_type == "BJ") //brg jual
+            {
+                //ambil stok berdasarkan type barang
+                $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
+                $stok = $query[0]->qtyStok;
+            } elseif ($val->i_type == "BB") //bahan baku
+            {
+                //ambil stok berdasarkan type barang
+                $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '3' AND s_position = '3' limit 1) ,'0') as qtyStok"));
+                $stok = $query[0]->qtyStok;
+            }
+
+            //get prev cost
+            $idItem = $val->i_id;
+            $prevCost = DB::table('d_stock_mutation')
+                // ->select(DB::raw('MAX(sm_hpp) as hargaPrev'))
+                ->select('sm_hpp', 'sm_qty')
+                ->where('sm_item', '=', $idItem)
+                ->where('sm_mutcat', '=', "14")
+                ->orderBy('sm_date', 'desc')
+                ->limit(1)
+                ->get();
+            
+            foreach ($prevCost as $value) {
+                $hargaLalu[] = $value->sm_hpp;
+                $qty[] = $value->sm_qty;
+            }
+
+        }
+        for ($i = 0; $i < count($hargaLalu); $i++) {
+            $cabangPurnama = $hargaLalu[$i] / $qty[$i];
+            $bambang[] = $formula[$i]['fr_value'] * $cabangPurnama;
+        }
+        return view('produksi.spk.detail-formula', compact('spk', 'formula', 'bambang'));
+
 
     }
 
@@ -206,7 +244,8 @@ class spkProductionController extends Controller
         return view('produksi.spk.table-inputactual', compact('spk', 'actual'));
     }
 
-    public function print($spk_id)
+    public
+    function print($spk_id)
     {
         $spk = d_spk::select('pp_date',
             'i_name',

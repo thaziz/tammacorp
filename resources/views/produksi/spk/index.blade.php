@@ -229,15 +229,19 @@
                             success: function (response) {
                                 if (response.status == 'sukses') {
                                     $('#myModalActual').modal('hide');
-                                    iziToast.success({timeout: 5000,
+                                    iziToast.success({
+                                        timeout: 5000,
                                         position: "topRight",
                                         icon: 'fa fa-chrome',
                                         title: '',
-                                        message: 'Data actual tersimpan.'});
+                                        message: 'Data actual tersimpan.'
+                                    });
                                 } else {
-                                    iziToast.error({position: "topRight",
+                                    iziToast.error({
+                                        position: "topRight",
                                         title: '',
-                                        message: 'Data actual gagal tersimpan.'});
+                                        message: 'Data actual gagal tersimpan.'
+                                    });
                                 }
                             }
                         })
