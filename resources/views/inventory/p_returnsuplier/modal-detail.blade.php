@@ -4,19 +4,19 @@
     <div class="modal-content">
       <div class="modal-header" style="background-color: #e77c38;">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title" style="color: white;">Detail Penerimaan Pembelian</h4>
+        <h4 class="modal-title" style="color: white;">Detail Penerimaan Retur Supplier</h4>
       </div>
 
       <div class="modal-body">
         <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-top:10px;padding-bottom: 10px;padding-top: 20px;margin-bottom: 15px;">
 
           <div class="col-md-3 col-sm-12 col-xs-12">
-            <label class="tebal">Nota Pembelian</label>
+            <label class="tebal">Nota Return Pembelian</label>
           </div>
 
           <div class="col-md-3 col-sm-12 col-xs-12">
             <div class="form-group">
-              <label id="lblNotaPembelian"></label>
+              <label id="lblNotaRetur"></label>
             </div>  
           </div>
           

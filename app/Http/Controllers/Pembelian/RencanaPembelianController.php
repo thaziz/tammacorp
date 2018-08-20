@@ -52,100 +52,115 @@ class RencanaPembelianController extends Controller
       return view('/purchasing/rencanapembelian/create' ,compact('codePlan', 'staff'));
     }
 
-    public function getDataTabelDaftar()
+    public function getRencanaByTgl($tgl1, $tgl2)
     {
-        $data = d_purchasingplan::join('d_supplier','d_purchasingplan.d_pcsp_sup','=','d_supplier.s_id')
-                ->join('d_mem','d_purchasingplan.d_pcsp_mid','=','d_mem.m_id')
-                ->select('d_pcsp_id','d_pcsp_code','d_pcsp_code','s_company','d_pcsp_status','d_pcsp_datecreated','d_pcsp_dateconfirm', 'd_mem.m_id', 'd_mem.m_name')
-                ->orderBy('d_pcsp_datecreated', 'DESC')
-                ->get();
-        //dd($data);    
-        return DataTables::of($data)
-        ->addIndexColumn()
-        ->editColumn('status', function ($data)
-          {
-          if ($data->d_pcsp_status == "WT") 
-          {
-            return '<span class="label label-info">Waiting</span>';
-          }
-          elseif ($data->d_pcsp_status == "DE") 
-          {
-            return '<span class="label label-warning">Dapat diedit</span>';
-          }
-          elseif ($data->d_pcsp_status == "FN") 
-          {
-            return '<span class="label label-success">Disetujui</span>';
-          }
-        })
-        ->editColumn('tglBuat', function ($data) 
+      $y = substr($tgl1, -4);
+      $m = substr($tgl1, -7,-5);
+      $d = substr($tgl1,0,2);
+       $tanggal1 = $y.'-'.$m.'-'.$d;
+
+      $y2 = substr($tgl2, -4);
+      $m2 = substr($tgl2, -7,-5);
+      $d2 = substr($tgl2,0,2);
+      $tanggal2 = $y2.'-'.$m2.'-'.$d2;
+
+      $data = d_purchasingplan::join('d_supplier','d_purchasingplan.d_pcsp_sup','=','d_supplier.s_id')
+              ->join('d_mem','d_purchasingplan.d_pcsp_mid','=','d_mem.m_id')
+              ->select('d_pcsp_id','d_pcsp_code','d_pcsp_code','s_company','d_pcsp_status','d_pcsp_datecreated','d_pcsp_dateconfirm', 'd_mem.m_id', 'd_mem.m_name')
+              ->whereBetween('d_purchasingplan.d_pcsp_created', [$tanggal1, $tanggal2])
+              ->orderBy('d_pcsp_created', 'DESC')
+              ->get();
+
+      return DataTables::of($data)
+      ->addIndexColumn()
+      ->editColumn('status', function ($data)
         {
-            if ($data->d_pcsp_datecreated == null) 
-            {
-                return '-';
-            }
-            else 
-            {
-                return $data->d_pcsp_datecreated ? with(new Carbon($data->d_pcsp_datecreated))->format('d M Y') : '';
-            }
-        })
-        ->editColumn('tglConfirm', function ($data) 
+        if ($data->d_pcsp_status == "WT") 
         {
-            if ($data->d_pcsp_dateconfirm == null) 
-            {
-                return '-';
-            }
-            else 
-            {
-                return $data->d_pcsp_dateconfirm ? with(new Carbon($data->d_pcsp_dateconfirm))->format('d M Y') : '';
-            }
-        })
-        ->addColumn('action', function($data)
-          {
-            if ($data->d_pcsp_status == "WT") 
-            {
-              return '<div class="text-center">
-                          <button class="btn btn-sm btn-success" title="Detail"
-                              onclick=detailPlanAll("'.$data->d_pcsp_id.'")><i class="fa fa-eye"></i> 
-                          </button>
-                          <button class="btn btn-sm btn-warning" title="Edit"
-                              onclick=editPlanAll("'.$data->d_pcsp_id.'")><i class="fa fa-edit"></i>
-                          </button>
-                          <button class="btn btn-sm btn-danger" title="Hapus"
-                              onclick=deletePlan("'.$data->d_pcsp_id.'")><i class="fa fa-times"></i>
-                          </button>
-                      </div>'; 
-            }
-            elseif ($data->d_pcsp_status == "DE") 
-            {
-              return '<div class="text-center">
-                          <button class="btn btn-sm btn-success" title="Detail"
-                              onclick=detailPlan("'.$data->d_pcsp_id.'")><i class="fa fa-eye"></i> 
-                          </button>
-                          <button class="btn btn-sm btn-warning" title="Edit"
-                              onclick=editPlan("'.$data->d_pcsp_id.'")><i class="fa fa-edit"></i>
-                          </button>
-                          <button class="btn btn-sm btn-danger" title="Hapus"
-                              onclick=deletePlan("'.$data->d_pcsp_id.'") disabled><i class="fa fa-times"></i>
-                          </button>
-                      </div>'; 
-            }
-            elseif ($data->d_pcsp_status == "FN") 
-            {
-              return '<div class="text-center">
-                          <button class="btn btn-sm btn-success" title="Detail"
-                              onclick=detailPlan("'.$data->d_pcsp_id.'")><i class="fa fa-eye"></i> 
-                          </button>
-                          <button class="btn btn-sm btn-warning" title="Edit"
-                              onclick=editPlan("'.$data->d_pcsp_id.'") disabled><i class="fa fa-edit"></i>
-                          </button>
-                          <button class="btn btn-sm btn-danger" title="Hapus"
-                              onclick=deletePlan("'.$data->d_pcsp_id.'") disabled><i class="fa fa-times"></i>
-                          </button>
-                      </div>'; 
-            }
-          })
-        ->rawColumns(['status', 'action'])
-        ->make(true);
+          return '<span class="label label-info">Waiting</span>';
+        }
+        elseif ($data->d_pcsp_status == "DE") 
+        {
+          return '<span class="label label-warning">Dapat diedit</span>';
+        }
+        elseif ($data->d_pcsp_status == "FN") 
+        {
+          return '<span class="label label-success">Disetujui</span>';
+        }
+      })
+      ->editColumn('tglBuat', function ($data) 
+      {
+        if ($data->d_pcsp_datecreated == null) 
+        {
+            return '-';
+        }
+        else 
+        {
+            return $data->d_pcsp_datecreated ? with(new Carbon($data->d_pcsp_datecreated))->format('d M Y') : '';
+        }
+      })
+      ->editColumn('tglConfirm', function ($data) 
+      {
+        if ($data->d_pcsp_dateconfirm == null) 
+        {
+            return '-';
+        }
+        else 
+        {
+            return $data->d_pcsp_dateconfirm ? with(new Carbon($data->d_pcsp_dateconfirm))->format('d M Y') : '';
+        }
+      })
+      ->editColumn('hargaTotal', function ($data) 
+      {
+        return 'Rp. '.number_format($data->d_pcsh_totalprice,2,",",".");
+      })
+     ->addColumn('action', function($data)
+      {
+        if ($data->d_pcsp_status == "WT") 
+        {
+          return '<div class="text-center">
+                      <button class="btn btn-sm btn-success" title="Detail"
+                          onclick=detailPlanAll("'.$data->d_pcsp_id.'")><i class="fa fa-eye"></i> 
+                      </button>
+                      <button class="btn btn-sm btn-warning" title="Edit"
+                          onclick=editPlanAll("'.$data->d_pcsp_id.'")><i class="fa fa-edit"></i>
+                      </button>
+                      <button class="btn btn-sm btn-danger" title="Hapus"
+                          onclick=deletePlan("'.$data->d_pcsp_id.'")><i class="fa fa-times"></i>
+                      </button>
+                  </div>'; 
+        }
+        elseif ($data->d_pcsp_status == "DE") 
+        {
+          return '<div class="text-center">
+                      <button class="btn btn-sm btn-success" title="Detail"
+                          onclick=detailPlan("'.$data->d_pcsp_id.'")><i class="fa fa-eye"></i> 
+                      </button>
+                      <button class="btn btn-sm btn-warning" title="Edit"
+                          onclick=editPlan("'.$data->d_pcsp_id.'")><i class="fa fa-edit"></i>
+                      </button>
+                      <button class="btn btn-sm btn-danger" title="Hapus"
+                          onclick=deletePlan("'.$data->d_pcsp_id.'") disabled><i class="fa fa-times"></i>
+                      </button>
+                  </div>'; 
+        }
+        elseif ($data->d_pcsp_status == "FN") 
+        {
+          return '<div class="text-center">
+                      <button class="btn btn-sm btn-success" title="Detail"
+                          onclick=detailPlan("'.$data->d_pcsp_id.'")><i class="fa fa-eye"></i> 
+                      </button>
+                      <button class="btn btn-sm btn-warning" title="Edit"
+                          onclick=editPlan("'.$data->d_pcsp_id.'") disabled><i class="fa fa-edit"></i>
+                      </button>
+                      <button class="btn btn-sm btn-danger" title="Hapus"
+                          onclick=deletePlan("'.$data->d_pcsp_id.'") disabled><i class="fa fa-times"></i>
+                      </button>
+                  </div>'; 
+        }
+      })
+      ->rawColumns(['status', 'action'])
+      ->make(true);
     }
 
     public function getDetailPlan($id,$type)

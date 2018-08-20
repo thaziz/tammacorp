@@ -30,30 +30,45 @@ class ReturnPembelianController extends Controller
     return view('/purchasing/returnpembelian/index');
   }
 
-  public function getDataReturnPembelian()
+  public function getReturnByTgl($tgl1, $tgl2)
   {
+    $y = substr($tgl1, -4);
+    $m = substr($tgl1, -7,-5);
+    $d = substr($tgl1,0,2);
+     $tanggal1 = $y.'-'.$m.'-'.$d;
+
+    $y2 = substr($tgl2, -4);
+    $m2 = substr($tgl2, -7,-5);
+    $d2 = substr($tgl2,0,2);
+    $tanggal2 = $y2.'-'.$m2.'-'.$d2;
+
     $data = d_purchasingreturn::join('d_purchasing','d_purchasingreturn.d_pcsr_pcsid','=','d_purchasing.d_pcs_id')
-            ->join('d_supplier','d_purchasingreturn.d_pcsr_supid','=','d_supplier.s_id')
-            ->join('d_mem','d_purchasingreturn.d_pcs_staff','=','d_mem.m_id')
-            ->select('d_purchasingreturn.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_purchasing.d_pcs_id', 'd_purchasing.d_pcs_code', 'd_mem.m_id', 'd_mem.m_name')
-            ->orderBy('d_pcsr_created', 'DESC')
-            ->get();
-    //dd($data);    
+          ->join('d_supplier','d_purchasingreturn.d_pcsr_supid','=','d_supplier.s_id')
+          ->join('d_mem','d_purchasingreturn.d_pcs_staff','=','d_mem.m_id')
+          ->select('d_purchasingreturn.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_purchasing.d_pcs_id', 'd_purchasing.d_pcs_code', 'd_mem.m_id', 'd_mem.m_name')
+          ->whereBetween('d_pcsr_created', [$tanggal1, $tanggal2])
+          ->orderBy('d_pcsr_created', 'DESC')
+          ->get();
+
     return DataTables::of($data)
     ->addIndexColumn()
     ->editColumn('status', function ($data)
     {
       if ($data->d_pcsr_status == "WT") 
       {
-        return '<span class="label label-info">Waiting</span>';
+        return '<span class="label label-default">Waiting</span>';
       }
       elseif ($data->d_pcsr_status == "CF") 
       {
-        return '<span class="label label-success">Disetujui</span>';
+        return '<span class="label label-info">Disetujui</span>';
       }
       elseif ($data->d_pcsr_status == "DE") 
       {
         return '<span class="label label-warning">Dapat Diedit</span>';
+      }
+      else
+      {
+        return '<span class="label label-success">Diterima</span>';
       }
     })
     ->editColumn('metode', function ($data)
@@ -126,7 +141,6 @@ class ReturnPembelianController extends Controller
                     </button>
                 </div>'; 
       }
-      
     })
     ->rawColumns(['status', 'action'])
     ->make(true);
@@ -471,10 +485,13 @@ class ReturnPembelianController extends Controller
         $dataIsi->save();
       }//end loop for
 
-      //update status po RC -> RV (Revisied)
+      //update status po RC -> RV (Revisied) dan update tanggal buat
       DB::table('d_purchasing')
               ->where('d_pcs_id', $request->cariNotaPurchase)
-              ->update(['d_pcs_status' => 'RV']);
+              ->update([
+                'd_pcs_status' => 'RV',
+                'd_pcs_date_created' => date('Y-m-d',strtotime(Carbon::now()))
+              ]);
 
       DB::commit();
       return response()->json([

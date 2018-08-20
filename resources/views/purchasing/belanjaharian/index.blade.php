@@ -85,7 +85,7 @@
     var date = new Date();
     var newdate = new Date(date);
 
-    newdate.setDate(newdate.getDate()-3);
+    newdate.setDate(newdate.getDate()-30);
     var nd = new Date(newdate);
 
     $('.datepicker1').datepicker({

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>FORM PENERIMAAN PEMBELIAN</title>
+	<title>FORM TANDA TERIMA RETUR SUPPLIER</title>
 	<style type="text/css">
 		*{
 			font-size: 12px;
@@ -113,18 +113,22 @@
 					<h1 class="s16">TAMMA ROBAH INDONESIA</h1>
 					<table class="border-none" width="100%" cellspacing="0" cellpadding="0">
 						<tr>
-							<td class="s16 underline bold text-center" colspan="3">FORM PENERIMAAN PEMBELIAN</td>
+							<td class="s16 underline bold text-center" colspan="3">FORM PENERIMAAN RETUR SUPPLIER</td>
 						</tr>
 						<tr>
 							<td width="80%">
-								Nota Return Pembelian : <label class="bold">{{$dataHeader[0]['d_tb_noreff']}}</label><br>
-								Tanggal Penerimaan : <label class="bold">{{date('d M Y',strtotime($dataHeader[0]['d_tb_date']))}}</label><br>
+								Nota Return Pembelian : <label class="bold">{{$dataHeader[0]['d_trs_noreff']}}</label><br>
+								Tanggal Penerimaan : <label class="bold">{{date('d M Y',strtotime($dataHeader[0]['d_trs_date']))}}</label><br>
 								Suplier : <label class="bold">{{$dataHeader[0]['s_name']}}</label>
 							</td>
 							<td>
-								Kode Penerimaan : <label class="bold">{{$dataHeader[0]['d_tb_code']}}</label><br>
+								Kode Penerimaan : <label class="bold">{{$dataHeader[0]['d_trs_code']}}</label><br>
 								Staff : <label class="bold">{{$dataHeader[0]['m_name']}}</label><br>
-								Metode Pembelian : <label class="bold">{{$dataHeader[0]['d_pcs_method']}}</label><br>
+								@if ($dataHeader[0]['d_pcsr_method'] == "TK")
+									Metode Retur : <label class="bold">Tukar Barang</label><br>
+								@else
+	    							Metode Retur : <label class="bold">Potong Nota</label><br>
+								@endif
 							</td>
 						</tr>
 					</table>
@@ -142,8 +146,8 @@
 							<tr>
 								<td width="1%" class="text-center">{{$j+1}}</td>
 								<td>{{$dataIsi[$i][$j]['i_code']}} {{$dataIsi[$i][$j]['i_name']}}</td>
-								<td width="1%" class="text-center">{{$dataIsi[$i][$j]['d_pcsdt_qtyconfirm']}}</td>
-								<td width="1%">{{$dataIsi[$i][$j]['d_tbdt_qty']}}</td>
+								<td width="1%" class="text-center">{{$dataIsi[$i][$j]['d_pcsrdt_qtyconfirm']}}</td>
+								<td width="1%">{{$dataIsi[$i][$j]['d_trsdt_qty']}}</td>
 								<td width="1%">{{$dataIsi[$i][$j]['m_sname']}}</td>
 								<td width="10%">{{ $val_stock[$i][$j]->qtyStok }} {{ $txt_satuan[$i][$j] }}</td>
 								
@@ -194,7 +198,7 @@
 							</div>
 							<div class="float-right" style="margin-right: 25px;">
 								<div class="top">
-									Pemohon,
+									Supplier,
 								</div>
 								<div class="bottom" style="margin-top: 40px;">
 									(......................................)
@@ -211,12 +215,11 @@
 			</div>
 			
 		@endfor
+		
 	</div>
-
 	<div style="padding-top: 100px;">
 		<hr>
 	</div>
-
 	<div class="div-width">
 
 		@for($i=0;$i<count($dataIsi);$i++)
@@ -225,18 +228,22 @@
 					<h1 class="s16">TAMMA ROBAH INDONESIA</h1>
 					<table class="border-none" width="100%" cellspacing="0" cellpadding="0">
 						<tr>
-							<td class="s16 underline bold text-center" colspan="3">FORM PENERIMAAN PEMBELIAN</td>
+							<td class="s16 underline bold text-center" colspan="3">FORM PENERIMAAN RETUR SUPPLIER</td>
 						</tr>
 						<tr>
 							<td width="80%">
-								Nota Return Pembelian : <label class="bold">{{$dataHeader[0]['d_tb_noreff']}}</label><br>
-								Tanggal Penerimaan : <label class="bold">{{date('d M Y',strtotime($dataHeader[0]['d_tb_date']))}}</label><br>
+								Nota Return Pembelian : <label class="bold">{{$dataHeader[0]['d_trs_noreff']}}</label><br>
+								Tanggal Penerimaan : <label class="bold">{{date('d M Y',strtotime($dataHeader[0]['d_trs_date']))}}</label><br>
 								Suplier : <label class="bold">{{$dataHeader[0]['s_name']}}</label>
 							</td>
 							<td>
-								Kode Penerimaan : <label class="bold">{{$dataHeader[0]['d_tb_code']}}</label><br>
+								Kode Penerimaan : <label class="bold">{{$dataHeader[0]['d_trs_code']}}</label><br>
 								Staff : <label class="bold">{{$dataHeader[0]['m_name']}}</label><br>
-								Metode Pembelian : <label class="bold">{{$dataHeader[0]['d_pcs_method']}}</label><br>
+								@if ($dataHeader[0]['d_pcsr_method'] == "TK")
+									Metode Retur : <label class="bold">Tukar Barang</label><br>
+								@else
+	    							Metode Retur : <label class="bold">Potong Nota</label><br>
+								@endif
 							</td>
 						</tr>
 					</table>
@@ -254,8 +261,8 @@
 							<tr>
 								<td width="1%" class="text-center">{{$j+1}}</td>
 								<td>{{$dataIsi[$i][$j]['i_code']}} {{$dataIsi[$i][$j]['i_name']}}</td>
-								<td width="1%" class="text-center">{{$dataIsi[$i][$j]['d_pcsdt_qtyconfirm']}}</td>
-								<td width="1%">{{$dataIsi[$i][$j]['d_tbdt_qty']}}</td>
+								<td width="1%" class="text-center">{{$dataIsi[$i][$j]['d_pcsrdt_qtyconfirm']}}</td>
+								<td width="1%">{{$dataIsi[$i][$j]['d_trsdt_qty']}}</td>
 								<td width="1%">{{$dataIsi[$i][$j]['m_sname']}}</td>
 								<td width="10%">{{ $val_stock[$i][$j]->qtyStok }} {{ $txt_satuan[$i][$j] }}</td>
 								
@@ -306,7 +313,7 @@
 							</div>
 							<div class="float-right" style="margin-right: 25px;">
 								<div class="top">
-									Pemohon,
+									Supplier,
 								</div>
 								<div class="bottom" style="margin-top: 40px;">
 									(......................................)
@@ -323,6 +330,7 @@
 			</div>
 			
 		@endfor
+		
 	</div>
 </body>
 </html>

@@ -16,13 +16,13 @@
   <!--BEGIN TITLE & BREADCRUMB PAGE-->
   <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
     <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
-        <div class="page-title">Penerimaan Barang Supplier</div>
+        <div class="page-title">Penerimaan Return Supplier</div>
     </div>
 
     <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
       <li><i class="fa fa-home"></i>&nbsp;<a href="{{ url('/home') }}">Home</a>&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
       <li><i></i>&nbsp;Inventory&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
-      <li class="active">Penerimaan Barang Supplier</li>
+      <li class="active">Penerimaan Return Supplier</li>
     </ol>
     <div class="clearfix"></div>
   </div>
@@ -37,16 +37,16 @@
           </div>
              
           <ul id="generalTab" class="nav nav-tabs">
-            <li class="active"><a href="#index-tab" data-toggle="tab">Daftar Penerimaan</a></li>
+            <li class="active"><a href="#index-tab" data-toggle="tab">Daftar Terima Return</a></li>
             <li><a href="#wait-tab" data-toggle="tab" onclick="listWaitingByTgl()">Daftar Tunggu</a></li>
             <li><a href="#finish-tab" data-toggle="tab" onclick="listReceivedByTgl()">Daftar Hasil Penerimaan</a></li>
           </ul>
 
           <div id="generalTabContent" class="tab-content responsive">
             
-            @include('inventory.p_suplier.tab-index')
-            @include('inventory.p_suplier.tab-wait')
-            @include('inventory.p_suplier.tab-finish')          
+            @include('inventory.p_returnsuplier.tab-index')
+            @include('inventory.p_returnsuplier.tab-wait')
+            @include('inventory.p_returnsuplier.tab-finish')          
 
           </div>
         </div>
@@ -56,9 +56,9 @@
   <!--END TITLE & BREADCRUMB PAGE-->
   <!-- modal -->
     <!--modal Tambah Terima-->
-    @include('inventory.p_suplier.modal')
-    @include('inventory.p_suplier.modal-detail')
-    @include('inventory.p_suplier.modal-detail-peritem')
+    @include('inventory.p_returnsuplier.modal')
+    @include('inventory.p_returnsuplier.modal-detail')
+    @include('inventory.p_returnsuplier.modal-detail-peritem')
   <!-- /modal -->
 </div>
 @endsection
@@ -102,10 +102,10 @@
     });
 
     //select2
-    $( "#head_nota_purchase" ).select2({
-      placeholder: "Pilih Nota Pembelian...",
+    $( "#head_nota_return" ).select2({
+      placeholder: "Pilih Nota Return...",
       ajax: {
-        url: baseUrl + '/inventory/p_suplier/lookup-data-pembelian',
+        url: baseUrl + '/inventory/p_returnsupplier/lookup-data-return',
         dataType: 'json',
         data: function (params) {
           return {
@@ -122,86 +122,71 @@
     });
 
     //event onchange select option
-    $('#head_nota_purchase').change(function() 
+    $('#head_nota_return').change(function() 
     {
       $('#appending div').remove();
       $('#btn_simpan').attr('disabled', false);
       //remove existing appending row
       $('tr').remove('.tbl_form_row');
-      var idPo = $('#head_nota_purchase').val();
+      var idRtr = $('#head_nota_return').val();
       $.ajax({
-        url : baseUrl + "/inventory/p_suplier/get-data-form/"+idPo,
+        url : baseUrl + "/inventory/p_returnsupplier/get-data-form/"+idRtr,
         type: "GET",
         dataType: "JSON",
         success: function(data)
         {
-          var totalPembelianGross = data.data_header[0].d_pcs_total_gross;
-          var totalPembelianNett = data.data_header[0].d_pcs_total_net;
-          var totalDisc = parseInt(data.data_header[0].d_pcs_disc_value) + parseInt(data.data_header[0].d_pcs_discount);
-          var taxPercent = data.data_header[0].d_pcs_tax_percent;
-          if(data.data_header[0].d_pcs_method != "CASH")
-          {
-            var date = data.data_header[0].d_pcs_duedate;
-            var newDueDate = date.split("-").reverse().join("-");
-          }
-          //console.log(totalDisc);
-          $('#head_nota_txt').val($('#head_nota_purchase').text());
+          var totalRetur = data.data_header[0].d_pcsr_pricetotal;
+          $('#head_nota_txt').val($('#head_nota_return').text());
+          $('#head_method').val(data.data_header[0].d_pcsr_method);
           $('#head_supplier').val(data.data_header[0].s_company);
-          $('#head_supplier_id').val(data.data_header[0].s_id);
-          $('#head_total_gross').val(convertDecimalToRupiah(totalPembelianGross));
-          $('#head_total_disc').val(convertDecimalToRupiah(totalDisc));
-          $('#head_total_tax').val(taxPercent+' %');
-          $('#head_total_nett').val(convertDecimalToRupiah(totalPembelianNett));
-          $('#head_total_terima').val(convertDecimalToRupiah(totalPembelianNett));
-          $('#head_method').val(data.data_header[0].d_pcs_method);
-          if (data.data_header[0].d_pcs_method == "DEPOSIT") 
-          {
-            $('#appending div').remove();
-            $('#appending').append('<div class="form-group">'
-                                      +'<input type="hidden" id="apd_tgl" name="apdTgl" class="form-control datepicker3 input-sm" readonly value="'+newDueDate+'">'
-                                    +'</div>');
-          }
-          else if (data.data_header[0].d_pcs_method == "CREDIT")
-          {
-            $('#appending div').remove();
-            $('#appending').append('<div class="form-group">'
-                                      +'<input type="hidden" id="apd_tgl" name="apdTgl" class="form-control datepicker3 input-sm" readonly value="'+newDueDate+'">'
-                                    +'</div>');
-          }
+          $('#head_supplier_id').val(data.data_header[0].d_pcsr_supid);
+          $('#head_total_retur').val(convertDecimalToRupiah(totalRetur));
 
           //persentase diskon berdasarkan total harga bruto
-          var percentDiscTotalGross = parseFloat(totalDisc*100/totalPembelianGross);
           var key = 1;
           i = randString(5);
           //loop data
           Object.keys(data.data_isi).forEach(function(){
-            var hargaTotalItemGross = data.data_isi[key-1].d_pcsdt_total;
-            var qtyCost = data.data_isi[key-1].d_pcsdt_qtyconfirm;
+            var hargaTotalItem = data.data_isi[key-1].d_pcsrdt_pricetotal;
+            var qtyCost = data.data_isi[key-1].d_pcsrdt_qty;
             var qtyTerima = data.data_qty[key-1];
-            //harga total per item setelah kena diskon & pajak
-            var hargaTotalItemNet = Math.round(parseFloat(hargaTotalItemGross - (hargaTotalItemGross * percentDiscTotalGross/100) + ((hargaTotalItemGross - (hargaTotalItemGross * percentDiscTotalGross/100)) * taxPercent/100)).toFixed(2));
-            console.log(hargaTotalItemNet);
-            var hargaSatuanItemNet = hargaTotalItemNet/qtyCost;
+            var hargaSatuanItemNet = hargaTotalItem/qtyCost;
             var hargaTotalPerRow = hargaSatuanItemNet * qtyTerima;
             //console.log(hargaSatuanItemNet);
-            $('#tabel-modal-terima').append('<tr class="tbl_form_row" id="row'+i+'">'
-                            +'<td style="text-align:center">'+key+'</td>'
-                            +'<td><input type="text" value="'+data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name+'" name="fieldNamaItem[]" class="form-control input-sm" readonly/>'
-                            +'<input type="hidden" value="'+data.data_isi[key-1].i_id+'" name="fieldItemId[]" class="form-control input-sm"/>'
-                            +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsdt_id+'" name="fieldIdPurchaseDet[]" class="form-control input-sm"/></td>'
-                            +'<td><input type="text" value="'+qtyCost+'" name="fieldQty[]" class="form-control numberinput input-sm field_qty" readonly/></td>'
-                            +'<td><input type="text" value="'+qtyTerima+'" name="fieldQtyterima[]" class="form-control numberinput input-sm field_qty_terima" id="'+i+'"/>'
-                            +'<input type="hidden" value="'+qtyTerima+'" name="fieldQtyterimaHidden[]" class="form-control numberinput input-sm" id="qtymskhidden_'+i+'"/></td>'
-                            +'<td><input type="text" value="'+data.data_isi[key-1].m_sname+'" name="fieldSatuanTxt[]" class="form-control input-sm" readonly/>'
-                            +'<input type="hidden" value="'+data.data_isi[key-1].m_sid+'" name="fieldSatuanId[]" class="form-control input-sm" readonly/>'
-                            +'<input type="hidden" value="'+convertDecimalToRupiah(hargaSatuanItemNet)+'" name="fieldHarga[]" id="cost_'+i+'" class="form-control input-sm field_harga numberinput" readonly/>'
-                            +'<input type="hidden" value="'+hargaSatuanItemNet+'" name="fieldHargaRaw[]" id="costRaw_'+i+'" class="form-control input-sm field_harga_raw numberinput" readonly/>'
-                            +'<input type="hidden" value="'+convertDecimalToRupiah(hargaTotalPerRow)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem" id="total_'+i+'" readonly/>'
-                            +'<input type="hidden" value="'+hargaTotalPerRow+'" name="fieldHargaTotalRaw[]" id="totalRaw_'+i+'" class="form-control input-sm field_hargatotal_raw numberinput" readonly/></td>'
-                            +'<td><input type="text" value="'+data.data_stok[key-1].qtyStok+' '+data.data_satuan[key-1]+'" name="fieldStokTxt[]" class="form-control input-sm" readonly/>'
-                            +'<input type="hidden" value="'+data.data_stok[key-1].qtyStok+'" name="fieldStokVal[]" class="form-control input-sm" readonly/></td>'
-                            +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm">X</button></td>'
-                            +'</tr>');
+            $('#tabel-modal-terima').append(
+              '<tr class="tbl_form_row" id="row'+i+'">'
+                +'<td style="text-align:center">'
+                  +key
+                +'</td>'
+                +'<td>'
+                  +'<input type="text" value="'+data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name+'" name="fieldNamaItem[]" class="form-control input-sm" readonly/>'
+                  +'<input type="hidden" value="'+data.data_isi[key-1].i_id+'" name="fieldItemId[]" class="form-control input-sm"/>'
+                  +'<input type="hidden" value="'+data.data_isi[key-1].d_pcsrdt_id+'" name="fieldIdReturnDet[]" class="form-control input-sm"/>'
+                +'</td>'
+                +'<td>'
+                  +'<input type="text" value="'+qtyCost+'" name="fieldQty[]" class="form-control numberinput input-sm field_qty" readonly/>'
+                +'</td>'
+                +'<td>'
+                  +'<input type="text" value="'+qtyTerima+'" name="fieldQtyterima[]" class="form-control numberinput input-sm field_qty_terima" id="'+i+'"/>'
+                  +'<input type="hidden" value="'+qtyTerima+'" name="fieldQtyterimaHidden[]" class="form-control numberinput input-sm" id="qtymskhidden_'+i+'"/>'
+                +'</td>'
+                +'<td>'
+                  +'<input type="text" value="'+data.data_isi[key-1].m_sname+'" name="fieldSatuanTxt[]" class="form-control input-sm" readonly/>'
+                  +'<input type="hidden" value="'+data.data_isi[key-1].m_sid+'" name="fieldSatuanId[]" class="form-control input-sm" readonly/>'
+                  +'<input type="hidden" value="'+convertDecimalToRupiah(hargaSatuanItemNet)+'" name="fieldHarga[]" id="cost_'+i+'" class="form-control input-sm field_harga numberinput" readonly/>'
+                  +'<input type="hidden" value="'+hargaSatuanItemNet+'" name="fieldHargaRaw[]" id="costRaw_'+i+'" class="form-control input-sm field_harga_raw numberinput" readonly/>'
+                  +'<input type="hidden" value="'+convertDecimalToRupiah(hargaTotalPerRow)+'" name="fieldHargaTotal[]" class="form-control input-sm hargaTotalItem" id="total_'+i+'" readonly/>'
+                  +'<input type="hidden" value="'+hargaTotalPerRow+'" name="fieldHargaTotalRaw[]" id="totalRaw_'+i+'" class="form-control input-sm field_hargatotal_raw numberinput" readonly/>'
+                +'</td>'
+                +'<td>'
+                  +'<input type="text" value="'+data.data_stok[key-1].qtyStok+' '+data.data_satuan[key-1]+'" name="fieldStokTxt[]" class="form-control input-sm" readonly/>'
+                  +'<input type="hidden" value="'+data.data_stok[key-1].qtyStok+'" name="fieldStokVal[]" class="form-control input-sm" readonly/>'
+                +'</td>'
+                +'<td>'
+                  +'<button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm">X</button>'
+                +'</td>'
+              +'</tr>'
+            );
             i = randString(5);
             key++;
           });
@@ -212,6 +197,39 @@
             alert('Error get data from ajax');
         }
       });
+    });
+
+    $('#tbl-daftar').dataTable({
+        "destroy": true,
+        "processing" : true,
+        "serverside" : true,
+        "ajax" : {
+          url: baseUrl + "/inventory/p_returnsupplier/get-datatable-index",
+          type: 'GET'
+        },
+        "columns" : [
+          {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
+          {"data" : "tglMasuk", "width" : "10%"},
+          {"data" : "d_trs_code", "width" : "10%"},
+          {"data" : "m_name", "width" : "10%"},
+          {"data" : "s_company", "width" : "20%"},
+          {"data" : "d_pcsr_code", "width" : "10%"},
+          {"data" : "methodReturn", "width" : "10%"},
+          {"data" : "tglBuat", "width" : "10%"},
+          {"data" : "action", orderable: false, searchable: false, "width" : "10%"}
+        ],
+        "language": {
+          "searchPlaceholder": "Cari Data",
+          "emptyTable": "Tidak ada data",
+          "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+          "sSearch": '<i class="fa fa-search"></i>',
+          "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+          "infoEmpty": "",
+          "paginate": {
+                "previous": "Sebelumnya",
+                "next": "Selanjutnya",
+             }
+        }
     });
 
     //force integer input in textfield
@@ -234,11 +252,9 @@
       $('tr').remove('.tbl_modal_detail_row');
       $('tr').remove('.tbl_modal_detailmsk_row');
       //reset all input txt field
-      $('#form-terima-beli')[0].reset();
+      $('#form-terima-return')[0].reset();
       //empty select2 field
-      $('#head_nota_purchase').empty();
-      //remove appending div
-      $('#appending div').remove();
+      $('#head_nota_return').empty();
       //set datepicker to today 
       $('.datepicker2').datepicker('setDate', 'today');
       //remove class all jquery validation error
@@ -248,9 +264,9 @@
 
     //event focus on input qty
     $(document).on('focus', '.field_qty_terima',  function(e){
-        var qty = $(this).val();
-        $(this).val(qty);
-        $('#btn_simpan').attr('disabled', true);
+      var qty = $(this).val();
+      $(this).val(qty);
+      $('#btn_simpan').attr('disabled', true);
     });
 
     $(document).on('blur', '.field_qty_terima',  function(e){
@@ -277,10 +293,10 @@
     });
 
     //validasi
-    $("#form-terima-beli").validate({
+    $("#form-terima-return").validate({
       rules:{
         headTglTerima: "required",
-        headNotaPurchase: "required",
+        headNotaReturn: "required",
       },
       errorPlacement: function() {
           return false;
@@ -290,7 +306,7 @@
       }
     });
 
-    $('#head_nota_purchase').change(function(event) {
+    $('#head_nota_return').change(function(event) {
       if($(this).val() != ""){
         $('#divSelectNota').removeClass('has-error').addClass('has-valid');
       }else{
@@ -298,48 +314,8 @@
       }
     });
 
-    //load fungsi
-    lihatPenerimaanByTanggal();
-
   //end jquery
   });
-
-  function lihatPenerimaanByTanggal()
-  {
-    var tgl1 = $('#tanggal1').val();
-    var tgl2 = $('#tanggal2').val();
-    $('#tbl-daftar').dataTable({
-      "destroy": true,
-      "processing" : true,
-      "serverside" : true,
-      "ajax" : {
-        url: baseUrl + "/inventory/p_suplier/get-penerimaan-by-tgl/"+tgl1+"/"+tgl2,
-        type: 'GET'
-      },
-      "columns" : [
-        {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
-        {"data" : "tglBuat", "width" : "10%"},
-        {"data" : "d_tb_code", "width" : "10%"},
-        {"data" : "m_name", "width" : "10%"},
-        {"data" : "s_company", "width" : "20%"},
-        {"data" : "d_pcs_code", "width" : "10%"},
-        {"data" : "d_pcs_date_created", "width" : "10%"},
-        {"data" : "action", orderable: false, searchable: false, "width" : "10%"}
-      ],
-      "language": {
-        "searchPlaceholder": "Cari Data",
-        "emptyTable": "Tidak ada data",
-        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-        "sSearch": '<i class="fa fa-search"></i>',
-        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-        "infoEmpty": "",
-        "paginate": {
-              "previous": "Sebelumnya",
-              "next": "Selanjutnya",
-        }
-      }
-    });
-  }
 
   function totalNilaiPenerimaan()
   {
@@ -362,7 +338,7 @@
         }
     total = convertToRupiah(total);
     // console.log(total);
-    $('#head_total_terima').val(total);
+    $('#head_total_retur').val(total);
   }
 
   function randString(angka) 
@@ -379,18 +355,14 @@
   function detailPenerimaan(id) 
   {
     $.ajax({
-      url : baseUrl + "/inventory/p_suplier/get-detail-penerimaan/" + id,
+      url : baseUrl + "/inventory/p_returnsupplier/get-detail-penerimaan/" + id,
       type: "GET",
       dataType: "JSON",
       success: function(data)
       {
         var key = 1;
-        var date = data.header[0].d_pcs_duedate;
-        if(date != null) { var newDueDate = date.split("-").reverse().join("-"); }
-        
-        //ambil data ke json->modal
-        $('#lblNotaPembelian').text(data.header[0].d_pcs_code);
-        $('#lblNotaPenerimaan').text(data.header[0].d_tb_code);
+        $('#lblNotaRetur').text(data.header[0].d_pcsr_code);
+        $('#lblNotaPenerimaan').text(data.header[0].d_trs_code);
         $('#lblTglPenerimaan').text(data.header2.tanggalTerima);
         $('#lblStaff').text(data.header[0].m_name);
         $('#lblSupplier').text(data.header[0].s_company);
@@ -400,8 +372,8 @@
           $('#tabel-detail').append('<tr class="tbl_modal_detail_row">'
                           +'<td>'+key+'</td>'
                           +'<td>'+data.data_isi[key-1].i_code+' '+data.data_isi[key-1].i_name+'</td>'
-                          +'<td>'+data.data_isi[key-1].d_pcsdt_qtyconfirm+'</td>'
-                          +'<td>'+data.data_isi[key-1].d_tbdt_qty+'</td>'
+                          +'<td>'+data.data_isi[key-1].d_pcsrdt_qtyconfirm+'</td>'
+                          +'<td>'+data.data_isi[key-1].d_trsdt_qty+'</td>'
                           +'<td>'+data.data_isi[key-1].m_sname+'</td>'
                           // +'<td>'+convertDecimalToRupiah(data.data_isi[key-1].d_tbdt_price)+'</td>'
                           // +'<td>'+convertDecimalToRupiah(data.data_isi[key-1].d_tbdt_pricetotal)+'</td>'
@@ -409,7 +381,7 @@
                           +'</tr>');
           key++;
         });
-        $('#apdsfs').html('<a href="'+ baseUrl +'/inventory/p_suplier/print/'+ id +'" class="btn btn-primary" target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'+
+        $('#apdsfs').html('<a href="'+ baseUrl +'/inventory/p_returnsupplier/print/'+ id +'" class="btn btn-primary" target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'+
         '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
         $('#modal_detail').modal('show');
       },
@@ -423,19 +395,19 @@
   function detailListReceived(id) 
   {
     $.ajax({
-      url : baseUrl + "/inventory/p_suplier/get-penerimaan-peritem/" + id,
+      url : baseUrl + "/inventory/p_returnsupplier/get-penerimaan-peritem/" + id,
       type: "GET",
       dataType: "JSON",
       success: function(data)
       {
         var key = 1;
-        var dateCreated = data.header[0].d_pcs_date_created;
+        var dateCreated = data.header[0].d_pcsr_datecreated;
         var newDateCreated = dateCreated.split("-").reverse().join("-");
         //ambil data ke json->modal
         $('#lblHeadItem').text('( '+data.isi[0].i_code+' '+data.isi[0].i_name+' )');
-        $('#lblHeadPo').text(data.header[0].d_pcs_code);
-        $('#lblHeadQty').text(data.header[0].d_pcsdt_qty);
-        $('#lblHeadTglPo').text(data.header[0].d_pcs_date_created);
+        $('#lblHeadRetur').text(data.header[0].d_pcsr_code);
+        $('#lblHeadQty').text(data.header[0].d_pcsrdt_qty);
+        $('#lblHeadTglRetur').text(data.header[0].d_pcsr_datecreated);
         $('#lblHeadSup').text(data.header[0].s_company);
         //loop data
         Object.keys(data.isi).forEach(function(){
@@ -443,8 +415,8 @@
                           +'<td>'+key+'</td>'
                           +'<td>'+data.isi[key-1].i_code+' '+data.isi[key-1].i_name+'</td>'
                           +'<td>'+data.isi[key-1].m_sname+'</td>'
-                          +'<td>'+data.isi[key-1].d_tbdt_qty+'</td>'
-                          +'<td>'+data.isi[key-1].d_tb_code+'</td>'
+                          +'<td>'+data.isi[key-1].d_trsdt_qty+'</td>'
+                          +'<td>'+data.isi[key-1].d_trs_code+'</td>'
                           +'<td>'+data.tanggalTerima[key-1]+'</td>'
                           +'</tr>');
           key++;
@@ -464,25 +436,25 @@
       overlay: true,
       displayMode: 'once',
       //zindex: 999,
-      title: 'Terima data pembelian',
+      title: 'Terima return dari supplier',
       message: 'Apakah anda yakin ?',
       position: 'center',
       buttons: [
         ['<button><b>Ya</b></button>', function (instance, toast) {
-          var IsValid = $("form[name='formTerimaBeli']").valid();
+          var IsValid = $("form[name='formTerimaReturn']").valid();
           if(IsValid)
           {
             var countRow = $('#div_item tr').length;
             if(countRow > 0)
             {
               $('#divSelectNota').removeClass('has-error');
-              $('#btn_simpan').text('Updating...');
+              $('#btn_simpan').text('Saving...');
               $('#btn_simpan').attr('disabled',true);
               $.ajax({
-                url : baseUrl + "/inventory/p_suplier/simpan-penerimaan",
+                url : baseUrl + "/inventory/p_returnsupplier/simpan-penerimaan",
                 type: "POST",
                 dataType: "JSON",
-                data: $('#form-terima-beli').serialize(),
+                data: $('#form-terima-return').serialize(),
                 success: function(response)
                 {
                   if(response.status == "sukses")
@@ -495,7 +467,7 @@
                       onClosing: function(instance, toast, closedBy){
                         $('#btn_simpan').text('Submit'); //change button text
                         $('#btn_simpan').attr('disabled',false); //set button enable
-                        $('#modal_terima_beli').modal('hide');
+                        $('#modal_terima_return').modal('hide');
                         $('#tbl-daftar').DataTable().ajax.reload();
                       }
                     });
@@ -510,7 +482,7 @@
                       onClosing: function(instance, toast, closedBy){
                         $('#btn_simpan').text('Submit'); //change button text
                         $('#btn_simpan').attr('disabled',false); //set button enable
-                        $('#modal_terima_beli').modal('hide');
+                        $('#modal_terima_return').modal('hide');
                         $('#tbl-daftar').DataTable().ajax.reload();
                       }
                     }); 
@@ -560,13 +532,13 @@
       overlay: true,
       displayMode: 'once',
       //zindex: 999,
-      title: 'Hapus data penerimaan',
+      title: 'Hapus data Penerimaan Retur Supplier',
       message: 'Apakah anda yakin ?',
       position: 'center',
       buttons: [
         ['<button><b>Ya</b></button>', function (instance, toast) {
           $.ajax({
-            url : baseUrl + "/inventory/p_suplier/delete-data-penerimaan",
+            url : baseUrl + "/inventory/p_returnsupplier/delete-data-penerimaan",
             type: "POST",
             dataType: "JSON",
             data: {id:id, "_token": "{{ csrf_token() }}"},
@@ -576,7 +548,7 @@
               {
                 instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
                 iziToast.success({
-                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  position: 'center',
                   title: 'Pemberitahuan',
                   message: response.pesan,
                   onClosing: function(instance, toast, closedBy){
@@ -588,7 +560,7 @@
               {
                 instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
                 iziToast.error({
-                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  position: 'center',
                   title: 'Pemberitahuan',
                   message: response.pesan,
                   onClosing: function(instance, toast, closedBy){
@@ -623,16 +595,16 @@
       "processing" : true,
       "serverside" : true,
       "ajax" : {
-        url: baseUrl + "/inventory/p_suplier/get-list-waiting-bytgl/"+tgl1+"/"+tgl2,
+        url: baseUrl + "/inventory/p_returnsupplier/get-list-waiting-bytgl/"+tgl1+"/"+tgl2,
         type: 'GET'
       },
       "columns" : [
         {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
-        {"data" : "d_pcs_code", "width" : "10%"},
+        {"data" : "d_pcsr_code", "width" : "10%"},
         {"data" : "s_company", "width" : "15%"},
         {"data" : "i_name", "width" : "15%"},
         {"data" : "m_sname", "width" : "5%"},
-        {"data" : "d_pcsdt_qtyconfirm", "width" : "5%"},
+        {"data" : "d_pcsrdt_qtyconfirm", "width" : "5%"},
         {"data" : "qty_remain", "width" : "5%"},
         {"data" : "tglBuat", "width" : "10%"},
         {"data" : "status", "width" : "5%"},
@@ -661,16 +633,16 @@
       "processing" : true,
       "serverside" : true,
       "ajax" : {
-        url: baseUrl + "/inventory/p_suplier/get-list-received-bytgl/"+tgl1+"/"+tgl2,
+        url: baseUrl + "/inventory/p_returnsupplier/get-list-received-bytgl/"+tgl1+"/"+tgl2,
         type: 'GET'
       },
       "columns" : [
         {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
-        {"data" : "d_pcs_code", "width" : "10%"},
+        {"data" : "d_pcsr_code", "width" : "10%"},
         {"data" : "s_company", "width" : "15%"},
         {"data" : "i_name", "width" : "15%"},
         {"data" : "m_sname", "width" : "5%"},
-        {"data" : "d_pcsdt_qtyconfirm", "width" : "5%"},
+        {"data" : "d_pcsrdt_qtyconfirm", "width" : "5%"},
         {"data" : "qty_received", "width" : "5%"},
         {"data" : "tglBuat", "width" : "10%"},
         {"data" : "status", "width" : "5%"},
@@ -723,6 +695,11 @@
   function refreshTabelWaiting() 
   {
     $('#tbl-waiting').DataTable().ajax.reload();
+  }
+
+  function refreshTabelReceived() 
+  {
+    $('#tbl-received').DataTable().ajax.reload();
   }
 
 </script>

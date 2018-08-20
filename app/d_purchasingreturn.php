@@ -21,6 +21,7 @@ class d_purchasingreturn extends Model
         'd_pcsr_datecreated',
         'd_pcsr_dateupdated',
         'd_pcsr_dateconfirm',
+        'd_pcsr_datereceived',
         'd_pcsr_pricetotal',
         'd_pcsr_priceresult',
         'd_pcsr_status',

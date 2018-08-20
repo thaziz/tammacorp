@@ -111,6 +111,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/purchasing/orderpembelian/delete-data-order', 'Pembelian\OrderPembelianController@deleteDataOrder');
     Route::get('/purchasing/orderpembelian/get-data-tabel-history/{tgl1}/{tgl2}/{tampil}', 'Pembelian\OrderPembelianController@getDataTabelHistory');
     Route::get('/purchasing/orderpembelian/get-penerimaan-peritem/{id}', 'Pembelian\OrderPembelianController@getPenerimaanPerItem');
+    Route::get('/purchasing/orderpembelian/get-order-by-tgl/{tgl1}/{tgl2}', 'Pembelian\OrderPembelianController@getOrderByTgl');
 // Ari
     Route::get('/purchasing/orderpembelian/print/{id}', 'Pembelian\OrderPembelianController@print');
 // irA
@@ -127,6 +128,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/purchasing/rencanapembelian/delete-data-plan', 'Pembelian\RencanaPembelianController@deleteDataPlan');
     Route::get('/purchasing/rencanapembelian/get-data-tabel-history/{tgl1}/{tgl2}/{tampil}', 'Pembelian\RencanaPembelianController@getDataTabelHistory');
     Route::get('/purchasing/rencanapembelian/get-stok-persatuan', 'Pembelian\RencanaPembelianController@getStokPersatuan');
+    Route::get('/purchasing/rencanapembelian/get-rencana-by-tgl/{tgl1}/{tgl2}', 'Pembelian\RencanaPembelianController@getRencanaByTgl');
 //belanja harian
     Route::get('/purchasing/belanjaharian/belanja', 'Pembelian\BelanjaHarianController@belanja');
     Route::get('/purchasing/belanjaharian/tambah_belanja', 'Pembelian\BelanjaHarianController@tambah_belanja');
@@ -156,6 +158,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/purchasing/returnpembelian/update-data-return', 'Pembelian\ReturnPembelianController@updateDataReturn');
     Route::post('/purchasing/returnpembelian/delete-data-return', 'Pembelian\ReturnPembelianController@deleteDataReturn');
     Route::get('/purchasing/returnpembelian/get-list-revisi-bytgl/{tgl1}/{tgl2}/{tampil}', 'Pembelian\ReturnPembelianController@getListRevisiByTgl');
+    Route::get('/purchasing/returnpembelian/get-return-by-tgl/{tgl1}/{tgl2}', 'Pembelian\ReturnPembelianController@getReturnByTgl');
 //rizky
     Route::get('/purchasing/belanjasuplier/suplier', 'Pembelian\PurchasingController@suplier');
     Route::get('/purchasing/belanjalangsung/langsung', 'Pembelian\PurchasingController@langsung');
@@ -224,9 +227,22 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/inventory/p_suplier/cari_nota', 'Inventory\penerimaanbarang_supController@cari_nota_sup');
     Route::get('/inventory/p_suplier/get_data_po', 'Inventory\PenerimaanBrgSupController@get_data_po');
     Route::get('/inventory/p_suplier/list_po', 'Inventory\PenerimaanBrgSupController@list_po');
+    Route::get('/inventory/p_suplier/get-penerimaan-by-tgl/{tgl1}/{tgl2}', 'Inventory\PenerimaanBrgSupController@getPenerimaanByTgl');
 // Ari
     Route::get('/inventory/p_suplier/print/{id}', 'Inventory\PenerimaanBrgSupController@print');
 // irA
+//p_returnsupplier
+    Route::get('/inventory/p_returnsupplier/index', 'inventory\PenerimaanRtrSupController@index');
+    Route::get('/inventory/p_returnsupplier/lookup-data-return', 'Inventory\PenerimaanRtrSupController@lookupDataReturn');
+    Route::get('/inventory/p_returnsupplier/get-data-form/{id}', 'Inventory\PenerimaanRtrSupController@getDataForm');
+    Route::post('/inventory/p_returnsupplier/simpan-penerimaan', 'Inventory\PenerimaanRtrSupController@simpanPenerimaan');
+    Route::get('/inventory/p_returnsupplier/get-datatable-index', 'Inventory\PenerimaanRtrSupController@getDatatableIndex');
+    Route::get('/inventory/p_returnsupplier/get-detail-penerimaan/{id}', 'Inventory\PenerimaanRtrSupController@getDataDetail');
+    Route::post('/inventory/p_returnsupplier/delete-data-penerimaan', 'Inventory\PenerimaanRtrSupController@deletePenerimaan');
+    Route::get('/inventory/p_returnsupplier/get-list-waiting-bytgl/{tgl1}/{tgl2}', 'Inventory\PenerimaanRtrSupController@getListWaitingByTgl');
+    Route::get('/inventory/p_returnsupplier/get-list-received-bytgl/{tgl1}/{tgl2}', 'Inventory\PenerimaanRtrSupController@getListReceivedByTgl');
+    Route::get('/inventory/p_returnsupplier/get-penerimaan-peritem/{id}', 'Inventory\PenerimaanRtrSupController@getPenerimaanPeritem');
+    Route::get('/inventory/p_returnsupplier/print/{id}', 'Inventory\PenerimaanRtrSupController@printTandaTerima');
 //end rizky
     /*End Inventory*/
     /*Produksi*/

@@ -71,7 +71,7 @@
     var date = new Date();
     var newdate = new Date(date);
 
-    newdate.setDate(newdate.getDate()-3);
+    newdate.setDate(newdate.getDate()-30);
     var nd = new Date(newdate);
 
     $('.datepicker1').datepicker({
@@ -85,38 +85,6 @@
       format:"dd-mm-yyyy",
       endDate: 'today'
     });//datepicker("setDate", "0");
-
-    $('#tbl-daftar').dataTable({
-        "destroy": true,
-        "processing" : true,
-        "serverside" : true,
-        "ajax" : {
-          url: baseUrl + "/purchasing/rencanapembelian/get-data-tabel-daftar",
-          type: 'GET'
-        },
-        "columns" : [
-          {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
-          {"data" : "tglBuat", "width" : "10%"},
-          {"data" : "d_pcsp_code", "width" : "10%"},
-          {"data" : "m_name", "width" : "10%"},
-          {"data" : "s_company", "width" : "15%"},
-          {"data" : "tglConfirm", "width" : "10%"},
-          {"data" : "status", "width" : "10%"},
-          {"data" : "action", orderable: false, searchable: false, "width" : "13%"}
-        ],
-        "language": {
-          "searchPlaceholder": "Cari Data",
-          "emptyTable": "Tidak ada data",
-          "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-          "sSearch": '<i class="fa fa-search"></i>',
-          "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-          "infoEmpty": "",
-          "paginate": {
-                "previous": "Sebelumnya",
-                "next": "Selanjutnya",
-             }
-        }
-    });
 
     //force integer input in textfield
     $('input.numberinput').bind('keypress', function (e) {
@@ -139,6 +107,9 @@
     $('.refresh-data-history').click(function(event) {
       $('#tbl-history').DataTable().ajax.reload();
     });
+
+    //load fungsi
+    lihatRencanaByTanggal();
   //end jquery
   });
 
@@ -439,6 +410,43 @@
           instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
         }],
       ]
+    });
+  }
+
+  function lihatRencanaByTanggal()
+  {
+    var tgl1 = $('#tanggal1').val();
+    var tgl2 = $('#tanggal2').val();
+    $('#tbl-daftar').dataTable({
+      "destroy": true,
+      "processing" : true,
+      "serverside" : true,
+      "ajax" : {
+        url: baseUrl + "/purchasing/rencanapembelian/get-rencana-by-tgl/"+tgl1+"/"+tgl2,
+        type: 'GET'
+      },
+      "columns" : [
+        {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
+        {"data" : "tglBuat", "width" : "10%"},
+        {"data" : "d_pcsp_code", "width" : "10%"},
+        {"data" : "m_name", "width" : "10%"},
+        {"data" : "s_company", "width" : "15%"},
+        {"data" : "tglConfirm", "width" : "10%"},
+        {"data" : "status", "width" : "10%"},
+        {"data" : "action", orderable: false, searchable: false, "width" : "13%"}
+      ],
+      "language": {
+        "searchPlaceholder": "Cari Data",
+        "emptyTable": "Tidak ada data",
+        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+        "sSearch": '<i class="fa fa-search"></i>',
+        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+        "infoEmpty": "",
+        "paginate": {
+              "previous": "Sebelumnya",
+              "next": "Selanjutnya",
+        }
+      }
     });
   }
 

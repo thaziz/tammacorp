@@ -356,10 +356,6 @@
                                         Penerimaan Barang Return Suplier
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Penerimaan Barang Return Customer','ma_read'))
-                                        Penerimaan Barang Return Customer
-                                    @endif
-
                                     @if(Auth::user()->punyaAkses('Barang Digunakan','ma_read'))
                                         Barang Digunakan
                                     @endif
@@ -407,13 +403,6 @@
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Penerimaan Barang Return Customer','ma_read'))
-                                    <li class="{{ Request::is('inventory/p_returncustomer/cust') ? 'active' : '' || Request::is('inventory/p_returncustomer/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/inventory/p_returncustomer/cust') }}"><span
-                                                    class="submenu-title">Penerimaan Barang Return Customer</span><span
-                                                    class="hidden">Inventory</span></a>
-                                    </li>
-                                @endif
 
                                 @if(Auth::user()->punyaAkses('Barang Digunakan','ma_read'))
                                     <li class="{{ Request::is('inventory/b_digunakan/barang') ? 'active' : '' || Request::is('inventory/b_digunakan/*') ? 'active' : '' }}">

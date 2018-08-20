@@ -21,6 +21,7 @@ class d_purchasingreturn_dt extends Model
         'd_pcsrdt_price',
         'd_pcsrdt_pricetotal',
         'd_pcsrdt_isconfirm',
+        'd_pcsrdt_isreceived',
         'd_pcsrdt_created',
         'd_pcsrdt_updated'
     ];
