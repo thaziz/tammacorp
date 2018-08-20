@@ -150,6 +150,8 @@
                                 endDate: 'today'
                             });//.datepicker("setDate", "0");
 
+                            cariTanggalSpk();
+
                         });
 
                         function cariTanggalSpk() {
