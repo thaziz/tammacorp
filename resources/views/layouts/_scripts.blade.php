@@ -31,7 +31,7 @@
     <script src="{{ asset ('assets/script/jquery.flot.stack.js') }}"></script>
     <script src="{{ asset ('assets/script/jquery.flot.spline.js') }}"></script>
     <script src="{{ asset ('assets/script/zabuto_calendar.min.js') }}"></script>
-    <script src="{{ asset ('assets/script/index.js') }}"></script>
+    {{-- <script src="{{ asset ('assets/script/index.js') }}"></script> --}}
     <script src="{{ asset ('assets/script/dataTables.bootstrap.js') }}"></script>
     <script src="{{ asset ('assets/script/jquery.dataTables.js') }}"></script>
     <script src="{{ asset ('assets/toastr/toastr.min.js') }}"></script>

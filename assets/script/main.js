@@ -13,7 +13,7 @@ $(function () {
 
             $('div.sidebar-collapse').addClass('collapse');
         } else {
-            alert('besar')
+            
             $('div.sidebar-collapse').removeClass('collapse');
             $('div.sidebar-collapse').css('height', 'auto');
         }
