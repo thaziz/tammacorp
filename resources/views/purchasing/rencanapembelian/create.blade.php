@@ -112,7 +112,7 @@
                                           <th>Qty</th>
                                           <th>Satuan</th>
                                           <th>Harga Prev / Satuan utama</th>
-                                          <th>Stok Gudang</th>
+                                          <th width="20%">Stok Gudang</th>
                                           <th style="text-align: center;">Aksi</th>
                                        </tr>
                                     </thead>
@@ -224,7 +224,7 @@
             select: function(event, ui) {
               $('#ip_item').val(ui.item.id);
               $('#ip_barang').val(ui.item.label);
-              $('#ip_qtyStok').val(ui.item.stok);
+              $('#ip_qtyStok').val(ui.item.stok+' '+ui.item.satTxt[0]);
               $('#ip_hargaPrev').val(ui.item.prevCost);
               Object.keys(ui.item.sat).forEach(function(){
                 $('#ip_sat').append($('<option>', { 

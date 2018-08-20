@@ -282,6 +282,10 @@ class ConfrimBeliController extends Controller
       {
         return '<span class="label label-success">Received</span>';
       }
+      else
+      {
+        return '<span class="label label-warning">Revisi</span>';
+      }
     })
     ->editColumn('tglOrder', function ($data) 
     {

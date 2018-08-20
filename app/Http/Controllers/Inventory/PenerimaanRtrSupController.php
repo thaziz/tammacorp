@@ -185,6 +185,76 @@ class PenerimaanRtrSupController extends Controller
         ->make(true);
     }
 
+    public function getTerimaRtrByTgl($tgl1, $tgl2)
+    {
+        $y = substr($tgl1, -4);
+        $m = substr($tgl1, -7,-5);
+        $d = substr($tgl1,0,2);
+         $tanggal1 = $y.'-'.$m.'-'.$d;
+
+        $y2 = substr($tgl2, -4);
+        $m2 = substr($tgl2, -7,-5);
+        $d2 = substr($tgl2,0,2);
+        $tanggal2 = $y2.'-'.$m2.'-'.$d2;
+
+        $data = d_terima_return_sup::join('d_purchasingreturn','d_terima_return_sup.d_trs_prid','=','d_purchasingreturn.d_pcsr_id')
+                ->join('d_supplier','d_terima_return_sup.d_trs_sup','=','d_supplier.s_id')
+                ->join('d_mem','d_terima_return_sup.d_trs_staff','=','d_mem.m_id')
+                ->select('d_terima_return_sup.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_purchasingreturn.d_pcsr_method', 'd_purchasingreturn.d_pcsr_code', 'd_purchasingreturn.d_pcsr_datecreated', 'd_mem.m_name')
+                ->whereBetween('d_trs_date', [$tanggal1, $tanggal2])
+                ->orderBy('d_trs_created', 'DESC')
+                ->get();
+
+        return DataTables::of($data)
+        ->addIndexColumn()
+        ->editColumn('tglMasuk', function ($data) 
+        {
+            if ($data->d_trs_created == null) 
+            {
+                return '-';
+            }
+            else 
+            {
+                return $data->d_trs_created ? with(new Carbon($data->d_trs_created))->format('d M Y') : '';
+            }
+        })
+        ->editColumn('tglBuat', function ($data) 
+        {
+            if ($data->d_pcsr_datecreated == null) 
+            {
+                return '-';
+            }
+            else 
+            {
+                return $data->d_pcsr_datecreated ? with(new Carbon($data->d_pcsr_datecreated))->format('d M Y') : '';
+            }
+        })
+        ->editColumn('methodReturn', function ($data) 
+        {
+            if ($data->d_pcsr_method == 'TK') 
+            {
+                return 'TUKAR BARANG';
+            }
+            else 
+            {
+                return 'POTONG NOTA';
+            }
+        })
+        ->addColumn('action', function($data)
+        {
+            return '<div class="text-center">
+                        <button class="btn btn-sm btn-success" title="Detail"
+                            onclick=detailPenerimaan("'.$data->d_trs_id.'")><i class="fa fa-eye"></i> 
+                        </button>
+                        <button class="btn btn-sm btn-danger" title="Delete"
+                            onclick=deletePenerimaan("'.$data->d_trs_id.'")><i class="glyphicon glyphicon-trash"></i>
+                        </button>
+                    </div>';
+        })
+        ->rawColumns(['action'])
+        ->make(true);
+    }
+
     public function getDataDetail($id)
     {
         $dataHeader = d_terima_return_sup::join('d_purchasingreturn','d_terima_return_sup.d_trs_prid','=','d_purchasingreturn.d_pcsr_id')

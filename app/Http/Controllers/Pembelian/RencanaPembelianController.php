@@ -66,8 +66,8 @@ class RencanaPembelianController extends Controller
 
       $data = d_purchasingplan::join('d_supplier','d_purchasingplan.d_pcsp_sup','=','d_supplier.s_id')
               ->join('d_mem','d_purchasingplan.d_pcsp_mid','=','d_mem.m_id')
-              ->select('d_pcsp_id','d_pcsp_code','d_pcsp_code','s_company','d_pcsp_status','d_pcsp_datecreated','d_pcsp_dateconfirm', 'd_mem.m_id', 'd_mem.m_name')
-              ->whereBetween('d_purchasingplan.d_pcsp_created', [$tanggal1, $tanggal2])
+              ->select('d_pcsp_id','d_pcsp_code','s_company','d_pcsp_status','d_pcsp_datecreated','d_pcsp_dateconfirm', 'd_mem.m_id', 'd_mem.m_name')
+              ->whereBetween('d_purchasingplan.d_pcsp_datecreated', [$tanggal1, $tanggal2])
               ->orderBy('d_pcsp_created', 'DESC')
               ->get();
 
@@ -402,7 +402,7 @@ class RencanaPembelianController extends Controller
           $idItem = $val->i_id;
           $prevCost = DB::table('d_stock_mutation')
                     // ->select(DB::raw('MAX(sm_hpp) as hargaPrev'))
-                    ->select('sm_hpp')
+                    ->select('sm_hpp', 'sm_qty')
                     ->where('sm_item', '=', $idItem)
                     ->where('sm_mutcat', '=', "14")
                     ->orderBy('sm_date', 'desc')
@@ -413,7 +413,7 @@ class RencanaPembelianController extends Controller
           $hargaLalu = "";
           foreach ($prevCost as $value) 
           {
-            $hargaLalu = $value->sm_hpp;
+            $hargaLalu = $value->sm_hpp / $value->sm_qty;
           }
 
           //get data txt satuan
@@ -423,7 +423,7 @@ class RencanaPembelianController extends Controller
 
           $results[] = [ 'id' => $val->i_id,
                          'label' => $val->i_code .'  '.$val->i_name,
-                         'stok' => $stok,
+                         'stok' => (int)$stok,
                          'sat' => [$val->i_sat1, $val->i_sat2, $val->i_sat3],
                          'satTxt' => [$txtSat1->m_sname, $txtSat2->m_sname, $txtSat3->m_sname],
                          'prevCost' => 'Rp. '.number_format((int)$hargaLalu,2,",",".")

@@ -199,39 +199,6 @@
       });
     });
 
-    $('#tbl-daftar').dataTable({
-        "destroy": true,
-        "processing" : true,
-        "serverside" : true,
-        "ajax" : {
-          url: baseUrl + "/inventory/p_returnsupplier/get-datatable-index",
-          type: 'GET'
-        },
-        "columns" : [
-          {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
-          {"data" : "tglMasuk", "width" : "10%"},
-          {"data" : "d_trs_code", "width" : "10%"},
-          {"data" : "m_name", "width" : "10%"},
-          {"data" : "s_company", "width" : "20%"},
-          {"data" : "d_pcsr_code", "width" : "10%"},
-          {"data" : "methodReturn", "width" : "10%"},
-          {"data" : "tglBuat", "width" : "10%"},
-          {"data" : "action", orderable: false, searchable: false, "width" : "10%"}
-        ],
-        "language": {
-          "searchPlaceholder": "Cari Data",
-          "emptyTable": "Tidak ada data",
-          "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-          "sSearch": '<i class="fa fa-search"></i>',
-          "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-          "infoEmpty": "",
-          "paginate": {
-                "previous": "Sebelumnya",
-                "next": "Selanjutnya",
-             }
-        }
-    });
-
     //force integer input in textfield
     $('input.numberinput').bind('keypress', function (e) {
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
@@ -314,8 +281,48 @@
       }
     });
 
+    lihatTerimaRtrByTanggal();
+
   //end jquery
   });
+
+  function lihatTerimaRtrByTanggal()
+  {
+    var tgl1 = $('#tanggal1').val();
+    var tgl2 = $('#tanggal2').val();
+    $('#tbl-daftar').dataTable({
+      "destroy": true,
+      "processing" : true,
+      "serverside" : true,
+      "ajax" : {
+        url: baseUrl + "/inventory/p_returnsupplier/get-terimaretur-by-tgl/"+tgl1+"/"+tgl2,
+        type: 'GET'
+      },
+      "columns" : [
+        {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
+        {"data" : "tglMasuk", "width" : "10%"},
+        {"data" : "d_trs_code", "width" : "10%"},
+        {"data" : "m_name", "width" : "10%"},
+        {"data" : "s_company", "width" : "20%"},
+        {"data" : "d_pcsr_code", "width" : "10%"},
+        {"data" : "methodReturn", "width" : "10%"},
+        {"data" : "tglBuat", "width" : "10%"},
+        {"data" : "action", orderable: false, searchable: false, "width" : "10%"}
+      ],
+      "language": {
+        "searchPlaceholder": "Cari Data",
+        "emptyTable": "Tidak ada data",
+        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+        "sSearch": '<i class="fa fa-search"></i>',
+        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+        "infoEmpty": "",
+        "paginate": {
+              "previous": "Sebelumnya",
+              "next": "Selanjutnya",
+        }
+      }
+    });
+  }
 
   function totalNilaiPenerimaan()
   {

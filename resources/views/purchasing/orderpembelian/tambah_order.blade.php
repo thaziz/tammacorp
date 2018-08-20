@@ -355,6 +355,21 @@
         dataType: "JSON",
         success: function(data)
         {
+          //object to store select2 data
+          var dataSelect = {
+              id: data.data_header[0].s_id,
+              text: data.data_header[0].s_company
+          };
+
+          if ($('#cari_sup').find("option[value='" + dataSelect.id + "']").length) {
+            $('#cari_sup').val(dataSelect.id).trigger('change');
+          } else { 
+            // Create a DOM Option and pre-select by default
+            var newOption = new Option(dataSelect.text, dataSelect.id, true, true);
+            // Append it to the select
+            $('#cari_sup').append(newOption).trigger('change');
+          } 
+
           var totalHarga = 0;
           var key = 1;
           i = randString(5);

@@ -106,7 +106,7 @@ class PenerimaanBrgSupController extends Controller
                 ->join('d_supplier','d_terima_pembelian.d_tb_sup','=','d_supplier.s_id')
                 ->join('d_mem','d_terima_pembelian.d_tb_staff','=','d_mem.m_id')
                 ->select('d_terima_pembelian.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_purchasing.d_pcs_id', 'd_purchasing.d_pcs_code', 'd_purchasing.d_pcs_date_created', 'd_mem.m_name')
-                ->whereBetween('d_tb_created', [$tanggal1, $tanggal2])
+                ->whereBetween('d_tb_date', [$tanggal1, $tanggal2])
                 ->orderBy('d_tb_created', 'DESC')
                 ->get();
 

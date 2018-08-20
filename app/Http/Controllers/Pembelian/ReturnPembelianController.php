@@ -46,7 +46,7 @@ class ReturnPembelianController extends Controller
           ->join('d_supplier','d_purchasingreturn.d_pcsr_supid','=','d_supplier.s_id')
           ->join('d_mem','d_purchasingreturn.d_pcs_staff','=','d_mem.m_id')
           ->select('d_purchasingreturn.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_purchasing.d_pcs_id', 'd_purchasing.d_pcs_code', 'd_mem.m_id', 'd_mem.m_name')
-          ->whereBetween('d_pcsr_created', [$tanggal1, $tanggal2])
+          ->whereBetween('d_pcsr_datecreated', [$tanggal1, $tanggal2])
           ->orderBy('d_pcsr_created', 'DESC')
           ->get();
 
@@ -297,7 +297,7 @@ class ReturnPembelianController extends Controller
         {
           return '<div class="text-center">
                     <button class="btn btn-sm btn-success" title="Detail"
-                        onclick=detailPoRev("'.$data->d_pcsdt_id.'")><i class="fa fa-eye"></i> 
+                        onclick=detailPoRev("'.$data->d_pcs_id.'")><i class="fa fa-eye"></i> 
                     </button>
                   </div>'; 
         }
@@ -305,7 +305,7 @@ class ReturnPembelianController extends Controller
         {
           return '<div class="text-center">
                     <button class="btn btn-sm btn-success" title="Detail"
-                        onclick=detailPoRev("'.$data->d_pcsdt_id.'") disabled><i class="fa fa-eye"></i> 
+                        onclick=detailPoRev("'.$data->d_pcs_id.'") disabled><i class="fa fa-eye"></i> 
                     </button>
                   </div>'; 
         } 
@@ -589,6 +589,136 @@ class ReturnPembelianController extends Controller
           'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
       ]);
     }
+  }
+
+  public function getDetailRevisi($id)
+  {
+      $dataHeader = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
+              ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
+              ->select('d_purchasing.*', 'd_supplier.s_company', 'd_supplier.s_name','d_mem.m_id','d_mem.m_name')
+              ->where('d_pcs_id', '=', $id)
+              ->orderBy('d_pcs_date_created', 'DESC')
+              ->get();
+
+      $statusLabel = $dataHeader[0]->d_pcs_status;
+      if ($statusLabel == "WT") 
+      {
+        $spanTxt = 'Waiting';
+        $spanClass = 'label-default';
+      }
+      elseif ($statusLabel == "DE")
+      {
+        $spanTxt = 'Dapat Diedit';
+        $spanClass = 'label-warning';
+      }
+      elseif ($statusLabel == "CF")
+      {
+        $spanTxt = 'Di setujui';
+        $spanClass = 'label-info';
+      }
+      else if ($statusLabel == "RC") 
+      {
+        $spanTxt = 'Barang telah diterima';
+        $spanClass = 'label-success';
+      }
+      else 
+      {
+        $spanTxt = 'PO revisi';
+        $spanClass = 'label-warning';
+      }
+      
+
+      foreach ($dataHeader as $val) 
+      {
+        $data = array(
+            'hargaBruto' => 'Rp. '.number_format($val->d_pcs_total_gross,2,",","."),
+            'nilaiDiskon' => 'Rp. '.number_format($val->d_pcs_discount + $val->d_pcs_disc_value,2,",","."),
+            'nilaiPajak' => 'Rp. '.number_format($val->d_pcs_tax_value,2,",","."),
+            'hargaNet' => 'Rp. '.number_format($val->d_pcs_total_net,2,",",".")
+        );
+      }
+
+      $dataIsi = d_purchasing_dt::join('m_item', 'd_purchasing_dt.i_id', '=', 'm_item.i_id')
+              ->join('m_satuan', 'd_purchasing_dt.d_pcsdt_sat', '=', 'm_satuan.m_sid')
+              ->select('d_purchasing_dt.d_pcsdt_id',
+                       'd_purchasing_dt.d_pcs_id',
+                       'd_purchasing_dt.i_id',
+                       'm_item.i_name',
+                       'm_item.i_code',
+                       'm_item.i_sat1',
+                       'm_satuan.m_sname',
+                       'm_satuan.m_sid',
+                       'd_purchasing_dt.d_pcsdt_prevcost',
+                       'd_purchasing_dt.d_pcsdt_qty',
+                       'd_purchasing_dt.d_pcsdt_price',
+                       'd_purchasing_dt.d_pcsdt_total'
+              )
+              ->where('d_purchasing_dt.d_pcs_id', '=', $id)
+              ->orderBy('d_purchasing_dt.d_pcsdt_created', 'DESC')
+              ->get();
+
+      foreach ($dataIsi as $val) 
+      {
+          //cek item type
+          $itemType[] = DB::table('m_item')->select('i_type', 'i_id')->where('i_id','=', $val->i_id)->first();
+          //get satuan utama
+          $sat1[] = $val->i_sat1;
+      }
+
+      //variabel untuk count array
+      $counter = 0;
+      //ambil value stok by item type
+      $dataStok = $this->getStokByType($itemType, $sat1, $counter);
+      
+      return response()->json([
+          'status' => 'sukses',
+          'header' => $dataHeader,
+          'header2' => $data,
+          'data_isi' => $dataIsi,
+          'data_stok' => $dataStok['val_stok'],
+          'data_satuan' => $dataStok['txt_satuan'],
+          'spanTxt' => $spanTxt,
+          'spanClass' => $spanClass,
+      ]);
+  }
+
+  public function ubahStatusPo(Request $request)
+  {
+      //dd($request->all());
+      DB::beginTransaction();
+      try 
+      {   
+          $tanggal = date("Y-m-d h:i:s");
+          
+          //update d_purchasing
+          $update = DB::table('d_purchasing')
+              ->where('d_pcs_id','=',$request->id)
+              ->update([
+                  'd_pcs_updated' => $tanggal,
+                  'd_pcs_status' => 'RC'
+              ]);
+
+          if ($update) 
+          {
+            $pesan = 'Status PO telah diubah menjadi Telah Diterima';
+          }else{
+            $pesan = 'Status PO gagal diubah';
+          }
+
+          DB::commit();
+          return response()->json([
+            'status' => 'sukses',
+            'pesan' => $pesan
+          ]);          
+      }
+      catch (\Exception $e) 
+      {
+        DB::rollback();
+        return response()->json([
+            'status' => 'gagal',
+            'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
+        ]);
+      }
   }
 
   /*public function updateDataReturn(Request $request)
