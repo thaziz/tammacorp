@@ -45,6 +45,8 @@
           <!-- modal -->
           <!--modal detail-->
           @include('purchasing.returnpembelian.modal-detail')
+          <!--modal detail-rev-->
+          @include('purchasing.returnpembelian.modal-detail-rev')
           <!--modal edit-->
           @include('purchasing.returnpembelian.modal-edit')
           <!-- /modal -->
@@ -105,6 +107,7 @@
     $(".modal").on("hidden.bs.modal", function(){
       $('tr').remove('.tbl_modal_detail_row');
       $('tr').remove('.tbl_modal_edit_row');
+      $('tr').remove('.tbl_modal_row');
       //remove span class in modal detail
       $("#txt_span_status").removeClass();
       $('#txt_span_status_edit').removeClass();
@@ -451,6 +454,146 @@
             },
             async: false
           }); 
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
+  }
+
+  function detailPoRev(id) 
+  {
+    $.ajax({
+      url : baseUrl + "/purchasing/returnpembelian/get-detail-revisi/" + id,
+      type: "GET",
+      dataType: "JSON",
+      success: function(data)
+      {
+        var i = randString(5);
+        var key = 1;
+        $('#txt_span_status_detail_rev').text(data.spanTxt);
+        $("#txt_span_status_detail_rev").addClass('label'+' '+data.spanClass);
+        $('#lblNoOrder').text(data.header[0].d_pcs_code);
+        $('#lblCaraBayar').text(data.header[0].d_pcs_method);
+        $('#lblTglOrder').text(data.header[0].d_pcs_date_created);
+        $('#lblTglKirim').text(data.header[0].d_pcs_date_received);
+        $('#lblStaffRev').text(data.header[0].m_name);
+        $('#lblSupplierRev').text(data.header[0].s_company);
+        $('[name="totalHarga"]').val(data.header2.hargaBruto);
+        $('[name="diskonHarga"]').val(data.header2.nilaiDiskon);
+        $('[name="ppnHarga"]').val(data.header2.nilaiPajak);
+        $('[name="totalHargaFinal"]').val(data.header2.hargaNet);
+        if (data.header[0].d_pcs_method != "CASH") 
+        {
+          $('#append-modal-detail div').remove();
+          var metode = data.header[0].d_pcs_method;
+          if (metode == "DEPOSIT") 
+          {
+            $('#append-modal-detail div').remove();
+            $('#append-modal-detail').append('<div class="col-md-3 col-sm-12 col-xs-12">'
+                                      +'<label class="tebal">Batas Terakhir Pengiriman</label>'
+                                  +'</div>'
+                                  +'<div class="col-md-3 col-sm-12 col-xs-12">'
+                                    +'<div class="form-group">'
+                                      +'<label id="dueDate">'+data.header[0].d_pcs_duedate+'</label>'
+                                    +'</div>'
+                                  +'</div>');
+          }
+          else if(metode == "CREDIT")
+          {
+            $('#append-modal-detail div').remove();
+            $('#append-modal-detail').append('<div class="col-md-3 col-sm-12 col-xs-12">'
+                                      +'<label class="tebal">TOP (Termin Of Payment)</label>'
+                                  +'</div>'
+                                  +'<div class="col-md-3 col-sm-12 col-xs-12">'
+                                    +'<div class="form-group">'
+                                      +'<label id="dueDate">'+data.header[0].d_pcs_duedate+'</label>'
+                                    +'</div>'
+                                  +'</div>');
+          }
+        }
+        //loop data
+        Object.keys(data.data_isi).forEach(function(){
+          $('#tabel-order').append('<tr class="tbl_modal_row" id="row'+i+'">'
+                          +'<td>'+key+'</td>'
+                          +'<td>'+data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name+'</td>'
+                          +'<td>'+data.data_isi[key-1].m_sname+'</td>'
+                          +'<td>'+data.data_isi[key-1].d_pcsdt_qty+'</td>'
+                          +'<td>'+data.data_stok[key-1].qtyStok+' '+data.data_satuan[key-1]+'</td>'
+                          +'<td>'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_prevcost)+'</td>'
+                          +'<td>'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_price)+'</td>'
+                          +'<td>'+convertDecimalToRupiah(data.data_isi[key-1].d_pcsdt_total)+'</td>'
+                          +'</tr>');
+          key++;  
+          i = randString(5);
+        });
+        $('#divBtnModal').html(
+          '<button type="button" class="btn btn-success" onclick="ubahStatusToReceived('+data.header[0].d_pcs_id+')">Ubah Status</button>'+
+          '<a href="'+ baseUrl +'/inventory/p_suplier/print/'+ id +'" class="btn btn-primary" target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'+
+          '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
+        $('#modal-detail-rev').modal('show');
+      },
+      error: function (jqXHR, textStatus, errorThrown)
+      {
+          alert('Error get data from ajax');
+      }
+    });
+  }
+
+  function ubahStatusToReceived(id) {
+    iziToast.question({
+      timeout: 20000,
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      // id: 'question',
+      // zindex: 999,
+      title: 'Peringatan!!',
+      message: 'Anda akan merubah status barang dari revisi ke diterima',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+            $.ajax({
+              type: "POST",
+              url : baseUrl + "/purchasing/returnpembelian/ubah-status-po/" + id,
+              data: {id:id, "_token": "{{ csrf_token() }}"},
+              success: function(response){
+                if(response.status == "sukses")
+                {
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.success({
+                    position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                    title: 'Pemberitahuan',
+                    message: response.pesan,
+                    onClosing: function(instance, toast, closedBy){
+                      $('#modal-detail-rev').modal('hide');
+                      $('#tabel-return').DataTable().ajax.reload();
+                    }
+                  });
+                }
+                else
+                {
+                  instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                  iziToast.error({
+                    position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                    title: 'Pemberitahuan',
+                    message: response.pesan,
+                    onClosing: function(instance, toast, closedBy){
+                      $('#modal-detail-rev').modal('hide');
+                      $('#tabel-return').DataTable().ajax.reload();
+                    }
+                  }); 
+                }
+              },
+              error: function(){
+                iziToast.warning({
+                  icon: 'fa fa-times',
+                  message: 'Terjadi Kesalahan!'
+                });
+              },
+              async: false
+            });
         }, true],
         ['<button>Tidak</button>', function (instance, toast) {
           instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');

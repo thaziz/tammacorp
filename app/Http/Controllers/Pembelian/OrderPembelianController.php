@@ -124,7 +124,7 @@ class OrderPembelianController extends Controller
       $data = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
               ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
               ->select('d_pcs_date_created','d_pcs_id', 'd_pcsp_id','d_pcs_code','s_company','d_pcs_method','d_pcs_total_net','d_pcs_date_received','d_pcs_status','d_mem.m_id','d_mem.m_name')
-              ->whereBetween('d_purchasing.d_pcs_created', [$tanggal1, $tanggal2])
+              ->whereBetween('d_purchasing.d_pcs_date_created', [$tanggal1, $tanggal2])
               ->orderBy('d_pcs_created', 'DESC')
               ->get();
 
@@ -530,6 +530,12 @@ class OrderPembelianController extends Controller
 
     public function getDataForm($id)
     {
+      $dataHeader = DB::table('d_purchasingplan')
+                    ->select('d_supplier.s_id', 'd_supplier.s_company')
+                    ->join('d_supplier', 'd_purchasingplan.d_pcsp_sup', '=', 'd_supplier.s_id')
+                    ->where('d_purchasingplan.d_pcsp_id', '=', $id)
+                    ->get();
+
       $dataIsi = DB::table('d_purchasingplan_dt')
             ->select('d_purchasingplan_dt.*', 'm_item.i_name', 'm_item.i_code', 'm_item.i_sat1', 'm_item.i_id', 'm_satuan.m_sname', 'm_satuan.m_sid')
             ->leftJoin('m_item','d_purchasingplan_dt.d_pcspdt_item','=','m_item.i_id')
@@ -554,6 +560,7 @@ class OrderPembelianController extends Controller
       
         return response()->json([
             'status' => 'sukses',
+            'data_header' => $dataHeader,
             'data_isi' => $dataIsi,
             'data_stok' => $dataStok['val_stok'],
             'data_satuan' => $dataStok['txt_satuan'],
