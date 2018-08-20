@@ -395,12 +395,9 @@
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Penerimaan Barang Return Suplier','ma_read'))
-                                    <li class="{{ Request::is('inventory/p_returncustomer/cust') ? 'active' : '' || Request::is('inventory/p_returncustomer/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/inventory/p_returncustomer/cust') }}"><span
-                                                    class="submenu-title">Penerimaan Barang Return Suplier</span><span
-                                                    class="hidden">Inventory</span></a>
-                                    </li>
+                                @if(Auth::user()->punyaAkses('Penerimaan Barang Return Supplier','ma_read'))
+                                <li class="{{ Request::is('inventory/p_returnsupplier/index') ? 'active' : '' || Request::is('inventory/p_returnsupplier/*') ? 'active' : '' }}"><a href="{{ url('/inventory/p_returnsupplier/index') }}"><span class="submenu-title">Penerimaan Barang Return Supplier</span><span class="hidden">Inventory</span></a>
+                                </li>
                                 @endif
 
 
