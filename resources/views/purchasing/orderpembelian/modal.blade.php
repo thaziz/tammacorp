@@ -140,8 +140,9 @@
           </div>
         </div>
     
-        <div id="btn-modal" class="modal-footer" style="border-top: none;">
-          
+        <div class="modal-footer" style="border-top: none;">
+          <button type="button" class="btn btn-info" data-target="#">Cetak</button>
+          <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
         </div>
 
       </div>

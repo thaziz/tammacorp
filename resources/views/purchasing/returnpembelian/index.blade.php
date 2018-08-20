@@ -89,39 +89,6 @@
       endDate: 'today'
     });//datepicker("setDate", "0");
 
-    $('#tabel-return').dataTable({
-        "destroy": true,
-        "processing" : true,
-        "serverside" : true,
-        "ajax" : {
-          url: baseUrl + "/purchasing/returnpembelian/get-data-return-pembelian",
-          type: 'GET'
-        },
-        "columns" : [
-          {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
-          {"data" : "tglBuat", "width" : "10%"},
-          {"data" : "d_pcsr_code", "width" : "10%"},
-          {"data" : "m_name", "width" : "10%"},
-          {"data" : "metode", "width" : "10%"},
-          {"data" : "s_company", "width" : "15%"},
-          {"data" : "hargaTotal", "width" : "15%"},
-          {"data" : "status", "width" : "10%"},
-          {"data" : "action", orderable: false, searchable: false, "width" : "15%"}
-        ],
-        "language": {
-          "searchPlaceholder": "Cari Data",
-          "emptyTable": "Tidak ada data",
-          "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-          "sSearch": '<i class="fa fa-search"></i>',
-          "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-          "infoEmpty": "",
-          "paginate": {
-                "previous": "Sebelumnya",
-                "next": "Selanjutnya",
-             }
-        }
-    });
-
     //force integer input in textfield
     $('input.numberinput').bind('keypress', function (e) {
         return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
@@ -170,8 +137,49 @@
       lihatRevisiByTgl();
     });
 
+    //load fungsi
+    lihatReturnByTanggal();
+
   //end jquery
   });
+
+  function lihatReturnByTanggal()
+  {
+    var tgl1 = $('#tanggal1').val();
+    var tgl2 = $('#tanggal2').val();
+    $('#tabel-return').dataTable({
+      "destroy": true,
+      "processing" : true,
+      "serverside" : true,
+      "ajax" : {
+        url: baseUrl + "/purchasing/returnpembelian/get-return-by-tgl/"+tgl1+"/"+tgl2,
+        type: 'GET'
+      },
+      "columns" : [
+        {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
+        {"data" : "tglBuat", "width" : "10%"},
+        {"data" : "d_pcsr_code", "width" : "10%"},
+        {"data" : "m_name", "width" : "7%"},
+        {"data" : "metode", "width" : "10%"},
+        {"data" : "s_company", "width" : "15%"},
+        {"data" : "hargaTotal", "width" : "15%"},
+        {"data" : "status", "width" : "7%"},
+        {"data" : "action", orderable: false, searchable: false}
+      ],
+      "language": {
+        "searchPlaceholder": "Cari Data",
+        "emptyTable": "Tidak ada data",
+        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+        "sSearch": '<i class="fa fa-search"></i>',
+        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+        "infoEmpty": "",
+        "paginate": {
+              "previous": "Sebelumnya",
+              "next": "Selanjutnya",
+        }
+      }
+    });
+  }
 
   function lihatRevisiByTgl()
   {
@@ -529,6 +537,11 @@
         total = parseFloat(0).toFixed(2);
       }
     $('[name="priceTotalRaw"]').val(total);
+  }
+
+  function refreshTabelIndex() 
+  {
+    $('#tabel-return').DataTable().ajax.reload();
   }
 
   function refreshTabelRevisi() 

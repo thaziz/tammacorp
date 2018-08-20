@@ -34,7 +34,8 @@
           <option value="wait" class="form-control">Tampilkan Data : Waiting</option>
           <option value="edit" class="form-control">Tampilkan Data : Dapat diedit</option>
           <option value="confirm" class="form-control">Tampilkan Data : Disetujui</option>
-          <option value="received" class="form-control">Tampilkan Data : Selesai</option>
+          <option value="received" class="form-control">Tampilkan Data : Diterima</option>
+          <option value="revisied" class="form-control">Tampilkan Data : Ada Revisi</option>
         </select>
       </div>
 

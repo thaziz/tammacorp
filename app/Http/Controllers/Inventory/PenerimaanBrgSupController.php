@@ -90,15 +90,26 @@ class PenerimaanBrgSupController extends Controller
         ]);
     }
 
-    public function getDatatableIndex()
+    public function getPenerimaanByTgl($tgl1, $tgl2)
     {
+        $y = substr($tgl1, -4);
+        $m = substr($tgl1, -7,-5);
+        $d = substr($tgl1,0,2);
+         $tanggal1 = $y.'-'.$m.'-'.$d;
+
+        $y2 = substr($tgl2, -4);
+        $m2 = substr($tgl2, -7,-5);
+        $d2 = substr($tgl2,0,2);
+        $tanggal2 = $y2.'-'.$m2.'-'.$d2;
+
         $data = d_terima_pembelian::join('d_purchasing','d_terima_pembelian.d_tb_pid','=','d_purchasing.d_pcs_id')
                 ->join('d_supplier','d_terima_pembelian.d_tb_sup','=','d_supplier.s_id')
                 ->join('d_mem','d_terima_pembelian.d_tb_staff','=','d_mem.m_id')
                 ->select('d_terima_pembelian.*', 'd_supplier.s_id', 'd_supplier.s_company', 'd_purchasing.d_pcs_id', 'd_purchasing.d_pcs_code', 'd_purchasing.d_pcs_date_created', 'd_mem.m_name')
+                ->whereBetween('d_tb_created', [$tanggal1, $tanggal2])
                 ->orderBy('d_tb_created', 'DESC')
                 ->get();
-        //dd($data);    
+
         return DataTables::of($data)
         ->addIndexColumn()
         ->editColumn('tglBuat', function ($data) 
@@ -243,7 +254,7 @@ class PenerimaanBrgSupController extends Controller
 
     public function kodePenerimaanAuto()
     {
-        $query = DB::select(DB::raw("SELECT MAX(RIGHT(d_tb_code,4)) as kode_max from d_terima_pembelian WHERE DATE_FORMAT(d_tb_created, '%Y-%m') = DATE_FORMAT(CURRENT_DATE(), '%Y-%m')"));
+        $query = DB::select(DB::raw("SELECT MAX(RIGHT(d_tb_code,5)) as kode_max from d_terima_pembelian WHERE DATE_FORMAT(d_tb_created, '%Y-%m') = DATE_FORMAT(CURRENT_DATE(), '%Y-%m')"));
         $kd = "";
 
         if(count($query)>0)
@@ -251,15 +262,15 @@ class PenerimaanBrgSupController extends Controller
           foreach($query as $k)
           {
             $tmp = ((int)$k->kode_max)+1;
-            $kd = sprintf("%04s", $tmp);
+            $kd = sprintf("%05s", $tmp);
           }
         }
         else
         {
-          $kd = "0001";
+          $kd = "00001";
         }
 
-        return $codeTerimaBeli = "INB-".date('myd')."-".$kd;
+        return $codeTerimaBeli = "TPS-".date('ym')."-".$kd;
     }
 
     public function simpanPenerimaan(Request $request)
@@ -361,7 +372,7 @@ class PenerimaanBrgSupController extends Controller
                   'sm_detail' => "PENAMBAHAN",
                   'sm_hpp' => $request->fieldHargaTotalRaw[$i],
                   'sm_sell' => '0',
-                  'sm_reff' => $request->headNotaTxt,
+                  'sm_reff' => $this->kodePenerimaanAuto(),
                   'sm_insert' => Carbon::now(),
                 ]);
 

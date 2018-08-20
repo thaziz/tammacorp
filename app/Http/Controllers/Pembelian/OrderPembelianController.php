@@ -109,110 +109,119 @@ class OrderPembelianController extends Controller
         }
     }
 
-    public function getDataTabelIndex()
+    public function getOrderByTgl($tgl1, $tgl2)
     {
-        $data = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
-                ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
-                ->select('d_pcs_date_created','d_pcs_id', 'd_pcsp_id','d_pcs_code','s_company','d_pcs_method','d_pcs_total_net','d_pcs_date_received','d_pcs_status','d_mem.m_id','d_mem.m_name')
-                //->where('d_pcs_status', '=', 'FN')
-                ->orderBy('d_pcs_date_created', 'DESC')
-                ->get();
-        //dd($data);    
-        return DataTables::of($data)
-        ->addIndexColumn()
-        ->editColumn('status', function ($data)
-          {
-          if ($data->d_pcs_status == "WT") 
-          {
-            return '<span class="label label-default">Waiting</span>';
-          }
-          elseif ($data->d_pcs_status == "DE") 
-          {
-            return '<span class="label label-warning">Dapat diedit</span>';
-          }
-          elseif ($data->d_pcs_status == "CF") 
-          {
-            return '<span class="label label-info">Disetujui</span>';
-          }
-          else
-          {
-            return '<span class="label label-success">Selesai</span>';
-          }
-        })
-        ->editColumn('tglOrder', function ($data) 
+      $y = substr($tgl1, -4);
+      $m = substr($tgl1, -7,-5);
+      $d = substr($tgl1,0,2);
+       $tanggal1 = $y.'-'.$m.'-'.$d;
+
+      $y2 = substr($tgl2, -4);
+      $m2 = substr($tgl2, -7,-5);
+      $d2 = substr($tgl2,0,2);
+      $tanggal2 = $y2.'-'.$m2.'-'.$d2;
+
+      $data = d_purchasing::join('d_supplier','d_purchasing.s_id','=','d_supplier.s_id')
+              ->join('d_mem','d_purchasing.d_pcs_staff','=','d_mem.m_id')
+              ->select('d_pcs_date_created','d_pcs_id', 'd_pcsp_id','d_pcs_code','s_company','d_pcs_method','d_pcs_total_net','d_pcs_date_received','d_pcs_status','d_mem.m_id','d_mem.m_name')
+              ->whereBetween('d_purchasing.d_pcs_created', [$tanggal1, $tanggal2])
+              ->orderBy('d_pcs_created', 'DESC')
+              ->get();
+
+      return DataTables::of($data)
+      ->addIndexColumn()
+      ->editColumn('status', function ($data)
+      {
+        if ($data->d_pcs_status == "WT") 
         {
-            if ($data->d_pcs_date_created == null) 
-            {
-                return '-';
-            }
-            else 
-            {
-                return $data->d_pcs_date_created ? with(new Carbon($data->d_pcs_date_created))->format('d M Y') : '';
-            }
-        })
-        ->editColumn('hargaTotalNet', function ($data) 
+          return '<span class="label label-default">Waiting</span>';
+        }
+        elseif ($data->d_pcs_status == "DE") 
         {
-          return 'Rp. '.number_format($data->d_pcs_total_net,0,",",".");
-        })
-        ->editColumn('tglMasuk', function ($data) 
+          return '<span class="label label-warning">Dapat diedit</span>';
+        }
+        elseif ($data->d_pcs_status == "CF") 
         {
-          if ($data->d_pcs_date_received == null) 
-          {
-              return '-';
-          }
-          else 
-          {
-              return $data->d_pcs_date_received ? with(new Carbon($data->d_pcs_date_received))->format('d M Y') : '';
-          }
-        })
-        ->addColumn('action', function($data)
-          {
-            if ($data->d_pcs_status == "WT") 
-            {
-              return '<div class="text-center">
-                          <button class="btn btn-sm btn-success" title="Detail"
-                              onclick=detailOrder("'.$data->d_pcs_id.'")><i class="fa fa-eye"></i> 
-                          </button>
-                          <button class="btn btn-sm btn-warning" title="Edit"
-                              onclick=editOrder("'.$data->d_pcs_id.'")><i class="glyphicon glyphicon-edit"></i>
-                          </button>
-                          <button class="btn btn-sm btn-danger" title="Delete"
-                              onclick=deleteOrder("'.$data->d_pcs_id.'")><i class="glyphicon glyphicon-trash"></i>
-                          </button>
-                      </div>'; 
-            }
-            elseif ($data->d_pcs_status == "DE") 
-            {
-              return '<div class="text-center">
-                          <button class="btn btn-sm btn-success" title="Detail"
-                              onclick=detailOrder("'.$data->d_pcs_id.'")><i class="fa fa-eye"></i> 
-                          </button>
-                          <button class="btn btn-sm btn-warning" title="Edit"
-                              onclick=editOrder("'.$data->d_pcs_id.'")><i class="glyphicon glyphicon-edit"></i>
-                          </button>
-                          <button class="btn btn-sm btn-danger" title="Delete"
-                              onclick=deleteOrder("'.$data->d_pcs_id.'") disabled><i class="glyphicon glyphicon-trash"></i>
-                          </button>
-                      </div>'; 
-            }
-            else
-            {
-              return '<div class="text-center">
-                          <button class="btn btn-sm btn-success" title="Detail"
-                              onclick=detailOrder("'.$data->d_pcs_id.'")><i class="fa fa-eye"></i> 
-                          </button>
-                          <button class="btn btn-sm btn-warning" title="Edit"
-                              onclick=editOrder("'.$data->d_pcs_id.'") disabled><i class="glyphicon glyphicon-edit"></i>
-                          </button>
-                          <button class="btn btn-sm btn-danger" title="Delete"
-                              onclick=deleteOrder("'.$data->d_pcs_id.'") disabled><i class="glyphicon glyphicon-trash"></i>
-                          </button>
-                      </div>'; 
-            }
-            
-          })
-        ->rawColumns(['status', 'action'])
-        ->make(true);
+          return '<span class="label label-info">Disetujui</span>';
+        }
+        else
+        {
+          return '<span class="label label-success">Diterima</span>';
+        }
+      })
+      ->editColumn('tglOrder', function ($data) 
+      {
+        if ($data->d_pcs_date_created == null) 
+        {
+          return '-';
+        }
+        else 
+        {
+          return $data->d_pcs_date_created ? with(new Carbon($data->d_pcs_date_created))->format('d M Y') : '';
+        }
+      })
+      ->editColumn('hargaTotalNet', function ($data) 
+      {
+        return 'Rp. '.number_format($data->d_pcs_total_net,0,",",".");
+      })
+      ->editColumn('tglMasuk', function ($data) 
+      {
+        if ($data->d_pcs_date_received == null) 
+        {
+            return '-';
+        }
+        else 
+        {
+            return $data->d_pcs_date_received ? with(new Carbon($data->d_pcs_date_received))->format('d M Y') : '';
+        }
+      })
+      ->addColumn('action', function($data)
+      {
+        if ($data->d_pcs_status == "WT") 
+        {
+          return '<div class="text-center">
+                      <button class="btn btn-sm btn-success" title="Detail"
+                          onclick=detailOrder("'.$data->d_pcs_id.'")><i class="fa fa-eye"></i> 
+                      </button>
+                      <button class="btn btn-sm btn-warning" title="Edit"
+                          onclick=editOrder("'.$data->d_pcs_id.'")><i class="glyphicon glyphicon-edit"></i>
+                      </button>
+                      <button class="btn btn-sm btn-danger" title="Delete"
+                          onclick=deleteOrder("'.$data->d_pcs_id.'")><i class="glyphicon glyphicon-trash"></i>
+                      </button>
+                  </div>'; 
+        }
+        elseif ($data->d_pcs_status == "DE") 
+        {
+          return '<div class="text-center">
+                      <button class="btn btn-sm btn-success" title="Detail"
+                          onclick=detailOrder("'.$data->d_pcs_id.'")><i class="fa fa-eye"></i> 
+                      </button>
+                      <button class="btn btn-sm btn-warning" title="Edit"
+                          onclick=editOrder("'.$data->d_pcs_id.'")><i class="glyphicon glyphicon-edit"></i>
+                      </button>
+                      <button class="btn btn-sm btn-danger" title="Delete"
+                          onclick=deleteOrder("'.$data->d_pcs_id.'") disabled><i class="glyphicon glyphicon-trash"></i>
+                      </button>
+                  </div>'; 
+        }
+        else
+        {
+          return '<div class="text-center">
+                      <button class="btn btn-sm btn-success" title="Detail"
+                          onclick=detailOrder("'.$data->d_pcs_id.'")><i class="fa fa-eye"></i> 
+                      </button>
+                      <button class="btn btn-sm btn-warning" title="Edit"
+                          onclick=editOrder("'.$data->d_pcs_id.'") disabled><i class="glyphicon glyphicon-edit"></i>
+                      </button>
+                      <button class="btn btn-sm btn-danger" title="Delete"
+                          onclick=deleteOrder("'.$data->d_pcs_id.'") disabled><i class="glyphicon glyphicon-trash"></i>
+                      </button>
+                  </div>'; 
+        }  
+      })
+      ->rawColumns(['status', 'action'])
+      ->make(true);
     }
 
     public function getDataDetail($id)
@@ -321,9 +330,12 @@ class OrderPembelianController extends Controller
         }elseif ($tampil == 'confirm') {
           $isConfirm = "TRUE";
           $indexStatus = "CF";
-        }else {
+        }else if ($tampil == 'received') {
           $isConfirm = "TRUE";
           $indexStatus = "RC";
+        }else {
+          $isConfirm = "TRUE";
+          $indexStatus = "RV";
         }
 
         $data = DB::table('d_purchasing_dt')
@@ -369,9 +381,13 @@ class OrderPembelianController extends Controller
           {
             return '<span class="label label-info">Disetujui</span>';
           }
+          elseif ($data->d_pcs_status == "RC") 
+          {
+            return '<span class="label label-success">Diterima</span>';
+          }
           else
           {
-            return '<span class="label label-success">Selesai</span>';
+            return '<span class="label label-warning">Revisi</span>';
           }
         })
         ->editColumn('tglBuat', function ($data) 
@@ -403,7 +419,7 @@ class OrderPembelianController extends Controller
         })
         ->addColumn('action', function($data)
         {
-          if ($data->d_pcs_status == "WT" || $data->d_pcs_status == "DE" || $data->d_pcs_status == "CF") 
+          if ($data->d_pcs_status == "WT" || $data->d_pcs_status == "DE" || $data->d_pcs_status == "CF" || $data->d_pcs_status == "RV") 
           {
             return '<div class="text-center"> - </div>'; 
           }

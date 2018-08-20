@@ -2,6 +2,14 @@
 @section('content')
 <style type="text/css">
   .ui-autocomplete { z-index:2147483647; }
+  .error { border: 1px solid #f00; }
+  .valid { border: 1px solid #8080ff; }
+  .has-error .select2-selection {
+    border: 1px solid #f00 !important;
+  }
+  .has-valid .select2-selection {
+    border: 1px solid #8080ff !important;
+  }
 </style>
   <!--BEGIN PAGE WRAPPER-->
   <div id="page-wrapper">
@@ -96,40 +104,6 @@
       endDate: 'today'
     });//datepicker("setDate", "0");
 
-    $('#tbl-index').dataTable({
-        "destroy": true,
-        "processing" : true,
-        "serverside" : true,
-        "ajax" : {
-          url: baseUrl + "/purchasing/orderpembelian/get-data-tabel-index",
-          type: 'GET'
-        },
-        "columns" : [
-          {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
-          {"data" : "tglOrder", "width" : "10%"},
-          {"data" : "d_pcs_code", "width" : "10%"},
-          {"data" : "m_name", "width" : "10%"},
-          {"data" : "s_company", "width" : "13%"},
-          {"data" : "d_pcs_method", "width" : "5%"},
-          {"data" : "hargaTotalNet", "width" : "10%"},
-          {"data" : "tglMasuk", "width" : "10%"},
-          {"data" : "status", "width" : "7%"},
-          {"data" : "action", orderable: false, searchable: false, "width" : "15%"}
-        ],
-        "language": {
-          "searchPlaceholder": "Cari Data",
-          "emptyTable": "Tidak ada data",
-          "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-          "sSearch": '<i class="fa fa-search"></i>',
-          "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-          "infoEmpty": "",
-          "paginate": {
-                "previous": "Sebelumnya",
-                "next": "Selanjutnya",
-             }
-        }
-    });
-
     // fungsi jika modal hidden
     $(".modal").on("hidden.bs.modal", function(){
       $('tr').remove('.tbl_modal_row');
@@ -211,6 +185,9 @@
       lihatHistorybyTgl();
     })
 
+    //load fungsi
+    lihatOrderByTanggal();
+
   });
 
   function detailOrder(id) 
@@ -280,9 +257,6 @@
           key++;  
           i = randString(5);
         });
-        $('#btn-modal').html('<a target="_blank" class="btn btn-primary" href="'+ 
-          baseUrl +'/purchasing/orderpembelian/print/'+ id +'"><i class="fa fa-print"></i>&nbsp;Print</a>'+
-          '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
         $('#modal-detail').modal('show');
       },
       error: function (jqXHR, textStatus, errorThrown)
@@ -329,6 +303,45 @@
               "previous": "Sebelumnya",
               "next": "Selanjutnya",
            }
+      }
+    });
+  }
+
+  function lihatOrderByTanggal()
+  {
+    var tgl1 = $('#tanggal1').val();
+    var tgl2 = $('#tanggal2').val();
+    $('#tbl-index').dataTable({
+      "destroy": true,
+      "processing" : true,
+      "serverside" : true,
+      "ajax" : {
+        url: baseUrl + "/purchasing/orderpembelian/get-order-by-tgl/"+tgl1+"/"+tgl2,
+        type: 'GET'
+      },
+      "columns" : [
+        {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
+        {"data" : "tglOrder", "width" : "10%"},
+        {"data" : "d_pcs_code", "width" : "10%"},
+        {"data" : "m_name", "width" : "7%"},
+        {"data" : "s_company", "width" : "13%"},
+        {"data" : "d_pcs_method", "width" : "5%"},
+        {"data" : "hargaTotalNet", "width" : "12%"},
+        {"data" : "tglMasuk", "width" : "10%"},
+        {"data" : "status", "width" : "7%"},
+        {"data" : "action", orderable: false, searchable: false, "width" : "15%"}
+      ],
+      "language": {
+        "searchPlaceholder": "Cari Data",
+        "emptyTable": "Tidak ada data",
+        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+        "sSearch": '<i class="fa fa-search"></i>',
+        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+        "infoEmpty": "",
+        "paginate": {
+              "previous": "Sebelumnya",
+              "next": "Selanjutnya",
+        }
       }
     });
   }
