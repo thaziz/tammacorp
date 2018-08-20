@@ -232,7 +232,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/inventory/p_suplier/print/{id}', 'Inventory\PenerimaanBrgSupController@print');
 // irA
 //p_returnsupplier
-    Route::get('/inventory/p_returnsupplier/index', 'inventory\PenerimaanRtrSupController@index');
+    Route::get('/inventory/p_returnsupplier/index', 'Inventory\PenerimaanRtrSupController@index');
     Route::get('/inventory/p_returnsupplier/lookup-data-return', 'Inventory\PenerimaanRtrSupController@lookupDataReturn');
     Route::get('/inventory/p_returnsupplier/get-data-form/{id}', 'Inventory\PenerimaanRtrSupController@getDataForm');
     Route::post('/inventory/p_returnsupplier/simpan-penerimaan', 'Inventory\PenerimaanRtrSupController@simpanPenerimaan');
