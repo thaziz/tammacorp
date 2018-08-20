@@ -19,7 +19,7 @@ Route::group(['middleware' => 'guest'], function () {
     Route::post('login', 'loginController@authenticate');
     Route::get('not-allowed', 'mMemberController@notAllowed');
     Route::get('recruitment', 'RecruitmentController@recruitment');
-	Route::post('recruitment/save', 'RecruitmentController@save');
+    Route::post('recruitment/save', 'RecruitmentController@save');
 });
 Route::group(['middleware' => 'auth'], function () {
     Route::get('logout', 'mMemberController@logout');
@@ -327,6 +327,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/produksi/namaitem/edit/formula', 'Produksi\MasterFormulaController@editFormula');
     Route::post('/produksi/namaitem/update/formula', 'Produksi\MasterFormulaController@updateFormula');
 //End Master Formula
+    //data actual spk
+    Route::get('/produksi/data_actual/tabel/{tgl1}/{tgl2}', 'Produksi\dataActualController@tableActual');
     /*Penjualan*/
     Route::get('/penjualan/manajemenharga/harga', 'PenjualanController@harga');
     Route::get('/penjualan/manajemenharga/tabelharga', 'Penjualan\ManajemenHargaController@tabelHarga');

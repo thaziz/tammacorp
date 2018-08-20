@@ -38,8 +38,34 @@
                                 <div class="row">
 
                                     <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <div class="col-md-2 col-sm-3 col-xs-12">
+                                            <label class="tebal">Tanggal Actual</label>
+                                        </div>
+
+                                        <div class="col-md-4 col-sm-6 col-xs-12">
+                                            <div class="form-group">
+                                                <div class="input-daterange input-group">
+                                                    <input id="tanggal1" class="form-control input-sm datepicker1"
+                                                           name="tanggal" type="text" value="{{ date('d-m-Y') }}">
+                                                    <span class="input-group-addon">-</span>
+                                                    <input id="tanggal2" class="input-sm form-control datepicker2"
+                                                           name="tanggal" type="text" value="{{ date('d-m-Y') }}">
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-3 col-sm-3 col-xs-12" align="left">
+                                            <button class="btn btn-primary btn-sm btn-flat autoCari" type="button"
+                                                    onclick="cariTanggalSpk()">
+                                                <strong>
+                                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                                </strong>
+                                            </button>
+                                        </div>
                                         <div class="table-responsive">
-                                            <table class="table tabelan table-bordered table-hover" id="data-actual">
+                                            <table class="table tabelan table-bordered table-hover" id="data-actual"
+                                                   width="100%">
                                                 <thead>
                                                 <tr>
                                                     <th>Tanggal</th>
@@ -102,43 +128,66 @@
                             $.extend($.fn.dataTableExt.oStdClasses, extensions);
                             // Used when bJQueryUI is true
                             $.extend($.fn.dataTableExt.oJUIClasses, extensions);
-                            alert('d');
+                            var date = new Date();
+                            var newdate = new Date(date);
+
+                            newdate.setDate(newdate.getDate() - 3);
+                            var nd = new Date(newdate);
+
+                            $('.datepicker').datepicker({
+                                format: "mm",
+                                viewMode: "months",
+                                minViewMode: "months"
+                            });
+                            $('.datepicker1').datepicker({
+                                autoclose: true,
+                                format: "dd-mm-yyyy",
+                                endDate: 'today'
+                            }).datepicker("setDate", nd);
+                            $('.datepicker2').datepicker({
+                                autoclose: true,
+                                format: "dd-mm-yyyy",
+                                endDate: 'today'
+                            });//.datepicker("setDate", "0");
+
                         });
 
-                        var data
-                        -actual = $('#data-actual').DataTable({
-                            processing: true,
-                            serverSide: true,
-                            ajax: {
-                                url: baseUrl + "/produksi/o_produksi/tabel",
-                            },
-                            columns: [
-                                {data: 'pr_date', name: 'pr_date'},
-                                {data: 'spk_code', name: 'spk_code'},
-                                {data: 'mp_name', name: 'mp_name'},
-                                {data: 'i_name', name: 'i_name', orderable: false},
-                                {data: 'prdt_date', name: 'prdt_date'},
-                                {data: 'prdt_qty', name: 'prdt_qty', className: 'right'},
-                                {data: 'prdt_status', name: 'prdt_status'},
-                                {data: 'action', name: 'action'},
-                            ],
-                            "responsive": true,
-
-                            "pageLength": 10,
-                            "lengthMenu": [[10, 20, 50, -1], [10, 20, 50, "All"]],
-                            "language": {
-                                "searchPlaceholder": "Cari Data",
-                                "emptyTable": "Tidak ada data",
-                                "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-                                "sSearch": '<i class="fa fa-search"></i>',
-                                "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-                                "infoEmpty": "",
-                                "paginate": {
-                                    "previous": "Sebelumnya",
-                                    "next": "Selanjutnya",
+                        function cariTanggalSpk() {
+                            var tgl1 = $('#tanggal1').val();
+                            var tgl2 = $('#tanggal2').val();
+                            var tableActual = $('#data-actual').DataTable({
+                                "destroy": true,
+                                "processing": true,
+                                "serverside": true,
+                                "ajax": {
+                                    url: baseUrl + "/produksi/data_actual/tabel/" + tgl1 + '/' + tgl2,
+                                    type: 'GET'
+                                },
+                                "columns": [
+                                    {"data": 'spk_date', name: 'spk_date', "width": "10%"},
+                                    {"data": 'spk_code', name: 'spk_code', "width": "10%"},
+                                    {"data": 'i_name', name: 'i_name', "width": "25%"},
+                                    {"data": 'ac_adonan', name: 'ac_adonan', "width": "10%", "className": "right"},
+                                    {"data": "m_sname", "width": "10%"},
+                                    {"data": "ac_kriwilan","width": "10%", "className": "right"},
+                                    {"data": 'm_sname', name: 'm_sname', "width": "10%"},
+                                    {"data": 'ac_sampah', name: 'ac_sampah', "width": "10%", "className": "right"},
+                                    {"data": 'm_sname', name: 'm_sname', "width": "10%"},
+                                ],
+                                "language": {
+                                    "searchPlaceholder": "Cari Data",
+                                    "emptyTable": "Tidak ada data",
+                                    "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+                                    "sSearch": '<i class="fa fa-search"></i>',
+                                    "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+                                    "infoEmpty": "",
+                                    "paginate": {
+                                        "previous": "Sebelumnya",
+                                        "next": "Selanjutnya",
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
 
                     </script>
 @endsection()
