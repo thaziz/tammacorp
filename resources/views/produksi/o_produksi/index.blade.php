@@ -435,13 +435,11 @@
                         });
                         $('.datepicker1').datepicker({
                             autoclose: true,
-                            format: "dd-mm-yyyy",
-                            endDate: 'today'
+                            format: "dd-mm-yyyy"
                         }).datepicker("setDate", nd);
                         $('.datepicker2').datepicker({
                             autoclose: true,
-                            format: "dd-mm-yyyy",
-                            endDate: 'today'
+                            format: "dd-mm-yyyy"
                         });//.datepicker("setDate", "0");
 
                         function SetTanggalProduksi() {
@@ -616,4 +614,4 @@
                             });
                         }
                     </script>
-@endsection()                           
+@endsection()
