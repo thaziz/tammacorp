@@ -20,7 +20,7 @@ use Illuminate\Http\Request;
 class MonitoringOrderController extends Controller
 {
   public function tabel(){
-   
+
     $pp = DB::Table('d_productplan')
       ->where(function($query){
         $query->where('pp_isspk',DB::raw("'N'"))
@@ -82,8 +82,8 @@ class MonitoringOrderController extends Controller
         $data[$i]['s_qty'] = $key['s_qty'] == null ? 0 : $key['s_qty'];
         $data[$i]['jumlah'] = $key['jumlah'] == null ? 0 : $key['jumlah'];
         $key['s_date'] = $key['s_date'] == null ? '1945-08-17' : $key['s_date'];
-        $data[$i]['nota'] = '<span class="hide">'.$key['s_date'].'</span><button id="nota" class="btn btn-info btn-sm nota" 
-                                                          data-toggle="modal" 
+        $data[$i]['nota'] = '<span class="hide">'.$key['s_date'].'</span><button id="nota" class="btn btn-info btn-sm nota"
+                                                          data-toggle="modal"
                                                           data-target="#nota"
                                                           data-id="'.$key['i_id'].'">
                                                           '.$key['nota'].'</button>';
@@ -98,8 +98,8 @@ class MonitoringOrderController extends Controller
 
   public function bukaNota($id){
     $data = m_item::where('i_id',$id)->first();
-    
-    return view('Penjualan.monitoringorder.nota',compact('data'));
+
+    return view('penjualan.monitoringorder.nota',compact('data'));
   }
 
   public function nota($id){
@@ -121,7 +121,7 @@ class MonitoringOrderController extends Controller
     ->editColumn('s_date', function ($user) {
         return $user->s_date ? with(new Carbon($user->s_date))->format('d M Y') : '';
       })
-    ->addIndexColumn()   
+    ->addIndexColumn()
     ->make(true);
 
   }

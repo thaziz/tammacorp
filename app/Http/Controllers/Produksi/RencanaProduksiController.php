@@ -1,4 +1,4 @@
-<?php   
+<?php
 
 namespace App\Http\Controllers\Produksi;
 use App\Http\Controllers\Controller;
@@ -16,14 +16,14 @@ class RencanaProduksiController extends Controller
           ->join('d_productplan','m_item.i_id','=','d_productplan.pp_item')
           ->where('pp_isspk','N')
           ->get();
-    
+
     $datax = $this->setData($pp);
 
     echo json_encode($datax);
   }
 
   public function produksi(){
-    if (Auth::user()->punyaAkses('Rencana Produksi','ma_read')) {        
+    if (Auth::user()->punyaAkses('Rencana Produksi','ma_read')) {
       return view('produksi.rencanaproduksi.index');
     }else{
       return view('system.hakakses.errorakses');
@@ -81,7 +81,7 @@ class RencanaProduksiController extends Controller
     if($hapus == TRUE){
             $result['error']='';
             $result['result']=1;
-    }else{ 
+    }else{
             $result['error']=$hapus;
             $result['result']=0;
     }
@@ -99,29 +99,29 @@ class RencanaProduksiController extends Controller
               'pp_item' => $i_name[0]->i_id,
               'pp_qty'  => $request->pp_qty,
             ]);
-            
+
     return redirect('produksi/rencanaproduksi/produksi');
 
   }
 
   public function autocomplete(Request $request){
       $term = $request->term;
-      $results = array(); 
+      $results = array();
       $queries = DB::table('m_item')
         ->where('m_item.i_name', 'LIKE', '%'.$term.'%')
         ->where('i_isactive','TRUE')
         ->where('i_type','BP')
-        ->take(15)->get();
-      
+        ->take(150)->get();
+
       if ($queries == null) {
         $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];
       } else {
-        foreach ($queries as $query) 
+        foreach ($queries as $query)
         {
           $results[] = [ 'id' => $query->i_id, 'label' => $query->i_name];
         }
       }
- 
+
       return Response::json($results);
   }
 
@@ -135,7 +135,7 @@ class RencanaProduksiController extends Controller
             // add new button
       $data[$i]['button'] = ' <div class="text-center">
                                    <button class="btn btn-warning btn-sm btn-flat fa fa-edit edit"
-                                                  data-toggle="modal" 
+                                                  data-toggle="modal"
                                                   data-target="#myModal"
                                                   data-name="'.$key['i_name'].'"
                                                   data-id="'.$key['pp_id'].'"
@@ -155,6 +155,3 @@ class RencanaProduksiController extends Controller
 
   }
 }
-
-
-

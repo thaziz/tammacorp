@@ -101,15 +101,15 @@ class spkProductionController extends Controller
             ->addColumn('action', function ($data) {
                 if ($data->spk_status == "FN") {
                     return '<div class="text-center">
-                  <button class="btn btn-sm btn-success" 
-                          title="Detail" 
+                  <button class="btn btn-sm btn-success"
+                          title="Detail"
                           type="button"
                           data-toggle="modal"
                           data-target="#myModalView"
                           onclick=detailManSpk("' . $data->spk_id . '")>
-                          <i class="fa fa-eye"></i> 
+                          <i class="fa fa-eye"></i>
                   </button>&nbsp;
-                  <button class="btn btn-sm btn-info" 
+                  <button class="btn btn-sm btn-info"
                           title="Ubah Status"
                           onclick=ubahStatus("' . $data->spk_id . '")>
                           <i class="glyphicon glyphicon-ok"></i>
@@ -117,15 +117,15 @@ class spkProductionController extends Controller
           </div>';
                 } else {
                     return '<div class="text-center">
-                    <button class="btn btn-sm btn-success" 
-                              title="Detail" 
+                    <button class="btn btn-sm btn-success"
+                              title="Detail"
                               type="button"
                               data-toggle="modal"
                               data-target="#myModalView"
                               onclick=detailManSpk("' . $data->spk_id . '")>
-                              <i class="fa fa-eye"></i> 
+                              <i class="fa fa-eye"></i>
                     </button>&nbsp;
-                    <button class="btn btn-sm btn-info" 
+                    <button class="btn btn-sm btn-info"
                             title=Input data"
                             type="button"
                             data-toggle="modal"
@@ -197,12 +197,18 @@ class spkProductionController extends Controller
             if ($val->i_type == "BJ") //brg jual
             {
                 //ambil stok berdasarkan type barang
-                $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '2' AND s_position = '2' limit 1) ,'0') as qtyStok"));
+                $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock
+                  where s_item = '$val->i_id'
+                  AND s_comp = '2'
+                  AND s_position = '2' limit 1) ,'0') as qtyStok"));
                 $stok = $query[0]->qtyStok;
             } elseif ($val->i_type == "BB") //bahan baku
             {
                 //ambil stok berdasarkan type barang
-                $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val->i_id' AND s_comp = '3' AND s_position = '3' limit 1) ,'0') as qtyStok"));
+                $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock
+                  where s_item = '$val->i_id'
+                  AND s_comp = '3'
+                  AND s_position = '3' limit 1) ,'0') as qtyStok"));
                 $stok = $query[0]->qtyStok;
             }
 
@@ -216,19 +222,20 @@ class spkProductionController extends Controller
                 ->orderBy('sm_date', 'desc')
                 ->limit(1)
                 ->get();
-            
+
             foreach ($prevCost as $value) {
                 $hargaLalu[] = $value->sm_hpp;
                 $qty[] = $value->sm_qty;
             }
 
         }
+        // dd($formula[0]['fr_value']);
         for ($i = 0; $i < count($hargaLalu); $i++) {
             $cabangPurnama = $hargaLalu[$i] / $qty[$i];
             $bambang[] = $formula[$i]['fr_value'] * $cabangPurnama;
         }
-        return view('produksi.spk.detail-formula', compact('spk', 'formula', 'bambang'));
 
+        return view('produksi.spk.detail-formula', compact('spk', 'formula', 'bambang'));
 
     }
 
@@ -286,7 +293,7 @@ class spkProductionController extends Controller
                     'ac_adonan_scale' => 3,
                     'ac_kriwilan' => $request->ac_kriwilan,
                     'ac_kriwilan_scale' => 3,
-                    'ac_sampah' => $request->ac_kriwilan,
+                    'ac_sampah' => $request->ac_sampah,
                     'ac_sampah_scale' => 3,
                     'ac_insert' => Carbon::now()
                 ]);
@@ -294,7 +301,8 @@ class spkProductionController extends Controller
                 $data->update([
                     'ac_adonan' => $request->ac_adonan,
                     'ac_kriwilan' => $request->ac_kriwilan,
-                    'ac_sampah' => $request->ac_kriwilan
+                    'ac_sampah' => $request->ac_sampah,
+                    'ac_update' => Carbon::now()
                 ]);
             }
 
@@ -311,6 +319,3 @@ class spkProductionController extends Controller
         }
     }
 }
-
-
-
