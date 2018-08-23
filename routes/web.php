@@ -471,6 +471,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/produksi/spk/draft/simpan-spk', 'Keuangan\spkFinancialController@simpanDraftSpk');
     Route::get('/produksi/spk/edit/{id}', 'Keuangan\spkFinancialController@editSpk');
     Route::get('/keuangan/spk/lihat-detail', 'Keuangan\spkFinancialController@detailSpk');
+    Route::get('/keuangan/spk/update-status/{id}', 'Keuangan\spkFinancialController@updateStatus');
 // rizky
     Route::get('/keuangan/p_hasilproduksi/pembatalanPenerimaan', 'Keuangan\KeuanganController@pembatalanPenerimaan');
     Route::get('/keuangan/p_hasilproduksi/ubah_status_transaksi/{id}/{id2}', 'Keuangan\KeuanganController@ubahStatusTransaksi');

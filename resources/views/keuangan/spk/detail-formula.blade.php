@@ -1,7 +1,7 @@
 <!-- detail order-->
-                  
+
           <div id="data-product-plan" class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:5px;padding-top:20px; ">
-            
+
           @foreach ($spk as $item)
             <div class="col-md-4 col-sm-3 col-xs-12">
               <div class="">
@@ -10,9 +10,9 @@
             </div>
              <div class="col-md-8 col-sm-3 col-xs-12">
               <div class="form-group">
-                <input class="form-control" readonly type="text" name="tgl_plan" id="tgl_planD" 
-                value="{{ $item->pp_date }}"> 
-                 <input class="form-control" type="hidden" name="id_plan" id="id_plan">               
+                <input class="form-control" readonly type="text" name="tgl_plan" id="tgl_planD"
+                value="{{ $item->pp_date }}">
+                 <input class="form-control" type="hidden" name="id_plan" id="id_plan">
               </div>
             </div>
 
@@ -22,9 +22,9 @@
               </div>
             </div>
             <div class="col-md-8 col-sm-3 col-xs-12">
-              <div class="form-group">                
-                <input class="form-control" readonly="" type="hidden" name="iditem" id="iditem">                
-                <input class="form-control" readonly="" type="text" name="item" id="itemD" value="{{ $item->i_name }}">                
+              <div class="form-group">
+                <input class="form-control" readonly="" type="hidden" name="iditem" id="iditem">
+                <input class="form-control" readonly="" type="text" name="item" id="itemD" value="{{ $item->i_name }}">
               </div>
             </div>
 
@@ -35,7 +35,7 @@
             </div>
             <div class="col-md-8 col-sm-3 col-xs-12">
               <div class="form-group">
-                <input class="form-control" readonly="" type="text" name="jumlah" id="jumlahD" value="{{ $item->pp_qty }}">                
+                <input class="form-control" readonly="" type="text" name="jumlah" id="jumlahD" value="{{ $item->pp_qty }}">
               </div>
             </div>
 
@@ -46,9 +46,9 @@
             </div>
             <div class="col-md-8 col-sm-3 col-xs-12">
               <div class="form-group">
-                <input class="form-control" readonly="" type="text" name="id_spk" id="id_spkD" value="{{ $item->spk_code }}">               
+                <input class="form-control" readonly="" type="text" name="id_spk" id="id_spkD" value="{{ $item->spk_code }}">
               </div>
-            </div> 
+            </div>
           @endforeach
           </div>
         <div id="data-product-plan" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 20px; padding-bottom:5px;padding-top:20px; ">
@@ -66,12 +66,12 @@
                 <tbody>
                   @foreach ($formula as $data)
                   <tr>
-                    
+
                     <td>{{ $data->i_code }}</td>
                     <td>{{ $data->i_name }}</td>
                     <td class="text-right">{{ $data->fr_value }}</td>
                     <td>{{ $data->m_sname }}</td>
-                    
+
                   </tr>
                   @endforeach
                 </tbody>
@@ -79,11 +79,10 @@
             </form>
           </div>
         </div>
-            
+
         <div class="modal-footer">
-          <button class="btn btn-link" type="button"><i class="glyphicon glyphicon-print"></i>&nbsp;Print</button>
           <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-          
+
         </div>
 
 
