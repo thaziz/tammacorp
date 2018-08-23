@@ -17,31 +17,29 @@ class SuplierController extends Controller
         $this->middleware('auth');
     }
 
+    public function tambah_suplier()
+    {
+      return view('/master/datasuplier/tambah_suplier');
+    }
+
     public function suplier_proses(Request $request)
     {
-        $get_limit  = $request->get('limit');
-
-        $limit      = str_replace(',', '', $get_limit);
-
         $m1 = DB::table('d_supplier')->max('s_id');
-    	
+      
         $index = $m1+=1;
         
         $data = DB::table('d_supplier')
-          			->insert([
-      		        's_id'=>$m1,
-          		    's_company'=>$request->get('perusahaan'),
-      		        's_name'=>$request->get('nama'),
-      		        's_address'=>$request->get('alamat'),
-      		        's_phone'=>$request->get('no_hp'),
-      		        's_fax'=>$request->get('fax'),
-      		        's_npwp'=>$request->get('npwp'),
-      		        's_email'=>$request->get('email'),
-      		        's_note'=>$request->get('keterangan'),
-      		        's_limit'=>$limit
-          			]);
+                ->insert([
+                  's_company'=>$request->get('namaSup'),
+                  's_name'=>$request->get('owner'),
+                  's_address'=>$request->get('alamat'),
+                  's_phone'=>$request->get('noTelp'),
+                  's_fax'=>$request->get('fax'),
+                  's_note'=>$request->get('keterangan')
+                ]);
         return response()->json(['status'=>'sukses_bos']);
     }
+
     public function datatable_suplier()
     {
     	$data= DB::table('d_supplier')->get();
@@ -67,7 +65,7 @@ class SuplierController extends Controller
                         })
 
                       ->rawColumns(['aksi', 'limit'])
-                        ->make(true);
+                      ->make(true);
     }
     public function suplier_edit($s_id)
     {

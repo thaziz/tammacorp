@@ -48,45 +48,37 @@
                           <form id="form_suplier">
                             <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-top:30px;padding-bottom:20px;">
                               <div class="col-md-2 col-sm-3 col-xs-12">
-                                
-                                    <label class="tebal">Nama Perusahaan</label>
-                                
+                                <label class="tebal">Nama Supplier</label>
                               </div>
 
                               <div class="col-md-4 col-sm-9 col-xs-12">
                                 <div class="form-group">
-                                  
-                                      <input type="text" id="perusahaan" name="perusahaan" class="form-control input-sm" >
-                                  
+                                  <input type="text" id="nama_sup" name="namaSup" class="form-control input-sm" >
                                 </div>
                               </div>
 
                               <div class="col-md-2 col-sm-3 col-xs-12">
-                                
-                                    <label class="tebal">Nama Suplier</label>
-                                
+                                <label class="tebal">Nama Pemilik</label>
                               </div>
 
                               <div class="col-md-4 col-sm-9 col-xs-12">
                                 <div class="form-group">
                                   <div class="input-icon right">
                                     <i class="fa fa-user"></i>
-                                    <input type="text" id="nama" name="nama" class="form-control input-sm">                
+                                    <input type="text" id="owner" name="owner" class="form-control input-sm">
                                   </div>
                                 </div>
                               </div>
                              
                               <div class="col-md-2 col-sm-3 col-xs-12">
-                                
-                                    <label class="tebal">Nomor Hp</label>
-                                
+                                <label class="tebal">No. Telp</label>
                               </div>
 
                               <div class="col-md-4 col-sm-9 col-xs-12">
                                 <div class="form-group">
                                   <div class="input-icon right">
-                                      <i class="glyphicon glyphicon-earphone"></i>
-                                      <input type="text" id="no_hp" name="no_hp" class="form-control input-sm">
+                                    <i class="glyphicon glyphicon-earphone"></i>
+                                    <input type="text" id="no_telp" name="noTelp" class="form-control input-sm">
                                   </div>
                                 </div>
                               </div>
@@ -103,58 +95,19 @@
                                 </div>
                               </div>
 
-                               <div class="col-md-2 col-sm-3 col-xs-12">
-                                
-                                    <label class="tebal">NPWP</label>
-                                
-                              </div>
-
-                              <div class="col-md-4 col-sm-9 col-xs-12">
-                                <div class="form-group">
-                                  
-                                      <input type="text" id="npwp" name="npwp" class="form-control input-sm" >
-                                  
-                                </div>
-                              </div>
-
-                              <div class="col-md-2 col-sm-3 col-xs-12">
-                                
-                                    <label class="tebal">E-mail</label>
-                                
-                              </div>
-
-                              <div class="col-md-4 col-sm-9 col-xs-12">
-                                <div class="form-group">
-                                  <div class="input-icon right">
-                                    <i class="glyphicon glyphicon-envelope"></i>
-                                    <input type="text" id="email" name="email" class="form-control input-sm">                
-                                  </div>
-                                </div>
-                              </div>
 
                               <div class="col-md-2 col-sm-3 col-xs-12">
                                  
                                   <label class="tebal">Alamat</label>
                                 
                               </div>
+
                               <div class="col-md-10 col-sm-9 col-xs-12">
                                 <div class="form-group">
                                   <div class="input-icon right">
                                     <i class="fa fa-home"></i>
                                     <textarea id="alamat" name="alamat" class="form-control input-sm"></textarea>
                                   </div>
-                                </div>
-                              </div>
-
-                              <div class="col-md-2 col-sm-3 col-xs-12">
-                                
-                                  <label class="tebal">Limit</label>
-                               
-                              </div>
-
-                              <div class="col-md-10 col-sm-9 col-xs-12">
-                                <div class="form-group">
-                                  <input type="text" id="limit" name="limit" class="form-control input-sm" ">
                                 </div>
                               </div>
 
@@ -169,8 +122,6 @@
                                     <textarea id="keterangan" name="keterangan" class="form-control input-sm" ></textarea>
                                 </div>
                               </div>
-
-                              
 
                             </div>
 
@@ -210,37 +161,34 @@
 
   function simpan()
   {
-    var perusahaan  = $('input[name="perusahaan"]');
-    var nama = $('input[name="nama"]');
-    var no_hp = $('input[name="no_hp"]');
+    var namaSup  = $('input[name="namaSup"]');
+    var owner = $('input[name="owner"]');
+    var telp = $('input[name="noTelp"]');
     var fax = $('input[name="fax"]');
-    var limit = $('input[name="limit"]');
     var keterangan = $('input[name="keterangan"]');
     var alamat = $('input[name="alamat"]');
-    var npwp = $('input[name="npwp"]');
-
-
-    if(perusahaan.val()=='' || nama.val()=='' || no_hp.val()=='' || fax.val()=='' || limit.val()=='' || alamat.val()=='' || npwp.val()=='')
+    
+    if(namaSup.val()=='' || owner.val()=='' || telp.val()=='' || fax.val()=='' || alamat.val()=='')
     {
-      if(perusahaan.val()==''){
-        toastr["error"]("Perusahan tidak boleh kosong", "Error");
-        perusahaan.addClass('state-error');
+      if(namaSup.val()==''){
+        toastr["error"]("Supplier tidak boleh kosong", "Error");
+        namaSup.addClass('state-error');
       } else {
-        perusahaan.removeClass('state-error');
+        namaSup.removeClass('state-error');
       }
 
-      if(nama.val()==''){
-        toastr["error"]("Nama Suplier tidak boleh kosong", "Error");
-        nama.addClass('state-error');
+      if(owner.val()==''){
+        toastr["error"]("Nama Owner tidak boleh kosong", "Error");
+        owner.addClass('state-error');
       } else {
-        nama.removeClass('state-error');
+        owner.removeClass('state-error');
       }
 
-      if(no_hp.val()==''){
+      if(telp.val()==''){
         toastr["error"]("Nomor HP tidak boleh kosong", "Error");
-        no_hp.addClass('state-error');
+        telp.addClass('state-error');
       } else {
-        no_hp.removeClass('state-error');
+        telp.removeClass('state-error');
       }
 
       if(fax.val()==''){
@@ -248,18 +196,6 @@
         fax.addClass('state-error');
       } else {
         fax.removeClass('state-error');
-      }
-      if(limit.val()==''){
-        toastr["error"]("Limit tidak boleh kosong", "Error");
-        limit.addClass('state-error');
-      } else {
-        limit.removeClass('state-error');
-      }
-      if(npwp.val()==''){
-        toastr["error"]("NPWP tidak boleh kosong", "Error");
-        npwp.addClass('state-error');
-      } else {
-        npwp.removeClass('state-error');
       }
       return false;
     }
