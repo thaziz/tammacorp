@@ -75,7 +75,7 @@
                     <th>Kebutuhan</th>
                     <th width="5%">Satuan</th>
                     <th>Stok</th>
-                    <th width="5%">Satuan</th>
+                {{--     <th width="5%">Satuan</th> --}}
                     <th>Sisa</th>
                   </tr>
                 </thead>
