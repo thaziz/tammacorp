@@ -114,7 +114,7 @@ class MonitoringProgressController extends Controller
   public function bukaNota($id){
     $data = m_item::where('i_id',$id)->first();
     
-    return view('Penjualan.monitoringorder.nota',compact('data'));
+    return view('penjualan.monitoringorder.nota',compact('data'));
   }
 
   public function nota($id){
