@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Master;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
+use Carbon\Carbon;
 use App\Suplier;
 use Yajra\Datatables\Datatables;
 use Session;
@@ -24,6 +25,10 @@ class SuplierController extends Controller
 
     public function suplier_proses(Request $request)
     {
+        $get_limit  = $request->get('limit');
+
+        $limit      = str_replace(',', '', $get_limit);
+
         $m1 = DB::table('d_supplier')->max('s_id');
       
         $index = $m1+=1;
@@ -35,7 +40,8 @@ class SuplierController extends Controller
                   's_address'=>$request->get('alamat'),
                   's_phone'=>$request->get('noTelp'),
                   's_fax'=>$request->get('fax'),
-                  's_note'=>$request->get('keterangan')
+                  's_note'=>$request->get('keterangan'),
+                  's_limit'=>$limit
                 ]);
         return response()->json(['status'=>'sukses_bos']);
     }
@@ -67,33 +73,33 @@ class SuplierController extends Controller
                       ->rawColumns(['aksi', 'limit'])
                       ->make(true);
     }
+
     public function suplier_edit($s_id)
     {
-          // return 'a';
-        // $edit_suplier = Suplier::find(20)
+        
         $edit_suplier = DB::table("d_supplier")->where("s_id", $s_id)->first();
         // return json_encode($edit_suplier); 
         json_encode($edit_suplier);
         return view('/master/datasuplier/edit_suplier', ['edit_suplier' => $edit_suplier] , compact('edit_suplier', 's_id'));       
     }
+
     public function suplier_edit_proses(Request $request)
     {
     	$get_limit  = $request->get('limit');
 
-        $limit      = str_replace(',', '', $get_limit);
+      $limit      = str_replace(',', '', $get_limit);
 
       // dd($request->all());
       $data = DB::table('d_supplier')
           ->where('s_id',$request->get('s_idx'))
           ->update([
-          			's_company'=>$request->get('perusahaan'),
+          			  's_company'=>$request->get('perusahaan'),
       		        's_name'=>$request->get('nama'),
       		        's_address'=>$request->get('alamat'),
       		        's_phone'=>$request->get('no_hp'),
       		        's_fax'=>$request->get('fax'),
-      		        's_npwp'=>$request->get('npwp'),
-      		        's_email'=>$request->get('email'),
       		        's_note'=>$request->get('keterangan'),
+                  's_insert'=>Carbon::now(),
       		        's_limit'=>$limit
           ]);
 

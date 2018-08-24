@@ -168,20 +168,13 @@
     var keterangan = $('input[name="keterangan"]');
     var alamat = $('input[name="alamat"]');
     
-    if(namaSup.val()=='' || owner.val()=='' || telp.val()=='' || fax.val()=='' || alamat.val()=='')
+    if(namaSup.val()=='' || telp.val()=='' || alamat.val()=='')
     {
       if(namaSup.val()==''){
         toastr["error"]("Supplier tidak boleh kosong", "Error");
         namaSup.addClass('state-error');
       } else {
         namaSup.removeClass('state-error');
-      }
-
-      if(owner.val()==''){
-        toastr["error"]("Nama Owner tidak boleh kosong", "Error");
-        owner.addClass('state-error');
-      } else {
-        owner.removeClass('state-error');
       }
 
       if(telp.val()==''){
@@ -191,12 +184,6 @@
         telp.removeClass('state-error');
       }
 
-      if(fax.val()==''){
-        toastr["error"]("Fax tidak boleh kosong", "Error");
-        fax.addClass('state-error');
-      } else {
-        fax.removeClass('state-error');
-      }
       return false;
     }
     var form = $('#form_suplier').serialize();
