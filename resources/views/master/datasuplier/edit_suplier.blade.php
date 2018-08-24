@@ -49,7 +49,7 @@
                             <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-top:30px;padding-bottom:20px;">
                               <div class="col-md-2 col-sm-3 col-xs-12">
                                 
-                                    <label class="tebal">Nama Perusahaan</label>
+                                    <label class="tebal">Nama Supplier</label>
                                 
                               </div>
 
@@ -63,7 +63,7 @@
 
                               <div class="col-md-2 col-sm-3 col-xs-12">
                                 
-                                    <label class="tebal">Nama Suplier</label>
+                                    <label class="tebal">Nama Pemilik</label>
                                 
                               </div>
 
@@ -78,7 +78,7 @@
                              
                               <div class="col-md-2 col-sm-3 col-xs-12">
                                 
-                                    <label class="tebal">Nomor Hp</label>
+                                    <label class="tebal">no. Telp</label>
                                 
                               </div>
 
@@ -93,33 +93,7 @@
 
                               <div class="col-md-2 col-sm-3 col-xs-12">
                                 
-                                  <label class="tebal">Fax</label>
-                                
-                              </div>
-
-                              <div class="col-md-4 col-sm-9 col-xs-12">
-                                <div class="form-group">
-                                    <input type="text" id="fax" name="fax" class="form-control input-sm" value="{{$edit_suplier->s_fax}}">
-                                </div>
-                              </div>
-
-                               <div class="col-md-2 col-sm-3 col-xs-12">
-                                
-                                    <label class="tebal">NPWP</label>
-                                
-                              </div>
-
-                              <div class="col-md-4 col-sm-9 col-xs-12">
-                                <div class="form-group">
-                                  
-                                      <input type="text" id="npwp" name="npwp" class="form-control input-sm" value="{{$edit_suplier->s_npwp}}">
-                                  
-                                </div>
-                              </div>
-
-                              <div class="col-md-2 col-sm-3 col-xs-12">
-                                
-                                    <label class="tebal">E-mail</label>
+                                    <label class="tebal">Fax</label>
                                 
                               </div>
 
@@ -127,7 +101,7 @@
                                 <div class="form-group">
                                   <div class="input-icon right">
                                     <i class="glyphicon glyphicon-envelope"></i>
-                                    <input type="text" id="email" name="email" class="form-control input-sm" value="{{$edit_suplier->s_email}}">                
+                                    <input type="text" id="email" name="email" class="form-control input-sm" value="{{$edit_suplier->s_fax}}">                
                                   </div>
                                 </div>
                               </div>
@@ -143,18 +117,6 @@
                                     <i class="fa fa-home"></i>
                                     <textarea id="alamat" name="alamat" class="form-control input-sm">{{$edit_suplier->s_address}}</textarea>
                                   </div>
-                                </div>
-                              </div>
-
-                              <div class="col-md-2 col-sm-3 col-xs-12">
-                                
-                                  <label class="tebal">Limit</label>
-                               
-                              </div>
-
-                              <div class="col-md-10 col-sm-9 col-xs-12">
-                                <div class="form-group">
-                                  <input type="text" id="limit" name="limit" class="form-control input-sm" value="{{$edit_suplier->s_limit}}">
                                 </div>
                               </div>
 
