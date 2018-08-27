@@ -210,7 +210,7 @@
           <a class="js-scroll-trigger" href="#page-top">Top</a>
         </li>
         <li class="sidebar-nav-item">
-          <a class="js-scroll-trigger" href="#apply">Apply</a>
+          <a class="js-scroll-trigger" href="#form_wizard">Apply</a>
         </li>
         <li class="sidebar-nav-item">
           <a class="js-scroll-trigger" href="#about">About</a>
