@@ -56,6 +56,14 @@
           position: relative;
       }
 
+      .nav-tabs .nav-link.disabled{
+        cursor: not-allowed;
+      }
+
+      .nav-tabs > li .disabled span.round-tab {
+          background-color: #e0e0e0;
+      }
+
       .connecting-line {
           height: 2px;
           background: #e0e0e0;
