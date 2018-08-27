@@ -225,7 +225,7 @@
     <header class="masthead d-flex">
       <div class="container text-center my-auto">
         <a class="btn btn-danger btn-xl js-scroll-trigger" style="margin-top: 380px; margin-right: 30px;" href="#about">About Tammafood</a>
-        <a class="btn btn-primary btn-xl js-scroll-trigger" style="margin-top: 380px; margin-left: 30px;" href="#apply">Apply Now</a>
+        <a class="btn btn-primary btn-xl js-scroll-trigger" style="margin-top: 380px; margin-left: 30px;" href="#form_wizard">Apply Now</a>
       </div>
       <div class="overlay"></div>
     </header>
