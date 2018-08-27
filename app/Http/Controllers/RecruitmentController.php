@@ -6,6 +6,9 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+use Illuminate\Http\UploadedFile;
 
 class RecruitmentController extends Controller
 {
@@ -16,9 +19,10 @@ class RecruitmentController extends Controller
 
     public function save(Request $request)
     {
-        //dd($request);
-        DB::beginTransaction();
-        try {
+        // return $request;
+        // dd($request);
+        // DB::beginTransaction();
+        // try {
             $id = DB::table('d_pelamar')
                 ->max('p_id');
             ++$id;
@@ -47,16 +51,15 @@ class RecruitmentController extends Controller
                     'p_religion' => $request->agama,
                     'p_status' => $status,
                     'p_child' => $request->anak,
-                    'p_wife_name' => $request->suami,
-                    'p_insert' => Carbon::now('Asia/Jakarta')
+                    'p_insert' => Carbon::now('Asia/Jakarta'),
+                    'p_wife_name' => $request->partner_name
                 ]);
-
 
             DB::commit();
             return redirect('/recruitment#apply')->with(['sukses' => 'Data berhasil disimpan']);
 
-        } catch (\Exception $e){
-            return redirect('/recruitment#apply')->with(['gagal' => 'Data berhasil disimpan, Ulangi sekali lagi']);
-        }
+        // } catch (\Exception $e){
+        //     return redirect('/recruitment#apply')->with(['gagal' => 'Data berhasil disimpan, Ulangi sekali lagi']);
+        // }
     }
 }

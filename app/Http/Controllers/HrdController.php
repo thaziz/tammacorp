@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use Illuminate\Http\Request;
+use DB;
 
 class HrdController extends Controller
 {
@@ -24,7 +25,11 @@ class HrdController extends Controller
      */
     public function rekrut()
     {
-        return view('hrd/recruitment/rekrut');
+        $query = DB::table('d_pelamar')->get();
+
+        // return $query;
+
+        return view('hrd/recruitment/rekrut', compact('query'));
 
     }
 
