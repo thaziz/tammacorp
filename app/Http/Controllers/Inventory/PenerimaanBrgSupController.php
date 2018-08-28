@@ -317,14 +317,17 @@ class PenerimaanBrgSupController extends Controller
                 if ($primary_sat->i_sat1 == $request->fieldSatuanId[$i]) 
                 {
                   $hasilConvert = (int)$request->fieldQtyterima[$i] * (int)$primary_sat->i_sat_isi1;
+                  $hppConvert = (int)$request->fieldHargaRaw[$i] / (int)$primary_sat->i_sat_isi1;
                 }
                 elseif ($primary_sat->i_sat2 == $request->fieldSatuanId[$i])
                 {
                   $hasilConvert = (int)$request->fieldQtyterima[$i] * (int)$primary_sat->i_sat_isi2;
+                  $hppConvert = (int)$request->fieldHargaRaw[$i] / (int)$primary_sat->i_sat_isi2;
                 }
                 else
                 {
                   $hasilConvert = (int)$request->fieldQtyterima[$i] * (int)$primary_sat->i_sat_isi3;
+                  $hppConvert = (int)$request->fieldHargaRaw[$i] / (int)$primary_sat->i_sat_isi3;
                 }
 
                 $grup = $this->getGroupGudang($request->fieldItemId[$i]);
@@ -370,7 +373,7 @@ class PenerimaanBrgSupController extends Controller
                   'sm_qty_expired' => '0',
                   'sm_qty_sisa' => $hasilConvert,
                   'sm_detail' => "PENAMBAHAN",
-                  'sm_hpp' => $request->fieldHargaTotalRaw[$i],
+                  'sm_hpp' => $hppConvert,
                   'sm_sell' => '0',
                   'sm_reff' => $this->kodePenerimaanAuto(),
                   'sm_insert' => Carbon::now(),

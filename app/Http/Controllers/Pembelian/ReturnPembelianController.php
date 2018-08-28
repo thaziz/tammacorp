@@ -532,7 +532,7 @@ class ReturnPembelianController extends Controller
       //variabel untuk cek jumlah field
       $hitung_field_edit = count($request->fieldIdItem);
       for ($i=0; $i < $hitung_field_edit; $i++) 
-      { 
+      {
         //variabel u/ cek primary satuan
         $primary_sat = DB::table('m_item')->select('m_item.*')->where('i_id', $request->fieldIdItem[$i])->first();        
         //konversi stok setelah update
