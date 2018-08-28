@@ -3,7 +3,7 @@
     <div class="panel-body">
 
       <div class="col-md-3 col-sm-3 col-xs-12">
-        <label class="tebal">Tanggal pembelian (PO)</label>
+        <label class="tebal">Tanggal Pemakaian</label>
       </div>
 
       <div class="col-md-4 col-sm-6 col-xs-12">
@@ -17,12 +17,12 @@
       </div>
 
       <div class="col-md-3 col-sm-3 col-xs-12" align="center">
-        <button class="btn btn-primary btn-sm btn-flat autoCari" type="button" onclick="listReceivedByTgl()">
+        <button class="btn btn-primary btn-sm btn-flat autoCari" type="button" onclick="listPemakaianByTgl()">
           <strong>
             <i class="fa fa-search" aria-hidden="true"></i>
           </strong>
         </button>
-        <button class="btn btn-info btn-sm btn-flat" type="button" onclick="refreshTabelReceived()">
+        <button class="btn btn-info btn-sm btn-flat" type="button" onclick="refreshTabelIndex()">
           <strong>
             <i class="fa fa-undo" aria-hidden="true"></i>
           </strong>
@@ -30,20 +30,18 @@
       </div>
 
       <div class="table-responsive" style="padding-top: 15px;">
-        <div id="tabelPenerimaanReceived"> 
-          <table class="table tabelan table-hover table-bordered dt-responsive" id="tbl-received" width="100%">
+        <div id="tabelPemakaianBarang"> 
+          <table class="table tabelan table-hover table-bordered dt-responsive" id="tbl-index" width="100%">
             <thead>
               <tr>
                   <th>No</th>
-                  <th>Kode PO</th>
-                  <th>Supplier</th>
+                  <th>Kode</th>
+                  <th>Pengguna</th>
                   <th>Nama Item</th>
                   <th>Satuan</th>
-                  <th width="5%">Qty PO</th>
-                  <th width="5%">Qty Masuk</th>
-                  <th>Tgl PO</th>
-                  <th width="10%">Status</th>
-                  <th width="5%">Detail</th>
+                  <th width="5%">Qty</th>
+                  <th>Tgl</th>
+                  <th width="10%">Aksi</th>
               </tr>
             </thead>
             <tbody>

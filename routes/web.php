@@ -195,10 +195,17 @@ Route::group(['middleware' => 'auth'], function () {
 
 // End irA
 //rizky
+//
 //barang_digunakan
     Route::get('/inventory/b_digunakan/barang', 'Inventory\PemakaianBrgGdgController@barang');
-    Route::get('/inventory/b_digunakan/tambah_barang', 'Inventory\PemakaianBrgGdgController@tambah_barang');
-    Route::get('/inventory/b_digunakan/get-data-tabel-index', 'Inventory\PemakaianBrgGdgController@getDataTabelIndex');
+    Route::get('/inventory/b_digunakan/get-pemakaian-by-tgl/{tgl1}/{tgl2}', 'Inventory\PemakaianBrgGdgController@getPemakaianByTgl');
+    Route::get('/inventory/b_digunakan/lookup-data-gudang', 'Inventory\PemakaianBrgGdgController@lookupDataGudang');
+    Route::get('/inventory/b_digunakan/autocomplete-barang', 'Inventory\PemakaianBrgGdgController@autocompleteBarang');
+    Route::post('/inventory/b_digunakan/simpan-data-pakai', 'Inventory\PemakaianBrgGdgController@simpanDataPakai');
+    Route::get('/inventory/b_digunakan/get-detail/{id}', 'Inventory\PemakaianBrgGdgController@getDataDetail');
+    Route::post('/inventory/b_digunakan/update-data-pakai', 'Inventory\PemakaianBrgGdgController@updateDataPakai');
+    Route::post('/inventory/b_digunakan/delete-data-pakai', 'Inventory\PemakaianBrgGdgController@deleteDataPakai');
+    Route::get('/inventory/b_digunakan/print/{id}', 'Inventory\PemakaianBrgGdgController@printSuratJalan');
 //p_hasilproduksi
     Route::get('/inventory/p_hasilproduksi/produksi', 'Inventory\PenerimaanBrgProdController@produksi');
     Route::get('/inventory/p_hasilproduksi/get_data_sj', 'Inventory\PenerimaanBrgProdController@get_data_sj');
