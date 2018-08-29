@@ -178,8 +178,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/inventory/POSretail/transfer', 'transferItemController@index');
     Route::get('/inventory/POSgrosir/transfer', 'transferItemGrosirController@indexGrosir');
     Route::get('/inventory/p_hasilproduksi/produksi', 'Inventory\PenerimaanBrgProdController@produksi');
-    Route::get('/inventory/b_digunakan/barang', 'Inventory\PemakaianBrgGdgController@barang');
-    Route::get('/inventory/b_digunakan/tambah_barang', 'Inventory\PemakaianBrgGdgController@tambah_barang');
     Route::get('/inventory/stockopname/opname', 'Inventory\OpnameGdgController@opname');
     Route::get('/inventory/stockopname/tambah_opname', 'Inventory\OpnameGdgController@tambah_opname');
     Route::get('/inventory/p_returncustomer/cust', 'Inventory\InventoryController@cust');
@@ -195,7 +193,6 @@ Route::group(['middleware' => 'auth'], function () {
 
 // End irA
 //rizky
-//
 //barang_digunakan
     Route::get('/inventory/b_digunakan/barang', 'Inventory\PemakaianBrgGdgController@barang');
     Route::get('/inventory/b_digunakan/get-pemakaian-by-tgl/{tgl1}/{tgl2}', 'Inventory\PemakaianBrgGdgController@getPemakaianByTgl');
@@ -207,6 +204,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/inventory/b_digunakan/delete-data-pakai', 'Inventory\PemakaianBrgGdgController@deleteDataPakai');
     Route::get('/inventory/b_digunakan/print/{id}', 'Inventory\PemakaianBrgGdgController@printSuratJalan');
     Route::get('/inventory/b_digunakan/get-history-by-tgl/{tgl1}/{tgl2}/{tampil}', 'Inventory\PemakaianBrgGdgController@getHistoryByTgl');
+//barang_rusak
+Route::get('/inventory/b_rusak/index', 'Inventory\BarangRusakController@index');
+Route::get('/inventory/b_rusak/get-brg-rusak-by-tgl/{tgl1}/{tgl2}', 'Inventory\BarangRusakController@getBrgRusakByTgl');
+Route::get('/inventory/b_rusak/lookup-data-gudang', 'Inventory\BarangRusakController@lookupDataGudang');
+Route::get('/inventory/b_rusak/autocomplete-barang', 'Inventory\BarangRusakController@autocompleteBarang');
+Route::post('/inventory/b_rusak/simpan-data-rusak', 'Inventory\BarangRusakController@simpanDataRusak');
 //p_hasilproduksi
     Route::get('/inventory/p_hasilproduksi/produksi', 'Inventory\PenerimaanBrgProdController@produksi');
     Route::get('/inventory/p_hasilproduksi/get_data_sj', 'Inventory\PenerimaanBrgProdController@get_data_sj');

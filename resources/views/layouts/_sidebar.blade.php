@@ -360,6 +360,10 @@
                                         Barang Digunakan
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Barang Rusak','ma_read'))
+                                        Barang Rusak
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Stock Opname','ma_read'))
                                         Stock Opname
                                     @endif
@@ -405,6 +409,13 @@
                                     <li class="{{ Request::is('inventory/b_digunakan/barang') ? 'active' : '' || Request::is('inventory/b_digunakan/*') ? 'active' : '' }}">
                                         <a href="{{ url('/inventory/b_digunakan/barang') }}"><span
                                                     class="submenu-title">Barang Digunakan</span><span class="hidden">Inventory</span></a>
+                                    </li>
+                                @endif
+
+                                @if(Auth::user()->punyaAkses('Barang Rusak','ma_read'))
+                                    <li class="{{ Request::is('inventory/b_rusak/index') ? 'active' : '' || Request::is('inventory/b_rusak/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/inventory/b_rusak/index') }}"><span class="submenu-title">Barang Rusak</span>
+                                            <span class="hidden">Inventory</span></a>
                                     </li>
                                 @endif
 
