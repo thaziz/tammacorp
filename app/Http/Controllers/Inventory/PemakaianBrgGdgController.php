@@ -419,7 +419,7 @@ class PemakaianBrgGdgController extends Controller
             }
 
             for ($i=0; $i < count($sm_stock); $i++) 
-            { 
+            {
                 //cari id & s_qty d_stock
                 $q_dstock = DB::table('d_stock')
                         ->select('s_id', 's_qty')
@@ -442,10 +442,43 @@ class PemakaianBrgGdgController extends Controller
                                     ->where('sm_hpp', $sm_hpp[$i])
                                     ->orderBy('sm_stock','ASC')
                                     ->orderBy('sm_detailid','ASC')
-                                    //->get();
-                                    ->first();     
+                                    ->get(); 
 
-                // for ($j=0; $j <count($data_sm_masuk); $j++) 
+                $qtyPakai = abs($sm_qty[$i]);
+                for ($z=0; $z <count($data_sm_masuk); $z++) 
+                { 
+                  if ($qtyPakai <= $data_sm_masuk[$z]->sm_qty_used) 
+                  {
+                    $qty_awal = (int)$data_sm_masuk[$z]->sm_qty_used - (int)$qtyPakai;
+                    $qty_sisa = (int)$data_sm_masuk[$z]->sm_qty_sisa + (int)$qtyPakai;
+                    // update d_stock_mutation
+                    DB::table('d_stock_mutation')
+                      ->where('sm_stock', '=', $data_sm_masuk[$z]->sm_stock)
+                      ->where('sm_detailid', $data_sm_masuk[$z]->sm_detailid)
+                      ->update(array(
+                          'sm_qty_used' => $qty_awal,
+                          'sm_qty_sisa' => $qty_sisa
+                      ));
+                    $z = count($data_sm_masuk);
+                  }
+                  elseif ($qtyPakai > $data_sm_masuk[$z]->sm_qty_used)
+                  {
+                    $selisih = (int)$qtyPakai - (int)$data_sm_masuk[$z]->sm_qty_used;
+                    $qty_awal = (int)$data_sm_masuk[$z]->sm_qty_used - ((int)$qtyPakai - (int)$selisih);
+                    $qty_sisa = (int)$data_sm_masuk[$z]->sm_qty_sisa + ((int)$qtyPakai - (int)$selisih);
+                    $qtyPakai = $selisih;
+                    // update d_stock_mutation
+                    DB::table('d_stock_mutation')
+                      ->where('sm_stock', '=', $data_sm_masuk[$z]->sm_stock)
+                      ->where('sm_detailid', $data_sm_masuk[$z]->sm_detailid)
+                      ->update(array(
+                          'sm_qty_used' => $qty_awal,
+                          'sm_qty_sisa' => $qty_sisa
+                      ));
+                  }
+                }
+
+               /* // for ($j=0; $j <count($data_sm_masuk); $j++) 
                 // { 
                     if (abs($sm_qty[$i]) <= $data_sm_masuk->sm_qty_used) 
                     {
@@ -460,7 +493,7 @@ class PemakaianBrgGdgController extends Controller
                                 'sm_qty_sisa' => $qty_sisa
                             ));
                     }
-                // }
+                // }*/
 
                 //delete row table d_stock_mutation
                 DB::table('d_stock_mutation')
@@ -652,27 +685,47 @@ class PemakaianBrgGdgController extends Controller
 
                 //ambil data penerimaan d_stock_mutation 
                 $data_sm_masuk = d_stock_mutation::where('sm_qty_used','>',0)
+                                    ->where('sm_stock', $sm_stock[$i])
                                     ->where('sm_item', $sm_item[$i])
                                     ->where('sm_comp', $sm_comp[$i])
                                     ->where('sm_position', $sm_pos[$i])
                                     ->where('sm_hpp', $sm_hpp[$i])
                                     ->orderBy('sm_stock','ASC')
                                     ->orderBy('sm_detailid','ASC')
-                                    //->get();
-                                    ->first();
+                                    ->get();
 
-                if (abs($sm_qty[$i]) <= $data_sm_masuk->sm_qty_used) 
-                {
-                    $qty_awal = (int)$data_sm_masuk->sm_qty_used + (int)$sm_qty[$i];
-                    $qty_sisa = (int)$data_sm_masuk->sm_qty_sisa - (int)$sm_qty[$i];
+                $qtyPakai = abs($sm_qty[$i]);
+                for ($j=0; $j <count($data_sm_masuk); $j++) 
+                { 
+                  if ($qtyPakai <= $data_sm_masuk[$j]->sm_qty_used) 
+                  {
+                    $qty_awal = (int)$data_sm_masuk[$j]->sm_qty_used - (int)$qtyPakai;
+                    $qty_sisa = (int)$data_sm_masuk[$j]->sm_qty_sisa + (int)$qtyPakai;
                     // update d_stock_mutation
                     DB::table('d_stock_mutation')
-                        ->where('sm_stock', '=', $data_sm_masuk->sm_stock)
-                        ->where('sm_detailid', $data_sm_masuk->sm_detailid)
-                        ->update(array(
-                            'sm_qty_used' => $qty_awal,
-                            'sm_qty_sisa' => $qty_sisa
-                        ));
+                      ->where('sm_stock', '=', $data_sm_masuk[$j]->sm_stock)
+                      ->where('sm_detailid', $data_sm_masuk[$j]->sm_detailid)
+                      ->update(array(
+                          'sm_qty_used' => $qty_awal,
+                          'sm_qty_sisa' => $qty_sisa
+                      ));
+                    $j = count($data_sm_masuk);
+                  }
+                  elseif ($qtyPakai > $data_sm_masuk[$j]->sm_qty_used)
+                  {
+                    $selisih = (int)$qtyPakai - (int)$data_sm_masuk[$j]->sm_qty_used;
+                    $qty_awal = (int)$data_sm_masuk[$j]->sm_qty_used - ((int)$qtyPakai - (int)$selisih);
+                    $qty_sisa = (int)$data_sm_masuk[$j]->sm_qty_sisa + ((int)$qtyPakai - (int)$selisih);
+                    $qtyPakai = $selisih;
+                    // update d_stock_mutation
+                    DB::table('d_stock_mutation')
+                      ->where('sm_stock', '=', $data_sm_masuk[$j]->sm_stock)
+                      ->where('sm_detailid', $data_sm_masuk[$j]->sm_detailid)
+                      ->update(array(
+                          'sm_qty_used' => $qty_awal,
+                          'sm_qty_sisa' => $qty_sisa
+                      ));
+                  }
                 }
 
                 //delete row table d_stock_mutation
@@ -771,13 +824,6 @@ class PemakaianBrgGdgController extends Controller
             $txtSat1[] = DB::table('m_satuan')->select('m_sname', 'm_sid')->where('m_sid','=', $dataIsi[$i]['i_sat1'])->first();
         }
 
-        /*foreach ($dataIsi as $val2) 
-        {
-            $query = DB::select(DB::raw("SELECT IFNULL( (SELECT s_qty FROM d_stock where s_item = '$val2->i_id' AND s_comp = '".$data['id_gdg']."' AND s_position = '".$data['id_gdg']."' limit 1) ,'0') as qtyStok"));
-            $stok[] = (int)$query[0]->qtyStok;
-            $txtSat1[] = DB::table('m_satuan')->select('m_sname', 'm_sid')->where('m_sid','=', $val2->i_sat1)->first();
-        }*/
-
         $val_stock = [];
         $txt_satuan = [];
 
@@ -787,6 +833,46 @@ class PemakaianBrgGdgController extends Controller
         //dd($dataIsi, $val_stock, $txt_satuan);
            
         return view('inventory.b_digunakan.print', compact('dataHeader', 'dataIsi', 'val_stock', 'txt_satuan'));
+    }
+
+    public function getHistoryByTgl($tgl1, $tgl2, $tampil)
+    {
+        $y = substr($tgl1, -4);
+        $m = substr($tgl1, -7,-5);
+        $d = substr($tgl1,0,2);
+        $tanggal1 = $y.'-'.$m.'-'.$d;
+
+        $y2 = substr($tgl2, -4);
+        $m2 = substr($tgl2, -7,-5);
+        $d2 = substr($tgl2,0,2);
+        $tanggal2 = $y2.'-'.$m2.'-'.$d2;
+
+        $data = d_pakai_barangdt::select('d_pakai_barangdt.*', 'd_pakai_barang.*', 'm_item.i_name', 'm_satuan.m_sname', DB::raw('sum(d_pakai_barangdt.d_pbdt_qty) as qty_pakai'))
+            ->leftJoin('d_pakai_barang','d_pakai_barangdt.d_pbdt_pbid','=','d_pakai_barang.d_pb_id')
+            ->leftJoin('m_item','d_pakai_barangdt.d_pbdt_item','=','m_item.i_id')
+            ->leftJoin('m_satuan','d_pakai_barangdt.d_pbdt_sat','=','m_satuan.m_sid')
+            ->where('d_pakai_barang.d_pb_gdg', '=', $tampil)
+            ->whereBetween('d_pakai_barang.d_pb_date', [$tanggal1, $tanggal2])
+            ->groupBy('d_pakai_barangdt.d_pbdt_pbid')
+            ->groupBy('d_pakai_barangdt.d_pbdt_item')
+            ->orderBy('d_pakai_barang.d_pb_created', 'DESC')
+            ->get();
+
+        return DataTables::of($data)
+        ->addIndexColumn()
+        ->editColumn('tglPakai', function ($data) 
+        {
+            if ($data->d_pbdt_created == null) 
+            {
+                return '-';
+            }
+            else 
+            {
+                return $data->d_pbdt_created ? with(new Carbon($data->d_pbdt_created))->format('d M Y') : '';
+            }
+        })
+        // ->rawColumns(['status', 'action'])
+        ->make(true);
     }
 
     // ===============================================================================================================

@@ -500,7 +500,7 @@ class ConfrimBeliController extends Controller
     {
       if ($data->d_pcsr_status == "WT") 
       {
-        return '<span class="label label-info">Waiting</span>';
+        return '<span class="label label-default">Waiting</span>';
       }
       elseif ($data->d_pcsr_status == "DE") 
       {
@@ -508,7 +508,11 @@ class ConfrimBeliController extends Controller
       }
       elseif ($data->d_pcsr_status == "CF") 
       {
-        return '<span class="label label-success">Dikonfirmasi</span>';
+        return '<span class="label label-info">Dikonfirmasi</span>';
+      }
+      elseif ($data->d_pcsr_status == "RC") 
+      {
+        return '<span class="label label-success">Diterima</span>';
       }
     })
     ->editColumn('tglConfirm', function ($data) 
@@ -567,16 +571,21 @@ class ConfrimBeliController extends Controller
     if ($statusLabel == "WT") 
     {
         $spanTxt = 'Waiting';
-        $spanClass = 'label-info';
+        $spanClass = 'label-default';
     }
     elseif ($statusLabel == "DE")
     {
         $spanTxt = 'Dapat Diedit';
         $spanClass = 'label-warning';
     }
-    else
+    elseif ($statusLabel == "CF")
     {
         $spanTxt = 'Di setujui';
+        $spanClass = 'label-info';
+    }
+    elseif ($statusLabel == "RC")
+    {
+        $spanTxt = 'Di Terima';
         $spanClass = 'label-success';
     }
 

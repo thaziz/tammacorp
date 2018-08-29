@@ -206,6 +206,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/inventory/b_digunakan/update-data-pakai', 'Inventory\PemakaianBrgGdgController@updateDataPakai');
     Route::post('/inventory/b_digunakan/delete-data-pakai', 'Inventory\PemakaianBrgGdgController@deleteDataPakai');
     Route::get('/inventory/b_digunakan/print/{id}', 'Inventory\PemakaianBrgGdgController@printSuratJalan');
+    Route::get('/inventory/b_digunakan/get-history-by-tgl/{tgl1}/{tgl2}/{tampil}', 'Inventory\PemakaianBrgGdgController@getHistoryByTgl');
 //p_hasilproduksi
     Route::get('/inventory/p_hasilproduksi/produksi', 'Inventory\PenerimaanBrgProdController@produksi');
     Route::get('/inventory/p_hasilproduksi/get_data_sj', 'Inventory\PenerimaanBrgProdController@get_data_sj');

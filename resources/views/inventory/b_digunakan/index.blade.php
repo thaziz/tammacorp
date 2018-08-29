@@ -38,13 +38,12 @@
 
           <ul id="generalTab" class="nav nav-tabs">
             <li class="active"><a href="#index-tab" data-toggle="tab">Barang Digunakan</a></li>
-            <li><a href="#list-tab" data-toggle="tab" onclick="listItemNonReguler()">Daftar Barang Lain-lain</a></li>
-            <!-- <li><a href="#label-badge-tab-tab" data-toggle="tab">3</a></li> -->
+            <li><a href="#history-tab" data-toggle="tab" onclick="lihatHistoryByTgl()">History Pemakaian Barang</a></li>
           </ul>
           
           <div id="generalTabContent" class="tab-content responsive">
             @include('inventory.b_digunakan.tab-index')
-            @include('inventory.b_digunakan.tab-list-item')
+            @include('inventory.b_digunakan.tab-history')
           </div>
         </div>
       </div>
@@ -210,6 +209,10 @@
       }else{
         $('#divSelectNota').addClass('has-error').removeClass('has-valid');
       }
+    });
+
+    $('#tampil_data').change(function() {
+      lihatHistoryByTgl();
     });
 
     //load fungsi
@@ -395,6 +398,44 @@
         {"data" : "d_pb_peminta", "width" : "10%"},
         {"data" : "d_pb_keperluan", "width" : "15%"},
         {"data" : "action", orderable: false, searchable: false, "width" : "15%"}
+      ],
+      "language": {
+        "searchPlaceholder": "Cari Data",
+        "emptyTable": "Tidak ada data",
+        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+        "sSearch": '<i class="fa fa-search"></i>',
+        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+        "infoEmpty": "",
+        "paginate": {
+              "previous": "Sebelumnya",
+              "next": "Selanjutnya",
+        }
+      }
+    });
+  }
+
+  function lihatHistoryByTgl()
+  {
+    var tgl1 = $('#tanggal3').val();
+    var tgl2 = $('#tanggal4').val();
+    var tampil = $('#tampil_data').val();
+    $('#tbl-history').dataTable({
+      "destroy": true,
+      "processing" : true,
+      "serverside" : true,
+      "ajax" : {
+        url: baseUrl + "/inventory/b_digunakan/get-history-by-tgl/"+tgl1+"/"+tgl2+"/"+tampil,
+        type: 'GET'
+      },
+      "columns" : [
+        {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
+        {"data" : "tglPakai", "width" : "10%"},
+        {"data" : "d_pb_code", "width" : "10%"},
+        {"data" : "i_name", "width" : "15%"},
+        {"data" : "m_sname", "width" : "5%"},
+        {"data" : "qty_pakai", "width" : "10%"},
+        {"data" : "d_pb_peminta", "width" : "15%"},
+        {"data" : "d_pb_keperluan", "width" : "20%"},
       ],
       "language": {
         "searchPlaceholder": "Cari Data",
@@ -690,5 +731,10 @@
     $('#tbl-daftar').DataTable().ajax.reload(); 
   }
 
+  function refreshTabelHistory()
+  {
+    $('#tbl-history').DataTable().ajax.reload(); 
+  }
+  
 </script>
 @endsection
