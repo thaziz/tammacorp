@@ -43,12 +43,12 @@
             @include('purchasing.returnpembelian.tab-revisi')
           </div>
           <!-- modal -->
+          <!--modal edit-->
+          @include('purchasing.returnpembelian.modal-edit')
           <!--modal detail-->
           @include('purchasing.returnpembelian.modal-detail')
           <!--modal detail-rev-->
           @include('purchasing.returnpembelian.modal-detail-rev')
-          <!--modal edit-->
-          @include('purchasing.returnpembelian.modal-edit')
           <!-- /modal -->
         </div>
       </div>
@@ -476,8 +476,8 @@
         $("#txt_span_status_detail_rev").addClass('label'+' '+data.spanClass);
         $('#lblNoOrder').text(data.header[0].d_pcs_code);
         $('#lblCaraBayar').text(data.header[0].d_pcs_method);
-        $('#lblTglOrder').text(data.header[0].d_pcs_date_created);
-        $('#lblTglKirim').text(data.header[0].d_pcs_date_received);
+        $('#lblTglOrder').text(formatTanggal(data.header[0].d_pcs_date_created));
+        $('#lblTglKirim').text(formatTanggal(data.header[0].d_pcs_date_received));
         $('#lblStaffRev').text(data.header[0].m_name);
         $('#lblSupplierRev').text(data.header[0].s_company);
         $('[name="totalHarga"]').val(data.header2.hargaBruto);
@@ -494,9 +494,9 @@
             $('#append-modal-detail').append('<div class="col-md-3 col-sm-12 col-xs-12">'
                                       +'<label class="tebal">Batas Terakhir Pengiriman</label>'
                                   +'</div>'
-                                  +'<div class="col-md-3 col-sm-12 col-xs-12">'
+                                  +'<div class="col-md-9 col-sm-12 col-xs-12">'
                                     +'<div class="form-group">'
-                                      +'<label id="dueDate">'+data.header[0].d_pcs_duedate+'</label>'
+                                      +'<label id="dueDate">'+formatTanggal(data.header[0].d_pcs_duedate)+'</label>'
                                     +'</div>'
                                   +'</div>');
           }
@@ -506,7 +506,7 @@
             $('#append-modal-detail').append('<div class="col-md-3 col-sm-12 col-xs-12">'
                                       +'<label class="tebal">TOP (Termin Of Payment)</label>'
                                   +'</div>'
-                                  +'<div class="col-md-3 col-sm-12 col-xs-12">'
+                                  +'<div class="col-md-9 col-sm-12 col-xs-12">'
                                     +'<div class="form-group">'
                                       +'<label id="dueDate">'+data.header[0].d_pcs_duedate+'</label>'
                                     +'</div>'
@@ -690,6 +690,12 @@
   function refreshTabelRevisi() 
   {
     $('#tbl-history').DataTable().ajax.reload();
+  }
+
+  function formatTanggal(dateString)
+  {
+    var p = dateString.split(/\D/g)
+    return [p[2],p[1],p[0] ].join("-")
   }
 </script>
 @endsection

@@ -75,10 +75,6 @@
 
             <div id="append-modal-detail"></div>
 
-          </div>
-
-          <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:5px;padding-top: 10px;">
-
             <div class="col-md-3 col-sm-12 col-xs-12">
               <label class="tebal">Total Harga</label>
             </div>
@@ -118,6 +114,7 @@
                 <input type="text" readonly="" class="input-sm form-control" name="totalHargaFinal">
               </div>
             </div>
+
           </div>
           
           <div class="table-responsive">

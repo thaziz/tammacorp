@@ -65,6 +65,7 @@
                   <option value="WT">Waiting</option>
                   <option value="DE">Dapat diedit</option>
                   <option value="CF">Dikonfirmasi</option>
+                  <option value="RC">Diterima</option>
                 </select>
               </div>
             </div>

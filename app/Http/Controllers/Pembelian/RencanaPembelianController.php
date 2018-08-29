@@ -407,13 +407,17 @@ class RencanaPembelianController extends Controller
                     ->where('sm_mutcat', '=', "14")
                     ->orderBy('sm_date', 'desc')
                     ->limit(1)
-                    ->get();
-
+                    ->first();
           //dd($prevCost);
-          $hargaLalu = "";
-          foreach ($prevCost as $value) 
+
+          if ($prevCost == null) 
           {
-            $hargaLalu = $value->sm_hpp / $value->sm_qty;
+            $default_cost = DB::table('m_price')->select('m_pbuy1')->where('m_pitem', '=', $idItem)->first();
+            $hargaLalu = $default_cost->m_pbuy1;
+          }
+          else
+          {
+            $hargaLalu = $prevCost->sm_hpp;
           }
 
           //get data txt satuan
