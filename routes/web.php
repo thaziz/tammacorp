@@ -432,8 +432,24 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/datalembur/lembur', 'HrdController@lembur');
     Route::get('/hrd/scoreboard/score', 'HrdController@score');
     Route::get('/hrd/training/training', 'HrdController@training');
+
     /*Keuangan*/
-    Route::get('/keuangan/p_inputtransaksi/transaksi', 'Keuangan\KeuanganController@transaksi');
+        // Transaksi Kas
+
+            Route::get('/keuangan/p_inputtransaksi/transaksi_kas', 'Keuangan\Transaksi\transaksi_kas_controller@index');
+            Route::get('/keuangan/p_inputtransaksi/transaksi_kas/form-resource', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_kas_controller@form_resource',
+                'as'    => 'transaksi_kas.form_resource'
+            ]);
+            Route::post('/keuangan/p_inputtransaksi/transaksi_kas/save', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_kas_controller@save',
+                'as'    => 'transaksi_kas.save'
+            ]);
+
+
+        // End Transaksi Kas
+
+
     Route::get('/keuangan/l_hutangpiutang/hutang', 'Keuangan\KeuanganController@hutang');
     Route::get('/keuangan/l_jurnal/jurnal', 'Keuangan\KeuanganController@jurnal');
     Route::get('/keuangan/analisaprogress/analisa', 'Keuangan\KeuanganController@analisa');
