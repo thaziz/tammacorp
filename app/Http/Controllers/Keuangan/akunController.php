@@ -69,6 +69,8 @@ class akunController extends Controller
 
     	$cek = DB::table("d_akun")->where("id_akun", $request->kelompok_akun.".".$request->nomor_akun)->first();
 
+        // return json_encode($cek);
+
     	if($cek){
     		$response = [
     			'status'	=> 'exist_id',
@@ -81,7 +83,7 @@ class akunController extends Controller
     	if($request->type_akun == "GENERAL"){
     		$cek = DB::table("d_akun")->where("group_neraca", $request->group_neraca_general)->where("type_akun", "GENERAL")->first();
 
-	    	if($cek){
+	    	if($cek && !is_null($cek->group_neraca)){
 	    		$response = [
 	    			'status'	=> 'exist_group_neraca',
 	    			'content'	=>  $cek->nama_akun
@@ -91,7 +93,9 @@ class akunController extends Controller
 
 	    	$cek = DB::table("d_akun")->where("group_laba_rugi", $request->group_laba_rugi_general)->where("type_akun", "GENERAL")->first();
     		
-	    	if($cek){
+            // return json_encode($cek);
+
+	    	if($cek && !is_null($cek->group_laba_rugi)){
 	    		$response = [
 	    			'status'	=> 'exist_group_laba_rugi',
 	    			'content'	=>  $cek->nama_akun

@@ -852,11 +852,17 @@
                                     </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Proses Input Transaksi','ma_read'))
-                                    <li class="{{ Request::is('keuangan/p_inputtransaksi/transaksi') ? 'active' : '' || Request::is('keuangan/p_inputtransaksi/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/keuangan/p_inputtransaksi/transaksi') }}"><span
-                                                    class="submenu-title">Proses Input Transaksi</span><span
+                                    <li class="{{ Request::is('keuangan/p_inputtransaksi/transaksi_kas') ? 'active' : '' || Request::is('keuangan/p_inputtransaksi/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/keuangan/p_inputtransaksi/transaksi_kas') }}"><span
+                                                    class="submenu-title">Input Transaksi Kas</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
+
+                                    {{-- <li class="{{ Request::is('keuangan/p_inputtransaksi/transaksi_bank') ? 'active' : '' || Request::is('keuangan/p_inputtransaksi/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/keuangan/p_inputtransaksi/transaksi_bank') }}"><span
+                                                    class="submenu-title">Proses Input Transaksi</span><span
+                                                    class="hidden">Keuangan</span></a>
+                                    </li> --}}
                                 @endif
                                 @if(Auth::user()->punyaAkses('Laporan Hutang Piutang','ma_read'))
                                     <li class="{{ Request::is('keuangan/l_hutangpiutang/hutang') ? 'active' : '' || Request::is('keuangan/l_hutangpiutang/*') ? 'active' : '' }}">
