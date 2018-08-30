@@ -184,9 +184,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/inventory/p_hasilproduksi/cari_nota', 'Inventory\InventoryController@cari_nota_produksi');
     Route::get('/inventory/p_returncustomer/cari_nota', 'Inventory\InventoryController@cari_nota_cust');
     /*End Inventory*/
-//mahmud stock opname
+    //mahmud stock opname
     Route::get('/inventory/stockopname/opname', 'Inventory\stockOpnameController@index');
-    Route::get('/inventory/namaitem/autocomplete', 'Inventory\stockOpnameController@autoItem');
+    Route::get('/inventory/namaitem/tableopname/{x}/{y}', 'Inventory\stockOpnameController@tableOpname');
+    Route::post('inventory/namaitem/simpanopname', 'Inventory\stockOpnameController@saveOpname');
+    //mahmud stock gudang
+    Route::get('/inventory/datagudang/gudang', 'Inventory\stockGudangController@index');
+    Route::get('/inventory/namaitem/tablegudang/{x}/{y}', 'Inventory\stockGudangController@tableGudang');
 // Ari
     Route::get('/inventory/POSgrosir/print_setuju/{id}', 'transferItemGrosirController@print_setuju');
     Route::get('/inventory/POSgrosir/print_transfer/{id}', 'transferItemGrosirController@print_transfer');
@@ -545,20 +549,20 @@ Route::post('/inventory/b_rusak/simpan-data-rusak', 'Inventory\BarangRusakContro
 //endmahmud
 //thoriq 
     /*System*/
-    Route::get('/system/hakuser/user', 'aksesUserController@indexAksesUser');
-    Route::get('/system/hakuser/tambah_user', 'aksesUserController@tambah_user');
-    Route::get('/system/hakuser/tambah_user/simpan-user', 'aksesUserController@simpanUser');
-    Route::get('/system/hakakses/edit-user-akses/{id}/edit', 'aksesUserController@editUserAkses');
-    Route::get('/system/hakuser/perbarui-user/perbarui-user/{id}', 'aksesUserController@perbaruiUser');
-    Route::get('/system/hakakses/simpan-user-akses', 'aksesUserController@simpanUserAkses');
+    Route::get('/system/hakuser/user', 'ManUser\aksesUserController@indexAksesUser');
+    Route::get('/system/hakuser/tambah_user', 'ManUser\aksesUserController@tambah_user');
+    Route::get('/system/hakuser/tambah_user/simpan-user', 'ManUser\aksesUserController@simpanUser');
+    Route::get('/system/hakakses/edit-user-akses/{id}/edit', 'ManUser\aksesUserController@editUserAkses');
+    Route::get('/system/hakuser/perbarui-user/perbarui-user/{id}', 'ManUser\aksesUserController@perbaruiUser');
+    Route::get('/system/hakakses/simpan-user-akses', 'ManUser\aksesUserController@simpanUserAkses');
 // hak akses group
-    Route::get('/system/hakakses/akses', 'groupAksesController@indexHakAkses');
-    Route::get('system/hakakses/hapus-akses-group/edit-Akses-Group/{id}/edit', 'groupAksesController@editAksesGroup');
-    Route::get('system/hakakses/perbarui_akses-group/perbarui-group/{id}', 'groupAksesController@perbaruiGroup');
-    Route::get('system/hakakses/hapus-akses-group/hapus-group/{id}', 'groupAksesController@hapusHakAkses');
-    Route::get('/system/hakakses/tambah-akses-group', 'groupAksesController@tambah_akses');
-    Route::get('/system/hakakses/tambah_akses-group/simpan-group', 'groupAksesController@simpanGroup');
-    Route::get('/system/hakakses/tambah_akses-group/simpan-group-detail', 'groupAksesController@simpanGroupDetail');
+    Route::get('/system/hakakses/akses', 'ManAkses\groupAksesController@indexHakAkses');
+    Route::get('system/hakakses/hapus-akses-group/edit-Akses-Group/{id}/edit', 'ManAkses\groupAksesController@editAksesGroup');
+    Route::get('system/hakakses/perbarui_akses-group/perbarui-group/{id}', 'ManAkses\groupAksesController@perbaruiGroup');
+    Route::get('system/hakakses/hapus-akses-group/hapus-group/{id}', 'ManAkses\groupAksesController@hapusHakAkses');
+    Route::get('/system/hakakses/tambah-akses-group', 'ManAkses\groupAksesController@tambah_akses');
+    Route::get('/system/hakakses/tambah_akses-group/simpan-group', 'ManAkses\groupAksesController@simpanGroup');
+    Route::get('/system/hakakses/tambah_akses-group/simpan-group-detail', 'ManAkses\groupAksesController@simpanGroupDetail');
 //nota Transfer
     Route::get('transfer/no-nota', 'transferItemController@noNota');
 //transfer retail

@@ -179,10 +179,14 @@
                                         Data Barang
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Data Item Produksi','ma_read'))
+                                        Data Item Produksi
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Master Formula','ma_read'))
                                         Master Formula
                                     @endif
-                                    Master Formula
+
                             </span>
                                 <!-- End Filter Menu Submenu -->
                             </a>
@@ -247,20 +251,23 @@
                                         <a href="{{ url('/master/databarang/barang') }}"><span class="submenu-title">Data Barang </span><span
                                                     class="hidden">Master</span></a>
                                     </li>
-                                    @endif
+                                @endif
+
+                                @if(Auth::user()->punyaAkses('Data Item Produksi','ma_read'))
+                                    <li class="{{ Request::is('master/itemproduksi/index') ? 'active' : '' || Request::is('master/itemproduksi/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/master/itemproduksi/index') }}"><span
+                                                    class="submenu-title">Data Item Produksi </span><span
+                                                    class="hidden">Master</span></a>
                                     </li>
-                                    @if(Auth::user()->punyaAkses('Item Produksi','ma_read'))
-                                        <li class="{{ Request::is('master/itemproduksi/index') ? 'active' : '' || Request::is('master/itemproduksi/*') ? 'active' : '' }}">
-                                            <a href="{{ url('/master/itemproduksi/index') }}"><span
-                                                        class="submenu-title">Data Item Produksi </span><span
-                                                        class="hidden">Master</span></a>
-                                        </li>
-                                        @endif
-                                        </li>
-                                        <li class="{{ Request::is('master/masterproduksi/index') ? 'active' : '' || Request::is('master/masterproduksi/*') ? 'active' : '' }}">
-                                            <a href="{{ url('master/masterproduksi/index') }}"><span
-                                                        class="submenu-title">Master Formula</span></a>
-                                        </li>
+                                @endif
+
+                                @if(Auth::user()->punyaAkses('Master Formula','ma_read'))
+                                    <li class="{{ Request::is('master/masterproduksi/index') ? 'active' : '' || Request::is('master/masterproduksi/*') ? 'active' : '' }}">
+                                        <a href="{{ url('master/masterproduksi/index') }}"><span
+                                                    class="submenu-title">Master Formula</span><span
+                                                    class="hidden">Master</span></a>
+                                    </li>
+                                @endif
 
 
                             </ul>
@@ -294,7 +301,7 @@
                                     @if(Auth::user()->punyaAkses('Return Pembelian','ma_read'))
                                         Return Pembelian
                                     @endif
-                                
+
                             </span>
                                 <!-- End Filter Menu Submenu -->
                             </a>
@@ -306,24 +313,28 @@
                                                     class="hidden">Purchasing</span></a>
                                     </li>
                                 @endif
+
                                 @if(Auth::user()->punyaAkses('Rencana Pembelian','ma_read'))
                                     <li class="{{ Request::is('purchasing/rencanapembelian/rencana') ? 'active' : '' || Request::is('purchasing/rencanapembelian/*') ? 'active' : '' }}">
                                         <a href="{{ url('/purchasing/rencanapembelian/rencana') }}"><span
                                                     class="submenu-title">Rencana Pembelian</span><span class="hidden">Purchasing</span></a>
                                     </li>
                                 @endif
+
                                 @if(Auth::user()->punyaAkses('Order Pembelian','ma_read'))
                                     <li class="{{ Request::is('purchasing/orderpembelian/order') ? 'active' : '' || Request::is('purchasing/orderpembelian/*') ? 'active' : '' }}">
                                         <a href="{{ url('/purchasing/orderpembelian/order') }}"><span
                                                     class="submenu-title">Order Pembelian</span><span class="hidden">Purchasing</span></a>
                                     </li>
                                 @endif
+
                                 @if(Auth::user()->punyaAkses('Belanja Harian','ma_read'))
                                     <li class="{{ Request::is('purchasing/belanjaharian/belanja') ? 'active' : '' || Request::is('purchasing/belanjaharian/*') ? 'active' : '' }}">
                                         <a href="{{ url('/purchasing/belanjaharian/belanja') }}"><span
                                                     class="submenu-title">Belanja Harian</span><span class="hidden">Purchasing</span></a>
                                     </li>
                                 @endif
+
                                 @if(Auth::user()->punyaAkses('Return Pembelian','ma_read'))
                                     <li class="{{ Request::is('purchasing/returnpembelian/pembelian') ? 'active' : '' || Request::is('purchasing/returnpembelian/*') ? 'active' : '' }}">
                                         <a href="{{ url('/purchasing/returnpembelian/pembelian') }}"><span
@@ -344,7 +355,7 @@
                                 </i><span class="menu-title">Inventory</span><span class="fa arrow"></span>
                                 <span class="hidden">
 
-                                @if(Auth::user()->punyaAkses('Penerimaan Barang Suplier','ma_read'))
+                                    @if(Auth::user()->punyaAkses('Penerimaan Barang Suplier','ma_read'))
                                         Penerimaan Barang Suplier
                                     @endif
 
@@ -368,25 +379,26 @@
                                         Stock Opname
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Penerimaan Barang Suplier','ma_read'))
-                                        Penerimaan Barang Suplier
+                                    @if(Auth::user()->punyaAkses('Stock Gudang','ma_read'))
+                                        Stock Gudang
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Ritail Transfer','ma_read'))
-                                        Ritail Transfer
+                                    @if(Auth::user()->punyaAkses('Retail Request','ma_read'))
+                                        Retail Request
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Grosir Transfer','ma_read'))
                                         Grosir Transfer
                                     @endif
-                                
+
                             </span>
                             </a>
                             <ul class="nav nav-second-level">
 
                                 @if(Auth::user()->punyaAkses('Penerimaan Barang Suplier','ma_read'))
                                     <li class="{{ Request::is('inventory/p_suplier/suplier') ? 'active' : '' || Request::is('inventory/p_suplier/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/inventory/p_suplier/suplier') }}"><span class="submenu-title">Penerimaan Barang Suplier</span><span
+                                        <a href="{{ url('/inventory/p_suplier/suplier') }}"><span
+                                                    class="submenu-title">Penerimaan Barang Suplier</span><span
                                                     class="hidden">Inventory</span></a>
                                     </li>
                                 @endif
@@ -400,22 +412,27 @@
                                 @endif
 
                                 @if(Auth::user()->punyaAkses('Penerimaan Barang Return Supplier','ma_read'))
-                                <li class="{{ Request::is('inventory/p_returnsupplier/index') ? 'active' : '' || Request::is('inventory/p_returnsupplier/*') ? 'active' : '' }}"><a href="{{ url('/inventory/p_returnsupplier/index') }}"><span class="submenu-title">Penerimaan Barang Return Supplier</span><span class="hidden">Inventory</span></a>
-                                </li>
+                                    <li class="{{ Request::is('inventory/p_returnsupplier/index') ? 'active' : '' || Request::is('inventory/p_returnsupplier/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/inventory/p_returnsupplier/index') }}"><span
+                                                    class="submenu-title">Penerimaan Barang Return Supplier</span><span
+                                                    class="hidden">Inventory</span></a>
+                                    </li>
                                 @endif
 
 
                                 @if(Auth::user()->punyaAkses('Barang Digunakan','ma_read'))
                                     <li class="{{ Request::is('inventory/b_digunakan/barang') ? 'active' : '' || Request::is('inventory/b_digunakan/*') ? 'active' : '' }}">
                                         <a href="{{ url('/inventory/b_digunakan/barang') }}"><span
-                                                    class="submenu-title">Barang Digunakan</span><span class="hidden">Inventory</span></a>
+                                                    class="submenu-title">Barang Digunakan</span><span
+                                                    class="hidden">Inventory</span></a>
                                     </li>
                                 @endif
 
                                 @if(Auth::user()->punyaAkses('Barang Rusak','ma_read'))
                                     <li class="{{ Request::is('inventory/b_rusak/index') ? 'active' : '' || Request::is('inventory/b_rusak/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/inventory/b_rusak/index') }}"><span class="submenu-title">Barang Rusak</span>
-                                            <span class="hidden">Inventory</span></a>
+                                        <a href="{{ url('/inventory/b_rusak/index') }}"><span
+                                                    class="submenu-title">Barang Rusak</span><span
+                                                    class="hidden">Inventory</span></a>
                                     </li>
                                 @endif
 
@@ -426,19 +443,22 @@
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Penerimaan Barang Suplier','ma_read'))
+                                @if(Auth::user()->punyaAkses('Stock Gudang','ma_read'))
                                     <li class="{{ Request::is('inventory/datagudang/gudang') ? 'active' : '' || Request::is('inventory/datagudang/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/inventory/datagudang/gudang') }}"><span class="submenu-title"> Stock Gudang</span><span
+                                        <a href="{{ url('/inventory/datagudang/gudang') }}"><span
+                                                    class="submenu-title">Stock Gudang</span><span
                                                     class="hidden">Inventory</span></a>
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Ritail Transfer','ma_read'))
+                                @if(Auth::user()->punyaAkses('Retail Request','ma_read'))
                                     <li class="{{ Request::is('inventory/POSretail/transfer') ? 'active' : '' || Request::is('inventory/POSretail/transfer/*') ? 'active' : '' }}">
-                                        <a href="{{ url('inventory/POSretail/transfer') }}"><span class="submenu-title">Ritail Request</span><span
+                                        <a href="{{ url('inventory/POSretail/transfer') }}"><span
+                                                    class="submenu-title">Retail Request</span><span
                                                     class="hidden">Inventory</span></a>
                                     </li>
                                 @endif
+
                                 @if(Auth::user()->punyaAkses('Grosir Transfer','ma_read'))
                                     <li class="{{ Request::is('inventory/POSgrosir/transfer') ? 'active' : '' || Request::is('inventory/POSgrosir/transfer/*') ? 'active' : '' }}">
                                         <a href="{{ url('inventory/POSgrosir/transfer') }}"><span class="submenu-title">Grosir Transfer</span><span
@@ -477,11 +497,12 @@
                                     @if(Auth::user()->punyaAkses('Pembuatan Pengambilan Item ','ma_read'))
                                         Pembuatan Pengambilan Item
                                     @endif
-                                    Pembuatan Pengambilan Item
-                                    @if(Auth::user()->punyaAkses('Manajemen Sampah(Waste)','ma_read'))
-                                        Manajemen Sampah(Waste)
+
+
+                                    @if(Auth::user()->punyaAkses('Data Actual SPK','ma_read'))
+                                        Data Actual SPK
                                     @endif
-                                
+
                             </span>
                             </a>
                             <ul class="nav nav-second-level">
@@ -493,40 +514,46 @@
                                                     class="hidden">Produksi</span></a>
                                     </li>
                                 @endif
+
                                 @if(Auth::user()->punyaAkses('Rencana Produksi','ma_read'))
                                     <li class="{{ Request::is('produksi/rencanaproduksi/produksi') ? 'active' : '' || Request::is('produksi/rencanaproduksi/*') ? 'active' : '' }}">
                                         <a href="{{ url('/produksi/rencanaproduksi/produksi') }}"><span
-                                                    class="submenu-title">Rencana Produksi</span><span class="hidden">Produksi</span></a>
+                                                    class="submenu-title">Rencana Produksi</span><span
+                                                    class="hidden">Produksi</span></a>
                                     </li>
                                 @endif
+
                                 @if(Auth::user()->punyaAkses('Manajemen SPK','ma_read'))
                                     <li class="{{ Request::is('produksi/spk/spk') ? 'active' : '' || Request::is('produksi/spk/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/produksi/spk/spk') }}"><span class="submenu-title">Manajemen SPK</span><span
+                                        <a href="{{ url('/produksi/spk/spk') }}"><span
+                                                    class="submenu-title">Manajemen SPK</span><span
                                                     class="hidden">Produksi</span></a>
                                     </li>
                                 @endif
 
-                            <!-- <li class="{{ Request::is('produksi/produksi/produksi2') ? 'active' : '' || Request::is('produksi/produksi/*') ? 'active' : '' }}"><a href="{{ url('/produksi/produksi/produksi2') }}"><span class="submenu-title">Manajemen Produksi</span></a>
-                                </li> -->
                                 @if(Auth::user()->punyaAkses('Manajemen Output Produksi','ma_read'))
-
                                     <li class="{{ Request::is('produksi/o_produksi/index') ? 'active' : '' || Request::is('produksi/o_produksi/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/produksi/o_produksi/index') }}"><span class="submenu-title">Manajemen Output Produksi</span><span
+                                        <a href="{{ url('/produksi/o_produksi/index') }}"><span
+                                                    class="submenu-title">Manajemen Output Produksi</span><span
                                                     class="hidden">Produksi</span></a>
                                     </li>
                                 @endif
 
-                                <li class="{{ Request::is('produksi/suratjalan/index') ? 'active' : '' || Request::is('produksi/suratjalan/*') ? 'active' : '' }}">
-                                    <a href="{{ url('/produksi/suratjalan/index') }}"><span class="submenu-title">Pembuatan Pengambilan Item</span><span
-                                                class="hidden">Produksi</span></a>
-                                </li>
+                                @if(Auth::user()->punyaAkses('Pembuatan Pengambilan Item','ma_read'))
+                                    <li class="{{ Request::is('produksi/suratjalan/index') ? 'active' : '' || Request::is('produksi/suratjalan/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/produksi/suratjalan/index') }}"><span
+                                                    class="submenu-title">Pembuatan Pengambilan Item</span><span
+                                                    class="hidden">Produksi</span></a>
+                                    </li>
+                                @endif
 
-                                    @if(Auth::user()->punyaAkses('Manajemen Sampah (Waste)','ma_read'))
-                                        <li class="{{ Request::is('produksi/waste/waste') ? 'active' : '' || Request::is('produksi/waste/*') ? 'active' : '' }}">
-                                            <a href="{{ url('/produksi/waste/waste') }}"><span class="submenu-title">Data Actual SPK</span><span
-                                                        class="hidden">Produksi</span></a>
-                                        </li>
-                                    @endif
+                                @if(Auth::user()->punyaAkses('Data Actual SPK','ma_read'))
+                                    <li class="{{ Request::is('produksi/waste/waste') ? 'active' : '' || Request::is('produksi/waste/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/produksi/waste/waste') }}"><span
+                                                    class="submenu-title">Data Actual SPK</span><span
+                                                    class="hidden">Produksi</span></a>
+                                    </li>
+                                @endif
 
                             </ul>
                         </li>
@@ -540,20 +567,8 @@
                                 </i><span class="menu-title">Penjualan</span><span class="fa arrow"></span>
                                 <span class="hidden">
 
-                                @if(Auth::user()->punyaAkses('Manajemen Harga','ma_read'))
+                                    @if(Auth::user()->punyaAkses('Manajemen Harga','ma_read'))
                                         Manajemen Harga
-                                    @endif
-
-                                    @if(Auth::user()->punyaAkses('Manajemen Produksi','ma_read'))
-                                        Manajemen Produksi
-                                    @endif
-
-                                    @if(Auth::user()->punyaAkses('Broadcast Promosi Via Email','ma_read'))
-                                        Broadcast Promosi Via Email
-                                    @endif
-
-                                    @if(Auth::user()->punyaAkses('Rencana Penjualan','ma_read'))
-                                        Rencana Penjualan
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('POS Penjualan Retail','ma_read'))
@@ -564,6 +579,18 @@
                                         POS Penjualan Grosir / Online
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Laporan Penjualan Retail','ma_read'))
+                                        Laporan Penjualan Retail
+                                    @endif
+
+                                    @if(Auth::user()->punyaAkses('Laporan Penjualan Grosir / Online','ma_read'))
+                                        Laporan Penjualan Grosir / Online
+                                    @endif
+
+                                    @if(Auth::user()->punyaAkses('Laporan Penjualan Retail / Grosir','ma_read'))
+                                        Laporan Penjualan Retail / Grosir
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Monitoring Order & Stock','ma_read'))
                                         Monitoring Order & Stock
                                     @endif
@@ -572,14 +599,10 @@
                                         Manajemen Return Penjualan
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Monitoring Progress Penjualan','ma_read'))
-                                        Monitoring Progress Penjualan
-                                    @endif
-
                                     @if(Auth::user()->punyaAkses('Mutasi Stock & Retail','ma_read'))
                                         Mutasi Stock & Retail
                                     @endif
-                                
+
                             </span>
 
                             </a>
@@ -591,18 +614,7 @@
                                                     class="submenu-title">Manajemen Harga</span><span class="hidden">Penjualan</span></a>
                                     </li>
                                 @endif
-                                {{--                                 @if(Auth::user()->punyaAkses('Manajemen Promosi','ma_read'))
-                                                                <li class="{{ Request::is('penjualan/manajemenpromosi/promosi') ? 'active' : '' || Request::is('penjualan/manajemenpromosi/*') ? 'active' : '' }}"><a href="{{ url('/penjualan/manajemenpromosi/promosi') }}"><span class="submenu-title">Manajemen Promosi</span><span class="hidden">Penjualan</span></a>
-                                                                </li>
-                                                                @endif --}}
-                                {{--                                 @if(Auth::user()->punyaAkses('Broadcast Promosi Via Email','ma_read'))
-                                                                <li class="{{ Request::is('penjualan/broadcastpromosi/promosi2') ? 'active' : '' || Request::is('penjualan/broadcastpromosi/*') ? 'active' : '' }}"><a href="{{ url('/penjualan/broadcastpromosi/promosi2') }}"><span class="submenu-title">Broadcast Promosi Via Email</span><span class="hidden">Penjualan</span></a>
-                                                                </li>
-                                                                @endif --}}
-                                {{--                                 @if(Auth::user()->punyaAkses('Rencana Penjualan','ma_read'))
-                                                                <li class="{{ Request::is('penjualan/rencanapenjualan/rencana') ? 'active' : '' || Request::is('penjualan/rencanapenjualan/*') ? 'active' : '' }}"><a href="{{ url('/penjualan/rencanapenjualan/rencana') }}"><span class="submenu-title">Rencana Penjualan</span><span class="hidden">Penjualan</span></a>
-                                                                </li>
-                                                                @endif --}}
+
                                 @if(Auth::user()->punyaAkses('POS Penjualan Retail','ma_read'))
                                     <li class="{{ Request::is('penjualan/POSretail/*') ? 'active' : ''}}"><a
                                                 href="{{ url('/penjualan/POSretail/index') }}"><span
@@ -657,13 +669,11 @@
                                                     class="hidden">Penjualan</span></a>
                                     </li>
                                 @endif
-                                {{--                                 @if(Auth::user()->punyaAkses('Monitoring Progress Penjualan','ma_read'))
-                                                                <li class="{{ Request::is('penjualan/monitorprogress/progress') ? 'active' : '' || Request::is('penjualan/monitorprogress/*') ? 'active' : '' }}"><a href="{{ url('/penjualan/monitorprogress/progress') }}"><span class="submenu-title">Monitoring Progress Penjualan</span><span class="hidden">Penjualan</span></a>
-                                                                </li>
-                                                                @endif --}}
+
                                 @if(Auth::user()->punyaAkses('Mutasi Stock & Retail','ma_read'))
                                     <li class="{{ Request::is('penjualan/mutasistok/mutasi') ? 'active' : '' || Request::is('penjualan/mutasistok/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/penjualan/mutasistok/mutasi') }}"><span class="submenu-title">Mutasi Stock & Retail</span><span
+                                        <a href="{{ url('/penjualan/mutasistok/mutasi') }}"><span
+                                                    class="submenu-title">Mutasi Stock & Retail</span><span
                                                     class="hidden">Penjualan</span></a>
                                     </li>
                                 @endif
@@ -679,7 +689,7 @@
                                 </i><span class="menu-title">HRD</span><span class="fa arrow"></span>
                                 <span class="hidden">
 
-                                @if(Auth::user()->punyaAkses('Data Karyawan','ma_read'))
+                                    @if(Auth::user()->punyaAkses('Data Karyawan','ma_read'))
                                         Data Karyawan
                                     @endif
 
@@ -710,7 +720,7 @@
                                     @if(Auth::user()->punyaAkses('Recruitment','ma_read'))
                                         Recruitment
                                     @endif
-                                
+
                             </span>
                             </a>
                             <ul class="nav nav-second-level">
@@ -782,7 +792,7 @@
                                 </i><span class="menu-title">Keuangan</span><span class="fa arrow"></span>
                                 <span class="hidden">
 
-                                @if(Auth::user()->punyaAkses('Manajemen SPK','ma_read'))
+                                    @if(Auth::user()->punyaAkses('Manajemen SPK','ma_read'))
                                         Manajemen SPK
                                     @endif
 
@@ -830,18 +840,14 @@
                                         Analisa ROE
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Konfirmasi Rencana Pembelian','ma_read'))
-                                        Konfirmasi Rencana Pembelian
-                                    @endif
-
-                                    @if(Auth::user()->punyaAkses('Konfirmasi Rencana Pembelian','ma_read'))
-                                        Konfirmasi Rencana Pembelian
+                                    @if(Auth::user()->punyaAkses('Konfirmasi Data Pembelian','ma_read'))
+                                        Konfirmasi Data Pembelian
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Penerimaan Barang Hasil Produksi','ma_read'))
                                         Penerimaan Barang Hasil Produksi
                                     @endif
-                                
+
                             </span>
                             </a>
                             <ul class="nav nav-second-level">
@@ -852,17 +858,11 @@
                                     </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Proses Input Transaksi','ma_read'))
-                                    <li class="{{ Request::is('keuangan/p_inputtransaksi/transaksi_kas') ? 'active' : '' || Request::is('keuangan/p_inputtransaksi/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/keuangan/p_inputtransaksi/transaksi_kas') }}"><span
-                                                    class="submenu-title">Input Transaksi Kas</span><span
-                                                    class="hidden">Keuangan</span></a>
-                                    </li>
-
-                                    {{-- <li class="{{ Request::is('keuangan/p_inputtransaksi/transaksi_bank') ? 'active' : '' || Request::is('keuangan/p_inputtransaksi/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/keuangan/p_inputtransaksi/transaksi_bank') }}"><span
+                                    <li class="{{ Request::is('keuangan/p_inputtransaksi/transaksi') ? 'active' : '' || Request::is('keuangan/p_inputtransaksi/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/keuangan/p_inputtransaksi/transaksi') }}"><span
                                                     class="submenu-title">Proses Input Transaksi</span><span
                                                     class="hidden">Keuangan</span></a>
-                                    </li> --}}
+                                    </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Laporan Hutang Piutang','ma_read'))
                                     <li class="{{ Request::is('keuangan/l_hutangpiutang/hutang') ? 'active' : '' || Request::is('keuangan/l_hutangpiutang/*') ? 'active' : '' }}">
@@ -931,7 +931,7 @@
                                                     class="submenu-title">Analisa ROE</span><span class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Konfirmasi Rencana Pembelian','ma_read'))
+                                @if(Auth::user()->punyaAkses('Konfirmasi Data Pembelian','ma_read'))
                                     <li class="{{ Request::is('keuangan/konfirmasipembelian/konfirmasi-purchase') ? 'active' : '' || Request::is('keuangan/konfirmasipembelian/*') ? 'active' : '' }}">
                                         <a href="{{ url('/keuangan/konfirmasipembelian/konfirmasi-purchase') }}"><span
                                                     class="submenu-title">Konfirmasi Data Pembelian</span><span
@@ -957,7 +957,7 @@
                                 </i><span class="menu-title">System</span><span class="fa arrow"></span>
                                 <span class="hidden">
 
-                                @if(Auth::user()->punyaAkses('Manajemen User','ma_read'))
+                                    @if(Auth::user()->punyaAkses('Manajemen User','ma_read'))
                                         Manajemen User
                                     @endif
 
@@ -972,7 +972,7 @@
                                     @if(Auth::user()->punyaAkses('Tahun Finansial','ma_read'))
                                         Tahun Finansial
                                     @endif
-                                
+
                             </span>
                             </a>
 
