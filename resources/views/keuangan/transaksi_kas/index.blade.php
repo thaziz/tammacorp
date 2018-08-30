@@ -163,7 +163,7 @@
                     </div>
 
                     <div class="col-md-12" style="background: white; color: #3e3e3e; padding-top: 10px;">
-                      <xyz></xyz>
+                      <xyz :data="list_transaksi"></xyz>
                     </div>
                   </div>
                 </div>
@@ -207,11 +207,11 @@
       </thead>
 
       <tbody>
-          <tr>
-            <td>1</td>
-            <td>2</td>
-            <td>3</td>
-            <td>4</td>
+          <tr v-for="transaksi in data">
+            <td class="text-center" style="cursor:pointer">@{{ transaksi.no_bukti }}</td>
+            <td class="text-center">@{{ transaksi.tanggal_transaksi }}</td>
+            <td class="text-center">@{{ transaksi.nama_transaksi }}</td>
+            <td class="text-center">@{{ transaksi.nominal }}</td>
           </tr>
       </tbody>
     </table>
@@ -328,7 +328,7 @@
       props: ['data'],
       template: '#table-template',
       mounted: function(){
-        console.log('table ready')
+        console.log(this.data)
       }
     })
     
@@ -341,6 +341,7 @@
 
         akun_perkiraan: [],
         akun_lawan: [],
+        list_transaksi: [],
 
         single_data: {
 
@@ -357,7 +358,7 @@
 
       mounted: function(){
         register_validator();
-        // $('.overlay.transaksi_list').fadeIn(200);
+        $('.overlay.transaksi_list').fadeIn(200);
         $('#load-status-text').text('Harap Tunggu. Sedang Menyiapkan Form');  
       },
 
@@ -367,6 +368,7 @@
                 console.log(response.data);
                 this.akun_perkiraan = response.data.akun_perkiraan;
                 this.akun_lawan = response.data.akun_lawan;
+                this.list_transaksi = response.data.list_transaksi;
                 $('#overlay').fadeOut();
               }).catch(err => {
                  $('#load-status-text').text('Sistem Bermasalah. Cobalah Memuat Ulang Halaman');
