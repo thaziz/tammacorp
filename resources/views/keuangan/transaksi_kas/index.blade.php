@@ -61,6 +61,7 @@
                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                     <form id="data-form">
                                       <input type="hidden" value="{{csrf_token()}}" name="_token" readonly>
+                                      <input type="hidden" name="id_transaksi" readonly v-model="single_data.id_transaksi">
                                       <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:5px;padding-top:20px; ">
 
                                         <div class="col-md-6" style="padding: 0px;">
@@ -68,15 +69,19 @@
                                             <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
                                               <label class="tebal">Jenis Transaksi</label>
                                             </div>
-                                            <div class="col-md-6 col-sm-8 col-xs-11 mb-3">
-                                              <select class="form-control" name="jenis_transaksi" id="jenis_transaksi" name="jenis_transaksi" v-model="single_data.jenis_transaksi">
+                                            <div class="col-md-5 col-sm-8 col-xs-11 mb-3">
+                                              <select class="form-control" name="jenis_transaksi" id="jenis_transaksi" name="jenis_transaksi" v-model="single_data.jenis_transaksi" :disabled="state == 'update'">
                                                 <option value="KM">Kas Masuk</option>
                                                 <option value="KK">Kas Keluar</option>
                                               </select>
                                             </div>
 
                                             <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: pointer;"> 
-                                              <i class="fa fa-search"></i>
+                                              <i class="fa fa-search" @click="open_list"></i>
+                                            </div>
+
+                                            <div class="col-md-1" style="background: none; padding: 8px 0px; cursor: pointer;"> 
+                                              <i class="fa fa-times" v-if="state == 'update'" @click="form_reset"></i>
                                             </div>
                                           </div>
 
@@ -141,7 +146,11 @@
 
                                       <div align="right">
                                         <div class="form-group">
-                                          <button type="button" name="tambah_data" class="btn btn-primary" id="simpan" @click="simpan_data" :disabled='btn_save_disabled'>Simpan Data</button>
+                                          <button type="button" name="tambah_data" class="btn btn-primary" id="simpan" @click="simpan_data" :disabled='btn_save_disabled' v-if="state == 'simpan'">Simpan Data</button>
+
+                                          <button type="button" name="tambah_data" class="btn btn-primary" id="update" @click="update" :disabled='btn_save_disabled' v-if="state == 'update'">Update</button>
+
+                                          <button type="button" name="tambah_data" class="btn btn-dafault" id="hapus" @click="hapus" :disabled='btn_save_disabled' v-if="state == 'update'">Hapus</button>
                                         </div> 
                                       </div>
                                     </form>
@@ -157,13 +166,16 @@
 
                 <div class="overlay transaksi_list">
                   <div class="content-loader" style="background: none; width:60%; margin: 3em auto; color: #eee;">
-                    <div class="col-md-12" style="background: white; color: #3e3e3e; padding: 10px; border-bottom: 1px solid #ccc;">
+                    <div class="col-md-9" style="background: white; color: #3e3e3e; padding: 10px; border-bottom: 1px solid #ccc;">
                       <h5>List Data Transaksi</h5>
-                      {{-- <small></small> --}}
+                    </div>
+
+                    <div class="col-md-3 text-right" style="background: white; color: #3e3e3e; padding: 10px; border-bottom: 1px solid #ccc;">
+                      <h5><i class="fa fa-times" style="cursor: pointer;" @click="close_list"></i></h5>
                     </div>
 
                     <div class="col-md-12" style="background: white; color: #3e3e3e; padding-top: 10px;">
-                      <xyz :data="list_transaksi"></xyz>
+                      <xyz :data="list_transaksi" @get_data="get_data"></xyz>
                     </div>
                   </div>
                 </div>
@@ -196,25 +208,26 @@
   </script>
 
   <script type="text/x-template" id="table-template">
-    <table class="table table-striped table-bordered" style="font-size: 0.85em;">
-      <thead>
-        <tr>
-          <th class="text-center">No.Bukti</th>
-          <th class="text-center">Tanggal Transaksi</th>
-          <th class="text-center">Nama Transaksi</th>
-          <th class="text-center">Nominal</th>
-        </tr>
-      </thead>
-
-      <tbody>
-          <tr v-for="transaksi in data">
-            <td class="text-center" style="cursor:pointer">@{{ transaksi.no_bukti }}</td>
-            <td class="text-center">@{{ transaksi.tanggal_transaksi }}</td>
-            <td class="text-center">@{{ transaksi.nama_transaksi }}</td>
-            <td class="text-center">@{{ transaksi.nominal }}</td>
+      <table class="table table-striped table-bordered" style="font-size: 0.85em;">
+        <thead>
+          <tr>
+            <th width="25%" class="text-center">No.Bukti</th>
+            <th width="15%" class="text-center">Tanggal</th>
+            <th class="text-center">Nama Transaksi</th>
+            <th width="25%" class="text-center">Nominal</th>
           </tr>
-      </tbody>
-    </table>
+        </thead>
+
+        <tbody>
+            <tr v-for="transaksi in data">
+              <td class="text-center" style="cursor:pointer" @click="get_data(transaksi.id_transaksi)">@{{ transaksi.no_bukti }}</td>
+              <td class="text-center">@{{ transaksi.tanggal_transaksi }}</td>
+              <td class="text-center">@{{ transaksi.nama_transaksi }}</td>
+              <td class="text-center">@{{ transaksi.nominal }}</td>
+            </tr>
+        </tbody>
+      </table>
+    
   </script>
 
   <script type="text/javascript">  
@@ -295,7 +308,7 @@
             autoGroup: true,
             prefix: '', //Space after $, this will not truncate the first character.
             rightAlign: false,
-            oncleared: function () { self.Value(''); }
+            oncleared: function () {  }
         });
       },
       watch: {
@@ -325,10 +338,22 @@
     })
 
     Vue.component('xyz', {
-      props: ['data'],
+      props: ['data', 'context'],
       template: '#table-template',
       mounted: function(){
-        console.log(this.data)
+        // console.log(this.data)
+      },
+
+      watch: {
+        data: function(){
+          console.log(this.data);
+        }
+      },
+
+      methods: {
+        get_data: function(val){
+          this.$emit('get_data', val);
+        }
       }
     })
     
@@ -338,6 +363,7 @@
       data: {
         baseUrl: '{{ url('/') }}',
         btn_save_disabled: false,
+        state: 'simpan',
 
         akun_perkiraan: [],
         akun_lawan: [],
@@ -345,6 +371,7 @@
 
         single_data: {
 
+          id_transaksi      : '',
           jenis_transaksi   : 'KM',
           tanggal_transaksi : '',
           nama_transaksi    : '',
@@ -358,7 +385,7 @@
 
       mounted: function(){
         register_validator();
-        $('.overlay.transaksi_list').fadeIn(200);
+        $('.overlay.main').fadeIn(200);
         $('#load-status-text').text('Harap Tunggu. Sedang Menyiapkan Form');  
       },
 
@@ -368,8 +395,10 @@
                 console.log(response.data);
                 this.akun_perkiraan = response.data.akun_perkiraan;
                 this.akun_lawan = response.data.akun_lawan;
-                this.list_transaksi = response.data.list_transaksi;
-                $('#overlay').fadeOut();
+
+                $('#tanggal_transaksi').val('{{ date('d-m-Y') }}');
+                $('.overlay.main').fadeOut(200);
+
               }).catch(err => {
                  $('#load-status-text').text('Sistem Bermasalah. Cobalah Memuat Ulang Halaman');
               }).then(() => {
@@ -408,13 +437,110 @@
           }
         },
 
+        update: function(evt){
+          evt.preventDefault();
+          this.btn_save_disabled = true;
+
+          if($('#data-form').data('bootstrapValidator').validate().isValid()){
+            axios.post(this.baseUrl+'/keuangan/p_inputtransaksi/transaksi_kas/update', 
+              $('#data-form').serialize()
+            ).then((response) => {
+              console.log(response.data);
+              if(response.data.status == 'berhasil'){
+                $.toast({
+                    text: 'Data Transaksi Kas Anda Berhasil Diupdate.',
+                    showHideTransition: 'slide',
+                    position: 'top-right',
+                    icon: 'success'
+                })
+
+                this.form_reset();
+              }
+            }).catch((err) => {
+              alert(err);
+              this.btn_save_disabled = false;
+            }).then(() => {
+              this.btn_save_disabled = false;
+            })
+          }else{
+            this.btn_save_disabled = false;
+          }
+        },
+
+        hapus: function(){
+          let confirmed = confirm('Apakah Anda Yakin .. ?');
+
+          if(confirmed){
+            this.btn_save_disabled = true;
+
+            axios.post(this.baseUrl+'/keuangan/p_inputtransaksi/transaksi_kas/delete', 
+              {id: this.single_data.id_transaksi}
+            ).then((response) => {
+              console.log(response.data);
+              if(response.data.status == 'berhasil'){
+                $.toast({
+                    text: 'Data Transaksi Kas Anda Berhasil Dihapus.',
+                    showHideTransition: 'slide',
+                    position: 'top-right',
+                    icon: 'success'
+                })
+
+                this.form_reset();
+              }
+            }).catch((err) => {
+              alert(err);
+              this.btn_save_disabled = false;
+            }).then(() => {
+              this.btn_save_disabled = false;
+            })
+          }
+        },
+
+        get_data: function(val){
+          let idx = this.list_transaksi.findIndex(e => e.id_transaksi === val);
+          this.single_data.id_transaksi      = this.list_transaksi[idx].id_transaksi;
+          this.single_data.jenis_transaksi   = this.list_transaksi[idx].no_bukti.substring(1,3);
+          this.single_data.nama_transaksi    = this.list_transaksi[idx].nama_transaksi;
+          this.single_data.keterangan        = this.list_transaksi[idx].keterangan;
+          this.single_data.nominal           = this.list_transaksi[idx].nominal;
+
+          // alert(this.list_transaksi[idx].jurnal.detail[0].jrdt_acc);
+
+          $('#nominal').val(this.list_transaksi[idx].nominal);
+          $('#akun_perkiraan').val(this.list_transaksi[idx].jurnal.detail[0].jrdt_acc);
+          $('#akun_lawan').val(this.list_transaksi[idx].jurnal.detail[1].jrdt_acc);
+
+
+          this.state = "update";
+          $(".overlay.transaksi_list").fadeOut(200);
+        },
+
+        close_list: function(){
+          $(".overlay.transaksi_list").fadeOut(200);
+        },
+
+        open_list: function(){
+          $('.overlay.transaksi_list').fadeIn(200);
+          this.list_transaksi = [];
+
+          axios.get(this.baseUrl+'/keuangan/p_inputtransaksi/transaksi_kas/list_transaksi?tgl='+$('#tanggal_transaksi').val()+'&idx='+this.single_data.jenis_transaksi)
+                  .then((response) => {
+                    // console.log(response.data);
+                    this.list_transaksi = response.data;
+                  }).catch((err) => {
+                    alert(err);
+                  })
+        },
+
         form_reset: function(){
+            this.single_data.id_transaksi = '';
             this.single_data.jenis_transaksi   = 'KM';
             this.single_data.nama_transaksi    = '';
             this.single_data.keterangan        = '';
             this.single_data.nominal           = '';
+            this.state = 'simpan';
 
-            $('#tanggal_transaksi').val('');
+            $('#tanggal_transaksi').val('{{ date('d-m-Y') }}');
             $('#nominal').val('');
             $('#akun_lawan').val(this.akun_lawan[0].id_akun);
             $('#akun_perkiraan').val(this.akun_perkiraan[0].id_akun);

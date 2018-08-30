@@ -473,9 +473,21 @@ Route::post('/inventory/b_rusak/simpan-data-rusak', 'Inventory\BarangRusakContro
                 'uses'   => 'Keuangan\Transaksi\transaksi_kas_controller@form_resource',
                 'as'    => 'transaksi_kas.form_resource'
             ]);
+            Route::get('/keuangan/p_inputtransaksi/transaksi_kas/list_transaksi', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_kas_controller@list_transaksi',
+                'as'    => 'transaksi_kas.list_transaksi'
+            ]);
             Route::post('/keuangan/p_inputtransaksi/transaksi_kas/save', [
                 'uses'   => 'Keuangan\Transaksi\transaksi_kas_controller@save',
                 'as'    => 'transaksi_kas.save'
+            ]);
+            Route::post('/keuangan/p_inputtransaksi/transaksi_kas/update', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_kas_controller@update',
+                'as'    => 'transaksi_kas.update'
+            ]);
+            Route::post('/keuangan/p_inputtransaksi/transaksi_kas/delete', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_kas_controller@delete',
+                'as'    => 'transaksi_kas.delete'
             ]);
 
 
