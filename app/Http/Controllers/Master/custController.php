@@ -59,7 +59,7 @@ class custController extends Controller
         //select max dari um_id dari table d_uangmuka
         $maxid = DB::Table('m_customer')->select('c_id')->max('c_id');
 
-        //untuk +1 nilai yang ada,, jika kosong maka maxid = 1 , 
+        //untuk +1 nilai yang ada,, jika kosong maka maxid = 1 ,
 
         if ($maxid <= 0 || $maxid <= '') {
             $maxid = 1;
@@ -74,7 +74,7 @@ class custController extends Controller
 
     public function simpan_cust(Request $request)
     {
-//         dd($request->all());
+        // dd($request->all());
         DB::beginTransaction();
         try {
             $year = carbon::now()->format('y');
@@ -98,7 +98,9 @@ class custController extends Controller
                         'c_name' => $request->nama_cus,
                         'c_type' => $request->tipe_cust,
                         'c_email' => $request->email,
-                        'c_hp' => '+62' . $request->no_hp,
+                        'c_hp1' => '+62' . $request->no_hp1,
+                        'c_hp2' => '+62' . $request->no_hp2,
+                        'c_region' => $request->wilayah,
                         'c_address' => $request->alamat,
                         'c_class' => $request->c_class,
                         'c_insert' => $tanggal,
@@ -112,7 +114,9 @@ class custController extends Controller
                         'c_type' => $request->tipe_cust,
                         'c_birthday' => date('Y-m-d', strtotime($request->tgl_lahir)),
                         'c_email' => $request->email,
-                        'c_hp' => '+62' . $request->no_hp,
+                        'c_hp1' => '+62' . $request->no_hp1,
+                        'c_hp2' => '+62' . $request->no_hp2,
+                        'c_region' => $request->wilayah,
                         'c_address' => $request->alamat,
                         'c_class' => $request->c_class,
                         'c_insert' => $tanggal,
@@ -175,7 +179,9 @@ class custController extends Controller
                         'c_type' => $request->tipe_cust,
                         'c_birthday' => null,
                         'c_email' => $request->email,
-                        'c_hp' => '+62' . $request->no_hp,
+                        'c_hp1' => '+62' . $request->no_hp1,
+                        'c_hp2' => '+62' . $request->no_hp2,
+                        'c_region' => $request->wilayah,
                         'c_class' => $request->c_class,
                         'c_address' => $request->alamat,
                         'c_update' => $tanggal,
@@ -188,7 +194,9 @@ class custController extends Controller
                         'c_type' => $request->tipe_cust,
                         'c_birthday' => date('Y-m-d', strtotime($request->tgl_lahir)),
                         'c_email' => $request->email,
-                        'c_hp' => '+62' . $request->no_hp,
+                        'c_hp1' => '+62' . $request->no_hp1,
+                        'c_hp2' => '+62' . $request->no_hp2,
+                        'c_region' => $request->wilayah,
                         'c_class' => $request->c_class,
                         'c_address' => $request->alamat,
                         'c_update' => $tanggal,
@@ -210,4 +218,3 @@ class custController extends Controller
 
 
 }
-
