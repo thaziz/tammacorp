@@ -6,7 +6,7 @@
     cursor: pointer;
 }
  .sorting_disabled {
-    
+
 }
 tr.details td.details-control {
      background: url({{ asset('assets/images/details_close.png')}}) no-repeat center center;
@@ -36,18 +36,18 @@ tr.details td.details-control {
       <div id="tab-general">
         <div class="row mbl">
           <div class="col-lg-12">
-                    
+
             <div class="col-md-12">
               <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
               </div>
             </div>
-                    
+
             <ul id="generalTab" class="nav nav-tabs">
               <li class="active"><a href="#alert-tab" data-toggle="tab">Master Data Customer</a></li>
               <!-- <li><a href="#note-tab" data-toggle="tab">2</a></li>
                 <li><a href="#label-badge-tab-tab" data-toggle="tab">3</a></li> -->
             </ul>
-            
+
             <div id="generalTabContent" class="tab-content responsive">
               <div id="alert-tab" class="tab-pane fade in active">
                 <div class="row" style="margin-top:-20px;">
@@ -70,23 +70,25 @@ tr.details td.details-control {
                             {{-- <th class="sorting_disabled"></th> --}}
                             <th class="wd-15p">Kode</th>
                             <th class="wd-15p">Nama Customer</th>
-                            <th class="wd-15p">No hp</th>
+                            <th class="wd-15p">No hp1</th>
+                            <th class="wd-15p">No hp2</th>
                             <th class="wd-15p">Tipe Cust</th>
                             <th class="wd-10p">Kelas</th>
+                            <th class="wd-10p">Wilayah</th>
                             <th class="wd-15p">Aksi</th>
                           </tr>
                         </thead>
-                       
+
                         <tbody>
 
                         </tbody>
 
-                                            
-                      </table> 
+
+                      </table>
                     </div>
 
                   </div>
-                
+
                 </div>
               </div>
             </div>
@@ -108,7 +110,7 @@ tr.details td.details-control {
       $.extend($.fn.dataTableExt.oStdClasses, extensions);
       // Used when bJQueryUI is true
       $.extend($.fn.dataTableExt.oJUIClasses, extensions);
-      
+
   var tbl_customer = $('#tbl_customer').DataTable({
             processing: true,
             // responsive:true,
@@ -120,14 +122,16 @@ tr.details td.details-control {
                   {
                      targets: 0 ,
                      className: 'center d_id'
-                  }, 
+                  },
                 ],
             "columns": [
             { "data": "c_code" },
             { "data": "c_name" },
-            { "data": "c_hp", "className" : "right" },
+            { "data": "c_hp1", "className" : "left" },
+            { "data": "c_hp2", "className" : "left" },
             { "data": "c_type", className: 'center' },
             { "data": "c_class", className: 'center' },
+            { "data": "c_region", className: 'center' },
             { "data": "action", className: 'center' },
             ],
             "responsive":true,
@@ -178,7 +182,7 @@ tr.details td.details-control {
                               toastr.error('Data gagal di simpan.');
                             }
                           }
-                       })  
+                       })
                 }
               ],
               [
@@ -191,7 +195,7 @@ tr.details td.details-control {
               ]
             ]
           });
-          
+
         }
 
 
@@ -209,14 +213,14 @@ tr.details td.details-control {
                 window.location=(this.url)
                },
                error: function(){
-               
+
                },
                async: false
-             });  
+             });
         }
 
 
 
-    
+
 </script>
 @endsection
