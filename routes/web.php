@@ -599,11 +599,11 @@ Route::post('/inventory/b_rusak/simpan-data-rusak', 'Inventory\BarangRusakContro
     Route::get('/produksi/spk/cari-data-plan', 'Produksi\spkProductionController@cariDataSpk');
 // spk Production Selesai
 //Master Data Suplier
-    Route::get('master/datasuplier/suplier_proses', 'Master\SuplierController@suplier_proses');
+    Route::post('master/datasuplier/suplier_proses', 'Master\SuplierController@suplier_proses');
     Route::get('/master/datasuplier/tambah_suplier', 'Master\SuplierController@tambah_suplier');
     Route::get('master/datasuplier/datatable_suplier', 'Master\SuplierController@datatable_suplier')->name('datatable_suplier');
     Route::get('master/datasuplier/suplier_edit/{s_id}', 'Master\SuplierController@suplier_edit');
-    Route::get('master/datasuplier/suplier_edit_proses/{s_id}', 'Master\SuplierController@suplier_edit_proses');
+    Route::post('master/datasuplier/suplier_edit_proses/{s_id}', 'Master\SuplierController@suplier_edit_proses');
     Route::get('master/datasuplier/suplier_hapus', 'Master\SuplierController@suplier_hapus');
 //-deny
 //customer

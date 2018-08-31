@@ -124,7 +124,7 @@ class mutasi
          else
          {
             $getBarang=d_stock_mutation::where('sm_item',$item)->where('sm_comp',$comp)
-                       ->where('sm_position',$position)->where('sm_reff',$sm_reff)
+                       ->where('sm_position',$position)->where('sm_reff',$sm_reff)->where('sm_qty', '<', 0)
                        ->orderBy('sm_detailid','DESC')->get();
 
             $hapusMutasi=[];
