@@ -15,13 +15,7 @@
             success: function (response, customer) {
                 if (response.status == 'sukses') {
                     $('#myModal').modal('hide');
-                    $("input[name='nama_cus']").val('');
-                    $("input[name='tgl_lahir']").val('');
-                    $("input[name='email']").val('');
-                    $("input[name='tipe_cust']").val('');
-                    $("input[name='class_cust']").val('');
-                    $("input[name='no_hp']").val('');
-                    $("textarea[name='alamat']").val('');
+                    $('#save_customer')[0].reset();
                     iziToast.success({
                         timeout: 5000,
                         position: "topRight",
@@ -32,7 +26,8 @@
                     $('.simpanCus').removeAttr('disabled', 'disabled');
                     $("input[name='s_member']").val(response.customer.c_name);
                     $("input[name='id_cus']").val(response.customer.c_id);
-                    $("input[name='sm_alamat']").val(response.customer.c_address + ', ' + response.customer.c_hp);
+                    $("input[name='sm_alamat']").val(response.customer.c_address + ', '
+                      + response.customer.c_hp1 + ', ' + response.customer.c_hp2);
                     $("input[name='c-class']").val(response.customer.c_class);
                     $("#nama-customer").attr("disabled", 'true');
                     $("input[name='item']").focus();
@@ -161,12 +156,35 @@
                     $("input[name='s_member']").focus();
                     $('.simpanProgres').removeAttr('disabled', 'disabled');
                     var nota = response.nota.s_note;
-                    iziToast.success({
-                        timeout: 5000,
-                        position: "topRight",
-                        icon: 'fa fa-chrome',
+                    var id = response.nota.s_id;
+                    iziToast.show({
+                        timeout: false,
+                        color: 'red',
                         title: nota,
-                        message: 'Nota tersimpan sebagai progres.'
+                        message: 'Cetak sekarang!',
+                        position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                        progressBarColor: 'rgb(0, 255, 184)',
+                        buttons: [
+                            [
+                                '<button>Ok</button>',
+                                function (instance, toast) {
+                                    instance.hide({
+                                        transitionOut: 'fadeOutUp'
+                                    }, toast);
+                                    window.open(baseUrl + "/penjualan/POSgrosir/dp/" + id, "_blank");
+                                    window.location.href = baseUrl + "/penjualan/POSgrosir/index";
+
+                                }
+                            ],
+                            [
+                                '<button>Close</button>',
+                                function (instance, toast) {
+                                    instance.hide({
+                                        transitionOut: 'fadeOutUp'
+                                    }, toast);
+                                }
+                            ]
+                        ]
                     });
                 } else {
                     iziToast.error({
@@ -350,14 +368,12 @@
                     $("input[name='s_member']").focus();
                     $('.simpanProgres').removeAttr('disabled', 'disabled');
                     var nota = response.nota.s_note;
+                    var id = response.nota.s_id;
                     iziToast.show({
                         timeout: false,
-                        onClosing: function () {
-                            window.location.href = baseUrl + "/penjualan/POSgrosir/index";
-                        },
                         color: 'red',
                         title: nota,
-                        message: 'Berhasi update progress!',
+                        message: 'Cetak sekarang!',
                         position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
                         progressBarColor: 'rgb(0, 255, 184)',
                         buttons: [
@@ -367,7 +383,9 @@
                                     instance.hide({
                                         transitionOut: 'fadeOutUp'
                                     }, toast);
+                                    window.open(baseUrl + "/penjualan/POSgrosir/dp/" + id, "_blank");
                                     window.location.href = baseUrl + "/penjualan/POSgrosir/index";
+
                                 }
                             ],
                             [
@@ -376,7 +394,6 @@
                                     instance.hide({
                                         transitionOut: 'fadeOutUp'
                                     }, toast);
-                                    window.location.href = baseUrl + "/penjualan/POSgrosir/index";
                                 }
                             ]
                         ]

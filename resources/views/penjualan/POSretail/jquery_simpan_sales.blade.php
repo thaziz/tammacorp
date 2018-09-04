@@ -15,13 +15,7 @@
             success: function (response, customer) {
                 if (response.status == 'sukses') {
                     $('#myModal').modal('hide');
-                    $("input[name='nama_cus']").val('');
-                    $("input[name='tgl_lahir']").val('');
-                    $("input[name='email']").val('');
-                    $("input[name='tipe_cust']").val('');
-                    $("input[name='class_cust']").val('');
-                    $("input[name='no_hp']").val('');
-                    $("textarea[name='alamat']").val('');
+                    $('#save_customer')[0].reset();
                     iziToast.success({
                         timeout: 5000,
                         position: "topRight",
@@ -32,7 +26,8 @@
                     $('.simpanCus').removeAttr('disabled', 'disabled');
                     $("input[name='s_member']").val(response.customer.c_name);
                     $("input[name='id_cus']").val(response.customer.c_id);
-                    $("input[name='sm_alamat']").val(response.customer.c_address + ', ' + response.customer.c_hp);
+                    $("input[name='sm_alamat']").val(response.customer.c_address + ', '
+                      + response.customer.c_hp1 + ', ' + response.customer.c_hp2);
                     $("input[name='c-class']").val(response.customer.c_class);
                     $("#nama-customer").attr("disabled", 'true');
                     $("input[name='item']").focus();

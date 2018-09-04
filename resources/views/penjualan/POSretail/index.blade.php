@@ -122,8 +122,8 @@
                                                         <div class="form-group">
                                                             <select name="tipe_cust" id="tipe_cust"
                                                                     class="form-control input-sm">
-                                                                <option value="retail">Retail</option>
-                                                                <option value="online">Online</option>
+                                                                <option value="RT">Retail</option>
+                                                                <option value="GR">Online</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -141,18 +141,42 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4 col-sm-3 col-xs-12">
-                                                        <label class="tebal">Nomor HP<font color="red">*</font></label>
+                                                        <label class="tebal">Nomor HP1<font color="red">*</font></label>
+                                                    </div>
+                                                    <div class="col-md-8 col-sm-9 col-xs-12">
+                                                        <div class="form-group">
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon"
+                                                                      id="basic-addon1">+62</span>
+                                                                <input type="text" id="no_hp" name="no_hp1"
+                                                                       class="form-control input-sm"
+                                                                       value="{{ old('no_hp') }}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-3 col-xs-12">
+                                                        <label class="tebal">Nomor HP2</label>
+                                                    </div>
+                                                    <div class="col-md-8 col-sm-9 col-xs-12">
+                                                        <div class="form-group">
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon"
+                                                                      id="basic-addon1">+62</span>
+                                                                <input type="text" id="no_hp" name="no_hp2"
+                                                                       class="form-control input-sm"
+                                                                       value="{{ old('no_hp') }}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-3 col-xs-12">
+                                                        <label class="tebal">Wilayah</label>
                                                     </div>
                                                     <div class="col-md-8 col-sm-9 col-xs-12">
                                                         <div class="form-group">
                                                             <div class="input-icon right">
-                                                                <i class="glyphicon glyphicon-earphone"></i>
-                                                                <div class="input-group">
-                                                                    <span class="input-group-addon" id="basic-addon1">+62</span>
-                                                                    <input type="text" id="no_hp" name="no_hp"
-                                                                           class="form-control input-sm"
-                                                                           value="{{ old('no_hp') }}">
-                                                                </div>
+                                                                <input type="text" id="c_region" name="c_region"
+                                                                       class="form-control input-sm"
+                                                                       value="">
                                                             </div>
                                                         </div>
                                                     </div>

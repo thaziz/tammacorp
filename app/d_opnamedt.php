@@ -11,8 +11,8 @@ class d_opnamedt extends Model
   protected $fillable = [ 'od_ido',
                           'od_idodt',
                           'od_item',
-                          'od_qty_real',
-                          'od_ket'];
+                          'od_opname',
+                        ];
 
   public $incrementing = false;
   public $remember_token = false;
