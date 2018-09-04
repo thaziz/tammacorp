@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
 
-            
+
               <div class="col-md-2 col-sm-3 col-xs-12">
                 <label class="tebal">Tanggal</label>
               </div>
@@ -16,7 +16,7 @@
                   </div>
                 </div>
               </div>
-            
+
 
               <div class="col-md-3 col-sm-3 col-xs-12" align="center">
                 <button class="btn btn-primary btn-sm btn-flat" type="button">
@@ -35,9 +35,9 @@
                 <button class="btn btn-box-tool" data-toggle="modal" data-target="#tambah-retailgrosir"><i class="fa fa-plus"></i>&nbsp;&nbsp;Tambah Data</button>
               </div>
 
-           
-        
-          
+
+
+
         <div class="table-responsive" style="margin-top: 50px;">
           <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="ProduksiGrosir">
             <thead>
@@ -53,8 +53,8 @@
             <tbody>
 
             </tbody>
-          </table> 
-        </div>  
+          </table>
+        </div>
 
       </div>
   </div>
