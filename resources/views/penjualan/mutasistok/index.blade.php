@@ -46,7 +46,7 @@
                         @include('penjualan.mutasistok.grosir-retail')
                         <!-- end grosir-retail  -->
                             <!-- div Produksi-grosir -->
-                        @include('penjualan.mutasistok.Penjualan-retail')
+                        @include('penjualan.mutasistok.penjualan-retail')
                         <!--/div retail-grosir -->
                             <!-- div label-badge-tab -->
                             <div id="label-badge-tab" class="tab-pane fade">

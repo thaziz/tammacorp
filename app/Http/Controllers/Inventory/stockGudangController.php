@@ -20,7 +20,7 @@ class stockGudangController extends Controller
   public function index(){
     $data = d_gudangcabang::all();
 
-    return view('Inventory.stockgudang.index',compact('data'));
+    return view('inventory.stockgudang.index',compact('data'));
   }
 
   public function tableGudang($comp, $position)
