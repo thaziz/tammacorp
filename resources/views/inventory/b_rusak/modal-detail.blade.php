@@ -11,7 +11,7 @@
         <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-top:10px;padding-bottom: 10px;padding-top: 20px;margin-bottom: 15px;">
 
           <div class="col-md-2 col-sm-12 col-xs-12">
-            <label class="tebal">Gudang</label>
+            <label class="tebal">Gudang Asal</label>
           </div>
 
           <div class="col-md-4 col-sm-12 col-xs-12">
@@ -21,22 +21,22 @@
           </div>
           
           <div class="col-md-2 col-sm-12 col-xs-12">
-            <label class="tebal">Kode Pemakaian</label>
+            <label class="tebal">Kode</label>
           </div>
 
           <div class="col-md-4 col-sm-12 col-xs-12">
             <div class="form-group">
-              <label id="lblKodePakai"></label>
+              <label id="lblKode"></label>
             </div>  
           </div>
 
           <div class="col-md-2 col-sm-12 col-xs-12">
-            <label class="tebal">Tanggal Pemakaian</label>
+            <label class="tebal">Tanggal</label>
           </div>
 
           <div class="col-md-4 col-sm-12 col-xs-12">
             <div class="form-group">
-              <label id="lblTglPakai"></label>
+              <label id="lblTgl"></label>
             </div>  
           </div>
           
@@ -51,22 +51,12 @@
           </div>
 
           <div class="col-md-2 col-sm-12 col-xs-12">
-            <label class="tebal">Peminta</label>
+            <label class="tebal">Diterima Dari</label>
           </div>
 
           <div class="col-md-4 col-sm-12 col-xs-12">
             <div class="form-group">
-              <label id="lblPeminta"></label>
-            </div>
-          </div>
-
-          <div class="col-md-2 col-sm-12 col-xs-12">
-            <label class="tebal">Keperluan</label>
-          </div>
-
-          <div class="col-md-4 col-sm-12 col-xs-12">
-            <div class="form-group">
-              <label id="lblKeperluan"></label>
+              <label id="lblPemberi"></label>
             </div>
           </div>
 

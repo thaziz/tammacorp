@@ -1,7 +1,7 @@
-<div class="modal fade" id="modal-edit" role="dialog">
+<div class="modal fade" id="modal-proses-opsi" role="dialog">
   <div class="modal-dialog" style="width: 90%;margin: auto;">
       
-    <form method="post" id="form-edit-pakai" name="formEditPakai">
+    <form method="post" id="form-proses-opsi" name="formProsesOpsi">
       {{ csrf_field() }}
       <input type="hidden" name="idPakaiEdit" id="id_pakai_edit" class="form-control">
       <input type="hidden" name="idStaffEdit" id="id_staff_edit" class="form-control">
@@ -11,7 +11,7 @@
       <div class="modal-content">
         <div class="modal-header" style="background-color: #e77c38;">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title" style="color: white;">Edit Pemakaian Barang Gudang</h4>
+          <h4 class="modal-title titleOpsi" style="color: white;"></h4>
         </div>
 
         <div class="modal-body">
