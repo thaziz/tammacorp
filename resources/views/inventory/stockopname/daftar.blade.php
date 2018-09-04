@@ -22,7 +22,7 @@
         </div>
         <div class="col-md-4 col-sm-12 col-xs-12">
             <div class="form-group" align="pull-left">
-                <select class="form-control input-sm" id="posisi" onclick="pilihGudang()"
+                <select class="form-control input-sm" id="posisi"
                 name="o_position" style="width: 100%;">
                     <option class="form-control" value="">- Pilih Gudang</option>
                     @foreach ($data as $gudang)
@@ -32,6 +32,7 @@
                 </select>
             </div>
         </div>
+
         <div class="col-md-2 col-sm-12 col-xs-12">
             <label class="tebal">Tanggal Opname :</label>
         </div>
@@ -50,29 +51,59 @@
               <input type="hidden" readonly="" class="form-control input-sm" name="o_staff" value="{{$staff['id']}}">
             </div>
         </div>
+
+        <div class="col-md-12">
+            <div class="col-md-12 tamma-bg"  style="margin-top: 5px;margin-bottom: 5px;
+            margin-bottom: 40px; padding-bottom:20px;padding-top:20px;">
+              <div class="col-md-6">
+                  <label class="control-label tebal" for="">Masukan Kode / Nama</label>
+                  <div class="input-group input-group-sm" style="width: 100%;">
+                      <input type="text" id="namaitem" name="item" class="form-control">
+                      <input type="hidden" id="i_id" name="i_id" class="form-control">
+                      <input type="hidden" id="i_code" name="i_code" class="form-control">
+                      <input type="hidden" id="i_name" name="i_name" class="form-control">
+                      <input type="hidden" id="m_sname" name="m_sname" class="form-control">
+                  </div>
+              </div>
+              <div class="col-md-3">
+                  <label class="control-label tebal" name="qty">Qty Real</label>
+                  <div class="input-group input-group-sm" style="width: 100%;">
+                      <input type="number" id="qtyReal" name="qtyReal" class="form-control">
+                  </div>
+              </div>
+              <div class="col-md-3">
+                  <label class="control-label tebal" name="qty">Qty Sistem</label>
+                  <div class="input-group input-group-sm" style="width: 100%;">
+                      <input type="number" id="s_qty" name="s_qty" class="form-control" readonly>
+                  </div>
+              </div>
+            </div>
+        </div>
+
       </form>
       <form id="tbOpname">
         <div class="col-md-12 col-sm-12 col-xs-12">
             <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="tabelOpname">
                 <thead>
-                <tr>
-                    <th width="5%">No</th>
-                    <th>Kode - Nama Item</th>
-                    <th>Qty Sistem</th>
-                    <th>Satuan</th>
-                    <th>Qty Real</th>
-                    <th>Keterangan</th>
-                </tr>
+                  <tr>
+                      <th>Kode - Nama Item</th>
+                      <th>Qty Sistem</th>
+                      <th width="5%">Satuan</th>
+                      <th>Qty Real</th>
+                      <th>Opname</th>
+                      <th width="5%">Aksi</th>
+                  </tr>
                 </thead>
                 <tbody>
+
                 </tbody>
             </table>
         </div>
       </form>
 
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            <button class="btn btn-success kirim-opname" onclick="simpanOpname()" type="button">Kirim</button>
-            <a class="btn btn-primary" style="float: right"><i class="fa fa-print"></i>&nbsp;Print</a>
+        <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top: 20px;margin-bottom: 5px;">
+            <button class="btn btn-success kirim-opname" onclick="simpanOpname()"
+            style="float: right" type="button">Kirim</button>
         </div>
 
     </div>

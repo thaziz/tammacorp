@@ -186,8 +186,9 @@ Route::group(['middleware' => 'auth'], function () {
     /*End Inventory*/
     //mahmud stock opname
     Route::get('/inventory/stockopname/opname', 'Inventory\stockOpnameController@index');
-    Route::get('/inventory/namaitem/tableopname/{x}/{y}', 'Inventory\stockOpnameController@tableOpname');
-    Route::post('inventory/namaitem/simpanopname', 'Inventory\stockOpnameController@saveOpname');
+    Route::get('/inventory/namaitem/autocomplite/{x}/{y}', 'Inventory\stockOpnameController@tableOpname');
+    Route::get('/inventory/namaitem/simpanopname', 'Inventory\stockOpnameController@saveOpname');
+    Route::get('/inventory/namaitem/history/{tgl1}/{tgl2}', 'Inventory\stockOpnameController@history');
     //mahmud stock gudang
     Route::get('/inventory/datagudang/gudang', 'Inventory\stockGudangController@index');
     Route::get('/inventory/namaitem/tablegudang/{x}/{y}', 'Inventory\stockGudangController@tableGudang');
@@ -396,6 +397,7 @@ Route::post('/inventory/b_rusak/simpan-data-rusak', 'Inventory\BarangRusakContro
     Route::get('/penjualan/print_jangan_dibanting/{id}', 'Penjualan\POSGrosirController@print_awas_barang_panas');
 //ferdy
     Route::get('/penjualan/POSgrosir/print/{id}', 'Penjualan\POSGrosirController@print');
+    Route::get('/penjualan/POSgrosir/dp/{id}', 'Penjualan\POSGrosirController@printDP');
     Route::get('/penjualan/POSgrosir/print_surat_jalan/{id}', 'Penjualan\POSGrosirController@print_surat_jalan');
 //end ferdy
 //POSGrosir
@@ -547,7 +549,7 @@ Route::post('/inventory/b_rusak/simpan-data-rusak', 'Inventory\BarangRusakContro
 //mahmud
     Route::get('/produksi/lihatadonan/tabel/{id}/{qty}', 'Keuangan\spkFinancialController@tabelFormula');
 //endmahmud
-//thoriq 
+//thoriq
     /*System*/
     Route::get('/system/hakuser/user', 'ManUser\aksesUserController@indexAksesUser');
     Route::get('/system/hakuser/tambah_user', 'ManUser\aksesUserController@tambah_user');
@@ -640,7 +642,7 @@ Route::post('/inventory/b_rusak/simpan-data-rusak', 'Inventory\BarangRusakContro
     Route::get('/master/databaku/edit_baku', 'master\bahan_bakuController@edit_baku')->name('edit_baku');
     Route::get('/master/databaku/update_baku', 'master\bahan_bakuController@update_baku')->name('update_baku');
     Route::get('/master/databaku/datatable_baku', 'master\bahan_bakuController@datatable_baku')->name('datatable_baku');
-//jenis produksi 
+//jenis produksi
     Route::get('/master/datajenis/jenis', 'Master\jenis_produksiController@jenis')->name('jenis');
     Route::get('/master/datajenis/tambah_jenis', 'Master\jenis_produksiController@tambah_jenis')->name('tambah_jenis');
     Route::get('/master/datajenis/simpan_jenis', 'Master\jenis_produksiController@simpan_jenis')->name('simpan_jenis');

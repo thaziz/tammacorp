@@ -120,8 +120,8 @@
                                                         <div class="form-group">
                                                             <select name="tipe_cust" id="tipe_cust"
                                                                     class="form-control input-sm">
-                                                                <option value="online">Online</option>
-                                                                <option value="retail">retail</option>
+                                                                <option value="GR">Online</option>
+                                                                <option value="RT">retail</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -139,16 +139,42 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4 col-sm-3 col-xs-12">
-                                                        <label class="tebal">Nomor HP<font color="red">*</font></label>
+                                                        <label class="tebal">Nomor HP1<font color="red">*</font></label>
                                                     </div>
                                                     <div class="col-md-8 col-sm-9 col-xs-12">
                                                         <div class="form-group">
                                                             <div class="input-group">
                                                                 <span class="input-group-addon"
                                                                       id="basic-addon1">+62</span>
-                                                                <input type="text" id="no_hp" name="no_hp"
+                                                                <input type="text" id="no_hp" name="no_hp1"
                                                                        class="form-control input-sm"
                                                                        value="{{ old('no_hp') }}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-3 col-xs-12">
+                                                        <label class="tebal">Nomor HP2</label>
+                                                    </div>
+                                                    <div class="col-md-8 col-sm-9 col-xs-12">
+                                                        <div class="form-group">
+                                                            <div class="input-group">
+                                                                <span class="input-group-addon"
+                                                                      id="basic-addon1">+62</span>
+                                                                <input type="text" id="no_hp" name="no_hp2"
+                                                                       class="form-control input-sm"
+                                                                       value="{{ old('no_hp') }}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-3 col-xs-12">
+                                                        <label class="tebal">Wilayah</label>
+                                                    </div>
+                                                    <div class="col-md-8 col-sm-9 col-xs-12">
+                                                        <div class="form-group">
+                                                            <div class="input-icon right">
+                                                                <input type="text" id="c_region" name="c_region"
+                                                                       class="form-control input-sm"
+                                                                       value="">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -318,15 +344,17 @@
                                                 </div>
                                             </div>
                                             <!-- Start Modal Proses -->
-                                        @include('penjualan.POSgrosir.modal_status')
-                                        <!-- End Modal Proses -->
+                                            @include('penjualan.POSgrosir.modal_status')
+                                            <!-- End Modal Proses -->
+                                            <!-- Start Modal Proses -->
+                                            @include('penjualan.POSgrosir.modal_progres')
+                                            <!-- End Modal Proses -->
                                             <div class="col-md-12 col-sm-12 col-xs-12">
                                                 <button style="float: left" class="btn btn-warning simpanDraft"
                                                         type="button" onclick="sal_save_draft()">Draft
                                                 </button>&nbsp;&nbsp;
                                                 <button class="btn btn-info simpanProgres" data-toggle="modal"
-                                                        data-target="#prosesProgres" type="button"
-                                                        onclick="sal_save_onProgres()">On Progress
+                                                        data-target="#prosesProgres" type="button">On Progress
                                                 </button>
                                                 <button style="float: right" class="btn btn-primary" type="button"
                                                         data-toggle="modal" data-target="#proses">Submit
@@ -536,6 +564,7 @@
             dataInput();
             discpercentEdit();
             discvalueEdit();
+            updateKembalianDP();
 
         });
 
@@ -1010,7 +1039,7 @@
                 hasil = [].map.call(inputs, function (input) {
                     return input.value;
                 });
-            // console.log(hasil);
+
             var total = 0;
             for (var i = hasil.length - 1; i >= 0; i--) {
                 hasil[i] = convertToAngka(hasil[i]);
@@ -1018,7 +1047,7 @@
                 total = total + hasil[i];
             }
             total = convertToRupiah(total);
-            // console.log(total);
+
             $('#Total_Discount').val(total);
         }
 
@@ -1044,6 +1073,7 @@
             total = convertToRupiah(total);
             $('#total').val(total);
             $('#totalPayment').val(total);
+            $('#totalPaymentDp').val(total);
         }
 
         function UpdateSubTotal() {
@@ -1250,6 +1280,38 @@
             }
         }
 
+        function updateKembalianDP() {
+            var inputs = document.getElementsByClassName('totPaymentDP'),
+                hasil = [].map.call(inputs, function (input) {
+                    return input.value;
+                });
+            var total = 0;
+            for (var i = hasil.length - 1; i >= 0; i--) {
+                hasil[i] = convertToAngka(hasil[i]);
+                hasil[i] = parseInt(hasil[i]);
+                total = total + hasil[i];
+            }
+            if (isNaN(total)) {
+                total = 0;
+            }
+            total = convertToRupiah(total);
+            // alert(total);
+            $('#totPembayaranDP').val(total);
+            var sum = angkaDesimal($('#totalPaymentDp').val());
+            var bayar = angkaDesimal($('.totPaymentDP').val());
+            var hasil = parseInt(bayar - sum).toFixed(2);
+            console.log(hasil);
+            if (hasil <= 0) {
+                diskon = 0;
+            }
+            $('#kembalianDP').val(SetFormRupiah(hasil));
+            if (hasil < 0) {
+                $('#kembalianDP').css('background-color', 'red');
+            } else {
+                $('#kembalianDP').css('background-color', 'yellow');
+            }
+        }
+
         UpdateTotalPayment();
 
         function UpdateTotalPayment() {
@@ -1348,9 +1410,9 @@
             var code = (evt.charCode) ? evt.charCode : ((evt.which) ? evt.which : evt.keyCode);
 
             for (m = 0; m < uang.length; m++) {
-//            if ((uang.charAt(0)) == '-') {                
-//                          
-//            }    
+//            if ((uang.charAt(0)) == '-') {
+//
+//            }
                 if ((uang.charAt(m)) == ',') {
                     hitungKoma++;
                 }

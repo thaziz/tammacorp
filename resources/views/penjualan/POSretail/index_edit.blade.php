@@ -33,7 +33,7 @@
                                         color="red">*</font></label>
                             <div class="input-group input-group-sm" style="width: 100%;">
                                 <input type="text" id="alamat2" name="sm_alamat" class="form-control" readonly
-                                       value="{{$edit[0]->c_address}}  {{$edit[0]->c_hp}}">
+                                       value="{{$edit[0]->c_address}},  {{$edit[0]->c_hp1}}, {{$edit[0]->c_hp2}}">
                             </div>
                         </div>
                         <div class="col-md-3 col-sm-6 col-xs-12" style="margin-top: 15px;">

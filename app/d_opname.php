@@ -11,11 +11,9 @@ class d_opname extends Model
   protected $fillable = [ 'o_id',
                           'o_nota',
                           'o_staff',
-                          'o_time',
-                          'o_date',
                           'o_comp',
-                          'o_position',
-                          'o_status'];
+                          'o_position'
+                        ];
 
   public $incrementing = false;
   public $remember_token = false;
