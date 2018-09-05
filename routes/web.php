@@ -432,8 +432,7 @@ Route::group(['middleware' => 'auth'], function () {
 //thoriq stock penjualan grosir
     Route::get('/penjualan/POSgrosir/stock/table-stock', 'Penjualan\stockGrosirController@tableStock');
 //mutasi Stok Mahmud
-    Route::get('/penjualan/mutasi/stock/grosir-retail', 'Penjualan\mutasiStokController@tableGrosirRetail');
-    Route::get('/penjualan/mutasi/stock/penjualan-retail', 'Penjualan\mutasiStokController@tablePenjualanRetail');
+    Route::get('/penjualan/mutasi/stock/grosir-retail/{tgl1}/{tgl2}', 'Penjualan\mutasiStokController@tableGrosirRetail');
 //End Mutasi
 //Monitoring Order Mahmud
     Route::get('/penjualan/monitoringorder/tabel', 'Penjualan\MonitoringOrderController@tabel');

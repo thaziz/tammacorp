@@ -45,9 +45,6 @@
                             <!-- grosir-retail -->
                         @include('penjualan.mutasistok.grosir-retail')
                         <!-- end grosir-retail  -->
-                            <!-- div Produksi-grosir -->
-                        @include('penjualan.mutasistok.penjualan-retail')
-                        <!--/div retail-grosir -->
                             <!-- div label-badge-tab -->
                             <div id="label-badge-tab" class="tab-pane fade">
                                 <div class="row">
@@ -105,45 +102,31 @@
             });//datepicker("setDate", "0");
 
         });
-        $('#GrosirRetail').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: baseUrl + "/penjualan/mutasi/stock/grosir-retail",
-            },
-            columns: [
-                {data: 'sm_date', name: 'sm_date', orderable: false, searchable: false},
-                {data: 'i_code', name: 'i_code'},
-                {data: 'i_name', name: 'i_name', orderable: false},
-                {data: 'cg_cabang', name: 'cg_cabang', orderable: false},
-                {data: 'smc_note', name: 'smc_note', orderable: false},
-                {data: 'sm_qty', name: 'sm_qty', orderable: false, className: 'right'},
-                {data: 'sm_qty_used', name: 'sm_qty_used', orderable: false, className: 'right'},
-                {data: 'sm_qty_sisa', name: 'sm_qty_sisa', orderable: false, className: 'right'},
-                {data: 'sm_detail', name: 'sm_detail', orderable: false},
-                {data: 'sm_reff', name: 'sm_reff', orderable: false, searchable: false},
-            ],
-        });
 
-        $('#PenjualanRetail').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: baseUrl + "/penjualan/mutasi/stock/penjualan-retail",
-            },
-            columns: [
-                {data: 'sm_date', name: 'sm_date', orderable: false, searchable: false},
-                {data: 'i_code', name: 'i_code'},
-                {data: 'i_name', name: 'i_name', orderable: false},
-                {data: 'cg_cabang', name: 'cg_cabang', orderable: false},
-                {data: 'smc_note', name: 'smc_note', orderable: false},
-                {data: 'sm_qty', name: 'sm_qty', orderable: false, className: 'right'},
-                {data: 'sm_qty_used', name: 'sm_qty_used', orderable: false, className: 'right'},
-                {data: 'sm_qty_sisa', name: 'sm_qty_sisa', orderable: false, className: 'right'},
-                {data: 'sm_detail', name: 'sm_detail', orderable: false},
-                {data: 'sm_reff', name: 'sm_reff', orderable: false, searchable: false},
-            ],
-        });
+        function getTanggal(){
+          $('#GrosirRetail').dataTable().fnDestroy();
+          var tgl1 = $('#tanggal1').val();
+          var tgl2 = $('#tanggal2').val();
+          $('#GrosirRetail').DataTable({
+              processing: true,
+              serverSide: true,
+              ajax: {
+                  url: baseUrl + "/penjualan/mutasi/stock/grosir-retail/"+tgl1+'/'+tgl2,
+              },
+              columns: [
+                  {data: 'sm_date', name: 'sm_date', orderable: false, searchable: false},
+                  {data: 'i_name', name: 'i_name', orderable: false},
+                  {data: 'comp', name: 'comp', orderable: false},
+                  {data: 'position', name: 'position', orderable: false},
+                  {data: 'smc_note', name: 'smc_note', orderable: false},
+                  {data: 'sm_qty', name: 'sm_qty', orderable: false, className: 'right'},
+                  {data: 'sm_qty_used', name: 'sm_qty_used', orderable: false, className: 'right'},
+                  {data: 'sm_qty_sisa', name: 'sm_qty_sisa', orderable: false, className: 'right'},
+                  {data: 'sm_detail', name: 'sm_detail', orderable: false},
+                  {data: 'sm_reff', name: 'sm_reff', orderable: false, searchable: false},
+              ],
+          });
+        }
 
 
     </script>

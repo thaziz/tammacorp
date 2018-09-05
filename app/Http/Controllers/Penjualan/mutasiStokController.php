@@ -9,12 +9,24 @@ use App\d_stock_mutation;
 
 class mutasiStokController extends Controller
 {
-    public function tableGrosirRetail()
+    public function tableGrosirRetail($tgl1, $tgl2)
     {
+      $y = substr($tgl1, -4);
+      $m = substr($tgl1, -7,-5);
+      $d = substr($tgl1,0,2);
+       $tgll = $y.'-'.$m.'-'.$d;
+
+      $y2 = substr($tgl2, -4);
+      $m2 = substr($tgl2, -7,-5);
+      $d2 = substr($tgl2,0,2);
+        $tgl2 = $y2.'-'.$m2.'-'.$d2;
+        $tgl2 = date('Y-m-d',strtotime($tgl2 . "+1 days"));
+
         $data = d_stock_mutation::select('sm_date',
             'i_code',
             'i_name',
-            'cg_cabang',
+            'u1.cg_cabang as comp',
+            'u2.cg_cabang as position',
             'smc_note',
             'sm_qty',
             'sm_qty_used',
@@ -22,8 +34,11 @@ class mutasiStokController extends Controller
             'sm_detail',
             'sm_reff')
             ->join('m_item', 'i_id', '=', 'sm_item')
-            ->join('d_gudangcabang','cg_id','=','sm_position')
+            ->join('d_gudangcabang as u1', 'd_stock_mutation.sm_comp', '=', 'u1.cg_id')
+            ->join('d_gudangcabang as u2', 'd_stock_mutation.sm_position', '=', 'u2.cg_id')
             ->join('d_stock_mutcat','smc_id','=','sm_mutcat')
+            ->where('sm_insert','>=',$tgll)
+            ->where('sm_insert','<=',$tgl2)
             ->where('sm_comp', '2')
             ->orderBy('i_name','asc')
             ->get();
@@ -33,7 +48,6 @@ class mutasiStokController extends Controller
                 return date('d M Y H:i', strtotime($data->sm_date));
             })
             ->make(true);
-
     }
 
     /**
