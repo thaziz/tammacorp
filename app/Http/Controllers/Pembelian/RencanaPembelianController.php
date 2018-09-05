@@ -57,13 +57,13 @@ class RencanaPembelianController extends Controller
       $y = substr($tgl1, -4);
       $m = substr($tgl1, -7,-5);
       $d = substr($tgl1,0,2);
-      //$tanggal1 = $y.'-'.$m.'-'.$d;
-      $tanggal1 = '2018-08-01';
+      $tanggal1 = $y.'-'.$m.'-'.$d;
+
       $y2 = substr($tgl2, -4);
       $m2 = substr($tgl2, -7,-5);
       $d2 = substr($tgl2,0,2);
-      //$tanggal2 = $y2.'-'.$m2.'-'.$d2;
-      $tanggal2 = '2018-09-01';
+      $tanggal2 = $y2.'-'.$m2.'-'.$d2;
+      
       $data = d_purchasingplan::join('d_supplier','d_purchasingplan.d_pcsp_sup','=','d_supplier.s_id')
               ->join('d_mem','d_purchasingplan.d_pcsp_mid','=','d_mem.m_id')
               ->select('d_pcsp_id','d_pcsp_code','s_company','d_pcsp_status','d_pcsp_datecreated','d_pcsp_dateconfirm', 'd_mem.m_id', 'd_mem.m_name')
