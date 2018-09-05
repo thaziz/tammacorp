@@ -220,6 +220,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/inventory/b_rusak/musnahkan-barang-rusak', 'Inventory\BarangRusakController@musnahkanBrgRusak');
     Route::post('/inventory/b_rusak/kembalikan-barang-rusak', 'Inventory\BarangRusakController@kembalikanBrgRusak');
     Route::get('/inventory/b_rusak/get-brg-musnah-by-tgl/{tgl1}/{tgl2}', 'Inventory\BarangRusakController@getBrgMusnahByTgl');
+    Route::post('/inventory/b_rusak/simpan-ubah-jenis', 'Inventory\BarangRusakController@simpanUbahJenis');
+    Route::post('/inventory/b_rusak/proses-ubah-jenis', 'Inventory\BarangRusakController@prosesUbahJenis');
+    Route::get('/inventory/b_rusak/get-brg-ubahjenis-by-tgl/{tgl1}/{tgl2}', 'Inventory\BarangRusakController@getBrgUbahJenisByTgl');
+    Route::get('/inventory/b_rusak/get-detail-ubahjenis/{id}', 'Inventory\BarangRusakController@detailBrgUbahJenis');
 //p_hasilproduksi
     Route::get('/inventory/p_hasilproduksi/produksi', 'Inventory\PenerimaanBrgProdController@produksi');
     Route::get('/inventory/p_hasilproduksi/get_data_sj', 'Inventory\PenerimaanBrgProdController@get_data_sj');
