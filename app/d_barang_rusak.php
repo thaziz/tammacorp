@@ -18,6 +18,7 @@ class d_barang_rusak extends Model
         'd_br_pemberi',
         'd_br_staff',
         'd_br_gdg',
+        'd_br_status',
         'd_br_created',
         'd_br_updated'
     ];

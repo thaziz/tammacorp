@@ -38,12 +38,12 @@
 
           <ul id="generalTab" class="nav nav-tabs">
             <li class="active"><a href="#index-tab" data-toggle="tab">Barang Rusak</a></li>
-            <li><a href="#history-tab" data-toggle="tab" onclick="lihatHistoryByTgl()">History Barang Rusak</a></li>
+            <li><a href="#musnah-tab" data-toggle="tab" onclick="lihatMusnahByTgl()">List Barang Musnah</a></li>
           </ul>
           
           <div id="generalTabContent" class="tab-content responsive">
             @include('inventory.b_rusak.tab-index')
-            @include('inventory.b_rusak.tab-history')
+            @include('inventory.b_rusak.tab-musnah')
           </div>
         </div>
       </div>
@@ -53,7 +53,8 @@
     <!--modal Barang Rusak-->
     @include('inventory.b_rusak.modal')
     @include('inventory.b_rusak.modal-detail')
-    @include('inventory.b_rusak.modal-edit')
+    @include('inventory.b_rusak.modal-proses-opsi')
+    @include('inventory.b_rusak.modal-opsi')
   <!-- /modal -->
 </div>
 <!--END PAGE WRAPPER-->
@@ -62,10 +63,6 @@
 <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
 <script type="text/javascript">
   $(document).ready(function() {
-    var extensions = {
-        "sFilterInput": "form-control input-sm",
-        "sLengthSelect": "form-control input-sm"
-    }
     //fix to issue select2 on modal when opening in firefox
     $.fn.modal.Constructor.prototype.enforceFocus = function() {};
 
@@ -190,9 +187,11 @@
       //remove append tr
       $('tr').remove('.tbl_form_row');
       $('tr').remove('.tbl_modal_detail_row');
-      $('tr').remove('.tbl_modal_edit_row');
+      // $('tr').remove('.tbl_modal_edit_row');
+      // $('#appending-form div').remove();
       //reset all input txt field
       $('#form-barang-rusak')[0].reset();
+      $('#form_opsi_rusak')[0].reset();
       //empty select2 field
       $('#head_gudang').empty();
       //set datepicker to today 
@@ -200,6 +199,10 @@
       //remove class all jquery validation error
       $('.form-group').find('.error').removeClass('error');
       $('.form-group').removeClass('has-valid has-error');
+    });
+
+    $("#modal_opsi").on("hidden.bs.modal", function(){
+      location.reload(); 
     });
 
     $('#head_gudang').change(function(event) {
@@ -411,6 +414,43 @@
     });
   }
 
+  function lihatMusnahByTgl()
+  {
+    var tgl1 = $('#tanggal3').val();
+    var tgl2 = $('#tanggal4').val();
+    $('#tbl-musnah').dataTable({
+      "destroy": true,
+      "processing" : true,
+      "serverside" : true,
+      "ajax" : {
+        url: baseUrl + "/inventory/b_rusak/get-brg-musnah-by-tgl/"+tgl1+"/"+tgl2,
+        type: 'GET'
+      },
+      "columns" : [
+        {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
+        {"data" : "tglBuat", "width" : "10%"},
+        {"data" : "d_br_pemberi", "width" : "15%"},
+        {"data" : "d_br_code", "width" : "10%"},
+        {"data" : "namaItem", "width" : "25%"},
+        {"data" : "d_brdt_qty", "width" : "5%"},
+        {"data" : "m_sname", "width" : "5%"},
+        {"data" : "d_brdt_keterangan", "width" : "25%"}
+      ],
+      "language": {
+        "searchPlaceholder": "Cari Data",
+        "emptyTable": "Tidak ada data",
+        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+        "sSearch": '<i class="fa fa-search"></i>',
+        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+        "infoEmpty": "",
+        "paginate": {
+              "previous": "Sebelumnya",
+              "next": "Selanjutnya",
+        }
+      }
+    });
+  }
+
   function lihatHistoryByTgl()
   {
     var tgl1 = $('#tanggal3').val();
@@ -449,21 +489,20 @@
     });
   }
 
-  function detailPemakaian(id) 
+  function detailBrgRusak(id) 
   {
     $.ajax({
-      url : baseUrl + "/inventory/b_digunakan/get-detail/" + id,
+      url : baseUrl + "/inventory/b_rusak/get-detail/" + id,
       type: "GET",
       dataType: "JSON",
       success: function(data)
       {
         var key = 1;
         $('#lblGudang').text(data.header[0].cg_cabang);
-        $('#lblKodePakai').text(data.header[0].d_pb_code);
-        $('#lblTglPakai').text(data.header2.tgl_pakai);
+        $('#lblKode').text(data.header[0].d_br_code);
+        $('#lblTgl').text(data.header2.tgl_pakai);
         $('#lblStaff').text(data.header[0].m_name);
-        $('#lblPeminta').text(data.header[0].d_pb_peminta);
-        $('#lblKeperluan').text(data.header[0].d_pb_keperluan);
+        $('#lblPemberi').text(data.header[0].d_br_pemberi);
         //loop data
         Object.keys(data.data_isi).forEach(function(){
           $('#tabel-detail').append('<tr class="tbl_modal_detail_row">'
@@ -472,11 +511,11 @@
                           +'<td>'+data.data_isi[key-1].qty_pakai+'</td>'
                           +'<td>'+data.data_isi[key-1].m_sname+'</td>'
                           +'<td>'+data.stok[key-1]+' '+data.txtSat1[key-1].m_sname+'</td>'
-                          +'<td>'+data.data_isi[key-1].d_pbdt_keterangan+'</td>'
+                          +'<td>'+data.data_isi[key-1].d_brdt_keterangan+'</td>'
                           +'</tr>');
           key++;
         });
-        $('#apdsfs').html('<a href="'+ baseUrl +'/inventory/b_digunakan/print/'+ id +'" class="btn btn-primary" target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'+
+        $('#apdsfs').html('<a href="'+ baseUrl +'/inventory/b_rusak/print/'+ id +'" class="btn btn-primary" target="_blank"><i class="fa fa-print"></i>&nbsp;Print</a>'+
         '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
         $('#modal_detail').modal('show');
       },
@@ -487,57 +526,411 @@
     });
   }
 
-  function editPemakaian(id) 
+  function opsiBrgRusak(id) 
   {
+    //autofill
+    $('#pilihan_opsi').change(function()
+    {
+      $('#appending-form div').remove();
+      var pilihan = $(this).val();
+      if (pilihan == "") 
+      {
+        $('#appending-form div').remove();
+      }
+      else if(pilihan == "musnah")
+      {   
+        $('#appending-form div').remove();
+        musnah(id);
+      }
+      else if(pilihan == "kembali")
+      { 
+        $('#appending-form div').remove();
+        kembaliKeGudang(id);
+      }
+      else if(pilihan == "ubah_jenis")
+      { 
+        $('#appending-form div').remove();
+        ubahJenis(id);
+      }
+          
+      //select2
+      $( "#head_opsi_gudang" ).select2({
+        placeholder: "Pilih Gudang...",
+        ajax: {
+          url: baseUrl + '/inventory/b_rusak/lookup-data-gudang',
+          dataType: 'json',
+          data: function (params) {
+            return {
+                q: $.trim(params.term)
+            };
+          },
+          processResults: function (data) {
+              return {
+                  results: data
+              };
+          },
+          cache: true
+        },
+      });
+
+      $('#head_opsi_gudang').change(function(event) {
+        clearInput();
+      });
+
+    });
+    $('#modal_opsi').modal('show');
+  }
+
+  function musnah(id) 
+  {
+    $('#appending-form').append(
+        '<div class="col-md-2 col-sm-12 col-xs-12">'
+          +'<label class="tebal">Gudang Asal</label>'
+        +'</div>'
+        +'<div class="col-md-4 col-sm-12 col-xs-12">'
+          +'<div class="form-group">'
+            +'<label id="lblOpsiGudang"></label>'
+          +'</div>'  
+        +'</div>'
+
+        +'<div class="col-md-2 col-sm-12 col-xs-12">'
+          +'<label class="tebal">Kode</label>'
+        +'</div>'
+        +'<div class="col-md-4 col-sm-12 col-xs-12">'
+          +'<div class="form-group">'
+            +'<label id="lblOpsiKode"></label>'
+          +'</div>'  
+        +'</div>'
+
+        +'<div class="col-md-2 col-sm-12 col-xs-12">'
+          +'<label class="tebal">Tanggal</label>'
+        +'</div>'
+        +'<div class="col-md-4 col-sm-12 col-xs-12">'
+          +'<div class="form-group">'
+            +'<label id="lblOpsiTgl"></label>'
+          +'</div>'  
+        +'</div>'
+
+        +'<div class="col-md-2 col-sm-12 col-xs-12">'
+          +'<label class="tebal">Staff</label>'
+        +'</div>'
+        +'<div class="col-md-4 col-sm-12 col-xs-12">'
+          +'<div class="form-group">'
+            +'<label id="lblOpsiStaff"></label>'
+          +'</div>'
+        +'</div>'
+
+        +'<div class="col-md-2 col-sm-12 col-xs-12">'
+          +'<label class="tebal">Diterima Dari</label>'
+        +'</div>'
+        +'<div class="col-md-4 col-sm-12 col-xs-12">'
+          +'<div class="form-group">'
+            +'<label id="lblOpsiPemberi"></label>'
+          +'</div>'
+        +'</div>'
+        
+        +'<div class="table-responsive">'
+          +'<table class="table tabelan table-bordered" id="tabel-form-opsi">'
+            +'<thead>'
+              +'<tr>'
+                +'<th width="5%">No</th>'
+                +'<th width="20%">Kode | Barang</th>'
+                +'<th width="10%">Qty</th>'
+                +'<th width="10%">Satuan</th>'
+                +'<th width="10%">Stok</th>'
+                +'<th width="20%">Keterangan</th>'
+                +'<th width="5%">Aksi</th>'
+              +'</tr>'
+            +'</thead>'
+            +'<tbody id="div_item_opsi">'
+            +'</tbody>'
+          +'</table>'
+        +'</div>'
+        
+        +'<div id="grup-tombol" class="modal-footer" style="border-top: none;">'
+        +'</div>');
     $.ajax({
-      url : baseUrl + "/inventory/b_digunakan/get-detail/" + id,
+      url : baseUrl + "/inventory/b_rusak/get-detail/" + id,
       type: "GET",
       dataType: "JSON",
       success: function(data)
       {
-        var i = randString(5);
         var key = 1;
-        $('#id_pakai_edit').val(data.header[0].d_pb_id);
-        $('#id_staff_edit').val(data.staff.id);
-        $('#code_pakai_edit').val(data.header[0].d_pb_code);
-        $('#lblGudangEdit').text(data.header[0].cg_cabang);
-        $('#lblKodePakaiEdit').text(data.header[0].d_pb_code);
-        $('#lblTglPakaiEdit').text(data.header2.tgl_pakai);
-        $('#lblStaffEdit').text(data.staff.nama);
-        $('#lblPemintaEdit').text(data.header[0].d_pb_peminta);
-        $('#lblKeperluanEdit').text(data.header[0].d_pb_keperluan);
+        $('#lblOpsiGudang').text(data.header[0].cg_cabang);
+        $('#lblOpsiKode').text(data.header[0].d_br_code);
+        $('#lblOpsiTgl').text(data.header2.tgl_pakai);
+        $('#lblOpsiStaff').text(data.header[0].m_name);
+        $('#lblOpsiPemberi').text(data.header[0].d_br_pemberi);
+        $("input[name='idTabelHeader']").val(data.header[0].d_br_id);
         //loop data
+        i = randString(5);
         Object.keys(data.data_isi).forEach(function(){
-          $('#tabel-edit').append(
-            '<tr class="tbl_modal_edit_row" id="row'+i+'">'
-              +'<td style="text-align:center">'+key+'</td>'
-              +'<td>'
-                +'<input type="text" name="fieldEditBarang[]" value="'+data.data_isi[key-1].i_code+' | '+data.data_isi[key-1].i_name+'" id="field_edit_barang" class="form-control" required readonly>'
-                +'<input type="hidden" name="fieldEditItem[]" value="'+data.data_isi[key-1].d_pbdt_item+'" id="field_edit_item" class="form-control">'
-                +'<input type="hidden" name="fieldEditIdDet[]" value="'+data.data_isi[key-1].d_pbdt_id+'" id="field_edit_id_det" class="form-control">'
-                +'<input type="hidden" name="fieldEditSpos[]" value="'+data.header[0].cg_id+'" id="field_edit_spos" class="form-control">'
-                +'<input type="hidden" name="fieldEditScomp[]" value="'+data.header[0].cg_id+'" id="field_edit_scomp" class="form-control">'
-              +'</td>'
-              +'<td>'
-                +'<input type="text" name="fieldEditQty[]" value="'+data.data_isi[key-1].qty_pakai+'" id="field_edit_qty" class="form-control">'
-                +'<input type="hidden" name="fieldEditQtyLalu[]" value="'+data.data_isi[key-1].qty_pakai+'" id="field_edit_qty_lalu" class="form-control">'
-              +'</td>'
-              +'<td>'
-                +'<input type="text" name="fieldEditSatTxt[]" value="'+data.data_isi[key-1].m_sname+'" id="field_edit_sat_txt" class="form-control" readonly>'
-                +'<input type="hidden" name="fieldEditSatId[]" value="'+data.data_isi[key-1].d_pbdt_sat+'" id="field_edit_sat_id" class="form-control" readonly>'
-                +'<input type="hidden" name="fieldHargaSat[]" value="'+data.data_isi[key-1].harga_sat+'" id="field_edit_harga_sat" class="form-control" readonly>'
-              +'</td>'
-              +'<td>'
-                +'<input type="text" name="fieldEditStok[]" value="'+data.stok[key-1]+' '+data.txtSat1[key-1].m_sname+'" id="field_edit_stok" class="form-control" readonly>'
-              +'</td>'
-              +'<td>'
-                +'<input type="text" name="fieldEditKet[]" value="'+data.data_isi[key-1].d_pbdt_keterangan+'" id="field_edit_ket" class="form-control">'
-              +'</td>'
-            +'</tr>');
+          $('#tabel-form-opsi').append('<tr class="tbl_modal_edit_row" id="row'+i+'">'
+                          +'<td>'+key+'</td>'
+                          +'<td>'
+                            +data.data_isi[key-1].i_code+' '+data.data_isi[key-1].i_name
+                            +'<input type="hidden" name="fieldOpsiIdDet[]" class="form-control input-sm" value="'+data.data_isi[key-1].d_brdt_id+'"/>'
+                          +'</td>'
+                          +'<td>'+data.data_isi[key-1].qty_pakai+'</td>'
+                          +'<td>'+data.data_isi[key-1].m_sname+'</td>'
+                          +'<td>'+data.stok[key-1]+' '+data.txtSat1[key-1].m_sname+'</td>'
+                          +'<td>'+data.data_isi[key-1].d_brdt_keterangan+'</td>'
+                          +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm">X</button></td>'
+                          +'</tr>');
           i = randString(5);
           key++;
         });
-        $('#modal-edit').modal('show');
+        $('#grup-tombol').html('<button type="button" id="button_save" class="btn btn-primary" onclick="musnahkanBarang()">Submit Data</button>'+
+        '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
+      },
+      error: function (jqXHR, textStatus, errorThrown)
+      {
+          alert('Error get data from ajax');
+      }
+    });
+  }
+
+  function kembaliKeGudang(id) 
+  {
+    $('#appending-form').append(
+      '<div class="col-md-2 col-sm-12 col-xs-12">'
+        +'<label class="tebal">Gudang Asal</label>'
+      +'</div>'
+      +'<div class="col-md-4 col-sm-12 col-xs-12">'
+        +'<div class="form-group">'
+          +'<label id="lblOpsiGudang"></label>'
+        +'</div>'  
+      +'</div>'
+
+      +'<div class="col-md-2 col-sm-12 col-xs-12">'
+        +'<label class="tebal">Kode</label>'
+      +'</div>'
+      +'<div class="col-md-4 col-sm-12 col-xs-12">'
+        +'<div class="form-group">'
+          +'<label id="lblOpsiKode"></label>'
+        +'</div>'  
+      +'</div>'
+
+      +'<div class="col-md-2 col-sm-12 col-xs-12">'
+        +'<label class="tebal">Tanggal</label>'
+      +'</div>'
+      +'<div class="col-md-4 col-sm-12 col-xs-12">'
+        +'<div class="form-group">'
+          +'<label id="lblOpsiTgl"></label>'
+        +'</div>'  
+      +'</div>'
+
+      +'<div class="col-md-2 col-sm-12 col-xs-12">'
+        +'<label class="tebal">Staff</label>'
+      +'</div>'
+      +'<div class="col-md-4 col-sm-12 col-xs-12">'
+        +'<div class="form-group">'
+          +'<label id="lblOpsiStaff"></label>'
+        +'</div>'
+      +'</div>'
+
+      +'<div class="col-md-2 col-sm-12 col-xs-12">'
+        +'<label class="tebal">Diterima Dari</label>'
+      +'</div>'
+      +'<div class="col-md-4 col-sm-12 col-xs-12">'
+        +'<div class="form-group">'
+          +'<label id="lblOpsiPemberi"></label>'
+        +'</div>'
+      +'</div>'
+      
+      +'<div class="table-responsive">'
+        +'<table class="table tabelan table-bordered" id="tabel-form-opsi">'
+          +'<thead>'
+            +'<tr>'
+              +'<th width="5%">No</th>'
+              +'<th width="20%">Kode | Barang</th>'
+              +'<th width="10%">Qty</th>'
+              +'<th width="10%">Satuan</th>'
+              +'<th width="10%">Stok</th>'
+              +'<th width="20%">Keterangan</th>'
+              +'<th width="5%">Aksi</th>'
+            +'</tr>'
+          +'</thead>'
+          +'<tbody id="div_item_opsi">'
+          +'</tbody>'
+        +'</table>'
+      +'</div>'
+      
+      +'<div id="grup-tombol" class="modal-footer" style="border-top: none;">'
+      +'</div>'
+    );
+
+    $.ajax({
+      url : baseUrl + "/inventory/b_rusak/get-detail/" + id,
+      type: "GET",
+      dataType: "JSON",
+      success: function(data)
+      {
+        var key = 1;
+        $('#lblOpsiGudang').text(data.header[0].cg_cabang);
+        $('#lblOpsiKode').text(data.header[0].d_br_code);
+        $('#lblOpsiTgl').text(data.header2.tgl_pakai);
+        $('#lblOpsiStaff').text(data.header[0].m_name);
+        $('#lblOpsiPemberi').text(data.header[0].d_br_pemberi);
+        $("input[name='idTabelHeader']").val(data.header[0].d_br_id);
+        $("input[name='idGudangHeader']").val(data.header[0].d_br_gdg);
+        //loop data
+        i = randString(5);
+        Object.keys(data.data_isi).forEach(function(){
+          $('#tabel-form-opsi').append('<tr class="tbl_modal_edit_row" id="row'+i+'">'
+                          +'<td>'+key+'</td>'
+                          +'<td>'
+                            +data.data_isi[key-1].i_code+' '+data.data_isi[key-1].i_name
+                            +'<input type="hidden" name="fieldOpsiIdDet[]" class="form-control input-sm" value="'+data.data_isi[key-1].d_brdt_id+'"/>'
+                          +'</td>'
+                          +'<td>'+data.data_isi[key-1].qty_pakai+'</td>'
+                          +'<td>'+data.data_isi[key-1].m_sname+'</td>'
+                          +'<td>'+data.stok[key-1]+' '+data.txtSat1[key-1].m_sname+'</td>'
+                          +'<td>'+data.data_isi[key-1].d_brdt_keterangan+'</td>'
+                          +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm">X</button></td>'
+                          +'</tr>');
+          i = randString(5);
+          key++;
+        });
+        $('#grup-tombol').html('<button type="button" id="button_save" class="btn btn-primary" onclick="kembalikanBarang()">Submit Data</button>'+
+        '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
+      },
+      error: function (jqXHR, textStatus, errorThrown)
+      {
+          alert('Error get data from ajax');
+      }
+    });
+  }
+
+  function ubahJenis(id) 
+  {
+    $('#appending-form').append(
+      '<div class="col-md-2 col-sm-12 col-xs-12">'
+        +'<label class="tebal">Gudang Asal</label>'
+      +'</div>'
+      +'<div class="col-md-4 col-sm-12 col-xs-12">'
+        +'<div class="form-group">'
+          +'<label id="lblOpsiGudang"></label>'
+        +'</div>'  
+      +'</div>'
+
+      +'<div class="col-md-2 col-sm-12 col-xs-12">'
+        +'<label class="tebal">Kode</label>'
+      +'</div>'
+      +'<div class="col-md-4 col-sm-12 col-xs-12">'
+        +'<div class="form-group">'
+          +'<label id="lblOpsiKode"></label>'
+        +'</div>'  
+      +'</div>'
+
+      +'<div class="col-md-2 col-sm-12 col-xs-12">'
+        +'<label class="tebal">Tanggal</label>'
+      +'</div>'
+      +'<div class="col-md-4 col-sm-12 col-xs-12">'
+        +'<div class="form-group">'
+          +'<label id="lblOpsiTgl"></label>'
+        +'</div>'  
+      +'</div>'
+
+      +'<div class="col-md-2 col-sm-12 col-xs-12">'
+        +'<label class="tebal">Staff</label>'
+      +'</div>'
+      +'<div class="col-md-4 col-sm-12 col-xs-12">'
+        +'<div class="form-group">'
+          +'<label id="lblOpsiStaff"></label>'
+        +'</div>'
+      +'</div>'
+
+      +'<div class="col-md-2 col-sm-12 col-xs-12">'
+        +'<label class="tebal">Diterima Dari</label>'
+      +'</div>'
+      +'<div class="col-md-4 col-sm-12 col-xs-12">'
+        +'<div class="form-group">'
+          +'<label id="lblOpsiPemberi"></label>'
+        +'</div>'
+      +'</div>'
+
+      +'<div class="col-md-2 col-sm-12 col-xs-12">'
+        +'<label class="tebal">Simpan Pada Gudang</label>'
+      +'</div>'
+      +'<div class="col-md-4 col-sm-12 col-xs-12">'
+        +'<div class="form-group">'
+          +'<select class="form-control input-sm" id="head_opsi_gudang" name="headOpsiGudang" style="width: 100%;"></select>'
+        +'</div>'
+      +'</div>'
+      
+      +'<div class="table-responsive">'
+        +'<table class="table tabelan table-bordered" id="tabel-form-opsi">'
+          +'<thead>'
+            +'<tr>'
+              +'<th width="5%">No</th>'
+              +'<th width="20%">Kode | Barang</th>'
+              +'<th width="10%">Qty</th>'
+              +'<th width="10%">Satuan</th>'
+              +'<th width="10%">Stok</th>'
+              +'<th width="20%">Keterangan</th>'
+              +'<th width="5%">Aksi</th>'
+            +'</tr>'
+          +'</thead>'
+          +'<tbody id="div_item_opsi">'
+          +'</tbody>'
+        +'</table>'
+      +'</div>'
+      
+      +'<div id="grup-tombol" class="modal-footer" style="border-top: none;">'
+      +'</div>'
+    );
+
+    $.ajax({
+      url : baseUrl + "/inventory/b_rusak/get-detail/" + id,
+      type: "GET",
+      dataType: "JSON",
+      success: function(data)
+      {
+        var key = 1;
+        $('#lblOpsiGudang').text(data.header[0].cg_cabang);
+        $('#lblOpsiKode').text(data.header[0].d_br_code);
+        $('#lblOpsiTgl').text(data.header2.tgl_pakai);
+        $('#lblOpsiStaff').text(data.header[0].m_name);
+        $('#lblOpsiPemberi').text(data.header[0].d_br_pemberi);
+        //loop data
+        i = randString(5);
+        Object.keys(data.data_isi).forEach(function(){
+          $('#tabel-form-opsi').append('<tr class="tbl_opsi_row" id="row'+i+'">'
+                          +'<td>'+key+'</td>'
+                          +'<td>'+data.data_isi[key-1].i_code+' '+data.data_isi[key-1].i_name+'</td>'
+                          +'<td>'+data.data_isi[key-1].qty_pakai+'</td>'
+                          +'<td>'+data.data_isi[key-1].m_sname+'</td>'
+                          +'<td>'+data.stok[key-1]+' '+data.txtSat1[key-1].m_sname+'</td>'
+                          +'<td>'+data.data_isi[key-1].d_brdt_keterangan+'</td>'
+                          +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm">X</button></td>'
+                          +'</tr>'
+                          +'<tr class="tbl_opsi_row" id="row'+i+'">'
+                          +'<td>'+key+'</td>'
+                          +'<td>'
+                            +'<input type="text" name="fieldOpsiBarang[]" id="ip_opsi_'+i+'" class="form-control ui-autocomplete-input input-sm ip_barang" autocomplete="off"/>'
+                            +'<input type="hidden" name="fieldOpsiIdBarang[]" class="form-control input-sm"/>'
+                            +'<input type="hidden" name="fieldOpsiIdDet[]" class="form-control input-sm" value="'+data.data_isi[key-1].d_brdt_id+'"/>'
+                          +'</td>'
+                          +'<td>'
+                            +'<input type="text" name="fieldOpsiQty[]" class="form-control input-sm"/>'
+                          +'</td>'
+                          +'<td>'
+                            +'<select class="form-control input-sm" id="field_opsi_sat" name="fieldOpsiSat" style="width: 100%;"></select>'
+                          +'</td>'
+                          +'<td>'
+                            +'<input type="text" name="fieldOpsiStok[]" class="form-control input-sm"/>'
+                          +'</td>'
+                          +'<td>'
+                            +'<input type="text" name="fieldOpsiKeterangan[]" class="form-control input-sm"/>'
+                          +'</td>'
+                          +'<td><button name="remove" id="'+i+'" class="btn btn-danger btn_remove btn-sm">X</button></td>'
+                          +'</tr>');
+          i = randString(5);
+          key++;
+        });
+        $('#grup-tombol').html('<button type="button" id="button_save" class="btn btn-primary" onclick="ubahJenisBarang()">Simpan Data</button>'+
+        '<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
       },
       error: function (jqXHR, textStatus, errorThrown)
       {
@@ -615,23 +1008,161 @@
     });
   }
 
-  function deletePemakaian(id)
+  function musnahkanBarang() 
   {
     iziToast.question({
       close: false,
       overlay: true,
       displayMode: 'once',
       //zindex: 999,
-      title: 'Hapus Data Pemakaian',
+      title: 'Musnahkan Barang',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          $('#button_save').text('Updating...'); //change button text
+          $('#button_save').attr('disabled',true); //set button disable 
+          $.ajax({
+            url : baseUrl + "/inventory/b_rusak/musnahkan-barang-rusak",
+            type: "POST",
+            dataType: "JSON",
+            data: $('#form_opsi_rusak').serialize(),
+            success: function(response)
+            {
+              if(response.status == "sukses")
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.success({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#button_save').text('Update'); //change button text
+                    $('#button_save').attr('disabled',false); //set button enable
+                    $('#modal-edit').modal('hide');
+                    location.reload();
+                  }
+                });
+              }
+              else
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.error({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#button_save').text('Update'); //change button text
+                    $('#button_save').attr('disabled',false); //set button enable
+                    $('#modal-edit').modal('hide');
+                    location.reload();
+                  }
+                }); 
+              }
+            },
+            error: function(){
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+              iziToast.warning({
+                icon: 'fa fa-times',
+                message: 'Terjadi Kesalahan!'
+              });
+            },
+            async: false
+          }); 
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
+  }
+
+  function kembalikanBarang() 
+  {
+    iziToast.question({
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      //zindex: 999,
+      title: 'Kembalikan Barang Rusak',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          $('#button_save').text('Updating...'); //change button text
+          $('#button_save').attr('disabled',true); //set button disable 
+          $.ajax({
+            url : baseUrl + "/inventory/b_rusak/kembalikan-barang-rusak",
+            type: "POST",
+            dataType: "JSON",
+            data: $('#form_opsi_rusak').serialize(),
+            success: function(response)
+            {
+              if(response.status == "sukses")
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.success({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#button_save').text('Update'); //change button text
+                    $('#button_save').attr('disabled',false); //set button enable
+                    $('#modal-edit').modal('hide');
+                    location.reload();
+                  }
+                });
+              }
+              else
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.error({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#button_save').text('Update'); //change button text
+                    $('#button_save').attr('disabled',false); //set button enable
+                    $('#modal-edit').modal('hide');
+                    location.reload();
+                  }
+                }); 
+              }
+            },
+            error: function(){
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+              iziToast.warning({
+                icon: 'fa fa-times',
+                message: 'Terjadi Kesalahan!'
+              });
+            },
+            async: false
+          }); 
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
+  }
+
+  function deleteBrgRusak(id)
+  {
+    iziToast.question({
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      //zindex: 999,
+      title: 'Hapus Data Barang Rusak',
       message: 'Apakah anda yakin ?',
       position: 'center',
       buttons: [
         ['<button><b>Ya</b></button>', function (instance, toast) {
           $.ajax({
-            url : baseUrl + "/inventory/b_digunakan/delete-data-pakai",
+            url : baseUrl + "/inventory/b_rusak/kembalikan-barang-rusak",
             type: "POST",
             dataType: "JSON",
-            data: {id:id, "_token": "{{ csrf_token() }}"},
+            data: {idTabelHeader:id, "_token": "{{ csrf_token() }}"},
             success: function(response)
             {
               if(response.status == "sukses")

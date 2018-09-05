@@ -210,11 +210,16 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/inventory/b_digunakan/print/{id}', 'Inventory\PemakaianBrgGdgController@printSuratJalan');
     Route::get('/inventory/b_digunakan/get-history-by-tgl/{tgl1}/{tgl2}/{tampil}', 'Inventory\PemakaianBrgGdgController@getHistoryByTgl');
 //barang_rusak
-Route::get('/inventory/b_rusak/index', 'Inventory\BarangRusakController@index');
-Route::get('/inventory/b_rusak/get-brg-rusak-by-tgl/{tgl1}/{tgl2}', 'Inventory\BarangRusakController@getBrgRusakByTgl');
-Route::get('/inventory/b_rusak/lookup-data-gudang', 'Inventory\BarangRusakController@lookupDataGudang');
-Route::get('/inventory/b_rusak/autocomplete-barang', 'Inventory\BarangRusakController@autocompleteBarang');
-Route::post('/inventory/b_rusak/simpan-data-rusak', 'Inventory\BarangRusakController@simpanDataRusak');
+    Route::get('/inventory/b_rusak/index', 'Inventory\BarangRusakController@index');
+    Route::get('/inventory/b_rusak/get-brg-rusak-by-tgl/{tgl1}/{tgl2}', 'Inventory\BarangRusakController@getBrgRusakByTgl');
+    Route::get('/inventory/b_rusak/lookup-data-gudang', 'Inventory\BarangRusakController@lookupDataGudang');
+    Route::get('/inventory/b_rusak/autocomplete-barang', 'Inventory\BarangRusakController@autocompleteBarang');
+    Route::post('/inventory/b_rusak/simpan-data-rusak', 'Inventory\BarangRusakController@simpanDataRusak');
+    Route::get('/inventory/b_rusak/get-detail/{id}', 'Inventory\BarangRusakController@detailBrgRusak');
+    Route::get('/inventory/b_rusak/print/{id}', 'Inventory\BarangRusakController@printTerimaRusak');
+    Route::post('/inventory/b_rusak/musnahkan-barang-rusak', 'Inventory\BarangRusakController@musnahkanBrgRusak');
+    Route::post('/inventory/b_rusak/kembalikan-barang-rusak', 'Inventory\BarangRusakController@kembalikanBrgRusak');
+    Route::get('/inventory/b_rusak/get-brg-musnah-by-tgl/{tgl1}/{tgl2}', 'Inventory\BarangRusakController@getBrgMusnahByTgl');
 //p_hasilproduksi
     Route::get('/inventory/p_hasilproduksi/produksi', 'Inventory\PenerimaanBrgProdController@produksi');
     Route::get('/inventory/p_hasilproduksi/get_data_sj', 'Inventory\PenerimaanBrgProdController@get_data_sj');
