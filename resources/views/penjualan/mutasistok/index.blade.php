@@ -101,6 +101,8 @@
                 endDate: 'today'
             });//datepicker("setDate", "0");
 
+            getTanggal();
+
         });
 
         function getTanggal(){
