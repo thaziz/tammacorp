@@ -96,4 +96,10 @@ class HrdController extends Controller
         return view('hrd/datajabatan/edit_jabatan');
 
     }
+    public function process_rekrut(){
+        return view('hrd/recruitment/process_rekrut');
+    }
+    public function preview_rekrut(){
+        return view('hrd/recruitment/preview_rekrut');
+    }
 }
