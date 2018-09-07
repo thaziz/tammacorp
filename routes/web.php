@@ -189,6 +189,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/inventory/namaitem/autocomplite/{x}/{y}', 'Inventory\stockOpnameController@tableOpname');
     Route::get('/inventory/namaitem/simpanopname', 'Inventory\stockOpnameController@saveOpname');
     Route::get('/inventory/namaitem/history/{tgl1}/{tgl2}', 'Inventory\stockOpnameController@history');
+    Route::get('/inventory/namaitem/detail', 'Inventory\stockOpnameController@getOPname');
     //mahmud stock gudang
     Route::get('/inventory/datagudang/gudang', 'Inventory\stockGudangController@index');
     Route::get('/inventory/namaitem/tablegudang/{x}/{y}', 'Inventory\stockGudangController@tableGudang');
@@ -285,9 +286,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/produksi/spk/ubah-status-spk/{id}', 'Produksi\spkProductionController@ubahStatusSpk');
     Route::get('/produksi/spk/get_spk_by_tgl/{tgl1}/{tgl2}/{stat}', 'Produksi\spkProductionController@getSpkByTgl');
 //rizky
-    //mahmud
-    Route::get('produksi/spk/lihat-detail', 'Produksi\spkProductionController@lihatFormula');
-    Route::get('produksi/spk/input-data', 'Produksi\spkProductionController@inputData');
 //mahmud
     Route::get('produksi/spk/lihat-detail', 'Produksi\spkProductionController@lihatFormula');
     Route::get('produksi/spk/input-data', 'Produksi\spkProductionController@inputData');
