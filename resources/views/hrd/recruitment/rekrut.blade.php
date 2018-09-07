@@ -55,7 +55,7 @@
                   <div id="generalTabContent" class="tab-content responsive">
                     
                     <div id="alert-tab" class="tab-pane fade in active">
-                      <div class="row">
+                      <div class="row tamma-bg" style="margin-top: -23px;padding-top: 23px;padding-bottom: 10px;border-radius: unset;">
                         <div class="col-md-6 col-sm-12 col-xs-12">
 
                           <div class="col-md-12 col-sm-12 col-xs-12">
@@ -70,7 +70,7 @@
 
                           <div class="col-md-6 col-sm-6 col-xs-12">
                             <div class="form-group">
-                              <input type="text" class="form-control input-sm datepicker2" name="">
+                              <input type="text" class="form-control input-sm datepicker2" readonly="" name="" style="cursor: pointer;">
                             </div>
                           </div>
 
@@ -148,8 +148,8 @@
                                   @endif
                                   <td>
                                     <div class="btn-group">
-                                      <button class="btn btn-xs btn-info" title="Preview">Preview</button>
-                                      <button class="btn btn-xs btn-primary" title="Process">Process</button>
+                                      <a href="{{route('preview_rekrut')}}" class="btn btn-xs btn-info" title="Preview">Preview</a>
+                                      <a href="{{route('process_rekrut')}}" class="btn btn-xs btn-primary" title="Process">Process</a>
                                     </div>
                                   </td>
                                 </tr>

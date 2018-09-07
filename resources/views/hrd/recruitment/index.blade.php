@@ -23,6 +23,7 @@
 
     <!-- Custom CSS -->
     <link href="{{ asset('assets/recruitment/css/stylish-portfolio.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/iziToast.css') }}" rel="stylesheet">
     <style type="text/css">
       .col-form-label {
         text-align: left;
@@ -194,6 +195,23 @@
               left: 35%;
           }
       }
+    </style>
+
+    <style type="text/css">
+      
+      .file-upload{display:block;text-align:center;font-family: Helvetica, Arial, sans-serif;font-size: 12px;}
+      .file-upload .file-select{display:block;border: 2px solid #dce4ec;color: #34495e;cursor:pointer;height:40px;line-height:40px;text-align:left;background:#FFFFFF;overflow:hidden;position:relative;}
+      .file-upload .file-select .file-select-button{background:#dce4ec;padding:0 10px;display:inline-block;height:40px;line-height:40px;}
+      .file-upload .file-select .file-select-name{line-height:40px;display:inline-block;padding:0 10px;}
+      .file-upload .file-select:hover{border-color:#34495e;transition:all .2s ease-in-out;-moz-transition:all .2s ease-in-out;-webkit-transition:all .2s ease-in-out;-o-transition:all .2s ease-in-out;}
+      .file-upload .file-select:hover .file-select-button{background:#34495e;color:#FFFFFF;transition:all .2s ease-in-out;-moz-transition:all .2s ease-in-out;-webkit-transition:all .2s ease-in-out;-o-transition:all .2s ease-in-out;}
+      .file-upload.active .file-select{border-color:#3fa46a;transition:all .2s ease-in-out;-moz-transition:all .2s ease-in-out;-webkit-transition:all .2s ease-in-out;-o-transition:all .2s ease-in-out;}
+      .file-upload.active .file-select .file-select-button{background:#3fa46a;color:#FFFFFF;transition:all .2s ease-in-out;-moz-transition:all .2s ease-in-out;-webkit-transition:all .2s ease-in-out;-o-transition:all .2s ease-in-out;}
+      .file-upload .file-select input[type=file]{z-index:100;cursor:pointer;position:absolute;height:100%;width:100%;top:0;left:0;opacity:0;filter:alpha(opacity=0);}
+      .file-upload .file-select.file-select-disabled{opacity:0.65;}
+      .file-upload .file-select.file-select-disabled:hover{cursor:default;display:block;border: 2px solid #dce4ec;color: #34495e;cursor:pointer;height:40px;line-height:40px;margin-top:5px;text-align:left;background:#FFFFFF;overflow:hidden;position:relative;}
+      .file-upload .file-select.file-select-disabled:hover .file-select-button{background:#dce4ec;color:#666666;padding:0 10px;display:inline-block;height:40px;line-height:40px;}
+      .file-upload .file-select.file-select-disabled:hover .file-select-name{line-height:40px;display:inline-block;padding:0 10px;}
     </style>
 
   </head>
@@ -458,9 +476,35 @@
                                 <div class="row">
                                     <div class="col-lg-10 mx-auto">
                                       <div class="form-group row">
+                                        <label for="foto" class="col-sm-2 col-form-label font-weight-bold">File Foto</label>
+                                        <div class="col-sm-10">
+                                            <div class="file-upload">
+                                              <div class="file-select">
+                                                <div class="file-select-button" id="fileName">Foto</div>
+                                                <div class="file-select-name" id="noFile">Pilih Foto...</div> 
+                                                <input type="file" name="image" onchange="loadFile(event)" id="foto" accept="image/*">
+                                              </div>
+                                            </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <div class="col-lg-10 mx-auto">
+                                      <div class="form-group row">
+                                        <label for="output_foto" class="col-sm-2 col-form-label font-weight-bold">Preview Foto</label>
+                                        <div class="col-sm-10">
+                                          <div class="preview_td">
+                                            <img style="width: 100px;height: 100px;border:1px solid pink" id="output_foto" >
+                                        </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <div class="col-lg-10 mx-auto">
+                                      <div class="form-group row">
                                         <label for="sertifikat" class="col-sm-2 col-form-label font-weight-bold">File Sertifikat</label>
                                         <div class="col-sm-10">
-                                          <input type="file" class="form-control" id="sertifikat" name="sertifikat" placeholder="File Sertifikat">
+                                          <input type="file" class="form-control" id="sertifikat" name="sertifikat" onchange="loadFile(event)" placeholder="File Sertifikat">
                                         </div>
                                       </div>
                                     </div>
@@ -548,8 +592,43 @@
     <!-- Custom scripts for this template -->
     <script src="{{ asset('assets/recruitment/js/stylish-portfolio.min.js') }}"></script>
     <script src="{{ asset('assets/recruitment/vendor/dobPicker.min.js') }}"></script>
-
+    <script src="{{ asset('js/iziToast.min.js') }}"></script>
     <script type="text/javascript">
+
+    $('#foto').bind('change', function () {
+      var filename = $("#foto").val();
+      var fsize = $('#foto')[0].files[0].size;
+      if(fsize>2048576) //do something if file size more than 1 mb (1048576)
+      {
+          return false;
+      }
+      if (/^\s*$/.test(filename)) {
+        $(".file-upload").removeClass('active');
+        $("#noFile").text("No file chosen..."); 
+      }
+      else {
+        $(".file-upload").addClass('active');
+        $("#noFile").text(filename.replace("C:\\fakepath\\", "")); 
+      }
+    });
+
+      var loadFile = function(event) {
+      var fsize = $('#foto')[0].files[0].size;
+      if(fsize>1048576) //do something if file size more than 1 mb (1048576)
+      {
+          iziToast.warning({
+            icon: 'fa fa-times',
+            message: 'File Is To Big!',
+          });
+          return false;
+      }
+      var reader = new FileReader();
+      reader.onload = function(){
+        var output_foto = document.getElementById('output_foto');
+        output_foto.src = reader.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    };
       
       $(document).ready(function(){
         $.dobPicker({

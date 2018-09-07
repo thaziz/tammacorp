@@ -470,12 +470,15 @@ Route::group(['middleware' => 'auth'], function () {
     /*HRD*/
     Route::get('/hrd/manajemenkpipegawai/kpi', 'HrdController@kpi');
     Route::get('/hrd/payroll/table', 'HrdController@table');
-    Route::get('/hrd/recruitment/rekrut', 'HrdController@rekrut');
+    Route::get('/hrd/recruitment/rekrut', 'HrdController@rekrut')->name('rekrut');
     Route::get('/hrd/datajabatan/edit_jabatan', 'HrdController@edit_jabatan');
     Route::get('/hrd/dataadministrasi/admin', 'HrdController@admin');
     Route::get('/hrd/datalembur/lembur', 'HrdController@lembur');
     Route::get('/hrd/scoreboard/score', 'HrdController@score');
     Route::get('/hrd/training/training', 'HrdController@training');
+
+    Route::get('/hrd/rekrut/process_rekrut', 'HrdController@process_rekrut')->name('process_rekrut');
+    Route::get('/hrd/rekrut/preview_rekrut', 'HrdController@preview_rekrut')->name('preview_rekrut');
 
     /*Keuangan*/
         // Transaksi Kas
