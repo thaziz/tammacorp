@@ -8,8 +8,8 @@
         <div class="col-md-4 col-sm-12 col-xs-12">
             <div class="form-group" align="pull-left">
                 <select class="form-control input-sm" id="pemilik" name="o_comp"
-                style="width: 100%;">
-                    <option class="form-control" value="">- Pilih Gudang</option>
+                style="width: 100%;" onclick="clearTable()">
+                    <option class="form-control" value="" >- Pilih Gudang</option>
                     @foreach ($data as $gudang)
                         <option class="form-control pemilik-gudang" value="{{ $gudang->cg_id }}">
                             - {{ $gudang->cg_cabang }}</option>
@@ -23,7 +23,7 @@
         <div class="col-md-4 col-sm-12 col-xs-12">
             <div class="form-group" align="pull-left">
                 <select class="form-control input-sm" id="posisi"
-                name="o_position" style="width: 100%;">
+                name="o_position" style="width: 100%;" onclick="clearTable()">
                     <option class="form-control" value="">- Pilih Gudang</option>
                     @foreach ($data as $gudang)
                         <option class="form-control pemilik-gudang" value="{{ $gudang->cg_id }}">

@@ -310,5 +310,14 @@
 
         }
 
+        function clearTable(){
+          tableOpname.row().clear().draw(false);
+          var inputs = document.getElementsByClassName('i_id'),
+              names = [].map.call(inputs, function (input) {
+                  return input.value;
+              });
+          tamp = names;
+        }
+
     </script>
 @endsection
