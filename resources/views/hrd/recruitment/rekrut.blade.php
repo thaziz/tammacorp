@@ -1,4 +1,18 @@
 @extends('main')
+@section('extra_styles')
+<style type="text/css">
+
+  @media (min-width: 992px){
+    .cari-filter{
+      height: 125px;
+      padding-left: 50px;
+    }
+    .cari-filter button{
+      margin-top: 86px;
+    }
+  }
+</style>
+@endsection
 @section('content')
 <!--BEGIN PAGE WRAPPER-->
 <div id="page-wrapper">
@@ -25,6 +39,13 @@
                       </div>
                   </div>
       
+                  <?php 
+                    $person = ['Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo', 'Foxtrot', 'Golf', 'Hotel', 'India', 'Juliet', 'Kilo', 'Mike', 'November', 'Oscar', 'Papa', 'Quebec', 'Romeo', 'Sierra', 'Tango', 'Uniform', 'Victor', 'Whiskey', 'X-ray', 'Zulu'];
+                    $tanggal  = ['01-11-2018', '02-11-2018', '03-11-2018', '04-11-2018', '05-11-2018', '06-11-2018'];
+                    $lulusan = ['Bayi', 'TK', 'SD', 'SMP', 'SMA', 'SMK', 'S1', 'S2', 'S3'];
+                    $no_hp = ['0855331219757', '0853233221234', '0853321234484', '085585875855'];
+                    $status = ['Released', 'Approval 1()', 'Approval 2()', 'Approval 3()', 'Done'];
+                  ?>
                     
                   <ul id="generalTab" class="nav nav-tabs">
                     <li class="active"><a href="#alert-tab" data-toggle="tab">Recruitment</a></li>
@@ -34,40 +55,105 @@
                   <div id="generalTabContent" class="tab-content responsive">
                     
                     <div id="alert-tab" class="tab-pane fade in active">
-                     
-                      <div class="table-responsive">
-                        <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data">
+                      <div class="row">
+                        <div class="col-md-6 col-sm-12 col-xs-12">
+
+                          <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                              <label style="font-weight: bold;font-size: 16px;">Pencarian Berdasarkan :</label>
+                            </div>
+                          </div>
+
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <label>Tanggal</label>
+                          </div>
+
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="form-group">
+                              <input type="text" class="form-control input-sm datepicker2" name="">
+                            </div>
+                          </div>
+
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <label>Pendidikan Terakhir</label>
+                          </div>
+
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="form-group">
+                              <select class="form-control input-sm">
+                                <option>--Pilih Pendidikan Terakhir--</option>
+
+                                  @foreach($lulusan as $index => $dataS)
+
+                                    <option>{{$dataS}}</option>
+
+                                  @endforeach
+
+                               </select>
+                            </div>
+                          </div>
+
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <label>Status Recruitment</label>
+                          </div>
+
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="form-group">
+                              <select class="form-control input-sm">
+                                <option>--Pilih Status Recruitent--</option>
+                                  @foreach($status as $index => $kennyS)
+
+                                    <option>{{$kennyS}}</option>
+
+                                  @endforeach
+                              </select>
+                            </div>
+                          </div>
+
+                        </div>
+                        <div class="col-md-6 col-sm-12 col-xs-12 cari-filter">
+                          <button class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
+                          <button class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
+                        </div>
+                      </div>
+                      <div class="table-responsive" style="margin-top: 15px;">
+                        <table class="table tabelan table-hover table-bordered data-table" width="100%" cellspacing="0">
                           <thead>
                               <tr>
                                 <th class="wd-15p">No.</th>
-                                <th>Tanggal Input</th>
+                                <th>Tanggal Apply</th>
                                 <th class="wd-15p">Nama Pelamar</th>
-                                <th class="wd-20p">Lulusan</th>
-                                <th class="wd-15p">Alamat Sekarang</th>
-                                <th>Tanggal Lahir</th>
+                                <th class="wd-20p">No. HP</th>
+                                <th class="wd-15p">Pedidikan Terakhir</th>
                                 <th>Status</th>
+                                <th>Aksi</th>
                               </tr>
                             </thead>
                             <tbody>
-                              @foreach($query as $index => $data)
+                              @for($i=0;$i<count($person);$i++)
                                 <tr>
-                                  <td>{{$index+1}}</td>
-                                  <td>{{date('d M Y H:i:s', strtotime($data->p_insert))}}</td>
-                                  <td>{{$data->p_name}}</td>
-                                  <td>{{$data->p_education}}</td>
-                                  <td>{{$data->p_address_now}}</td>
-                                  <td>{{date('d M Y', strtotime($data->p_birthday))}}</td>
+                                  <td>{{ $i+1 }}</td>
+                                  <td>{{ date('d M Y', strtotime($tanggal[mt_rand(0, count($tanggal)-1)])) }}</td>
+                                  <td>{{ $person[$i] }}</td>
+                                  <td>{{ $no_hp[mt_rand(0, count($no_hp)-1)] }}</td>
+                                  <td>{{ $lulusan[mt_rand(0, count($lulusan)-1)] }}</td>
+                                  @if($status[mt_rand(0, count($status)-1)] == 'Released')
+                                    <td style="color: red;">
+                                      Released
+                                    </td>
+                                  @else
+                                    <td>
+                                      {{ $status[mt_rand(0, count($status)-1)] }}
+                                    </td>
+                                  @endif
                                   <td>
-                                    @if($data->p_status == 'M')
-                                      Sudah Menikah
-                                    @elseif($data->p_status == 'N')
-                                      Belum Menikah
-                                    @else
-                                      Kosong
-                                    @endif
+                                    <div class="btn-group">
+                                      <button class="btn btn-xs btn-info" title="Preview">Preview</button>
+                                      <button class="btn btn-xs btn-primary" title="Process">Process</button>
+                                    </div>
                                   </td>
                                 </tr>
-                              @endforeach
+                              @endfor
                             </tbody>
                         
                         </table> 
@@ -106,80 +192,14 @@
 @endsection
 @section("extra_scripts")
     <script type="text/javascript">
-     $(document).ready(function() {
-    var extensions = {
-         "sFilterInput": "form-control input-sm",
-        "sLengthSelect": "form-control input-sm"
-    }
-    // Used when bJQueryUI is false
-    $.extend($.fn.dataTableExt.oStdClasses, extensions);
-    // Used when bJQueryUI is true
-    $.extend($.fn.dataTableExt.oJUIClasses, extensions);
-    $('#data').dataTable({
-          "responsive":true,
 
-          "pageLength": 10,
-        "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
-        "language": {
-            "searchPlaceholder": "Cari Data",
-            "emptyTable": "Tidak ada data",
-            "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-            "sSearch": '<i class="fa fa-search"></i>',
-            "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-            "infoEmpty": "",
-            "paginate": {
-                    "previous": "Sebelumnya",
-                    "next": "Selanjutnya",
-                 }
-          }
-
-        });
-    $('#data2').dataTable({
-          "responsive":true,
-
-          "pageLength": 10,
-        "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
-        "language": {
-            "searchPlaceholder": "Cari Data",
-            "emptyTable": "Tidak ada data",
-            "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-            "sSearch": '<i class="fa fa-search"></i>',
-            "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-            "infoEmpty": "",
-            "paginate": {
-                    "previous": "Sebelumnya",
-                    "next": "Selanjutnya",
-                 }
-          }
-
-        });
-    $('#data3').dataTable({
-          "responsive":true,
-
-          "pageLength": 10,
-        "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
-        "language": {
-            "searchPlaceholder": "Cari Data",
-            "emptyTable": "Tidak ada data",
-            "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-            "sSearch": '<i class="fa fa-search"></i>',
-            "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-            "infoEmpty": "",
-            "paginate": {
-                    "previous": "Sebelumnya",
-                    "next": "Selanjutnya",
-                 }
-          }
-
-        });
-});
       $('.datepicker').datepicker({
         format: "mm",
         viewMode: "months",
         minViewMode: "months"
       });
       $('.datepicker2').datepicker({
-        format:"dd/mm/yyyy"
+        format:"dd M yyyy"
       });    
       </script>
 @endsection()
