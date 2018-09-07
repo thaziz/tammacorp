@@ -20,6 +20,7 @@ class d_barang_rusakdt extends Model
         'd_brdt_price',
         'd_brdt_pricetotal',
         'd_brdt_keterangan',
+        'd_brdt_isubah',
         'd_brdt_created',
         'd_brdt_updated'
     ];

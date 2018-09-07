@@ -5,6 +5,10 @@
       {{ csrf_field() }}
       <input type="hidden" name="idStaffJenis" id="id_staff_jenis" class="form-control" value="{{Auth::user()->m_id}}">
       <input type="hidden" name="idHeaderJenis" id="id_header_jenis" class="form-control">
+      <input type="hidden" name="idBrgRusak" id="id_brg_rusak" class="form-control">
+      <input type="hidden" name="qtyBrgRusak" id="qty_brg_rusak" class="form-control">
+      <input type="hidden" name="codeBrgRusak" id="code_brg_rusak" class="form-control">
+      <input type="hidden" name="satBrgRusak" id="sat_brg_rusak" class="form-control">
 
       <!-- Modal content-->
       <div class="modal-content">

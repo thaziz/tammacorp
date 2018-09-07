@@ -12,6 +12,8 @@ use DataTables;
 use Auth;
 use App\d_barang_rusak;
 use App\d_barang_rusakdt;
+use App\d_ubah_jenis;
+use App\d_ubah_jenisdt;
 use App\d_stock;
 use App\d_stock_mutation;
 use App\lib\mutasi;
@@ -212,7 +214,8 @@ class BarangRusakController extends Controller
               ->join('d_gudangcabang','d_barang_rusak.d_br_gdg','=','d_gudangcabang.cg_id')
               ->join('d_mem','d_barang_rusak.d_br_staff','=','d_mem.m_id')
               ->select('d_barang_rusakdt.*', 'd_barang_rusak.*', 'd_mem.m_name', 'd_gudangcabang.cg_id', 'd_gudangcabang.cg_cabang','m_item.i_name','m_item.i_code','m_item.i_sat1','m_item.i_id','m_satuan.m_sname','m_satuan.m_sid')
-              ->where('d_barang_rusak.d_br_status', '=', 'PJ')
+              // ->where('d_barang_rusak.d_br_status', '=', 'PJ')
+              ->where('d_barang_rusakdt.d_brdt_isubah', '=', 'Y')
               ->whereBetween('d_barang_rusak.d_br_date', [$tanggal1, $tanggal2])
               ->orderBy('d_barang_rusak.d_br_created', 'DESC')
               ->get();
@@ -278,6 +281,7 @@ class BarangRusakController extends Controller
                 'm_satuan.m_sname'
             )
             ->where('d_barang_rusakdt.d_brdt_brid', '=', $id)
+            ->where('d_barang_rusakdt.d_brdt_isubah', '=', 'N')
             ->groupBy('d_barang_rusakdt.d_brdt_item')
             ->orderBy('d_barang_rusakdt.d_brdt_created', 'DESC')
             ->get();
@@ -604,7 +608,9 @@ class BarangRusakController extends Controller
         DB::beginTransaction();
         try 
         {
-            d_barang_rusak::where('d_br_id', $request->idTabelHeader)->update(['d_br_status' => 'PJ']);
+            d_barang_rusakdt::where('d_brdt_brid', $request->idTabelHeader)->update(['d_brdt_isubah' => 'Y']);
+            //cek pada table barang rusak detail, jika ispo semua tbl header ubah status ke PJ
+            $this->cek_status_brgrusak($request->idTabelHeader);
             DB::commit();
             return response()->json([
                 'status' => 'sukses',
@@ -623,36 +629,34 @@ class BarangRusakController extends Controller
 
     public function prosesUbahJenis(Request $request)
     {
-        dd($request->all());
+        //dd($request->all());
         DB::beginTransaction();
         try 
         {
-            $kode = $this->kodeBrgRusakAuto();
-            $dataHeader = new d_barang_rusak;
-            $dataHeader->d_br_code = $kode;
-            $dataHeader->d_br_date = date('Y-m-d',strtotime($request->headTglPakai));
-            $dataHeader->d_br_pemberi = strtoupper($request->headPemberi);
-            $dataHeader->d_br_staff = $request->headStaffId;
-            $dataHeader->d_br_gdg = $request->headGudang;
-            $dataHeader->d_br_status = 'BR';
-            $dataHeader->d_br_created = Carbon::now();
+            $kodeJenis = $this->kodeUbahJenisAuto();
+            $dataHeader = new d_ubah_jenis;
+            $dataHeader->d_uj_code = $kodeJenis;
+            $dataHeader->d_uj_date = date('Y-m-d',strtotime($request->headTglUjenis));
+            $dataHeader->d_uj_staff = $request->idStaffJenis;
+            $dataHeader->d_uj_gdg = $request->headGudangJenis;
+            $dataHeader->d_uj_created = Carbon::now();
             $dataHeader->save();
 
             //get last lastId header
-            $lastId = d_barang_rusak::select('d_br_id')->max('d_br_id');
+            $lastId = d_ubah_jenis::select('d_uj_id')->max('d_uj_id');
             if ($lastId == 0 || $lastId == '') { $lastId  = 1; } 
 
             for ($i=0; $i < count($request->fieldIpItem); $i++) 
             {           
                 //cari harga satuan n total dari d_stock mutation
                 $data_sm =  d_stock_mutation::where('sm_item',$request->fieldIpItem[$i])
-                                      ->where('sm_comp',$request->fieldIpScomp[$i])
-                                      ->where('sm_position',$request->fieldIpSpos[$i])
-                                      ->where('sm_qty_sisa', '>', 0)
-                                      ->orderBy('sm_item','ASC')
-                                      ->orderBy('sm_detailid','ASC')
-                                      ->get();
-
+                                  ->where('sm_comp',$request->fieldIpScomp[$i])
+                                  ->where('sm_position',$request->fieldIpSpos[$i])
+                                  ->where('sm_qty_sisa', '>', 0)
+                                  ->orderBy('sm_item','ASC')
+                                  ->orderBy('sm_detailid','ASC')
+                                  ->get();
+                
                 //variabel u/ cek primary satuan
                 $primary_sat = DB::table('m_item')->select('m_item.*')->where('i_id', $request->fieldIpItem[$i])->first();
             
@@ -725,15 +729,15 @@ class BarangRusakController extends Controller
                             $h_sat = $h_satsm * $isiQty;
                             $h_total = $h_sat * ($qty_req / $isiQty);
 
-                            $dataIsi = new d_barang_rusakdt;
-                            $dataIsi->d_brdt_brid = $lastId;
-                            $dataIsi->d_brdt_item = $request->fieldIpItem[$i];
-                            $dataIsi->d_brdt_sat = $request->fieldIpSatId[$i];
-                            $dataIsi->d_brdt_qty = $qty_req / $isiQty;
-                            $dataIsi->d_brdt_price = $h_sat;
-                            $dataIsi->d_brdt_pricetotal = $h_total;
-                            $dataIsi->d_brdt_keterangan = strtoupper($request->fieldIpKet[$i]);
-                            $dataIsi->d_brdt_created = Carbon::now();
+                            $dataIsi = new d_ubah_jenisdt;
+                            $dataIsi->d_ujdt_ujid = $lastId;
+                            $dataIsi->d_ujdt_item = $request->fieldIpItem[$i];
+                            $dataIsi->d_ujdt_sat = $request->fieldIpSatId[$i];
+                            $dataIsi->d_ujdt_qty = $qty_req / $isiQty;
+                            $dataIsi->d_ujdt_price = $h_sat;
+                            $dataIsi->d_ujdt_pricetotal = $h_total;
+                            $dataIsi->d_ujdt_keterangan = strtoupper($request->fieldIpKet[$i]);
+                            $dataIsi->d_ujdt_created = Carbon::now();
                             $dataIsi->save();
                             $j = count($data_sm);
                         }
@@ -746,15 +750,15 @@ class BarangRusakController extends Controller
                             $qty_form = $qty_sisa / $isiQty; //qty yg diminta pada form 
                             $qty_req = $qty_req - $qty_sisa;
                             
-                            $dataIsi = new d_barang_rusakdt;
-                            $dataIsi->d_brdt_brid = $lastId;
-                            $dataIsi->d_brdt_item = $request->fieldIpItem[$i];
-                            $dataIsi->d_brdt_sat = $request->fieldIpSatId[$i];
-                            $dataIsi->d_brdt_qty = $qty_form;
-                            $dataIsi->d_brdt_price = $h_sat;
-                            $dataIsi->d_brdt_pricetotal = $h_total;
-                            $dataIsi->d_brdt_keterangan = strtoupper($request->fieldIpKet[$i]);
-                            $dataIsi->d_brdt_created = Carbon::now();
+                            $dataIsi = new d_ubah_jenisdt;
+                            $dataIsi->d_ujdt_ujid = $lastId;
+                            $dataIsi->d_ujdt_item = $request->fieldIpItem[$i];
+                            $dataIsi->d_ujdt_sat = $request->fieldIpSatId[$i];
+                            $dataIsi->d_ujdt_qty = $qty_form;
+                            $dataIsi->d_ujdt_price = $h_sat;
+                            $dataIsi->d_ujdt_pricetotal = $h_total;
+                            $dataIsi->d_ujdt_keterangan = strtoupper($request->fieldIpKet[$i]);
+                            $dataIsi->d_ujdt_created = Carbon::now();
                             $dataIsi->save();
                         }
                     }   
@@ -782,15 +786,15 @@ class BarangRusakController extends Controller
                         $dt_pricetotal = $dt_price * $request->fieldIpQty[$i];
                     }
 
-                    $dataIsi = new d_barang_rusakdt;
-                    $dataIsi->d_brdt_brid = $lastId;
-                    $dataIsi->d_brdt_item = $request->fieldIpItem[$i];
-                    $dataIsi->d_brdt_sat = $request->fieldIpSatId[$i];
-                    $dataIsi->d_brdt_qty = $request->fieldIpQty[$i];
-                    $dataIsi->d_brdt_price = $dt_price;
-                    $dataIsi->d_brdt_pricetotal = $dt_pricetotal;
-                    $dataIsi->d_brdt_keterangan = strtoupper($request->fieldIpKet[$i]);
-                    $dataIsi->d_brdt_created = Carbon::now();
+                    $dataIsi = new d_ubah_jenisdt;
+                    $dataIsi->d_ujdt_ujid = $lastId;
+                    $dataIsi->d_ujdt_item = $request->fieldIpItem[$i];
+                    $dataIsi->d_ujdt_sat = $request->fieldIpSatId[$i];
+                    $dataIsi->d_ujdt_qty = $request->fieldIpQty[$i];
+                    $dataIsi->d_ujdt_price = $dt_price;
+                    $dataIsi->d_ujdt_pricetotal = $dt_pricetotal;
+                    $dataIsi->d_ujdt_keterangan = strtoupper($request->fieldIpKet[$i]);
+                    $dataIsi->d_ujdt_created = Carbon::now();
                     $dataIsi->save();
                 }
 
@@ -821,19 +825,48 @@ class BarangRusakController extends Controller
                   'sm_detail' => "PENAMBAHAN",
                   'sm_hpp' => $dt_price,
                   'sm_sell' => '0',
-                  'sm_reff' => $kode,
+                  'sm_reff' => $kodeJenis,
                   'sm_insert' => Carbon::now(),
                 ]);
+            }//end loop for
 
-                if(mutasi::mutasiStok(
-                    $request->fieldIpItem[$i], //item id
-                    $hasilConvert, //qty hasil convert satuan terpilih -> satuan primary 
-                    $comp = $request->fieldIpScomp[$i], //posisi gudang berdasarkan type item
-                    $position = $request->fieldIpSpos[$i], //posisi gudang berdasarkan type item
-                    $flag = 5, //sm mutcat
-                    $kode //sm reff
-                )) {}
-            }//end loop for                
+            //variabel u/ cek primary satuan pada field header
+            $primary_sat2 = DB::table('m_item')->select('m_item.*')->where('i_id', $request->idBrgRusak)->first();
+        
+            //cek satuan primary, convert ke primary apabila beda satuan
+            if ($primary_sat2->i_sat1 == $request->satBrgRusak) 
+            {
+                $hasilConvert2 = (int)$request->qtyBrgRusak * (int)$primary_sat2->i_sat_isi1;
+                $isiQty2 = $primary_sat2->i_sat_isi1;
+                $flagMasterHarga2 = 1;
+            }
+            elseif ($primary_sat2->i_sat2 == $request->satBrgRusak)
+            {
+                $hasilConvert2 = (int)$request->qtyBrgRusak * (int)$primary_sat2->i_sat_isi2;
+                $isiQty2 = $primary_sat2->i_sat_isi2;
+                $flagMasterHarga2 = 2;
+            }
+            else
+            {
+                $hasilConvert2 = (int)$request->qtyBrgRusak * (int)$primary_sat2->i_sat_isi3;
+                $isiQty2 = $primary_sat2->i_sat_isi3;
+                $flagMasterHarga2 = 3;
+            }
+
+            //mengurangi stok gudang rusak sebelum ubah jenis
+            if(mutasi::mutasiStok(
+                $request->idBrgRusak, //item id
+                $hasilConvert2, //qty hasil convert satuan terpilih -> satuan primary 
+                $comp = 8, //posisi gudang berdasarkan type item
+                $position = 8, //posisi gudang berdasarkan type item
+                $flag = 5, //sm mutcat
+                $request->codeBrgRusak //sm reff
+            )) {}
+
+            //delete row table d_barang_rusakdt
+            d_barang_rusakdt::where('d_brdt_brid', $request->idHeaderJenis)->delete();
+            //delete row table d_barang_rusak
+            d_barang_rusak::where('d_br_id', $request->idHeaderJenis)->delete();      
 
             DB::commit();
             return response()->json([
@@ -1106,43 +1139,63 @@ class BarangRusakController extends Controller
         return $codePakaiBrg = "PBR-".date('ym')."-".$kd;
     }
 
-    public function printSuratJalan($id)
+    public function kodeUbahJenisAuto()
     {
-        $dataHeader = d_pakai_barang::join('d_gudangcabang','d_pakai_barang.d_pb_gdg','=','d_gudangcabang.cg_id')
-              ->join('d_mem','d_pakai_barang.d_pb_staff','=','d_mem.m_id')
-              ->select('d_pakai_barang.*', 'd_mem.m_id', 'd_mem.m_name', 'd_gudangcabang.cg_id', 'd_gudangcabang.cg_cabang')
-              ->where('d_pakai_barang.d_pb_id', '=', $id)
-              ->orderBy('d_pakai_barang.d_pb_created', 'DESC')
-              ->get()->toArray();
+        $query = DB::select(DB::raw("SELECT MAX(RIGHT(d_uj_code,5)) as kode_max from d_ubah_jenis WHERE DATE_FORMAT(d_uj_created, '%Y-%m') = DATE_FORMAT(CURRENT_DATE(), '%Y-%m')"));
+        $kd = "";
 
-        //dd($dataHeader[0]['d_pb_gdg']);
-        $dataIsi = d_pakai_barangdt::join('d_pakai_barang', 'd_pakai_barangdt.d_pbdt_pbid', '=', 'd_pakai_barang.d_pb_id')
-            ->join('m_item', 'd_pakai_barangdt.d_pbdt_item', '=', 'm_item.i_id')
-            ->join('m_satuan', 'd_pakai_barangdt.d_pbdt_sat', '=', 'm_satuan.m_sid')
+        if(count($query)>0)
+        {
+          foreach($query as $k)
+          {
+            $tmp = ((int)$k->kode_max)+1;
+            $kd = sprintf("%05s", $tmp);
+          }
+        }
+        else
+        {
+          $kd = "00001";
+        }
+
+        return $ubahJenis = "UJB-".date('ym')."-".$kd;
+    }
+
+    public function printTandaTerimaRusak($id)
+    {
+        $dataHeader = d_barang_rusak::join('d_gudangcabang','d_barang_rusak.d_br_gdg','=','d_gudangcabang.cg_id')
+              ->join('d_mem','d_barang_rusak.d_br_staff','=','d_mem.m_id')
+              ->select('d_barang_rusak.*', 'd_mem.m_id', 'd_mem.m_name', 'd_gudangcabang.cg_id', 'd_gudangcabang.cg_cabang')
+              ->where('d_barang_rusak.d_br_id', '=', $id)
+              ->orderBy('d_barang_rusak.d_br_created', 'DESC')
+              ->get()->toArray();
+    
+        $dataIsi = d_barang_rusakdt::join('d_barang_rusak', 'd_barang_rusakdt.d_brdt_brid', '=', 'd_barang_rusak.d_br_id')
+            ->join('m_item', 'd_barang_rusakdt.d_brdt_item', '=', 'm_item.i_id')
+            ->join('m_satuan', 'd_barang_rusakdt.d_brdt_sat', '=', 'm_satuan.m_sid')
             ->select(
-                'd_pakai_barangdt.d_pbdt_id',
-                'd_pakai_barangdt.d_pbdt_pbid',
-                'd_pakai_barangdt.d_pbdt_item',
-                'd_pakai_barangdt.d_pbdt_sat',
-                DB::raw('sum(d_pakai_barangdt.d_pbdt_qty) as qty_pakai'),
-                DB::raw('sum(d_pakai_barangdt.d_pbdt_price) as harga_sat'),
-                DB::raw('sum(d_pakai_barangdt.d_pbdt_pricetotal) as harga_tot'),
-                'd_pakai_barangdt.d_pbdt_keterangan',
+                'd_barang_rusakdt.d_brdt_id',
+                'd_barang_rusakdt.d_brdt_brid',
+                'd_barang_rusakdt.d_brdt_item',
+                'd_barang_rusakdt.d_brdt_sat',
+                DB::raw('sum(d_barang_rusakdt.d_brdt_qty) as qty_pakai'),
+                DB::raw('sum(d_barang_rusakdt.d_brdt_price) as harga_sat'),
+                DB::raw('sum(d_barang_rusakdt.d_brdt_pricetotal) as harga_tot'),
+                'd_barang_rusakdt.d_brdt_keterangan',
                 'm_item.*',
-                'd_pakai_barang.d_pb_code',
+                'd_barang_rusak.d_br_code',
                 'm_satuan.m_sid',
                 'm_satuan.m_sname'
             )
-            ->where('d_pakai_barangdt.d_pbdt_pbid', '=', $id)
-            ->groupBy('d_pakai_barangdt.d_pbdt_item')
-            ->orderBy('d_pakai_barangdt.d_pbdt_created', 'DESC')
+            ->where('d_barang_rusakdt.d_brdt_brid', '=', $id)
+            ->groupBy('d_barang_rusakdt.d_brdt_item')
+            ->orderBy('d_barang_rusakdt.d_brdt_created', 'DESC')
             ->get()->toArray();
 
         /*foreach ($dataHeader as $val) 
         {*/
             $data = array(
-              'id_gdg' => $dataHeader[0]['d_pb_gdg'],
-              'tgl_pakai' => date('d-m-Y',strtotime($dataHeader[0]['d_pb_date']))
+              'id_gdg' => $dataHeader[0]['d_br_gdg'],
+              'tgl_pakai' => date('d-m-Y',strtotime($dataHeader[0]['d_br_date']))
             );
         /*}*/
 
@@ -1161,47 +1214,48 @@ class BarangRusakController extends Controller
         $dataIsi = array_chunk($dataIsi, 14);
         //dd($dataIsi, $val_stock, $txt_satuan);
            
-        return view('inventory.b_digunakan.print', compact('dataHeader', 'dataIsi', 'val_stock', 'txt_satuan'));
+        return view('inventory.b_rusak.print', compact('dataHeader', 'dataIsi', 'val_stock', 'txt_satuan'));
     }
 
-    public function getHistoryByTgl($tgl1, $tgl2, $tampil)
+    public function hapusDataUbah(Request $request)
     {
-        $y = substr($tgl1, -4);
-        $m = substr($tgl1, -7,-5);
-        $d = substr($tgl1,0,2);
-        $tanggal1 = $y.'-'.$m.'-'.$d;
-
-        $y2 = substr($tgl2, -4);
-        $m2 = substr($tgl2, -7,-5);
-        $d2 = substr($tgl2,0,2);
-        $tanggal2 = $y2.'-'.$m2.'-'.$d2;
-
-        $data = d_pakai_barangdt::select('d_pakai_barangdt.*', 'd_pakai_barang.*', 'm_item.i_name', 'm_satuan.m_sname', DB::raw('sum(d_pakai_barangdt.d_pbdt_qty) as qty_pakai'))
-            ->leftJoin('d_pakai_barang','d_pakai_barangdt.d_pbdt_pbid','=','d_pakai_barang.d_pb_id')
-            ->leftJoin('m_item','d_pakai_barangdt.d_pbdt_item','=','m_item.i_id')
-            ->leftJoin('m_satuan','d_pakai_barangdt.d_pbdt_sat','=','m_satuan.m_sid')
-            ->where('d_pakai_barang.d_pb_gdg', '=', $tampil)
-            ->whereBetween('d_pakai_barang.d_pb_date', [$tanggal1, $tanggal2])
-            ->groupBy('d_pakai_barangdt.d_pbdt_pbid')
-            ->groupBy('d_pakai_barangdt.d_pbdt_item')
-            ->orderBy('d_pakai_barang.d_pb_created', 'DESC')
-            ->get();
-
-        return DataTables::of($data)
-        ->addIndexColumn()
-        ->editColumn('tglPakai', function ($data) 
+        //dd($request->all());
+        DB::beginTransaction();
+        try 
         {
-            if ($data->d_pbdt_created == null) 
-            {
-                return '-';
-            }
-            else 
-            {
-                return $data->d_pbdt_created ? with(new Carbon($data->d_pbdt_created))->format('d M Y') : '';
-            }
-        })
-        // ->rawColumns(['status', 'action'])
-        ->make(true);
+            // d_barang_rusak::where('d_br_id', $request->idTabelHeader)->update(['d_br_status' => 'PJ']);
+            d_barang_rusakdt::where('d_brdt_id', $request->idDetail)->update(['d_brdt_isubah' => 'N']);
+            
+            DB::commit();
+            return response()->json([
+                'status' => 'sukses',
+                'pesan' => 'Data Barang Rusak dimasukkan pada TAB INDEX'
+            ]);
+        } 
+        catch (\Exception $e) 
+        {
+            DB::rollback();
+            return response()->json([
+                'status' => 'gagal',
+                'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
+            ]);
+        }
+    }
+
+    public function cek_status_brgrusak($id_brgrusak)
+    {
+        // //tanggal sekarang
+        // $tgl = Carbon::today()->toDateString();
+        //cek pada table d_barang_rusakdt, jika isreceived semua tbl header ubah status ke PJ
+        $data_dt = DB::table('d_barang_rusakdt')->select('d_brdt_isubah')->where('d_brdt_brid', '=', $id_brgrusak)->get();
+
+        foreach ($data_dt as $x) { $data_status[] = $x->d_brdt_isubah; }
+
+        if (!in_array("N", $data_status, TRUE)) 
+        {
+            //DB::table('d_barang_rusak')->where('d_br_id', $id_brgrusak->update(['d_br_status' => 'PJ', 'd_pcs_date_received' => $tgl]);
+            DB::table('d_barang_rusak')->where('d_br_id', $id_brgrusak)->update(['d_br_status' => 'PJ']);
+        }
     }
 
     // ===============================================================================================================
