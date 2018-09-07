@@ -159,9 +159,9 @@
                                         Data Group
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Data Jenis Produksi','ma_read'))
+                                    {{-- @if(Auth::user()->punyaAkses('Data Jenis Produksi','ma_read'))
                                         Data Jenis Produksi
-                                    @endif
+                                    @endif --}}
 
                                     @if(Auth::user()->punyaAkses('Data Pegawai','ma_read'))
                                         Data Pegawai
@@ -217,12 +217,12 @@
                                                     class="hidden">Master</span></a>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Data Jenis Produksi','ma_read'))
+                                {{-- @if(Auth::user()->punyaAkses('Data Jenis Produksi','ma_read'))
                                     <li class="{{ Request::is('master/datajenis/jenis') ? 'active' : '' || Request::is('master/datajenis/*') ? 'active' : '' }}">
                                         <a href="{{ url('/master/datajenis/jenis') }}"><span class="submenu-title">Data Jenis Produksi</span><span
                                                     class="hidden">Master</span></a>
                                     </li>
-                                @endif
+                                @endif --}}
 
                                 @if(Auth::user()->punyaAkses('Data Pegawai','ma_read'))
                                     <li class="{{ Request::is('master/datapegawai/pegawai') ? 'active' : '' || Request::is('master/datapegawai/*') ? 'active' : '' }}">
