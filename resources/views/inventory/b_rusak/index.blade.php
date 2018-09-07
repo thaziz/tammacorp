@@ -269,11 +269,12 @@
       $('tr').remove('.tbl_form_row');
       $('tr').remove('.tbl_modal_detail_row');
       $('tr').remove('.tbl_modal_edit_row');
+      $('tr').remove('.tbl_modal_edit_row');
       // $('#appending-form div').remove();
       //reset all input txt field
       $('#form-barang-rusak')[0].reset();
       $('#form_opsi_rusak')[0].reset();
-      $('#formProsesUbahJenis')[0].reset();
+      $('#form-proses-ubahjenis')[0].reset();
       //empty select2 field
       $('#head_gudang').empty();
       $('#head_gudang_jenis').empty();
@@ -698,11 +699,11 @@
         $('#appending-form div').remove();
         ubahJenis(id);
       }
-      else if(pilihan == "jual")
+      /*else if(pilihan == "jual")
       { 
         $('#appending-form div').remove();
         ubahJenis(id);
-      }
+      }*/
     });
 
     $('#modal_opsi').modal('show');
@@ -1039,6 +1040,67 @@
     });
   }
 
+  function hapusUbahJenis(id)
+  {
+    iziToast.question({
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      //zindex: 999,
+      title: 'Hapus Data Ubah Jenis',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          $.ajax({
+            url : baseUrl + "/inventory/b_rusak/hapus-data-ubahjenis",
+            type: "POST",
+            dataType: "JSON",
+            data: {idDetail:id, "_token": "{{ csrf_token() }}"},
+            success: function(response)
+            {
+              if(response.status == "sukses")
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.success({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#tbl-ubahjenis').DataTable().ajax.reload();
+                  }
+                });
+              }
+              else
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.error({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#tbl-ubahjenis').DataTable().ajax.reload();
+                  }
+                }); 
+              }
+            },
+            error: function(){
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+              iziToast.warning({
+                icon: 'fa fa-times',
+                message: 'Terjadi Kesalahan!'
+              });
+            },
+            async: false
+          }); 
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
+  }
+
   function musnahkanBarang() 
   {
     iziToast.question({
@@ -1124,6 +1186,75 @@
           $('#button_save').attr('disabled',true); //set button disable 
           $.ajax({
             url : baseUrl + "/inventory/b_rusak/kembalikan-barang-rusak",
+            type: "POST",
+            dataType: "JSON",
+            data: $('#form_opsi_rusak').serialize(),
+            success: function(response)
+            {
+              if(response.status == "sukses")
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.success({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#button_save').text('Update'); //change button text
+                    $('#button_save').attr('disabled',false); //set button enable
+                    $('#modal-edit').modal('hide');
+                    location.reload();
+                  }
+                });
+              }
+              else
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.error({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#button_save').text('Update'); //change button text
+                    $('#button_save').attr('disabled',false); //set button enable
+                    $('#modal-edit').modal('hide');
+                    location.reload();
+                  }
+                }); 
+              }
+            },
+            error: function(){
+              instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+              iziToast.warning({
+                icon: 'fa fa-times',
+                message: 'Terjadi Kesalahan!'
+              });
+            },
+            async: false
+          }); 
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
+  }
+
+  function simpanUbahJenis() 
+  {
+    iziToast.question({
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      //zindex: 999,
+      title: 'Pindahkan Barang ke TAB UBAH JENIS',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          $('#button_save').text('Updating...'); //change button text
+          $('#button_save').attr('disabled',true); //set button disable 
+          $.ajax({
+            url : baseUrl + "/inventory/b_rusak/simpan-ubah-jenis",
             type: "POST",
             dataType: "JSON",
             data: $('#form_opsi_rusak').serialize(),
@@ -1337,7 +1468,7 @@
 
   function prosesUbahJenis(id) 
   {
-    $('#appending-form div').remove();
+    $('#div_item_jenis div').remove();
     $.ajax({
       url : baseUrl + "/inventory/b_rusak/get-detail-ubahjenis/" + id,
       type: "GET",
@@ -1350,8 +1481,12 @@
         $('#lblPemberiJenis').text(data.data_isi[0].d_br_pemberi);
         $('#lblKeteranganEdit').text(data.data_isi[0].d_brdt_keterangan);
         $("input[name='idHeaderJenis']").val(data.data_isi[0].d_brdt_brid);
+        $("input[name='idBrgRusak']").val(data.data_isi[0].i_id);
+        $("input[name='qtyBrgRusak']").val(data.data_isi[0].qty_pakai);
+        $("input[name='codeBrgRusak']").val(data.data_isi[0].d_br_code);
+        $("input[name='satBrgRusak']").val(data.data_isi[0].d_brdt_sat);
        
-        $('#grup-tombol').html('<button type="button" id="button_save" class="btn btn-primary" onclick="simpanUbahJenis()">Simpan Data</button>'
+        $('#grup-tombol').html('<button type="button" id="button_save" class="btn btn-primary" onclick="submitUbahJenis()">Simpan Data</button>'
         +'<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
       },
       error: function (jqXHR, textStatus, errorThrown)
@@ -1407,9 +1542,14 @@
     $('#tbl-daftar').DataTable().ajax.reload(); 
   }
 
-  function refreshTabelHistory()
+  function refreshTabelMusnah()
   {
-    $('#tbl-history').DataTable().ajax.reload(); 
+    $('#tbl-musnah').DataTable().ajax.reload(); 
+  }
+
+  function refreshTabelUbahJenis()
+  {
+    $('#tbl-ubahjenis').DataTable().ajax.reload(); 
   }
   
 </script>

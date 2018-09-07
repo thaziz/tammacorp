@@ -24,7 +24,7 @@
                   <option value="musnah"> Musnahkan Barang </option>
                   <option value="ubah_jenis"> Ubah Jenis </option>
                   <option value="kembali"> Kembalikan ke gudang asal </option>
-                  <option value="jual"> Dijual </option>
+                  {{-- <option value="jual"> Dijual </option> --}}
                 </select>
               </div>
             </div>
