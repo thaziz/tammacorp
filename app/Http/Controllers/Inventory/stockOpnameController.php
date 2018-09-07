@@ -12,7 +12,9 @@ use App\Http\Requests;
 use App\d_gudangcabang;
 use App\d_stock;
 use App\d_opname;
+use App\d_stock_mutation;
 use App\d_opnamedt;
+use App\lib\mutasi;
 use Auth;
 use DataTables;
 use URL;
@@ -91,23 +93,67 @@ class stockOpnameController extends Controller
             'od_item' => $request->i_id[$i],
             'od_opname' => $request->opname[$i]
           ]);
+
+          $cek = d_stock::select('s_id','s_qty')
+                ->where('s_item', $request->i_id[$i])
+                ->where('s_comp', $request->o_comp)
+                ->where('s_position', $request->o_position)
+                ->first();
+
+          $hasil = $cek->s_qty + $request->opname[$i];
+
+          $sm_detailid = d_stock_mutation::select('sm_detailid')
+            ->where('sm_item', $request->i_id[$i])
+            ->where('sm_comp', $request->o_comp)
+            ->where('sm_position', $request->o_position)
+            ->max('sm_detailid')+1;
+
+          if ( $request->opname[$i] <= 0) {//+
+            if(mutasi::mutasiStok(  $request->i_id[$i],
+                                    - $request->opname[$i],
+                                    $comp=$request->o_comp,
+                                    $position=$request->o_position,
+                                    $flag=7,
+                                    $nota)){}
+          } else {//-
+            $cek->update([
+              's_qty' => $hasil
+            ]);
+
+            d_stock_mutation::create([
+              'sm_stock' => $cek->s_id,
+              'sm_detailid' => $sm_detailid,
+              'sm_date' => Carbon::now(),
+              'sm_comp' => $request->o_comp,
+              'sm_position' => $request->o_position,
+              'sm_mutcat' => 7,
+              'sm_item' => $request->i_id[$i],
+              'sm_qty' => $request->opname[$i],
+              'sm_qty_used' => 0,
+              'sm_qty_sisa' => $request->opname[$i],
+              'sm_qty_expired' => 0,
+              'sm_detail' => 'PENAMBAHAN',
+              'sm_reff' => $nota,
+              'sm_insert' => Carbon::now()
+            ]);
+          }
       }
 
       $nota = d_opname::where('o_id',$o_id)
           ->first();
 
-        DB::commit();
-        return response()->json([
-            'status' => 'sukses',
-            'nota' => $nota
-          ]);
-        } catch (\Exception $e) {
-        DB::rollback();
-        return response()->json([
-          'status' => 'gagal',
-          'data' => $e
-          ]);
-        }
+      DB::commit();
+      return response()->json([
+          'status' => 'sukses',
+          'nota' => $nota
+        ]);
+      } catch (\Exception $e) {
+      DB::rollback();
+      return response()->json([
+        'status' => 'gagal',
+        'data' => $e
+        ]);
+      }
     }
 
     public function history($tgl1, $tgl2){
@@ -145,16 +191,32 @@ class stockOpnameController extends Controller
         return  '<div class="text-center">
                     <button type="button"
                         class="btn btn-success fa fa-eye btn-sm"
-                        title="detail"
+                        title="Detail"
+                        type="button"
                         data-toggle="modal"
-                        onclick="lihatDetail('."'".$data->o_id."'".')"
-                        data-target="#myItem">
+                        data-target="#myModalView"
+                        onclick="OpnameDet('."'".$data->o_id."'".')"
                     </button>
                 </div>';
       })
 
       ->rawColumns(['date','action'])
       ->make(true);
+
+    }
+
+    public function getOPname(Request $request){
+      $data = d_opnamedt::select( 'i_code',
+                            'i_type',
+                            'i_name',
+                            'od_opname',
+                            'm_sname')
+        ->where('od_ido',$request->x)
+        ->join('m_item','i_id','=','od_item')
+        ->join('m_satuan','m_sid','=','i_sat1')
+        ->get();
+
+      return view('inventory.stockopname.detail-opname',compact('data'));
 
     }
 }

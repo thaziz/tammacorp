@@ -43,9 +43,13 @@
                         @include('inventory.stockopname.daftar')
                         <!-- End Div #alert-tab -->
 
-                            <!-- Div #note-tab -->
+                        <!-- Div #note-tab -->
                         @include('inventory.stockopname.history')
                         <!-- End Div #note-tab -->
+
+                        <!-- Div #detail-opname -->
+                        @include('inventory.stockopname.modal-opname')
+                        <!-- End Div #detail-opname -->
 
                             <!-- Div #label-badge-tab -->
                             <div id="label-badge-tab" class="tab-pane fade">
@@ -175,7 +179,7 @@
           var s_qty = $('#s_qty').val();
           var m_sname = $('#m_sname').val();
           var qtyReal = $('#qtyReal').val();
-          var opname = parseFloat(s_qty) - parseFloat(qtyReal);
+          var opname = parseFloat(qtyReal) - parseFloat(s_qty);
           opname = opname.toFixed(2);
           var Hapus = '<div class="text-center"><button type="button" class="btn btn-danger hapus" onclick="hapus(this)"><i class="fa fa-trash-o"></i></button></div>';
           var index = tamp.indexOf(i_id);
@@ -238,7 +242,12 @@
             data: a + '&' + b,
             success: function (response, nota) {
               if (response.status == 'sukses') {
-                $('#tbOpname')[0].reset();
+                tableOpname.row().clear().draw(false);
+                var inputs = document.getElementsByClassName('i_id'),
+                    names = [].map.call(inputs, function (input) {
+                        return input.value;
+                    });
+                tamp = names;
                 var nota = response.nota.o_nota;
                 iziToast.success({
                     timeout: 5000,
@@ -284,9 +293,21 @@
           var real = $('.qty-real-'+id).val();
           qty = parseFloat(qty).toFixed(2);
           real = parseFloat(real).toFixed(2);
-          var opname = qty - real;
+          var opname = real - qty;
           opname = opname.toFixed(2);
           $('.opname-'+id).val(opname);
+        }
+
+        function OpnameDet(id) {
+          $.ajax({
+              url: baseUrl + "/inventory/namaitem/detail/",
+              type: "get",
+              data: {x: id},
+              success: function (response) {
+                  $('#view-formula').html(response);
+              }
+          })
+
         }
 
     </script>
