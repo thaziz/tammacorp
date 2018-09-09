@@ -28,6 +28,9 @@
       .col-form-label {
         text-align: left;
       }
+      .has-error {
+        border: 1px solid #f00;
+      }
     </style>
 
     <style type="text/css">
@@ -236,9 +239,6 @@
       </ul>
     </nav>
 
-
-
-
     <!-- Header -->
     <header class="masthead d-flex">
       <div class="container text-center my-auto">
@@ -251,302 +251,68 @@
     {{-- Wizard --}}
     <section class="content-section bg-light" >
       <div class="container text-center">
-          <form class="form cf" action="{{ url('recruitment/save') }}" method="post" enctype="multipart/form-data">
-                    <div class="wizard">
-                        <div class="wizard-inner">
-                            <div class="connecting-line"></div>
-                            <ul class="nav nav-tabs" role="tablist">
-                                <li role="presentation" class="nav-item">
-                                    <a href="#apply" data-toggle="tab" aria-controls="apply" role="tab" title="Data Diri" class="nav-link active">
-                                        <span class="round-tab">
-                                            <i class="fa fa-user"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                                <li role="presentation" class="nav-item">
-                                    <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" title="Daftar Riwayat Hidup" class="nav-link disabled">
-                                        <span class="round-tab">
-                                            <i class="fa fa-history"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                                <li role="presentation" class="nav-item">
-                                    <a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" title="Upload Berkas" class="nav-link disabled">
-                                        <span class="round-tab">
-                                            <i class="fa fa-file-archive"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                                <li role="presentation" class="nav-item">
-                                    <a href="#step4" data-toggle="tab" aria-controls="step4" role="tab" title="Finish" class="nav-link disabled">
-                                        <span class="round-tab">
-                                            <i class="fa fa-check"></i>
-                                        </span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+        <form class="form cf" action="{{ url('recruitment/save') }}" method="post" enctype="multipart/form-data">
+          {{ csrf_field() }}
+          <div class="wizard">
+            <div class="wizard-inner">
+              <div class="connecting-line"></div>
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="nav-item">
+                  <a href="#apply" data-toggle="tab" aria-controls="apply" role="tab" title="Data Diri" class="nav-link active">
+                    <span class="round-tab">
+                      <i class="fa fa-user"></i>
+                    </span>
+                  </a>
+                </li>
+                
+                <li role="presentation" class="nav-item">
+                  <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" title="Daftar Riwayat Hidup" class="nav-link disabled">
+                    <span class="round-tab">
+                      <i class="fa fa-history"></i>
+                    </span>
+                  </a>
+                </li>
+                
+                <li role="presentation" class="nav-item">
+                  <a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" title="Upload Berkas" class="nav-link disabled">
+                    <span class="round-tab">
+                      <i class="fa fa-file-archive"></i>
+                    </span>
+                  </a>
+                </li>
+                
+                <li role="presentation" class="nav-item">
+                  <a href="#step4" data-toggle="tab" aria-controls="step4" role="tab" title="Finish" class="nav-link disabled">
+                    <span class="round-tab">
+                      <i class="fa fa-check"></i>
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
 
-                        <div class="tab-content" id="form_wizard">
-                            <div class="tab-pane active text-center" role="tabpanel" id="apply">
-                                <h1 class="text-md-center">Data Diri</h1>
-                                <div class="row" >
-                                  <div class="col-lg-10 mx-auto">
-                                    @if ($message = Session::get('sukses'))
-                                      <div class="alert alert-success alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <strong>Sukses!</strong> Data berhasil disimpan.
-                                      </div>
-                                    @elseif($message = Session::get('gagal'))
-                                      <div class="alert alert-danger alert-dismissible">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        <strong>Gagal!</strong> Silahkan coba beberapa saat lagi.
-                                      </div>
-                                    @endif
-                                    
-                                       {{ csrf_field() }}
-                                      <div class="form-group row">
-                                        <label for="nama" class="col-sm-2 col-form-label font-weight-bold">Nama</label>
-                                        <div class="col-sm-10">
-                                          <input type="text" class="form-control" id="nama" name="nama" placeholder="Nama Pelamar">
-                                        </div>
-                                      </div>
-                                      <div class="form-group row">
-                                        <label for="noktp" class="col-sm-2 col-form-label font-weight-bold">Nomor Identitas</label>
-                                        <div class="col-sm-10">
-                                          <input type="text" class="form-control" id="noktp" name="noktp" placeholder="Nomor Identitas KTP/SIM">
-                                        </div>
-                                      </div>
-                                      <div class="form-group row">
-                                        <label for="alamat" class="col-sm-2 col-form-label font-weight-bold">Alamat</label>
-                                        <div class="col-sm-10">
-                                          <input type="text" class="form-control" id="alamat" name="alamat" placeholder="Alamat KTP/SIM">
-                                        </div>
-                                      </div>
-                                      <div class="form-group row">
-                                        <label for="alamatnow" class="col-sm-2 col-form-label font-weight-bold">Alamat Sekarang</label>
-                                        <div class="col-sm-10">
-                                          <input type="text" class="form-control" id="alamatnow" name="alamatnow" placeholder="Alamat Sekarang">
-                                        </div>
-                                      </div>
-                                      <div class="form-group row">
-                                        <label for="tempatlahir" class="col-sm-2 col-form-label font-weight-bold">Tempat Lahir</label>
-                                        <div class="col-sm-10">
-                                          <input type="text" class="form-control" id="tempatlahir" name="tempatlahir" placeholder="Tempat Lahir">
-                                        </div>
-                                      </div>
-                                      <div class="form-group row">
-                                        <label for="tanggallahir" class="col-sm-2 col-form-label font-weight-bold">Tanggal Lahir</label>
-                                        <div class="col-sm-10 row form-group" style="margin-left: 0px; margin-bottom: -10px;">
-                                          <select id="dobday" class="form-control col-sm-2" style="margin-right: 5px;" name="tanggal" id="tanggal"></select>
-                                          <select id="dobmonth" class="form-control col-sm-4" style="margin-right: 5px;" name="bulan" id="bulan"></select>
-                                          <select id="dobyear" class="form-control col-sm-3" style="margin-right: 5px;" name="tahun" id="tahun"></select>
-                                        </div>
-                                      </div>
-                                      <div class="form-group row">
-                                        <label for="pendidikanterakhir" class="col-sm-2 col-form-label font-weight-bold">Pendidikan</label>
-                                        <div class="col-sm-10">
-                                          <input type="text" class="form-control" id="pendidikanterakhir" name="pendidikanterakhir" placeholder="Pendidikan Terakhir">
-                                        </div>
-                                      </div>
-                                      <div class="form-group row">
-                                        <label for="notlp" class="col-sm-2 col-form-label font-weight-bold">No Telp/WA</label>
-                                        <div class="col-sm-10">
-                                          <input type="text" class="form-control" id="notlp" name="notlp" placeholder="Nomor Telp/WA">
-                                        </div>
-                                      </div>
-                                      <div class="form-group row">
-                                        <label for="agama" class="col-sm-2 col-form-label font-weight-bold">Agama</label>
-                                        <div class="col-sm-10">
-                                          <select class="form-control" name="agama" id="agama">
-                                            <option value="-" selected disabled>-- Pilih Agama --</option>
-                                            <option value="islam">Islam</option>
-                                            <option value="kristen">Kristen</option>
-                                            <option value="katolik">Katolik</option>
-                                            <option value="budha">Budha</option>
-                                            <option value="hindu">Hindu</option>
-                                            <option value="konghuchu">Konghucu</option>
-                                          </select>
-                                        </div>
-                                      </div>
-                                      <div class="form-group row">
-                                        <label for="status" class="col-sm-2 col-form-label font-weight-bold">Status</label>
-                                        <div class="col-sm-10">
-                                          <select class="form-control" name="status" id="status">
-                                            <option value="-" selected disabled>-- Pilih Status --</option>
-                                            <option value="menikah">Menikah</option>
-                                            <option value="belum">Belum Menikah</option>
-                                          </select>
-                                        </div>
-                                      </div>
-                                      <div class="form-group row">
-                                        <label for="partner_name" class="col-sm-2 col-form-label font-weight-bold">Nama Suami/Stri</label>
-                                        <div class="col-sm-10">
-                                          <input type="text" class="form-control" id="partner_name" name="partner_name" placeholder="Nama Suami/Stri">
-                                        </div>
-                                      </div>
-                                      <div class="form-group row">
-                                        <label for="anak" class="col-sm-2 col-form-label font-weight-bold">Anak</label>
-                                        <div class="col-sm-10">
-                                          <input type="number" class="form-control" id="anak" name="anak" placeholder="Jumlah Anak">
-                                        </div>
-                                      </div>
-                                      
-                                    
-                                  </div>
-                                </div>
-                                <ul class="list-inline text-md-center">
-                                    <li><a class="btn btn-lg btn-primary next-step next-button js-scroll-trigger" href="#form_wizard"> Get Started Now</a></li>
-                                </ul>
-                            </div>
-                            <div class="tab-pane" role="tabpanel" id="step2">
-                                <h1 class="text-md-center">Daftar Riwayat Hidup</h1>
-                                <div class="row">
-                                    <div class="col-lg-10 mx-auto">
-                                      <div class="form-group row">
-                                        <label for="perusahaan1" class="col-sm-2 col-form-label font-weight-bold">Nama Perusahaan</label>
-                                        <div class="col-sm-10">
-                                          <input type="text" class="form-control" id="perusahaan1" name="perusahaan1" placeholder="Nama Perusahaan">
-                                        </div>
-                                      </div>
-                                    </div>
+            <div class="tab-content" id="form_wizard">
+              <!-- tab data diri -->
+              @include('hrd.recruitment.tab-datadiri')
+              <!-- tab cv -->
+              @include('hrd.recruitment.tab-cv')
+              <!-- tab berkas -->
+              @include('hrd.recruitment.tab-berkas')
+              <!-- tab finish step -->
+              <div class="tab-pane" role="tabpanel" id="step4">
+                <h1 class="text-md-center">Complete</h1>
+                <div class="row"></div>
+                <ul class="list-inline text-md-center">
+                    <li><button type="submit" class="btn btn-lg btn-primary next-button">Finish</button></li>
+                    <li><a href="#form_wizard" class="btn btn-lg btn-common prev-step next-button js-scroll-trigger">Back</a></li>
+                </ul>
+              </div>
 
-                                    <div class="col-lg-10 mx-auto">
-                                      <div class="form-group row">
-                                        <label for="tahun1" class="col-sm-2 col-form-label font-weight-bold">Tahun</label>
-                                        <div class="col-sm-5">
-                                          <input type="text" class="form-control" id="tahun1" name="tahun1" placeholder="Tahun Awal">
-                                        </div>
-                                        <div class="col-sm-5">
-                                          <input type="text" class="form-control" id="tahun_end1" name="tahun_end1" placeholder="Tahun Akhir">
-                                        </div>
-                                      </div>
-                                    </div>
+              <div class="clearfix"></div>
+            </div>
 
-                                    <div class="col-lg-10 mx-auto">
-                                      <div class="form-group row">
-                                        <label for="jobdesc1" class="col-sm-2 col-form-label font-weight-bold">Job Desc</label>
-                                        <div class="col-sm-10">
-                                          <input type="text" class="form-control" id="jobdesc1" name="jobdesc1" placeholder="Job Desc">
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <div style="border-top:1px solid #e0e0e0;margin-bottom: 10px;width: 100%;"></div>
-
-                                    <div class="col-lg-10 mx-auto">
-                                      <div class="form-group row">
-                                        <label for="perusahaan2" class="col-sm-2 col-form-label font-weight-bold">Nama Perusahaan</label>
-                                        <div class="col-sm-10">
-                                          <input type="text" class="form-control" id="perusahaan2" name="perusahaan2" placeholder="Nama Perusahaan">
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <div class="col-lg-10 mx-auto">
-                                      <div class="form-group row">
-                                        <label for="tahun2" class="col-sm-2 col-form-label font-weight-bold">Tahun</label>
-                                        <div class="col-sm-5">
-                                          <input type="text" class="form-control" id="tahun2" name="tahun2" placeholder="Tahun Awal">
-                                        </div>
-                                        <div class="col-sm-5">
-                                          <input type="text" class="form-control" id="tahun_end2" name="tahun_end2" placeholder="Tahun Akhir">
-                                        </div>                                      
-                                      </div>
-                                    </div>
-
-                                    <div class="col-lg-10 mx-auto">
-                                      <div class="form-group row">
-                                        <label for="jobdesc2" class="col-sm-2 col-form-label font-weight-bold">Job Desc</label>
-                                        <div class="col-sm-10">
-                                          <input type="text" class="form-control" id="jobdesc2" name="jobdesc2" placeholder="Job Desc">
-                                        </div>
-                                      </div>
-                                    </div>
-                                 
-
-                                </div>
-                                <ul class="list-inline text-md-center">
-                                    <li><a class="btn btn-lg btn-primary next-step next-button js-scroll-trigger" href="#form_wizard">Next Step</a></li>
-                                    <li><a href="#form_wizard" class="btn btn-lg btn-common prev-step next-button js-scroll-trigger">Back</a></li>
-                                </ul>
-                            </div>
-                            <div class="tab-pane" role="tabpanel" id="step3">
-                                <h1 class="text-md-center">Upload Berkas</h1>
-                                <div class="row">
-                                    <div class="col-lg-10 mx-auto">
-                                      <div class="form-group row">
-                                        <label for="foto" class="col-sm-2 col-form-label font-weight-bold">File Foto</label>
-                                        <div class="col-sm-10">
-                                            <div class="file-upload">
-                                              <div class="file-select">
-                                                <div class="file-select-button" id="fileName">Foto</div>
-                                                <div class="file-select-name" id="noFile">Pilih Foto...</div> 
-                                                <input type="file" name="image" onchange="loadFile(event)" id="foto" accept="image/*">
-                                              </div>
-                                            </div>
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <div class="col-lg-10 mx-auto">
-                                      <div class="form-group row">
-                                        <label for="output_foto" class="col-sm-2 col-form-label font-weight-bold">Preview Foto</label>
-                                        <div class="col-sm-10">
-                                          <div class="preview_td">
-                                            <img style="width: 100px;height: 100px;border:1px solid pink" id="output_foto" >
-                                        </div>
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <div class="col-lg-10 mx-auto">
-                                      <div class="form-group row">
-                                        <label for="sertifikat" class="col-sm-2 col-form-label font-weight-bold">File Sertifikat</label>
-                                        <div class="col-sm-10">
-                                          <input type="file" class="form-control" id="sertifikat" name="sertifikat" onchange="loadFile(event)" placeholder="File Sertifikat">
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="col-lg-10 mx-auto">
-                                      <div class="form-group row">
-                                        <label for="ijazah" class="col-sm-2 col-form-label font-weight-bold">File Ijazah</label>
-                                        <div class="col-sm-10">
-                                          <input type="file" class="form-control" id="ijazah" name="ijazah" placeholder="File Ijazah">
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="col-lg-10 mx-auto">
-                                      <div class="form-group row">
-                                        <label for="file_lain_lain" class="col-sm-2 col-form-label font-weight-bold">File Lain-lain</label>
-                                        <div class="col-sm-10">
-                                          <input type="file" class="form-control" id="file_lain_lain" name="file_lain_lain" placeholder="File Lain-lain">
-                                        </div>
-                                      </div>
-                                    </div>
-                                </div>
-                                <ul class="list-inline text-md-center">
-                                    <li><a href="#form_wizard" class="btn btn-lg btn-primary next-step next-button js-scroll-trigger">Next Step</a></li>
-                                    <li><a href="#form_wizard" class="btn btn-lg btn-common prev-step next-button js-scroll-trigger">Back</a></li>
-                                </ul>
-                            </div>
-                            <div class="tab-pane" role="tabpanel" id="step4">
-                                <h1 class="text-md-center">Complete</h1>
-                                <div class="row">
-                                  
-
-                                </div>
-                                <ul class="list-inline text-md-center">
-                                    <li><button type="submit" class="btn btn-lg btn-primary next-button">Finish</button></li>
-                                    <li><a href="#form_wizard" class="btn btn-lg btn-common prev-step next-button js-scroll-trigger">Back</a></li>
-                                </ul>
-                            </div>
-                            <div class="clearfix"></div>
-                        </div>
-
-                    </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </section>
 
@@ -594,41 +360,41 @@
     <script src="{{ asset('assets/recruitment/vendor/dobPicker.min.js') }}"></script>
     <script src="{{ asset('js/iziToast.min.js') }}"></script>
     <script type="text/javascript">
+      var baseUrl = '{{url('/')}}';
+      $('#foto').bind('change', function () {
+        var filename = $("#foto").val();
+        var fsize = $('#foto')[0].files[0].size;
+        if(fsize>2048576) //do something if file size more than 1 mb (1048576)
+        {
+            return false;
+        }
+        if (/^\s*$/.test(filename)) {
+          $(".file-upload").removeClass('active');
+          $("#noFile").text("No file chosen..."); 
+        }
+        else {
+          $(".file-upload").addClass('active');
+          $("#noFile").text(filename.replace("C:\\fakepath\\", "")); 
+        }
+      });
 
-    $('#foto').bind('change', function () {
-      var filename = $("#foto").val();
-      var fsize = $('#foto')[0].files[0].size;
-      if(fsize>2048576) //do something if file size more than 1 mb (1048576)
-      {
-          return false;
-      }
-      if (/^\s*$/.test(filename)) {
-        $(".file-upload").removeClass('active');
-        $("#noFile").text("No file chosen..."); 
-      }
-      else {
-        $(".file-upload").addClass('active');
-        $("#noFile").text(filename.replace("C:\\fakepath\\", "")); 
-      }
-    });
-
-      var loadFile = function(event) {
-      var fsize = $('#foto')[0].files[0].size;
-      if(fsize>1048576) //do something if file size more than 1 mb (1048576)
-      {
-          iziToast.warning({
-            icon: 'fa fa-times',
-            message: 'File Is To Big!',
-          });
-          return false;
-      }
-      var reader = new FileReader();
-      reader.onload = function(){
-        var output_foto = document.getElementById('output_foto');
-        output_foto.src = reader.result;
+        var loadFile = function(event) {
+        var fsize = $('#foto')[0].files[0].size;
+        if(fsize>1048576) //do something if file size more than 1 mb (1048576)
+        {
+            iziToast.warning({
+              icon: 'fa fa-times',
+              message: 'File Is To Big!',
+            });
+            return false;
+        }
+        var reader = new FileReader();
+        reader.onload = function(){
+          var output_foto = document.getElementById('output_foto');
+          output_foto.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
       };
-      reader.readAsDataURL(event.target.files[0]);
-    };
       
       $(document).ready(function(){
         $.dobPicker({
@@ -636,6 +402,10 @@
           daySelector: '#dobday',
           monthSelector: '#dobmonth',
           yearSelector: '#dobyear',
+         /* yearSelector: '#dob_cv_awal1',
+          yearSelector: '#dob_cv_akhir1',
+          yearSelector: '#dob_cv_awal2',
+          yearSelector: '#dob_cv_akhir2',*/
 
           // Default option values
           dayDefault: 'Tangal',
@@ -649,7 +419,131 @@
           maximumAge: 80
         });
 
-      });
+        $.dobPicker({
+          yearSelector: '#dob_cv_awal1',
+          yearDefault: 'Tahun',
+          minimumAge: 0,
+          maximumAge: 20
+        });
+
+        $.dobPicker({
+          yearSelector: '#dob_cv_awal2',
+          yearDefault: 'Tahun',
+          minimumAge: 0,
+          maximumAge: 20
+        });
+
+        $.dobPicker({
+          yearSelector: '#dob_cv_akhir1',
+          yearDefault: 'Tahun',
+          minimumAge: 0,
+          maximumAge: 20
+        });
+
+        $.dobPicker({
+          yearSelector: '#dob_cv_akhir2',
+          yearDefault: 'Tahun',
+          minimumAge: 0,
+          maximumAge: 20
+        });
+
+        $('#btn_cekemail').click(function(event) {
+          var email = $('#email').val();
+          $.ajax({
+            url : baseUrl + "/recruitment/cek-email",
+            type: "get",
+            dataType: "JSON",
+            data: {email:email},
+            success: function(response)
+            {
+              if(response.status == "sukses")
+              {
+                $('#notlp').attr('readonly', false);
+                $('#btn_cekwa').attr('disabled', false);
+              }
+              else
+              {
+                iziToast.error({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#email').focus(); //change button text
+                  }
+                }); 
+              }
+            },
+            error: function(){
+              iziToast.warning({
+                icon: 'fa fa-times',
+                message: 'Terjadi Kesalahan!'
+              });
+            },
+            async: false
+          });
+        });
+
+        $('#btn_cekwa').click(function(event) {
+          var wa = $('#notlp').val();
+          $.ajax({
+            url : baseUrl + "/recruitment/cek-wa",
+            type: "get",
+            dataType: "JSON",
+            data: {wa:wa},
+            success: function(response)
+            {
+              if(response.status == "sukses")
+              {
+                $('#agama').attr('disabled', false);
+                $('#status').attr('disabled', false);
+                $('#partner_name').attr('readonly', false);
+                $('#anak').attr('readonly', false);
+              }
+              else
+              {
+                iziToast.error({
+                  position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    $('#notlp').focus(); //change button text
+                  }
+                }); 
+              }
+            },
+            error: function(){
+              iziToast.warning({
+                icon: 'fa fa-times',
+                message: 'Terjadi Kesalahan!'
+              });
+            },
+            async: false
+          });
+        });
+
+        $('input.numberinput').bind('keypress', function (e) {
+          return (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && e.which != 46) ? false : true;
+        });
+
+        $('#email').focus(function(event) {
+          $(this).val("");
+          $('#notlp').attr('readonly', true);
+          $('#btn_cekwa').attr('disabled', true);
+          $('#agama').attr('disabled', true);
+          $('#status').attr('disabled', true);
+          $('#partner_name').attr('readonly', true);
+          $('#anak').attr('readonly', true);
+        });
+
+        $('#notlp').focus(function(event) {
+          $(this).val("");
+          $('#agama').attr('disabled', true);
+          $('#status').attr('disabled', true);
+          $('#partner_name').attr('readonly', true);
+          $('#anak').attr('readonly', true);
+        });
+
+      });//end jquery
     </script>
     <script type="text/javascript">
        //Initialize tooltips
