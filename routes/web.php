@@ -20,6 +20,8 @@ Route::group(['middleware' => 'guest'], function () {
     Route::get('not-allowed', 'mMemberController@notAllowed');
     Route::get('recruitment', 'RecruitmentController@recruitment');
     Route::post('recruitment/save', 'RecruitmentController@save');
+    Route::get('recruitment/cek-email', 'RecruitmentController@cekEmail');
+    Route::get('recruitment/cek-wa', 'RecruitmentController@cekWa');
 });
 Route::group(['middleware' => 'auth'], function () {
     Route::get('logout', 'mMemberController@logout');
