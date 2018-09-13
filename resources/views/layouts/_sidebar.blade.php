@@ -167,6 +167,10 @@
                                         Data Pegawai
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Data Lowongan','ma_read'))
+                                        Data Lowongan
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Data Akun Keuangan','ma_read'))
                                         Data Akun Keuangan
                                     @endif
@@ -227,6 +231,13 @@
                                 @if(Auth::user()->punyaAkses('Data Pegawai','ma_read'))
                                     <li class="{{ Request::is('master/datapegawai/pegawai') ? 'active' : '' || Request::is('master/datapegawai/*') ? 'active' : '' }}">
                                         <a href="{{ url('/master/datapegawai/pegawai') }}"><span class="submenu-title">Data Pegawai</span><span
+                                                    class="hidden">Master</span></a>
+                                    </li>
+                                @endif
+
+                                @if(Auth::user()->punyaAkses('Data Lowongan','ma_read'))
+                                    <li class="{{ Request::is('master/datalowongan/index') ? 'active' : '' || Request::is('master/datalowongan/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/master/datalowongan/index') }}"><span class="submenu-title">Data Lowongan</span><span
                                                     class="hidden">Master</span></a>
                                     </li>
                                 @endif

@@ -26,11 +26,9 @@ class HrdController extends Controller
     public function rekrut()
     {
         $query = DB::table('d_pelamar')->get();
-
-        // return $query;
-
-        return view('hrd/recruitment/rekrut', compact('query'));
-
+        $statusApply = DB::table('d_pelamar_status')->get();
+        //dd($status);
+        return view('hrd/recruitment/rekrut', compact('query', 'statusApply'));
     }
 
     public function kpi()
@@ -96,10 +94,10 @@ class HrdController extends Controller
         return view('hrd/datajabatan/edit_jabatan');
 
     }
-    public function process_rekrut(){
+    /*public function process_rekrut(){
         return view('hrd/recruitment/process_rekrut');
     }
     public function preview_rekrut(){
         return view('hrd/recruitment/preview_rekrut');
-    }
+    }*/
 }
