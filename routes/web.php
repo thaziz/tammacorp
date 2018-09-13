@@ -473,15 +473,29 @@ Route::group(['middleware' => 'auth'], function () {
     /*HRD*/
     Route::get('/hrd/manajemenkpipegawai/kpi', 'HrdController@kpi');
     Route::get('/hrd/payroll/table', 'HrdController@table');
-    Route::get('/hrd/recruitment/rekrut', 'HrdController@rekrut')->name('rekrut');
     Route::get('/hrd/datajabatan/edit_jabatan', 'HrdController@edit_jabatan');
     Route::get('/hrd/dataadministrasi/admin', 'HrdController@admin');
     Route::get('/hrd/datalembur/lembur', 'HrdController@lembur');
     Route::get('/hrd/scoreboard/score', 'HrdController@score');
     Route::get('/hrd/training/training', 'HrdController@training');
-
-    Route::get('/hrd/rekrut/process_rekrut', 'HrdController@process_rekrut')->name('process_rekrut');
-    Route::get('/hrd/rekrut/preview_rekrut', 'HrdController@preview_rekrut')->name('preview_rekrut');
+/*Recruitment*/
+    Route::get('/hrd/recruitment/rekrut', 'HrdController@rekrut')->name('rekrut');
+    Route::get('/hrd/recruitment/get-data-hrd', 'RecruitmentController@getDataHrd');
+    Route::get('/hrd/recruitment/process_rekrut/{id}', 'RecruitmentController@process_rekrut');
+    Route::get('/hrd/recruitment/preview_rekrut/{id}', 'RecruitmentController@preview_rekrut');
+    Route::post('/hrd/recruitment/approval_1', 'RecruitmentController@approval_1');
+    Route::post('/hrd/recruitment/update_approval_1', 'RecruitmentController@update_approval_1');
+    Route::post('/hrd/recruitment/approval_2', 'RecruitmentController@approval_2');
+    Route::post('/hrd/recruitment/update_approval_2', 'RecruitmentController@update_approval_2');
+    Route::post('/hrd/recruitment/approval_3', 'RecruitmentController@approval_3');
+//Master Data Lowongan
+    Route::get('/master/datalowongan/index', 'Master\LowonganController@index');
+    Route::get('/master/datalowongan/datatable-index', 'Master\LowonganController@get_datatable_index');
+    Route::get('/master/datalowongan/tambah_lowongan', 'master\LowonganController@tambah_data');
+    Route::post('/master/datalowongan/simpan_lowongan', 'master\LowonganController@simpan_data');
+    Route::post('/master/datalowongan/ubah_status', 'master\LowonganController@ubah_status');
+    Route::get('/master/datalowongan/edit_lowongan', 'master\LowonganController@edit_data');
+    Route::post('/master/datalowongan/update_lowongan', 'master\LowonganController@update_data');
 
     /*Keuangan*/
         // Transaksi Kas
