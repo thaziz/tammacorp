@@ -3,7 +3,9 @@
     <div class="row">
         <div class="col-lg-10 mx-auto">
           <div class="form-group row">
-            <label for="foto" class="col-sm-2 col-form-label font-weight-bold">File Foto</label>
+            <label for="image" class="col-sm-2 col-form-label font-weight-bold">File Foto
+              <span style="color: red">*</span>
+            </label>
             <div class="col-sm-10">
                 <div class="file-upload">
                   <div class="file-select">
@@ -13,6 +15,9 @@
                   </div>
                 </div>
             </div>
+            @if ($errors->has('image'))
+              <span style="color: red;" class="col-sm-12">{{$errors->first('image')}}</span>
+            @endif
           </div>
         </div>
 
@@ -52,6 +57,14 @@
             </div>
           </div>
         </div>
+        
+        <div class="col-lg-10 mx-auto">
+          <div class="form-group row">
+            <label class="tebal" style="color: red; float: left;">Keterangan : * Wajib diisi.</label>
+            <label class="tebal" style="color: blue; float: left;">Untuk File Sertifikat, Ijasah dan lain-lain wajib dengan file PDF. Semakin Lengkap data anda, menjadi nilai plus bagi kami.</label>
+          </div>
+        </div>
+
     </div>
     <ul class="list-inline text-md-center">
         <li><a href="#form_wizard" class="btn btn-lg btn-primary next-step next-button js-scroll-trigger">Next Step</a></li>

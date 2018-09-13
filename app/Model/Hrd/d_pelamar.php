@@ -14,6 +14,7 @@ class d_pelamar extends Model
     protected $fillable = [
         'p_id', 
         'p_date', 
+        'p_vacancyid',
         'p_nip',
         'p_name',
         'p_address',
@@ -25,6 +26,8 @@ class d_pelamar extends Model
         'p_tlp',
         'p_religion',
         'p_status',
+        'p_apply_status',
+        'p_apply_statusdt',
         'p_wife_name',
         'p_child',
         'p_created',
