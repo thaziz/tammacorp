@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset ('assets/select2/select2-bootstrap.css') }}">
     <link type="text/css" rel="stylesheet" href="{{ asset ('assets/styles/timepicker.min.css') }}">
     <link type="text/css" rel="stylesheet" href="{{ asset ('assets/styles/css/ladda-themeless.min.css') }}">
-    <link type="text/css" rel="stylesheet" href="{{ asset ('assets/styles/css/prism.css') }}">
+    <link type="text/css" rel="stylesheet" href="{{ asset ('assets/styles/awesome-bootstrap-checkbox.css') }}">
 <link href="{{ asset('css/iziToast.css') }}" rel="stylesheet">
     <style type="text/css">
 
