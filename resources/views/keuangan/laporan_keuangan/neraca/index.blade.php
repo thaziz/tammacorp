@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Laporan Jurnal</title>
+		<title>Laporan Neraca</title>
 		<meta charset="utf-8">
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -117,20 +117,21 @@
 	        @page { size: landscape; }
 	        #navigation{
 	            display: none;
-	          }
+	         }
 
 	        #table-data td.total{
-	    		 background-color: #ccc !important;
-	    		 -webkit-print-color-adjust: exact;
-	    	}
+		         background-color: #ccc !important;
+		         -webkit-print-color-adjust: exact;
+	      	}
 
-	    	#table-data td.not-same{
-	    		 color: red !important;
-	    		 -webkit-print-color-adjust: exact;
-	    	}
+		     #table-data td.not-same{
+		         color: red !important;
+		         -webkit-print-color-adjust: exact;
+		    }
 
 	        .page-break { display: block; page-break-before: always; }
 	    </style>
+      
 	</head>
 
 	<body style="background: #555;">
@@ -142,210 +143,53 @@
 	          </div>
 	          <div class="col-md-5" style="background: none; padding: 10px 15px 5px 15px">
 	            <ul>
-	              <li><i class="fa fa-sliders" style="cursor: pointer;" onclick="$('#modal_jurnal').modal('show')" data-toggle="tooltip" data-placement="bottom" title="Tampilkan Setting Register Jurnal"></i></li>
+	              <li><i class="fa fa-sliders" style="cursor: pointer;" onclick="$('#modal_neraca').modal('show')" data-toggle="tooltip" data-placement="bottom" title="Tampilkan Setting Register Jurnal"></i></li>
 	              <li><i class="fa fa-print" style="cursor: pointer;" id="print" data-toggle="tooltip" data-placement="bottom" title="Print Laporan"></i></li>
 	            </ul>
 	          </div>
 	        </div>
-	      </div>
+	  </div>
 
-	<div class="col-md-10 col-md-offset-1" style="background: white; padding: 10px 15px; margin-top: 80px;">
-  
-        <table width="100%" border="0" style="border-bottom: 1px solid #333;">
-          <thead>
-            <tr>
-              <th style="text-align: left; font-size: 14pt; font-weight: 600">Laporan Jurnal {{ ucfirst($request->jenis) }}</th>
-            </tr>
-
-            <tr>
-              <th style="text-align: left; font-size: 12pt; font-weight: 500">Tamma Robbah Indonesia</th>
-            </tr>
-
-            <tr>
-              <th style="text-align: left; font-size: 8pt; font-weight: 500; padding-bottom: 10px;">(Angka Disajikan Dalam Rupiah, Kecuali Dinyatakan Lain)</th>
-            </tr>
-          </thead>
-        </table>
-
-        <table width="100%" border="0" style="font-size: 8pt;">
-          <thead>
-            <tr>
-              <td style="text-align: left; padding-top: 5px;">
-                Transaksi : Bulan {{ $d1 }} s/d {{ $d2 }}
-              </td>
-              
-            </tr>
-          </thead>
-        </table>
-
-        <table id="table-data" width="100%" border="0">
-			<thead>
-				<tr>
-					<th width="8%">Tanggal</th>
-					<th width="12%">No.Bukti</th>
-					<th width="8%">No.Perkiraan</th>
-
-					@if($request->nama_perkiraan)
-						<th width="20%">Nama Perkiraan</th>
-					@endif
-					<th>Uraian</th>
-
-					<th width="11%">Debet</th>
-					<th width="11%">Kredit</th>
-				</tr>
-			</thead>
-
-			<tbody>
-				
-				<?php $sum_debet = $sum_kredit = 0; ?>
-				@foreach($data as $data_jr)
-					<?php $tot_debet = $tot_kredit = 0; ?>
-					@foreach($detail[$data_jr->jurnal_id] as $key => $data_detail)
-						<tr>
-							<td style="padding-left: 3px;">{{ date('d-m-Y', strtotime($data_jr->tanggal_jurnal)) }}</td>
-							<td style="padding-left: 3px;">{{ $data_jr->no_jurnal }}</td>
-							<td style="padding-left: 3px;">{{ $data_detail->jrdt_acc }}</td>
-
-							@if($request->nama_perkiraan)
-								<td style="padding-left: 3px;">{{ $data_detail->nama_akun }}</td>
-							@endif
-
-							<td style="padding-left: 3px;">{{ $data_jr->keterangan }}</td>
-							
-							<?php 
-								$deb = $kre = 0;
-								if($data_detail->jrdt_dk == "D") {
-									$deb = str_replace("-", "", $data_detail->jrdt_value);
-									$tot_debet += $deb;
-									$sum_debet += $deb;
-								}else{
-									$kre = str_replace("-", "", $data_detail->jrdt_value);
-									$tot_kredit += $kre;
-									$sum_kredit += $kre;
-								}
-							?>
-
-							<td class="currency">{{ number_format($deb, 2) }}</td>
-							<td class="currency no-border">{{ number_format($kre, 2) }}</td>
-						</tr>
-					@endforeach
-
-					<tr>
-						<td style="background: #f1f1f1;">&nbsp;</td>
-						<td style="background: #f1f1f1;">&nbsp;</td>
-						<td style="background: #f1f1f1;">&nbsp;</td>
-
-						@if($request->nama_perkiraan)
-							<td style="background: #f1f1f1;">&nbsp;</td>
-						@endif
-
-						<?php
-							$not = "";
-
-							if(number_format($tot_debet, 2) != number_format($tot_kredit, 2))
-								$not = "not-same"
-						?>
-
-						<td style="background: #f1f1f1;">&nbsp;</td>
-						<td class="currency total {{$not}}">{{ number_format($tot_debet, 2) }}</td>
-						<td class="currency total no-border {{$not}}">{{ number_format($tot_kredit, 2) }}</td>
-					</tr>
-
-				@endforeach
-				
-			</tbody>
-		</table>
-
-		<table id="table" width="100%" border="0" style="font-size: 8pt; margin-top: 4px;">
-			<thead>
-				<tr>
-					<th width="8%"></th>
-					<th width="12%"></th>
-					<th width="8%"></th>
-
-					@if($request->nama_perkiraan)
-						<th width="25%"></th>
-					@endif
-					<th></th>
-
-					<th width="11%" style="text-align: right; padding: 7px 5px; border-bottom: 1px solid #999;">{{ number_format($sum_debet, 2) }}</th>
-					<th width="11%" style="text-align: right; padding: 7px 5px; border-bottom: 1px solid #999;">{{ number_format($sum_kredit, 2) }}</th>
-				</tr>
-			</thead>
-		</table>
-
-        <table id="table" width="100%" border="0" style="font-size: 8pt; margin-top: 4px;">
-          <thead>
-            <tr>
-              
-            </tr>
-          </thead>
-        </table>
-
-      </div>
+    <div class="col-md-10 col-md-offset-1" style="background: white; padding: 10px 15px; margin-top: 80px;">
+        <center>Neraca Sedang Dalam Perbaikan :(</center>
+    </div>
 
 	      <!-- modal -->
-		<!-- Modal -->
-              <div class="modal fade" id="modal_jurnal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+              <!-- Modal -->
+              <div class="modal fade" id="modal_neraca" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog" role="document" style="width: 35%;">
                   <div class="modal-content">
                     <div class="modal-header">
                       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                      <h4 class="modal-title" id="myModalLabel">Setting Jurnal</h4>
+                      <h4 class="modal-title" id="myModalLabel">Setting Neraca</h4>
                     </div>
 
-                    <form id="form-jurnal" method="get" action="{{ route('laporan_jurnal.index') }}" target="_self">
+                    <form id="form-jurnal" method="get" action="{{ route('laporan_neraca.index') }}" target="_self">
                     <div class="modal-body">
                       <div class="row" style="margin-bottom: 15px;">
                         <div class="col-md-3">
-                          Jenis Transaksi
+                          Jenis Periode
                         </div>
 
-                        <div class="col-md-9">
-                          <select class="form-control" name="jenis">
-                            <option value="kas">Jurnal Kas</option>
-                            <option value="bank">Jurnal Bank</option>
-                            <option value="memorial">Jurnal Memorial</option>
+                        <div class="col-md-4">
+                          <select name="jenis" class="form-control" id="jenis_periode_neraca">
+                            <option value="bulan">Bulan</option>
+                            <option value="tahun">Tahun</option>
                           </select>
                         </div>
-                      </div>
+                    </div>
 
                       <div class="row" style="margin-bottom: 15px;">
                         <div class="col-md-3">
                           Periode
                         </div>
 
-                        <div class="col-md-4 durasi_bulan_jurnal">
-                          <input type="text" name="durasi_1_jurnal_bulan" placeholder="periode Mulai" class="form-control" id="d1_jurnal" autocomplete="off" required>
+                        <div class="col-md-9 durasi_bulan_neraca">
+                          <input type="text" name="durasi_1_neraca_bulan" placeholder="periode Mulai" class="form-control" id="d1_neraca" autocomplete="off" required readonly style="cursor: pointer;">
                         </div>
 
-                        <div class="col-md-4 durasi_tahun_jurnal" style="display: none;">
-                          <input type="text" name="durasi_1_jurnal_tahun" placeholder="periode Mulai" class="form-control" id="d1_jurnal_tahun" autocomplete="none">
-                        </div>
-
-                        <div class="col-md-1">
-                          s/d
-                        </div>
-
-                        <div class="col-md-4 durasi_bulan_jurnal">
-                          <input type="text" name="durasi_2_jurnal_bulan" placeholder="Periode Akhir" class="form-control" id="d2_jurnal" autocomplete="off" required>
-                        </div>
-
-                        <div class="col-md-4 durasi_tahun_jurnal" style="display: none;">
-                          <input type="text" name="durasi_2_jurnal_tahun" placeholder="Periode Akhir" class="form-control" id="d2_jurnal_tahun" autocomplete="none">
-                        </div>
-                      </div>
-
-                      <div class="row" style="margin-bottom: 0px;">
-                        <div class="col-md-3">
-                          Dengan Nama Perkiraan
-                        </div>
-
-                        <div class="col-md-4">
-                          <select class="form-control" name="nama_perkiraan">
-                            <option value="1">Ya</option>
-                            <option value="0">Tidak</option>
-                          </select>
+                        <div class="col-md-9 durasi_tahun_neraca" style="display: none;">
+                          <input type="text" name="durasi_1_neraca_tahun" placeholder="periode Mulai" class="form-control" id="d1_neraca_tahun" autocomplete="off" required readonly style="cursor: pointer;">
                         </div>
                       </div>
                     </div>
@@ -414,53 +258,46 @@
 	    <script src="{{asset('js/jquery-validation.min.js')}}"></script>
 
 	    <script type="text/javascript">
-	    	// modal_jurnal
+	    	  // modal neraca
 
-	          $('#d2_jurnal').datepicker( {
-	              format: 'dd-mm-yyyy',
-	          });
+            $('#d2_neraca').datepicker( {
+                format: "yyyy-mm",
+                viewMode: "months", 
+                minViewMode: "months"
+            });
 
-	          $('#d1_jurnal').datepicker({
-	            format: 'dd-mm-yyyy',
-	          }).on("changeDate", function(){
-	              $('#d2_jurnal').val("");
-	              $('#d2_jurnal').datepicker("setStartDate", $(this).val());
-	          });
+            $('#d1_neraca').datepicker({
+              format: "yyyy-mm",
+              viewMode: "months", 
+              minViewMode: "months"
+            })
 
-	          $('#d2_jurnal_tahun').datepicker( {
-	              format: "yyyy",
-	              viewMode: "years", 
-	              minViewMode: "years"
-	          });
+            $('#d1_neraca_tahun').datepicker({
+              format: "yyyy",
+              viewMode: "years", 
+              minViewMode: "years"
+            })
 
-	          $('#d1_jurnal_tahun').datepicker({
-	              format: "yyyy",
-	              viewMode: "years", 
-	              minViewMode: "years"
-	          }).on("changeDate", function(){
-	              $('#d2_jurnal_tahun').val("");
-	              $('#d2_jurnal_tahun').datepicker("setStartDate", $(this).val());
-	          });
+            $('#jenis_periode_neraca').change(function(evt){
+              evt.preventDefault();
 
-	          $('#durasi_jurnal').change(function(evt){
-	              evt.preventDefault();
+              if($(this).val() == 'bulan'){
+                $('.durasi_bulan_neraca').show();
+                $('.durasi_tahun_neraca').hide();
+              }else{
+                $('.durasi_bulan_neraca').hide();
+                $('.durasi_tahun_neraca').show();
+              }
+            })
 
-	              if($(this).val() == 'bulan'){
-	                $('.durasi_bulan_jurnal').show();
-	                $('.durasi_tahun_jurnal').hide();
-	              }else{
-	                $('.durasi_bulan_jurnal').hide();
-	                $('.durasi_tahun_jurnal').show();
-	              }
-	          })
+          // modal neraca
 
-	      // modal_jurnal end
-
-	      	$('#print').click(function(evt){
+            $('#print').click(function(evt){
               evt.preventDefault();
 
               window.print();
             })
+
 	    </script>
 
 	</body>
