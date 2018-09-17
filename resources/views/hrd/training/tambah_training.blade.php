@@ -104,7 +104,7 @@
                               <div class="col-md-12 col-sm-12 col-xs-12">
                                 <label class="bold">Petunjuk Pengisian</label><br>
                                 <div class="form-group">
-                                  <small>Berilah tanda Checklist pada tempat yang disediakan atau berilah jawaban singkat, jelas, dan padat pada pertanyaan yang minta</small>
+                                  <small>Berilah tanda Checklist pada tempat yang disediakan atau berilah jawaban singkat, jelas, dan padat pada pertanyaan yang diminta</small>
                                 </div>
                               </div>
 
