@@ -21,7 +21,7 @@ class LowonganController extends Controller
 
     public function tambah_data()
     {
-    	
+        
         $kode = $this->kode_lowongan();
         return view('master.datalowongan.tambah',compact('kode'));
     }
@@ -32,15 +32,17 @@ class LowonganController extends Controller
         DB::beginTransaction();
         try 
         {   
-        	$id = DB::table('d_lowongan')->select('l_id')->max('l_id');
-        	if ($id == 0 || $id == '') { $id  = 1; } else { $id++; }
+            $id = DB::table('d_lowongan')->select('l_id')->max('l_id');
+            if ($id == 0 || $id == '') { $id  = 1; } else { $id++; }
 
             $tanggal = date("Y-m-d h:i:s");
             DB::table('d_lowongan')
                 ->insert([
                     'l_id'=>$id,
                     'l_code' => $request->kode,
-                    'l_name'=>strtoupper($request->nama),
+                    'l_divisi' => $request->divisi,
+                    'l_subdivisi' => $request->level,
+                    'l_jabatan' => $request->jabatan,
                     'l_created'=>$tanggal
                 ]);
 
@@ -83,7 +85,7 @@ class LowonganController extends Controller
 
     public function get_datatable_index()
     {
-        $data = DB::table('d_lowongan')->get();
+        $data = DB::table('d_lowongan')->join('m_divisi', 'd_lowongan.l_divisi', '=', 'm_divisi.c_id')->join('m_sub_divisi', 'd_lowongan.l_subdivisi', '=', 'm_sub_divisi.c_id')->join('m_jabatan', 'd_lowongan.l_jabatan', '=', 'm_jabatan.c_id')->get();
         return Datatables::of($data)
         ->addIndexColumn()
         ->addColumn('aksi', function ($data) 
@@ -101,9 +103,9 @@ class LowonganController extends Controller
         })
         ->addColumn('status', function ($data) {
             if ($data->l_isactive == 'Y') {
-            	return '<span style="color:blue">Aktif</span>';
+                return '<span style="color:blue">Aktif</span>';
             }else{
-            	return '<span style="color:red">Nonaktif</span>';
+                return '<span style="color:red">Nonaktif</span>';
             }
         })
         ->rawColumns(['aksi','status'])
@@ -112,7 +114,6 @@ class LowonganController extends Controller
 
     public function ubah_status(Request $request)
     {
-        //dd($request->all());
         DB::beginTransaction();
         try 
         {   
@@ -150,7 +151,7 @@ class LowonganController extends Controller
 
     public function edit_data(Request $request)
     {
-        $data = DB::table('d_lowongan')->where('l_id','=',$request->id)->first();
+        $data = DB::table('d_lowongan')->join('m_divisi', 'd_lowongan.l_divisi', '=', 'm_divisi.c_id')->join('m_sub_divisi', 'd_lowongan.l_subdivisi', '=', 'm_sub_divisi.c_id')->join('m_jabatan', 'd_lowongan.l_jabatan', '=', 'm_jabatan.c_id')->where('l_id','=',$request->id)->first();
         return view('master/datalowongan/edit', compact('data'));
     }
 
@@ -164,8 +165,11 @@ class LowonganController extends Controller
             DB::table('d_lowongan')
                 ->where('l_id','=',$request->kode_old)
                 ->update([
-                    'l_name'=>strtoupper($request->nama),
-                    'l_updated'=>$tanggal,
+                    'l_code' => $request->kode,
+                    'l_divisi' => $request->divisi,
+                    'l_subdivisi' => $request->level,
+                    'l_jabatan' => $request->jabatan,
+                    'l_updated' => $tanggal,
                 ]);
 
             DB::commit();
@@ -181,6 +185,81 @@ class LowonganController extends Controller
               'status' => 'gagal',
               'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
           ]);
+        }
+    }
+
+    public function lookup_divisi(Request $request)
+    {
+        $formatted_tags = array();
+        $term = trim($request->q);
+        if (empty($term)) 
+        {
+            $divisi = DB::table('m_divisi')->orderBy('c_divisi', 'ASC')->limit(10)->get();
+            foreach ($divisi as $val) 
+            {
+                $formatted_tags[] = ['id' => $val->c_id, 'text' => $val->c_divisi];
+            }
+            return Response::json($formatted_tags);
+        }
+        else
+        {
+            $divisi = DB::table('m_divisi')->where('c_divisi', 'LIKE', '%'.$term.'%')->orderBy('c_divisi', 'ASC')->limit(10)->get();
+            foreach ($divisi as $val) 
+            {
+                $formatted_tags[] = ['id' => $val->c_id, 'text' => $val->c_divisi];
+            }
+
+          return Response::json($formatted_tags);  
+        }
+    }
+
+    public function lookup_level(Request $request)
+    {
+        $formatted_tags = array();
+        $term = trim($request->q);
+        if (empty($term)) 
+        {
+            $subdivisi = DB::table('m_sub_divisi')->orderBy('c_subdivisi', 'ASC')->limit(10)->get();
+            foreach ($subdivisi as $val) 
+            {
+                $formatted_tags[] = ['id' => $val->c_id, 'text' => $val->c_subdivisi];
+            }
+            return Response::json($formatted_tags);
+        }
+        else
+        {
+            $subdivisi = DB::table('m_sub_divisi')->where('c_subdivisi', 'LIKE', '%'.$term.'%')->orderBy('c_subdivisi', 'ASC')->limit(10)->get();
+            foreach ($subdivisi as $val) 
+            {
+            $formatted_tags[] = ['id' => $val->c_id, 'text' => $val->c_subdivisi];
+            }
+
+          return Response::json($formatted_tags);  
+        }
+    }
+
+    public function lookup_jabatan(Request $request)
+    {
+        $formatted_tags = array();
+        $term = trim($request->q);
+        if (empty($term)) 
+        {
+            $jabatan = DB::table('m_jabatan')->where('c_divisi_id', '=', $request->divisi)->where('c_sub_divisi_id', '=', $request->level)->orderBy('c_posisi', 'ASC')->limit(10)->get();
+            foreach ($jabatan as $val) 
+            {
+                $formatted_tags[] = ['id' => $val->c_id, 'text' => $val->c_posisi];
+            }
+            return Response::json($formatted_tags);
+        }
+        else
+        {
+            $jabatan = DB::table('m_jabatan')->where('c_divisi_id', '=', $request->divisi)->where('c_sub_divisi_id', '=', $request->level)->where('c_posisi', 'LIKE', '%'.$term.'%')->orderBy('c_posisi', 'ASC')->limit(10)->get();
+            foreach ($jabatan as $val) 
+            {
+                $formatted_tags[] = ['id' => $val->c_id, 'text' => $val->c_posisi];
+            }
+
+          return Response::json($formatted_tags);  
         }
     }
 

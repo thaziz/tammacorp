@@ -1,7 +1,5 @@
 <div class="modal fade" id="test_interview" role="dialog">
   <div class="modal-dialog">
-    
-    
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header" style="background-color: #e77c38;">
@@ -10,58 +8,60 @@
         </div>
 
         <div class="modal-body">
-          
-          <div class="row">
+          <form method="POST" id="form-interview" name="formInterview">
+          {{ csrf_field() }}
+            <div class="row">
 
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <label>Tanggal Interview</label>
-            </div>
+              <input type="hidden" class="form-control" name="i_pelamarid" id="i_pelamarid">
+              <input type="hidden" class="form-control" name="i_pjadwal_id" id="i_pjadwal_id">
+              <div class="col-md-4 col-sm-4 col-xs-12">
+                <label>Tanggal Interview</label>
+              </div>
 
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <div class="form-group">
-                <input type="text" class="form-control input-sm datepicker" readonly="" style="cursor: pointer;" name="">
+              <div class="col-md-8 col-sm-8 col-xs-12">
+                <div class="form-group">
+                  <input type="text" class="form-control input-sm datepicker1" readonly="" style="cursor: pointer;" name="i_tgl" id="i_tgl">
+                </div>
+              </div>
+
+              <div class="col-md-4 col-sm-4 col-xs-12">
+                <label>Jam</label>
+              </div>
+              <div class="col-md-8 col-sm-8 col-xs-12">
+                <div class="form-group">
+                  <input type="text" class="form-control input-sm timepicker" name="i_jam" id="i_jam">
+                </div>
+              </div>
+
+              <div class="col-md-4 col-sm-4 col-xs-12">
+                <label>Lokasi</label>
+              </div>
+              <div class="col-md-8 col-sm-8 col-xs-12">
+                <div class="form-group">
+                  <input type="text" class="form-control input-sm" name="i_lokasi" id="i_lokasi">
+                </div>
+              </div>
+
+              <div class="col-md-4 col-sm-4 col-xs-12">
+                <label title="Person In Charge, adalah istilah yg digunakan untuk menunjukkan siapa orang yg bertangung jawab menangani hal tertentu.">PIC</label>
+              </div>
+              <div class="col-md-8 col-sm-8 col-xs-12">
+                <div class="form-group">
+                  <input type="text" id="i_pic" class="form-control ui-autocomplete-input input-sm" autocomplete="off" name="i_pic">
+                  <input type="hidden" class="form-control input-sm" name="i_pic_id" id="i_pic_id">
+                </div>
               </div>
             </div>
-
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <label>Jam</label>
-            </div>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <div class="form-group">
-                <input type="text" class="form-control input-sm" name="">
-              </div>
-            </div>
-
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <label>Lokasi</label>
-            </div>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <div class="form-group">
-                <input type="text" class="form-control input-sm" name="">
-              </div>
-            </div>
-
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <label title="Person In Charge, adalah istilah yg digunakan untuk menunjukkan siapa orang yg bertangung jawab menangani hal tertentu.">PIC</label>
-            </div>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-              <div class="form-group">
-                <input type="text" class="form-control input-sm" name="">
-              </div>
-            </div>
-          </div>
-
+          </form>
         </div>
     
         <div class="modal-footer" style="border-top: none;">
+          <button type="button" class="btn btn-info" onclick="procJadwalInterview()">Submit</button>
           <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
         </div>
 
       </div>
       <!-- /Modal content-->
-    
-
-
   </div>
 
 </div>

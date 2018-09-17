@@ -490,6 +490,7 @@ Route::group(['middleware' => 'auth'], function () {
 /*Recruitment*/
     Route::get('/hrd/recruitment/rekrut', 'HrdController@rekrut')->name('rekrut');
     Route::get('/hrd/recruitment/get-data-hrd', 'RecruitmentController@getDataHrd');
+    Route::get('/hrd/recruitment/get-data-hrd-diterima', 'RecruitmentController@getDataHrdDiterima');
     Route::get('/hrd/recruitment/process_rekrut/{id}', 'RecruitmentController@process_rekrut');
     Route::get('/hrd/recruitment/preview_rekrut/{id}', 'RecruitmentController@preview_rekrut');
     Route::post('/hrd/recruitment/approval_1', 'RecruitmentController@approval_1');
@@ -497,61 +498,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/hrd/recruitment/approval_2', 'RecruitmentController@approval_2');
     Route::post('/hrd/recruitment/update_approval_2', 'RecruitmentController@update_approval_2');
     Route::post('/hrd/recruitment/approval_3', 'RecruitmentController@approval_3');
+    Route::get('/hrd/recruitment/autocomplete-pic', 'RecruitmentController@autocomplete');
+    Route::get('/hrd/recruitment/get-jadwal-interview/{id}', 'RecruitmentController@getJadwalInterview');
+    Route::post('/hrd/recruitment/proc-jadwal-interview', 'RecruitmentController@procJadwalInterview');
+    Route::get('/hrd/recruitment/get-jadwal-presentasi/{id}', 'RecruitmentController@getJadwalPresentasi');
+    Route::post('/hrd/recruitment/proc-jadwal-presentasi', 'RecruitmentController@procJadwalPresentasi');
 //Master Data Lowongan
-    Route::get('/master/datalowongan/index', 'Master\LowonganController@index');
-    Route::get('/master/datalowongan/datatable-index', 'Master\LowonganController@get_datatable_index');
-    Route::get('/master/datalowongan/tambah_lowongan', 'master\LowonganController@tambah_data');
-    Route::post('/master/datalowongan/simpan_lowongan', 'master\LowonganController@simpan_data');
-    Route::post('/master/datalowongan/ubah_status', 'master\LowonganController@ubah_status');
-    Route::get('/master/datalowongan/edit_lowongan', 'master\LowonganController@edit_data');
-    Route::post('/master/datalowongan/update_lowongan', 'master\LowonganController@update_data');
-
-    /*Keuangan*/
-        // Transaksi Kas
-
-            Route::get('/keuangan/p_inputtransaksi/transaksi_kas', 'Keuangan\Transaksi\transaksi_kas_controller@index');
-            Route::get('/keuangan/p_inputtransaksi/transaksi_kas/form-resource', [
-                'uses'   => 'Keuangan\Transaksi\transaksi_kas_controller@form_resource',
-                'as'    => 'transaksi_kas.form_resource'
-            ]);
-            Route::get('/keuangan/p_inputtransaksi/transaksi_kas/list_transaksi', [
-                'uses'   => 'Keuangan\Transaksi\transaksi_kas_controller@list_transaksi',
-                'as'    => 'transaksi_kas.list_transaksi'
-            ]);
-            Route::post('/keuangan/p_inputtransaksi/transaksi_kas/save', [
-                'uses'   => 'Keuangan\Transaksi\transaksi_kas_controller@save',
-                'as'    => 'transaksi_kas.save'
-            ]);
-            Route::post('/keuangan/p_inputtransaksi/transaksi_kas/update', [
-                'uses'   => 'Keuangan\Transaksi\transaksi_kas_controller@update',
-                'as'    => 'transaksi_kas.update'
-            ]);
-            Route::post('/keuangan/p_inputtransaksi/transaksi_kas/delete', [
-                'uses'   => 'Keuangan\Transaksi\transaksi_kas_controller@delete',
-                'as'    => 'transaksi_kas.delete'
-            ]);
-
-
-        // End Transaksi Kas
-
-
-    Route::get('/keuangan/l_hutangpiutang/hutang', 'Keuangan\KeuanganController@hutang');
-    Route::get('/keuangan/l_jurnal/jurnal', 'Keuangan\KeuanganController@jurnal');
-    Route::get('/keuangan/analisaprogress/analisa', 'Keuangan\KeuanganController@analisa');
-    Route::get('/keuangan/analisaocf/analisa2', 'Keuangan\KeuanganController@analisa2');
-    Route::get('/keuangan/analisaaset/analisa3', 'Keuangan\KeuanganController@analisa3');
-    Route::get('/keuangan/analisacashflow/analisa4', 'Keuangan\KeuanganController@analisa4');
-    Route::get('/keuangan/analisaindex/analisa5', 'Keuangan\KeuanganController@analisa5');
-    Route::get('/keuangan/analisarasio/analisa6', 'Keuangan\KeuanganController@analisa6');
-    Route::get('/keuangan/analisabottom/analisa7', 'Keuangan\KeuanganController@analisa7');
-    Route::get('/keuangan/analisaroe/analisa8', 'Keuangan\KeuanganController@analisa8');
-    Route::get('/keuangan/spk/create-id', 'Keuangan\spkFinancialController@spkCreateId');
-    Route::get('/keuangan/spk/data-produc-plan', 'Keuangan\spkFinancialController@productplan');
-    Route::get('/produksi/spk/final/simpan-spk', 'Keuangan\spkFinancialController@simpanSpk');
-    Route::get('/produksi/spk/draft/simpan-spk', 'Keuangan\spkFinancialController@simpanDraftSpk');
-    Route::get('/produksi/spk/edit/{id}', 'Keuangan\spkFinancialController@editSpk');
-    Route::get('/keuangan/spk/lihat-detail', 'Keuangan\spkFinancialController@detailSpk');
-    Route::get('/keuangan/spk/update-status/{id}', 'Keuangan\spkFinancialController@updateStatus');
 // rizky
     Route::get('/keuangan/p_hasilproduksi/pembatalanPenerimaan', 'Keuangan\KeuanganController@pembatalanPenerimaan');
     Route::get('/keuangan/p_hasilproduksi/ubah_status_transaksi/{id}/{id2}', 'Keuangan\KeuanganController@ubahStatusTransaksi');

@@ -2,12 +2,14 @@
 @section('content')
 <!-- style for jquery validation error -->
 <style>
-  .error {
-    border: 1px solid #f00;
+  .ui-autocomplete { z-index:2147483647; }
+  .error { border: 1px solid #f00; }
+  .valid { border: 1px solid #8080ff; }
+  .has-error .select2-selection {
+    border: 1px solid #f00 !important;
   }
-
-  .valid {
-      border: 1px solid #8080ff;
+  .has-valid .select2-selection {
+    border: 1px solid #8080ff !important;
   }
 </style>
 <!--BEGIN PAGE WRAPPER-->
@@ -67,28 +69,38 @@
                       </div>
 
                       <div class="col-md-3 col-sm-4 col-xs-12">
-                        <label class="tebal">Nama Lowongan<span style="color: red">*</span></label>
+                        <label class="tebal">Divisi<span style="color: red">*</span></label>
                       </div>
 
                       <div class="col-md-9 col-sm-8 col-xs-12">
-                        <div class="form-group">
-                          <input type="text" id="ip_nama" name="nama" class="form-control input-sm">
-                        </div>
+                        <div class="form-group" id="divSelectDivisi">
+                          <select class="form-control input-sm select2" id="ip_divisi" name="divisi" style="width: 100% !important;">
+                          </select>
+                        </div> 
                       </div>
 
-                      <!-- <div class="col-md-3 col-sm-12 col-xs-12">
-                        <label class="tebal">Type Barang <span style="color: red">*</span></label>
+                      <div class="col-md-3 col-sm-4 col-xs-12">
+                        <label class="tebal">Level<span style="color: red">*</span></label>
                       </div>
-                      
-                      <div class="col-md-9 col-sm-12 col-xs-12">
-                        <div class="form-group">
-                          <select class="form-control" name="type" id="type">
-                             <option selected value="">- Pilih Dahulu -</option>
-                             <option value="BB">BAHAN BAKU</option>
-                             <option value="BJ">BARANG JUAL</option>
-                           </select>                               
-                        </div>
-                      </div> -->
+
+                      <div class="col-md-9 col-sm-8 col-xs-12">
+                        <div class="form-group" id="divSelectLevel">
+                          <select class="form-control input-sm select2" id="ip_level" name="level" style="width: 100% !important;">
+                          </select>
+                        </div> 
+                      </div>
+
+                      <div class="col-md-3 col-sm-4 col-xs-12">
+                        <label class="tebal">Jabatan<span style="color: red">*</span></label>
+                      </div>
+
+                      <div class="col-md-9 col-sm-8 col-xs-12">
+                        <div class="form-group" id="divSelectJabatan">
+                          <select class="form-control input-sm select2" id="ip_jabatan" name="jabatan" style="width: 100% !important;">
+                          </select>
+                        </div> 
+                      </div>
+
                       <div class="col-md-12 col-sm-12 col-xs-12" align="right" id="change_function">
                         <input type="button" name="tambah_data" value="Simpan Data" id="save_data" class="btn btn-primary">
                       </div>
@@ -113,8 +125,92 @@
 <script type="text/javascript">     
 
   $( document ).ready(function() {
-      
-    $("#ip_nama").focus();
+    //fix to issue select2 on modal when opening in firefox
+    $.fn.modal.Constructor.prototype.enforceFocus = function() {};
+    var extensions = {
+        "sFilterInput": "form-control input-sm",
+        "sLengthSelect": "form-control input-sm"
+    }
+    // Used when bJQueryUI is false
+    $.extend($.fn.dataTableExt.oStdClasses, extensions);
+    // Used when bJQueryUI is true
+    $.extend($.fn.dataTableExt.oJUIClasses, extensions);
+
+    //select2
+    $( "#ip_jabatan" ).select2({
+    });
+    $( "#ip_level" ).select2({
+    });
+
+    $( "#ip_divisi" ).select2({
+      placeholder: "Pilih Divisi...",
+      ajax: {
+        url: baseUrl + '/master/datalowongan/lookup-data-divisi',
+        dataType: 'json',
+        data: function (params) {
+          return {
+              q: $.trim(params.term)
+          };
+        },
+        processResults: function (data) {
+            return {
+                results: data
+            };
+        },
+        cache: true
+      }, 
+    });
+
+    $('#ip_divisi').change(function() 
+    {
+      $('#ip_level').empty();
+      $('#ip_jabatan').empty();
+      $( "#ip_level" ).select2({
+        placeholder: "Pilih Level...",
+        ajax: {
+          url: baseUrl + '/master/datalowongan/lookup-data-level',
+          dataType: 'json',
+          data: function (params) {
+            return {
+                q: $.trim(params.term)
+            };
+          },
+          processResults: function (data) {
+              return {
+                  results: data
+              };
+          },
+          cache: true
+        }, 
+      });
+    });
+
+    $('#ip_level').change(function() 
+    {
+      $('#ip_jabatan').empty();
+      var divisi = $('#ip_divisi').val();
+      var level = $('#ip_level').val();
+      $( "#ip_jabatan" ).select2({
+        placeholder: "Pilih Jabatan...",
+        ajax: {
+          url: baseUrl + '/master/datalowongan/lookup-data-jabatan',
+          dataType: 'json',
+          data: function (params) {
+            return {
+                q: $.trim(params.term),
+                divisi : divisi,
+                level : level
+            };
+          },
+          processResults: function (data) {
+              return {
+                  results: data
+              };
+          },
+          cache: true
+        }, 
+      });
+    });
     
     $('#change_function').on("click", "#save_data",function(){
       var IsValid = $("form[name='formTambah']").valid();
@@ -173,13 +269,39 @@
     $("#form-save").validate({
       // Specify validation rules
       rules:{
-          nama: "required"
+          divisi : "required",
+          level : "required",
+          jabatan : "required"
       },
       errorPlacement: function() {
           return false;
       },
       submitHandler: function(form) {
         form.submit();
+      }
+    });
+
+    $('#ip_divisi').change(function(event) {
+      if($(this).val() != ""){
+        $('#divSelectDivisi').removeClass('has-error').addClass('has-valid');
+      }else{
+        $('#divSelectDivisi').addClass('has-error').removeClass('has-valid');
+      }
+    });
+
+    $('#ip_level').change(function(event) {
+      if($(this).val() != ""){
+        $('#divSelectLevel').removeClass('has-error').addClass('has-valid');
+      }else{
+        $('#divSelectLevel').addClass('has-error').removeClass('has-valid');
+      }
+    });
+
+    $('#ip_jabatan').change(function(event) {
+      if($(this).val() != ""){
+        $('#divSelectJabatan').removeClass('has-error').addClass('has-valid');
+      }else{
+        $('#divSelectJabatan').addClass('has-error').removeClass('has-valid');
       }
     });
 

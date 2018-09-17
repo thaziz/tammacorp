@@ -1,7 +1,15 @@
 @extends('main')
 @section('extra_styles')
 <style type="text/css">
-  
+  .ui-autocomplete { z-index:2147483647; }
+  .error { border: 1px solid #f00; }
+  .valid { border: 1px solid #8080ff; }
+  .has-error .select2-selection {
+    border: 1px solid #f00 !important;
+  }
+  .has-valid .select2-selection {
+    border: 1px solid #8080ff !important;
+  }
   .bold{
     font-weight: bold;
   }
@@ -60,7 +68,6 @@
             <div id="generalTabContent" class="tab-content responsive">
               @include('hrd.recruitment.test_interview')
               @include('hrd.recruitment.lolos_interview')
-              @include('hrd.recruitment.diterima')
 
               <div id="alert-tab" class="tab-pane fade in active">
                 <form method="POST" id="form-app" name="formApp">
@@ -83,6 +90,9 @@
                           <input type="hidden" class="form-control input-sm" readonly id="ip_id" name="id" value="{{$data->p_id}}">
                           <input type="hidden" class="form-control input-sm" readonly id="ip_status" name="status" value="{{$data->p_apply_status}}">
                           <input type="hidden" class="form-control input-sm" readonly id="ip_statusdt" name="statusdt" value="{{$data->p_apply_statusdt}}">
+                          <input type="hidden" class="form-control input-sm" name="h_divisi" id="h_divisi" value="{{$vacancy->l_divisi}}">
+                          <input type="hidden" class="form-control input-sm" name="h_level" id="h_level" value="{{$vacancy->l_subdivisi}}">
+                          <input type="hidden" class="form-control input-sm" name="h_posisi" id="h_posisi" value="{{$vacancy->l_jabatan}}">
                         </div>
                       </div>
 
@@ -102,9 +112,20 @@
 
                       <div class="col-md-6 col-sm-6 col-xs-12">
                         <div class="form-group">
-                          <input type="text" class="form-control input-sm" name="jabatan" id="ip_jabatan" value="{{$data->l_name}}" readonly>
+                          <input type="text" class="form-control input-sm" name="jabatan" id="ip_jabatan" value="{{$vacancy->c_divisi}}" readonly>
                         </div>
                       </div>
+
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <label>Posisi</label>
+                      </div>
+
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                          <input type="text" class="form-control input-sm" name="posisi" id="ip_posisi" value="{{$vacancy->c_posisi.' | '.$vacancy->c_subdivisi}}" readonly>
+                        </div>
+                      </div>
+
                     </div>
 
                     <div class="col-md-6 col-sm-12 col-xs-12">
@@ -114,9 +135,37 @@
                         </div>
                       </div>
 
-                      <div class="col-md-6 col-sm-6 col-xs-12">
+                      <div class="col-md-12 col-sm-12 col-xs-12">
                         <label style="font-style: oblique; font-size: 16px; color: blue;">{{$data->p_st_name}}</label>
                         <label style="font-style: oblique; font-size: 16px;">( {{$data->p_stdt_name}} )</label>
+                        <br>
+                        @if ($data->p_apply_statusdt == 4)
+                          @if (count($jadwal_i) > 0)
+                            <label style="font-style: oblique; font-size: 16px; font-weight: bold;">Jadwal Interview</label>
+                            <br>
+                            <label style="font-style: oblique; font-size: 14px;">Tanggal : {{ date('d-m-Y', strtotime( $jadwal_i->pj_date)) }}</label>
+                            <br>
+                            <label style="font-style: oblique; font-size: 14px;">Jam : {{ $jadwal_i->pj_time }} WIB</label>
+                            <br>
+                            <label style="font-style: oblique; font-size: 14px;">Lokasi : {{ $jadwal_i->pj_lokasi }}</label>
+                            <br>
+                            <label style="font-style: oblique; font-size: 14px;">PIC : {{ $jadwal_i->c_nik }} - {{ $jadwal_i->c_nama }}</label>
+                          @endif
+                        @elseif ($data->p_apply_statusdt == 7)
+                          @if (count($jadwal_p) > 0)
+                            <label style="font-style: oblique; font-size: 16px; font-weight: bold;">Jadwal Presentasi</label>
+                            <br>
+                            <label style="font-style: oblique; font-size: 14px;">Tanggal : {{ date('d-m-Y', strtotime( $jadwal_p->pj_date)) }}</label>
+                            <br>
+                            <label style="font-style: oblique; font-size: 14px;">Jam : {{ $jadwal_p->pj_time }} WIB</label>
+                            <br>
+                            <label style="font-style: oblique; font-size: 14px;">Lokasi : {{ $jadwal_p->pj_lokasi }}</label>
+                            <br>
+                            <label style="font-style: oblique; font-size: 14px;">PIC : {{ $jadwal_p->c_nik }} - {{ $jadwal_p->c_nama }}</label>
+                          @endif
+                        @endif
+                        
+                        
                       </div>                    
                     </div>
                   </div>   
@@ -324,7 +373,8 @@
           $('#fs_approve1').addClass('abu-abu');
           $('#fs_approve2').removeClass('abu-abu');
           $('#fs_approve3').addClass('abu-abu');
-          $('#appending').append('<button class="btn btn-primary" id="btn_app" onclick="approval2()">Process</button>'
+          $('#appending').append('<button class="btn btn-success" onclick="jadwalInterview()">Set Jadwal</button>'
+                                +'<button class="btn btn-primary" id="btn_app" onclick="approval2()">Process</button>'
                                 +'<a href="'+baseUrl+'/hrd/recruitment/rekrut" class="btn btn-default">Back</a>');
         }
       }
@@ -360,8 +410,9 @@
           $('#fs_approve1').addClass('abu-abu');
           $('#fs_approve2').addClass('abu-abu');
           $('#fs_approve3').removeClass('abu-abu');
-          $('#appending').append('<button class="btn btn-primary" id="btn_app" onclick="approval3()">Process</button>'
-                                +'<a href="'+baseUrl+'/hrd/recruitment/rekrut" class="btn btn-default">Back</a>');
+          $('#appending').append('<button class="btn btn-success" onclick="jadwalPresentasi()">Set Jadwal</button>'
+                                 +'<button class="btn btn-primary" id="btn_app" onclick="approval3()">Process</button>'
+                                 +'<a href="'+baseUrl+'/hrd/recruitment/rekrut" class="btn btn-default">Back</a>');
         }
       }
       else if($('#ip_status').val() == '4')
@@ -405,10 +456,115 @@
         }
       });
 
-      
-      $('#app_3').prop( "checked", true );
+      $("#form-interview").validate({
+        rules:{
+            i_tgl: "required",
+            i_jam: "required",
+            i_lokasi: "required",
+            i_pic: "required"
+        },
+        errorPlacement: function() {
+            return false;
+        },
+        submitHandler: function(form) {
+          form.submit();
+        }
+      });
 
-    });  
+      $("#form-presentasi").validate({
+        rules:{
+            p_tgl: "required",
+            p_jam: "required",
+            p_lokasi: "required",
+            p_pic: "required"
+        },
+        errorPlacement: function() {
+            return false;
+        },
+        submitHandler: function(form) {
+          form.submit();
+        }
+      });
+
+      //autocomplete w/parameters
+      $( "#i_pic" ).focus(function() {
+        var key = 1;
+        $("#i_pic").autocomplete({
+          source: function(request, response) {
+            $.ajax({
+              url: baseUrl + "/hrd/recruitment/autocomplete-pic",
+              dataType: "JSON",
+              data: {
+                term : request.term
+              },
+              success: function(data) {
+                response(data);
+              }
+            });
+          },
+          select: function(event, ui) {
+            $('#i_pic_id').val(ui.item.id);
+            $('#i_pic').val(ui.item.label);
+          },
+          minLength: 1,
+          delay: 300
+        });
+        $('#i_pic').val('');
+        $('#i_pic_id').val('');
+      });
+
+      $( "#p_pic" ).focus(function() {
+        var key = 1;
+        $("#p_pic").autocomplete({
+          source: function(request, response) {
+            $.ajax({
+              url: baseUrl + "/hrd/recruitment/autocomplete-pic",
+              dataType: "JSON",
+              data: {
+                term : request.term
+              },
+              success: function(data) {
+                response(data);
+              }
+            });
+          },
+          select: function(event, ui) {
+            $('#p_pic_id').val(ui.item.id);
+            $('#p_pic').val(ui.item.label);
+          },
+          minLength: 1,
+          delay: 300
+        });
+        $('#p_pic').val('');
+        $('#p_pic_id').val('');
+      });
+
+      // var timepicker = new TimePicker('i_jam', {
+      //     lang: 'en',
+      //     theme: 'dark'
+      // });
+      // timepicker.on('change', function (evt) {
+
+      //   var value = (evt.hour || '00') + ':' + (evt.minute || '00');
+      //   evt.element.value = value;
+      // });
+
+      var timepicker = new TimePicker(['i_jam', 'p_jam'], {
+        theme: 'dark', // 'blue-grey'
+        lang: 'en'
+      });
+
+      timepicker.on('change', function(evt) {
+        var value = (evt.hour || '00') + ':' + (evt.minute || '00');
+
+        if (evt.element.id == 'i_jam') {
+          evt.element.value = value;
+        } else {
+          evt.element.value = value;
+        }
+      });
+
+    });//end jquery
 
     function approval1() 
     {
@@ -665,6 +821,202 @@
               position: 'topRight', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
               title: 'Pemberitahuan',
               message: "Data gagal disimpan !"
+            });
+          },
+          async: false
+        });
+      }
+      else //else validation
+      {
+        iziToast.warning({
+          //icon: 'fa fa-microphone',
+          position: 'center',
+          message: "Mohon Lengkapi data form !"
+        });
+      }
+    }
+
+    function jadwalInterview() 
+    {
+      var id = $('#ip_id').val();
+      $.ajax({
+        url : baseUrl + "/hrd/recruitment/get-jadwal-interview/" + id,
+        type: "GET",
+        dataType: "JSON",
+        success: function(response)
+        {
+          if (response.data.length > 0) {
+            var date = response.data[0].pj_date;
+            var tglbaru = date.split("-").reverse().join("-");
+            $('#i_pjadwal_id').val(response.data[0].pj_id);
+            $('#i_pelamarid').val(response.data[0].pj_pid);
+            $('#i_tgl').val(tglbaru);
+            $('#i_jam').val(response.data[0].pj_time);
+            $('#i_lokasi').val(response.data[0].pj_lokasi);
+            $('#i_pic').val(response.data[0].c_nik+' '+response.data[0].c_nama);
+            $('#i_pic_id').val(response.data[0].pj_pmid);
+          }else{
+            $('#i_pjadwal_id').val('');
+            $('#i_pelamarid').val(id);
+            $('#i_tgl').val('');
+            $('#i_jam').val('');
+            $('#i_lokasi').val('');
+            $('#i_pic').val('');
+            $('#i_pic_id').val('');
+          }
+          
+          $('#test_interview').modal('show');
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            alert('Error get data from ajax');
+        }
+      });
+    }
+
+    function procJadwalInterview() 
+    {
+      var IsValid = $("form[name='formInterview']").valid();
+      if(IsValid){
+        $.ajax({
+          type: "POST",
+          url : baseUrl + "/hrd/recruitment/proc-jadwal-interview",
+          data: $('#form-interview').serialize(),
+          success: function(response)
+          {
+            if(response.status == "sukses")
+            {
+              iziToast.success({
+                position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                title: 'Pemberitahuan',
+                message: response.pesan,
+                onClosing: function(instance, toast, closedBy){
+                   $('#test_interview').modal('hide');
+                   location.reload();
+                }
+              });
+            }
+            else
+            {
+              iziToast.error({
+                position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                title: 'Pemberitahuan',
+                message: "Data Gagal disimpan !",
+                onClosing: function(instance, toast, closedBy){
+                   $('#test_interview').modal('hide');
+                   location.reload();
+                }
+              });
+            }              
+          },
+          error: function()
+          {
+            iziToast.error({
+              position: 'topRight', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+              title: 'Pemberitahuan',
+              message: "Data gagal disimpan !",
+              onClosing: function(instance, toast, closedBy){
+                $('#test_interview').modal('hide');
+                location.reload();
+              }
+            });
+          },
+          async: false
+        });
+      }
+      else //else validation
+      {
+        iziToast.warning({
+          //icon: 'fa fa-microphone',
+          position: 'center',
+          message: "Mohon Lengkapi data form !"
+        });
+      }
+    }
+
+    function jadwalPresentasi() 
+    {
+      var id = $('#ip_id').val();
+      $.ajax({
+        url : baseUrl + "/hrd/recruitment/get-jadwal-presentasi/" + id,
+        type: "GET",
+        dataType: "JSON",
+        success: function(response)
+        {
+          if (response.data.length > 0) {
+            var date = response.data[0].pj_date;
+            var tglbaru = date.split("-").reverse().join("-");
+            $('#p_pjadwal_id').val(response.data[0].pj_id);
+            $('#p_pelamarid').val(response.data[0].pj_pid);
+            $('#p_tgl').val(tglbaru);
+            $('#p_jam').val(response.data[0].pj_time);
+            $('#p_lokasi').val(response.data[0].pj_lokasi);
+            $('#p_pic').val(response.data[0].c_nik+' '+response.data[0].c_nama);
+            $('#p_pic_id').val(response.data[0].pj_pmid);
+          }else{
+            $('#p_pjadwal_id').val('');
+            $('#p_pelamarid').val(id);
+            $('#p_tgl').val('');
+            $('#p_jam').val('');
+            $('#p_lokasi').val('');
+            $('#p_pic').val('');
+            $('#p_pic_id').val('');
+          }
+          
+          $('#test_presentasi').modal('show');
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            alert('Error get data from ajax');
+        }
+      });
+    }
+
+    function procJadwalPresentasi() 
+    {
+      var IsValid = $("form[name='formPresentasi']").valid();
+      if(IsValid){
+        $.ajax({
+          type: "POST",
+          url : baseUrl + "/hrd/recruitment/proc-jadwal-presentasi",
+          data: $('#form-presentasi').serialize(),
+          success: function(response)
+          {
+            if(response.status == "sukses")
+            {
+              iziToast.success({
+                position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                title: 'Pemberitahuan',
+                message: response.pesan,
+                onClosing: function(instance, toast, closedBy){
+                   $('#test_presentasi').modal('hide');
+                   location.reload();
+                }
+              });
+            }
+            else
+            {
+              iziToast.error({
+                position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                title: 'Pemberitahuan',
+                message: "Data Gagal disimpan !",
+                onClosing: function(instance, toast, closedBy){
+                   $('#test_presentasi').modal('hide');
+                   location.reload();
+                }
+              });
+            }              
+          },
+          error: function()
+          {
+            iziToast.error({
+              position: 'topRight', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+              title: 'Pemberitahuan',
+              message: "Data gagal disimpan !",
+              onClosing: function(instance, toast, closedBy){
+                $('#test_presentasi').modal('hide');
+                location.reload();
+              }
             });
           },
           async: false

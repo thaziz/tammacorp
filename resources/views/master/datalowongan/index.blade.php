@@ -56,7 +56,9 @@
                         <tr>
                           <th class="wd-15p" width="5%">NO</th>
                           <th class="wd-15p" width="5%">Kode Lowongan</th>
-                          <th class="wd-15p">Nama Lowongan</th>
+                          <th class="wd-15p" width="5%">Divisi</th>
+                          <th class="wd-15p" width="5%">Level</th>
+                          <th class="wd-15p">Jabatan</th>
                           <th class="wd-15p">Status</th>
                           <th class="wd-15p" width="10%">Aksi</th>
                         </tr>
@@ -103,9 +105,11 @@
       },
       "columns" : [
         {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
-        {"data" : "l_code", "width" : "20%"},
-        {"data" : "l_name", "width" : "40%"},
-        {"data" : "status", "width" : "25%"},
+        {"data" : "l_code", "width" : "10%"},
+        {"data" : "c_divisi", "width" : "20%"},
+        {"data" : "c_subdivisi", "width" : "20%"},
+        {"data" : "c_posisi", "width" : "20%"},
+        {"data" : "status", "width" : "10%"},
         {"data" : "aksi", orderable: false, searchable: false, "width" : "10%"}
       ],
       "language": {
