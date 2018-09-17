@@ -82,7 +82,7 @@
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
                               <div class="form-group">
-                                <input type="text" class="form-control input-sm" readonly="" name="">
+                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_name}}">
                               </div>
                             </div>
 
@@ -92,7 +92,7 @@
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
                               <div class="form-group">
-                                <input type="text" class="form-control input-sm" readonly="" name="">
+                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_nip}}">
                               </div>
                             </div>
 
@@ -102,7 +102,7 @@
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
                               <div class="form-group">
-                                <input type="text" class="form-control input-sm" readonly="" name="">
+                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_address}}">
                               </div>
                             </div>
 
@@ -112,7 +112,7 @@
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
                               <div class="form-group">
-                                <input type="text" class="form-control input-sm" readonly="" name="">
+                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_address_now}}">
                               </div>
                             </div>
 
@@ -122,7 +122,7 @@
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
                               <div class="form-group">
-                                <input type="text" class="form-control input-sm" readonly="" name="">
+                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_birth_place}}">
                               </div>
                             </div>
                          
@@ -132,7 +132,7 @@
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
                               <div class="form-group">
-                                <input type="text" class="form-control input-sm" readonly="" name="">
+                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{date("d-M-Y", strtotime($data->p_birthday))}}">
                               </div>
                             </div>
 
@@ -142,7 +142,17 @@
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
                               <div class="form-group">
-                                <input type="text" class="form-control input-sm" readonly="" name="">
+                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_education}}">
+                              </div>
+                            </div>
+
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                              <label>Email</label>
+                            </div>
+
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                              <div class="form-group">
+                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_email}}">
                               </div>
                             </div>
 
@@ -152,7 +162,7 @@
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
                               <div class="form-group">
-                                <input type="text" class="form-control input-sm" readonly="" name="">
+                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_tlp}}">
                               </div>
                             </div>
 
@@ -162,7 +172,7 @@
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
                               <div class="form-group">
-                                <input type="text" class="form-control input-sm" readonly="" name="">
+                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_religion}}">
                               </div>
                             </div>
 
@@ -172,7 +182,7 @@
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
                               <div class="form-group">
-                                <input type="text" class="form-control input-sm" readonly="" name="">
+                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_status}}">
                               </div>
                             </div>
 
@@ -182,7 +192,7 @@
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
                               <div class="form-group">
-                                <input type="text" class="form-control input-sm" readonly="" name="">
+                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_wife_name}}">
                               </div>
                             </div>
 
@@ -192,7 +202,7 @@
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
                               <div class="form-group">
-                                <input type="text" class="form-control input-sm" readonly="" name="">
+                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_child}}">
                               </div>
                             </div>
                         </div>
@@ -210,7 +220,7 @@
 
                           <div class="col-md-6 col-sm-6 col-xs-12">
                             <div class="form-group">
-                              <input type="text" class="form-control input-sm" readonly="" name="">
+                              <input type="text" class="form-control input-sm" readonly="" name="" value="{{$cv1[0]['d_cv_company']}}">
                             </div>
                           </div>
 
@@ -220,7 +230,7 @@
 
                           <div class="col-md-6 col-sm-6 col-xs-12">
                             <div class="form-group">
-                              <input type="text" class="form-control input-sm" readonly="" name="">
+                              <input type="text" class="form-control input-sm" readonly="" name="" value="{{$cv1[0]['d_cv_thnmasuk']}}">
                             </div>
                           </div>
 
@@ -231,7 +241,7 @@
 
                           <div class="col-md-6 col-sm-6 col-xs-12">
                             <div class="form-group">
-                              <input type="text" class="form-control input-sm" readonly="" name="">
+                              <input type="text" class="form-control input-sm" readonly="" name="" value="{{$cv1[0]['d_cv_thnkeluar']}}">
                             </div>
                           </div>
 
@@ -242,7 +252,7 @@
 
                           <div class="col-md-6 col-sm-6 col-xs-12">
                             <div class="form-group">
-                              <input type="text" class="form-control input-sm" readonly="" name="">
+                              <textarea name="" class="form-control input-sm" id="" rows="3" readonly>{{$cv1[0]['d_cv_jobdesc']}}</textarea>
                             </div>
                           </div>
 
@@ -257,7 +267,7 @@
 
                           <div class="col-md-6 col-sm-6 col-xs-12">
                             <div class="form-group">
-                              <input type="text" class="form-control input-sm" readonly="" name="">
+                              <input type="text" class="form-control input-sm" readonly="" name="" value="{{$cv2[0]['d_cv_company']}}">
                             </div>
                           </div>
 
@@ -267,7 +277,7 @@
 
                           <div class="col-md-6 col-sm-6 col-xs-12">
                             <div class="form-group">
-                              <input type="text" class="form-control input-sm" readonly="" name="">
+                              <input type="text" class="form-control input-sm" readonly="" name="" value="{{$cv2[0]['d_cv_thnmasuk']}}">
                             </div>
                           </div>
 
@@ -278,7 +288,7 @@
 
                           <div class="col-md-6 col-sm-6 col-xs-12">
                             <div class="form-group">
-                              <input type="text" class="form-control input-sm" readonly="" name="">
+                              <input type="text" class="form-control input-sm" readonly="" name="" value="{{$cv2[0]['d_cv_thnkeluar']}}">
                             </div>
                           </div>
 
@@ -289,7 +299,7 @@
 
                           <div class="col-md-6 col-sm-6 col-xs-12">
                             <div class="form-group">
-                              <input type="text" class="form-control input-sm" readonly="" name="">
+                              <textarea name="" class="form-control input-sm" id="" rows="3" readonly>{{$cv2[0]['d_cv_jobdesc']}}</textarea>
                             </div>
                           </div>
                         </div>
@@ -302,51 +312,81 @@
                               <label class="bold s16 underline">Kelengkapan Berkas</label>
                             </div>
                           </div>
-                          <div class="col-md-3 col-sm-6 col-xs-12">
-                            <label>CV</label>
-                          </div>
-                          <div class="col-md-3 col-sm-6 col-xs-12">
-                            <div class="form-group">
-                              <input type="text" class="form-control input-sm" readonly="" name="">
+
+                          <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                              <?php $d_drh = $drh[0]['bks_name']; ?>
+                              <label>CV</label>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                              <div class="form-group">
+                                <input type="text" class="form-control input-sm" readonly="" name="">
+                              </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-12" align="center">
+                              @if ($d_drh == '')
+                                <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_drh)}}');" class="popup btn btn-info disabled">Lihat Berkas</a>
+                              @else
+                                <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_drh)}}');" class="popup btn btn-info">Lihat Berkas</a>
+                              @endif
                             </div>
                           </div>
-                          <div class="col-md-6 col-sm-12 col-xs-12" align="center">
-                            <iframe src='https://docs.google.com/viewer?url=ENTER URL OF YOUR DOCUMENT HERE&embedded=true' frameborder='0'></iframe>
+                          <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                              <?php $d_ija = $ijasah[0]['bks_name']; ?>
+                              <label>Ijazah</label>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                              <div class="form-group">
+                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{$d_ija}}">
+                              </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-12" align="center">
+                              @if ($d_ija == '')
+                                <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_ija)}}');" class="popup btn btn-info disabled">Lihat Berkas</a>
+                              @else
+                                <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_ija)}}');" class="popup btn btn-info">Lihat Berkas</a>
+                              @endif
+                            </div>
                           </div>
 
-                          <div class="col-md-3 col-sm-6 col-xs-12">
-                            <label>Ijazah</label>
-                          </div>
-                          <div class="col-md-3 col-sm-6 col-xs-12">
-                            <div class="form-group">
-                              <input type="text" class="form-control input-sm" readonly="" name="">
+                          <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                              <?php $d_serti = $serti[0]['bks_name']; ?>
+                              <label>Sertifikat</label>
                             </div>
-                          </div>
-                          <div class="col-md-6 col-sm-12 col-xs-12" align="center">
-                            <iframe src='https://docs.google.com/viewer?url=ENTER URL OF YOUR DOCUMENT HERE&embedded=true' frameborder='0'></iframe>
-                          </div>
-
-                          <div class="col-md-3 col-sm-6 col-xs-12">
-                            <label>Sertifikat</label>
-                          </div>
-                          <div class="col-md-3 col-sm-6 col-xs-12">
-                            <div class="form-group">
-                              <input type="text" class="form-control input-sm" readonly="" name="">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                              <div class="form-group">
+                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{$d_serti}}">
+                              </div>
                             </div>
-                          </div>
-                          <div class="col-md-6 col-sm-0 col-xs-0" style="height: 50px;">
-                            
+                            <div class="col-md-3 col-sm-3 col-xs-12" align="center">
+                              @if ($d_serti == '')
+                                <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_serti)}}');" class="popup btn btn-info disabled">Lihat Berkas</a>
+                              @else
+                                <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_serti)}}');" class="popup btn btn-info">Lihat Berkas</a>
+                              @endif
+                            </div>
                           </div>
                           
-                          <div class="col-md-3 col-sm-6 col-xs-12">
-                            <label>Lain-lain</label>
-                          </div>
-                          <div class="col-md-3 col-sm-6 col-xs-12">
-                            <div class="form-group">
-                              <input type="text" class="form-control input-sm" readonly="" name="">
+                          <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                              <?php $d_lain = $lain[0]['bks_name']; ?>
+                              <label>Lain-lain</label>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                              <div class="form-group">
+                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{$d_lain}}">
+                              </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-12" align="center">
+                              @if ($d_lain == '')
+                                <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_lain)}}');" class="popup btn btn-info disabled">Lihat Berkas</a>
+                              @else
+                                <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_lain)}}');" class="popup btn btn-info">Lihat Berkas</a>
+                              @endif
                             </div>
                           </div>
-                        </div>
                       </div>
 
                         <div class="row">

@@ -39,6 +39,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/hrd/datajabatan/update-jabatan/{id}', 'Hrd\JabatanController@updateJabatan');
     Route::get('/hrd/datajabatan/tambah-jabatan', 'Hrd\JabatanController@tambahJabatan');
     Route::delete('/hrd/datajabatan/delete-jabatan/{id}', 'Hrd\ManajemenSuratController@deleteJabatan');
+//Mahmud Absensi
+    Route::get('/hrd/absensi/index', 'Hrd\AbsensiController@index');
+    Route::get('/hrd/absensi/table/{tgl1}/{data}', 'Hrd\AbsensiController@table');
+    Route::get('/hrd/absensi/peg/save', 'Hrd\AbsensiController@savePeg');
+    Route::get('/hrd/absensi/detail/{tgl1}/{tgl2}/{tampil}', 'Hrd\AbsensiController@detAbsensi');
+//Mahmud Pengajuan Pelatihan
+    Route::get('/hrd/pengajuan/index', 'Hrd\PengajuanController@index');
+    Route::get('/hrd/Pengajuan/table', 'Hrd\PengajuanController@tablePengajuan');
 //surat
     Route::get('/hrd/manajemensurat', 'Hrd\ManajemenSuratController@index');
     Route::get('/hrd/manajemensurat/surat-phk', 'Hrd\ManajemenSuratController@indexPhk');
@@ -470,18 +478,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/penjualan/returnpenjualan/get-data/{id}', 'Penjualan\ManajemenReturnPenjualanController@getNota');
     Route::get('/penjualan/returnpenjualan/tabelpnota/{id}', 'Penjualan\ManajemenReturnPenjualanController@tabelPotNota');
 //End
-    /*HRD*/
+/*HRD*/
     Route::get('/hrd/manajemenkpipegawai/kpi', 'HrdController@kpi');
     Route::get('/hrd/payroll/table', 'HrdController@table');
-    Route::get('/hrd/recruitment/rekrut', 'HrdController@rekrut')->name('rekrut');
     Route::get('/hrd/datajabatan/edit_jabatan', 'HrdController@edit_jabatan');
     Route::get('/hrd/dataadministrasi/admin', 'HrdController@admin');
     Route::get('/hrd/datalembur/lembur', 'HrdController@lembur');
     Route::get('/hrd/scoreboard/score', 'HrdController@score');
-    Route::get('/hrd/training/training', 'HrdController@training');
-
-    Route::get('/hrd/rekrut/process_rekrut', 'HrdController@process_rekrut')->name('process_rekrut');
-    Route::get('/hrd/rekrut/preview_rekrut', 'HrdController@preview_rekrut')->name('preview_rekrut');
 
     /*Keuangan*/
 
@@ -702,6 +705,26 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/produksi/spk/edit/{id}', 'Keuangan\spkFinancialController@editSpk');
     Route::get('/keuangan/spk/lihat-detail', 'Keuangan\spkFinancialController@detailSpk');
     Route::get('/keuangan/spk/update-status/{id}', 'Keuangan\spkFinancialController@updateStatus');
+    Route::get('/hrd/training/training', 'HrdController@training')->name('training');
+    Route::get('/hrd/training/form_training', 'HrdController@tambah_training')->name('form_training');
+/*Recruitment*/
+    Route::get('/hrd/recruitment/rekrut', 'HrdController@rekrut')->name('rekrut');
+    Route::get('/hrd/recruitment/get-data-hrd', 'RecruitmentController@getDataHrd');
+    Route::get('/hrd/recruitment/get-data-hrd-diterima', 'RecruitmentController@getDataHrdDiterima');
+    Route::get('/hrd/recruitment/process_rekrut/{id}', 'RecruitmentController@process_rekrut');
+    Route::get('/hrd/recruitment/preview_rekrut/{id}', 'RecruitmentController@preview_rekrut');
+    Route::post('/hrd/recruitment/approval_1', 'RecruitmentController@approval_1');
+    Route::post('/hrd/recruitment/update_approval_1', 'RecruitmentController@update_approval_1');
+    Route::post('/hrd/recruitment/approval_2', 'RecruitmentController@approval_2');
+    Route::post('/hrd/recruitment/update_approval_2', 'RecruitmentController@update_approval_2');
+    Route::post('/hrd/recruitment/approval_3', 'RecruitmentController@approval_3');
+    Route::get('/hrd/recruitment/autocomplete-pic', 'RecruitmentController@autocomplete');
+    Route::get('/hrd/recruitment/get-jadwal-interview/{id}', 'RecruitmentController@getJadwalInterview');
+    Route::post('/hrd/recruitment/proc-jadwal-interview', 'RecruitmentController@procJadwalInterview');
+    Route::get('/hrd/recruitment/get-jadwal-presentasi/{id}', 'RecruitmentController@getJadwalPresentasi');
+    Route::post('/hrd/recruitment/proc-jadwal-presentasi', 'RecruitmentController@procJadwalPresentasi');
+//Master Data Lowongan
+    
 // rizky
     Route::get('/keuangan/p_hasilproduksi/pembatalanPenerimaan', 'Keuangan\KeuanganController@pembatalanPenerimaan');
     Route::get('/keuangan/p_hasilproduksi/ubah_status_transaksi/{id}/{id2}', 'Keuangan\KeuanganController@ubahStatusTransaksi');

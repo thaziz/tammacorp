@@ -14,7 +14,9 @@ class d_berkas_pelamar extends Model
     protected $fillable = [
         'bks_id', 
         'bks_pid',
+        'bks_type',
         'bks_name',
+        'bks_dtype',
         'bks_created',
         'bks_updated'
     ];

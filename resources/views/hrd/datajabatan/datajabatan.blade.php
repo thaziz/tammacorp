@@ -123,7 +123,7 @@
       "columns": [
         { "data": "kode" },
         { "data": "c_posisi" },
-        { "data": "c_divisi" },
+        { "data": "d_name" },
         { "data": "action" },
       ],
       "responsive": true,
@@ -189,12 +189,12 @@
                 });
                             window.location.reload();
                   instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
-            
+
                 }, true],
                 ['<button>TIDAK</button>', function (instance, toast) {
-            
+
                   instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
-            
+
                 }]
               ],
               onClosing: function(instance, toast, closedBy){

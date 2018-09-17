@@ -167,6 +167,10 @@
                                         Data Pegawai
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Data Lowongan','ma_read'))
+                                        Data Lowongan
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Data Akun Keuangan','ma_read'))
                                         Data Akun Keuangan
                                     @endif
@@ -227,6 +231,13 @@
                                 @if(Auth::user()->punyaAkses('Data Pegawai','ma_read'))
                                     <li class="{{ Request::is('master/datapegawai/pegawai') ? 'active' : '' || Request::is('master/datapegawai/*') ? 'active' : '' }}">
                                         <a href="{{ url('/master/datapegawai/pegawai') }}"><span class="submenu-title">Data Pegawai</span><span
+                                                    class="hidden">Master</span></a>
+                                    </li>
+                                @endif
+
+                                @if(Auth::user()->punyaAkses('Data Lowongan','ma_read'))
+                                    <li class="{{ Request::is('master/datalowongan/index') ? 'active' : '' || Request::is('master/datalowongan/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/master/datalowongan/index') }}"><span class="submenu-title">Data Lowongan</span><span
                                                     class="hidden">Master</span></a>
                                     </li>
                                 @endif
@@ -704,6 +715,14 @@
                                         Data Karyawan
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Absensi','ma_read'))
+                                        Absensi
+                                    @endif
+
+                                    @if(Auth::user()->punyaAkses('Pengajuan Pelatihan','ma_read'))
+                                        Pengajuan Pelatihan
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Data Administrasi Pegawai','ma_read'))
                                         Data Administrasi Pegawai
                                     @endif
@@ -740,6 +759,20 @@
                                     <li class="{{ Request::is('hrd/datajabatan') ? 'active' : '' || Request::is('hrd/datajabatan/*') ? 'active' : '' }}">
                                         <a href="{{ url('/hrd/datajabatan')}}"><span
                                                     class="submenu-title">Data Jabatan</span><span
+                                                    class="hidden">HRD</span></a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->punyaAkses('Absensi','ma_read'))
+                                    <li class="{{ Request::is('hrd/absensi/index') ? 'active' : '' || Request::is('hrd/absensi/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/hrd/absensi/index')}}"><span
+                                                    class="submenu-title">Absensi</span><span
+                                                    class="hidden">HRD</span></a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->punyaAkses('Pengajuan Pelatihan','ma_read'))
+                                    <li class="{{ Request::is('hrd/pengajuan/index') ? 'active' : '' || Request::is('hrd/pengajuan/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/hrd/pengajuan/index')}}"><span
+                                                    class="submenu-title">Pengajuan Pelatihan</span><span
                                                     class="hidden">HRD</span></a>
                                     </li>
                                 @endif

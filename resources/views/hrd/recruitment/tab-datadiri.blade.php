@@ -2,18 +2,28 @@
   <h1 class="text-md-center">Data Diri</h1>
   <div class="row" >
     <div class="col-lg-10 mx-auto">
-      @if ($message = Session::get('sukses'))
+      @if ($message = Session::has('sukses'))
         <div class="alert alert-success alert-dismissible">
           <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-          <strong>Sukses!</strong> Data berhasil disimpan, Anda Akan dihubungi apabila lolos administrasi. Terima Kasih.
+          <strong>Sukses!</strong> {{ Session::get('sukses') }}
         </div>
-      @elseif($message = Session::get('gagal'))
+      @elseif($message = Session::has('gagal'))
         <div class="alert alert-danger alert-dismissible">
           <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-          <strong>Gagal!</strong> Silahkan coba beberapa saat lagi.
+          <strong>Gagal!</strong> {{ Session::get('gagal') }}
         </div>
       @endif
-      
+      <div class="form-group row">
+        <label for="Kode Lowongan" class="col-sm-2 col-form-label font-weight-bold">Kode Lowongan
+          <span style="color: red">*</span>
+        </label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control {{ $errors->has('kdlowong') ? 'has-error' : '' }}" id="kdlowong" name="kdlowong" placeholder="Kode Lowongan" value="{{ old('kdlowong')}}" maxlength="7" minlength="7">
+          @if ($errors->has('kdlowong'))
+            <span style="color: red;" class="col-sm-12">{{$errors->first('kdlowong')}}</span>
+          @endif
+        </div>
+      </div>
       <div class="form-group row">
         <label for="nama" class="col-sm-2 col-form-label font-weight-bold">Nama
           <span style="color: red">*</span>
