@@ -14,7 +14,9 @@ class d_lowongan extends Model
     protected $fillable = [
         'l_id', 
         'l_code',
-        'l_name',
+        'l_divisi',
+        'l_subdivisi',
+        'l_jabatan',
         'l_isactive',
         'l_created',
         'l_updated'

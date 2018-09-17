@@ -315,7 +315,7 @@
 
                           <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="col-md-3 col-sm-3 col-xs-12">
-                              <?php $d_ija = $ijasah[0]['bks_name']; ?>
+                              <?php $d_drh = $drh[0]['bks_name']; ?>
                               <label>CV</label>
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-12">
@@ -324,8 +324,11 @@
                               </div>
                             </div>
                             <div class="col-md-3 col-sm-3 col-xs-12" align="center">
-                              {{-- <iframe src='https://docs.google.com/viewer?url=ENTER URL OF YOUR DOCUMENT HERE&embedded=true' frameborder='0'></iframe> --}}
-                              <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_ija)}}');" class="popup btn btn-info">Lihat Berkas</a>
+                              @if ($d_drh == '')
+                                <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_drh)}}');" class="popup btn btn-info disabled">Lihat Berkas</a>
+                              @else
+                                <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_drh)}}');" class="popup btn btn-info">Lihat Berkas</a>
+                              @endif
                             </div>
                           </div>
                           <div class="col-md-12 col-sm-12 col-xs-12">
@@ -339,8 +342,11 @@
                               </div>
                             </div>
                             <div class="col-md-3 col-sm-3 col-xs-12" align="center">
-                              {{-- <iframe src="https://docs.google.com/viewer?url={{url('/public/assets/berkas/dokumen-pelamar/'.$d_ija)}}&embedded=true" frameborder="0"></iframe> --}}
-                              <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_ija)}}');" class="popup btn btn-info">Lihat Berkas</a>
+                              @if ($d_ija == '')
+                                <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_ija)}}');" class="popup btn btn-info disabled">Lihat Berkas</a>
+                              @else
+                                <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_ija)}}');" class="popup btn btn-info">Lihat Berkas</a>
+                              @endif
                             </div>
                           </div>
 
@@ -351,28 +357,34 @@
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                               <div class="form-group">
-                                <input type="text" class="form-control input-sm" readonly="" name="">
+                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{$d_serti}}">
                               </div>
                             </div>
                             <div class="col-md-3 col-sm-3 col-xs-12" align="center">
-                              {{-- <iframe src='https://docs.google.com/viewer?url=ENTER URL OF YOUR DOCUMENT HERE&embedded=true' frameborder='0'></iframe> --}}
-                              <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_serti)}}');" class="popup btn btn-info">Lihat Berkas</a>
+                              @if ($d_serti == '')
+                                <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_serti)}}');" class="popup btn btn-info disabled">Lihat Berkas</a>
+                              @else
+                                <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_serti)}}');" class="popup btn btn-info">Lihat Berkas</a>
+                              @endif
                             </div>
                           </div>
                           
                           <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="col-md-3 col-sm-3 col-xs-12">
-                               <?php $d_lain = $lain[0]['bks_name']; ?>
+                              <?php $d_lain = $lain[0]['bks_name']; ?>
                               <label>Lain-lain</label>
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                               <div class="form-group">
-                                <input type="text" class="form-control input-sm" readonly="" name="">
+                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{$d_lain}}">
                               </div>
                             </div>
                             <div class="col-md-3 col-sm-3 col-xs-12" align="center">
-                              {{-- <iframe src='https://docs.google.com/viewer?url=ENTER URL OF YOUR DOCUMENT HERE&embedded=true' frameborder='0'></iframe> --}}
-                              <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_lain)}}');" class="popup btn btn-info">Lihat Berkas</a>
+                              @if ($d_lain == '')
+                                <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_lain)}}');" class="popup btn btn-info disabled">Lihat Berkas</a>
+                              @else
+                                <a href="javascript:void(0);" onclick="javascipt:window.open('{{url('/public/assets/berkas/dokumen-pelamar/'.$d_lain)}}');" class="popup btn btn-info">Lihat Berkas</a>
+                              @endif
                             </div>
                           </div>
                       </div>

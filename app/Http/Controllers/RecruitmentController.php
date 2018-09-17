@@ -18,6 +18,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\UploadedFile;
 use App\Model\Hrd\d_pelamar;
+use App\Model\Hrd\d_pelamar_jadwal;
 use App\Model\Hrd\d_berkas_pelamar;
 use App\Model\Hrd\d_cv_pelamar;
 
@@ -37,9 +38,28 @@ class RecruitmentController extends Controller
                 ->where('d_pelamar.p_id', $id)
                 ->first();
 
+        $vacancy = DB::table('d_lowongan')->join('m_divisi', 'd_lowongan.l_divisi', '=', 'm_divisi.c_id')->join('m_sub_divisi', 'd_lowongan.l_subdivisi', '=', 'm_sub_divisi.c_id')->join('m_jabatan', 'd_lowongan.l_jabatan', '=', 'm_jabatan.c_id')->where('l_id', $data->p_vacancyid)->first();
+
+        $jadwal_i = d_pelamar_jadwal::join('d_pelamar','d_pelamar_jadwal.pj_pid','=','d_pelamar.p_id')
+                ->join('m_pegawai_man','d_pelamar_jadwal.pj_pmid','=','m_pegawai_man.c_id')
+                ->select('d_pelamar_jadwal.*', 'd_pelamar.*', 'm_pegawai_man.c_nama', 'm_pegawai_man.c_nik', 'm_pegawai_man.c_id')
+                ->where('d_pelamar_jadwal.pj_pid', $id)
+                ->where('d_pelamar_jadwal.pj_type', 'I')
+                ->where('d_pelamar_jadwal.pj_isactive', 'Y')
+                ->first();
+
+        $jadwal_p = d_pelamar_jadwal::join('d_pelamar','d_pelamar_jadwal.pj_pid','=','d_pelamar.p_id')
+                ->join('m_pegawai_man','d_pelamar_jadwal.pj_pmid','=','m_pegawai_man.c_id')
+                ->select('d_pelamar_jadwal.*', 'd_pelamar.*', 'm_pegawai_man.c_nama', 'm_pegawai_man.c_nik', 'm_pegawai_man.c_id')
+                ->where('d_pelamar_jadwal.pj_pid', $id)
+                ->where('d_pelamar_jadwal.pj_type', 'P')
+                ->where('d_pelamar_jadwal.pj_isactive', 'Y')
+                ->first();
+
         $approve1 = DB::table('d_pelamar_status')->join('d_pelamar_statusdt', 'd_pelamar_status.p_st_id', '=', 'd_pelamar_statusdt.p_stdt_sid')->where('d_pelamar_status.p_st_id', '2')->get();
         $approve2 = DB::table('d_pelamar_status')->join('d_pelamar_statusdt', 'd_pelamar_status.p_st_id', '=', 'd_pelamar_statusdt.p_stdt_sid')->where('d_pelamar_status.p_st_id', '3')->get();
         $approve3 = DB::table('d_pelamar_status')->join('d_pelamar_statusdt', 'd_pelamar_status.p_st_id', '=', 'd_pelamar_statusdt.p_stdt_sid')->where('d_pelamar_status.p_st_id', '4')->get();
+
 
         $cek1 = DB::table('d_apply')->where('ap_pid', $id)->where('ap_stid', '2')->first();
         $cek2 = DB::table('d_apply')->where('ap_pid', $id)->where('ap_stid', '3')->first();
@@ -49,7 +69,7 @@ class RecruitmentController extends Controller
         if (count($cek2) > 0 ) { $cek_app2 = $cek2->ap_stdt_id; } else { $cek_app2 = '1'; }
         if (count($cek3) > 0 ) { $cek_app3 = $cek3->ap_stdt_id; } else { $cek_app3 = '1'; }
 
-        return view('hrd/recruitment/process_rekrut', compact('data', 'approve1', 'approve2', 'approve3', 'cek_app1', 'cek_app2', 'cek_app3'));
+        return view('hrd/recruitment/process_rekrut', compact('data', 'approve1', 'approve2', 'approve3', 'cek_app1', 'cek_app2', 'cek_app3', 'jadwal_i', 'jadwal_p', 'vacancy'));
     }
 
     public function preview_rekrut($id)
@@ -61,6 +81,7 @@ class RecruitmentController extends Controller
                 ->where('d_pelamar.p_id', $id)
                 ->first();
 
+        //cv
         $cv = d_cv_pelamar::where('d_cv_pid', $id)->get();
         if (count($cv) == 1) {
             $cv1 = d_cv_pelamar::where('d_cv_pid', $id)->orderBy('d_cv_id', 'ASC')->limit(1)->get()->toArray();
@@ -74,25 +95,36 @@ class RecruitmentController extends Controller
         }
 
         //berkas
+        $ijasah[] = array('bks_id' => '', 'bks_pid' => '', 'bks_type' => '', 'bks_name' => '', 'bks_dtype' => '');
+        $serti[] = array('bks_id' => '', 'bks_pid' => '', 'bks_type' => '', 'bks_name' => '', 'bks_dtype' => '');
+        $lain[] = array('bks_id' => '', 'bks_pid' => '', 'bks_type' => '', 'bks_name' => '', 'bks_dtype' => '');
+        $drh[] = array('bks_id' => '', 'bks_pid' => '', 'bks_type' => '', 'bks_name' => '', 'bks_dtype' => '');
         $berkas = d_berkas_pelamar::where('bks_pid', $id)->where('bks_type', 'D')->get();
-        if (count($berkas) == 0) {
-            $ijasah[] = array('bks_id' => '', 'bks_pid' => '', 'bks_type' => '', 'bks_name' => '', 'bks_dtype' => '');
-            $serti[] = array('bks_id' => '', 'bks_pid' => '', 'bks_type' => '', 'bks_name' => '', 'bks_dtype' => '');
-            $lain[] = array('bks_id' => '', 'bks_pid' => '', 'bks_type' => '', 'bks_name' => '', 'bks_dtype' => '');
-        }elseif (count($berkas) == 1) {
-            $ijasah = d_berkas_pelamar::where('bks_pid', $id)->where('bks_dtype', 'IJ')->limit(1)->get()->toArray();
-            $serti[] = array('bks_id' => '', 'bks_pid' => '', 'bks_type' => '', 'bks_name' => '', 'bks_dtype' => '');
-            $lain[] = array('bks_id' => '', 'bks_pid' => '', 'bks_type' => '', 'bks_name' => '', 'bks_dtype' => '');
-        }elseif (count($berkas) == 2){
-            $ijasah = d_berkas_pelamar::where('bks_pid', $id)->where('bks_dtype', 'IJ')->limit(1)->get()->toArray();
-            $serti = d_berkas_pelamar::where('bks_pid', $id)->where('bks_dtype', 'ST')->limit(1)->get()->toArray();
-            $lain[] = array('bks_id' => '', 'bks_pid' => '', 'bks_type' => '', 'bks_name' => '', 'bks_dtype' => '');
-        }elseif (count($berkas) == 3){
-            $ijasah = d_berkas_pelamar::where('bks_pid', $id)->where('bks_dtype', 'IJ')->limit(1)->get()->toArray();
-            $serti = d_berkas_pelamar::where('bks_pid', $id)->where('bks_dtype', 'ST')->limit(1)->get()->toArray();
-            $lain = d_berkas_pelamar::where('bks_pid', $id)->where('bks_dtype', 'LL')->limit(1)->get()->toArray();
+        foreach ($berkas as $value) 
+        {
+            if ($value->bks_dtype == 'ST') {
+                $result = d_berkas_pelamar::where('bks_pid', $id)->where('bks_dtype', 'ST')->limit(1)->get()->toArray();
+                $serti = array_replace($serti, $result);
+            }
+            else if ($value->bks_dtype == 'IJ')
+            {
+                $result = d_berkas_pelamar::where('bks_pid', $id)->where('bks_dtype', 'IJ')->limit(1)->get()->toArray();
+                $ijasah = array_replace($ijasah, $result);
+            }
+            else if ($value->bks_dtype == 'LL')
+            {
+                $result = d_berkas_pelamar::where('bks_pid', $id)->where('bks_dtype', 'LL')->limit(1)->get()->toArray();
+                $lain = array_replace($lain, $result);
+            }
+            else if ($value->bks_dtype == 'CV')
+            {
+                $result = d_berkas_pelamar::where('bks_pid', $id)->where('bks_dtype', 'CV')->limit(1)->get()->toArray();
+                $drh = array_replace($drh, $result);
+            }
         }
-        return view('hrd/recruitment/preview_rekrut', compact('data', 'cv1', 'cv2', 'ijasah', 'serti', 'lain'));
+       
+        //dd($serti, $lain, $ijasah);
+        return view('hrd/recruitment/preview_rekrut', compact('data', 'cv1', 'cv2', 'ijasah', 'serti', 'lain', 'drh'));
     }
 
     public function save(Request $request)
@@ -403,8 +435,85 @@ class RecruitmentController extends Controller
                             <a href="./process_rekrut/'.$data->p_id.'" class="btn btn-sm btn-info" title="Process">
                                 <i class="glyphicon glyphicon-ok"></i>
                             </a>
-                            <a href="#" class="btn btn-sm btn-danger" title="Delete" onclick=deleteDataPelamar("'.$data->p_id.'")>
+                            <a href="javascript:void(0);" class="btn btn-sm btn-danger" title="Delete" onclick=deleteDataPelamar("'.$data->p_id.'")>
                                 <i class="glyphicon glyphicon-trash"></i>
+                            </a>
+                        </div>';
+            })
+            ->rawColumns(['status', 'action', 'statusdt'])
+            ->make(true);
+    }
+
+    public function getDataHrdDiterima(Request $request)
+    {
+        //dd($request->all());
+        $y = substr($request->tgl1, -4);
+        $m = substr($request->tgl1, -7, -5);
+        $d = substr($request->tgl1, 0, 2);
+        $tanggal1 = $y.'-'.$m.'-'.$d;
+
+        $yy = substr($request->tgl2, -4);
+        $mm = substr($request->tgl2, -7, -5);
+        $dd = substr($request->tgl2, 0, 2);
+        $tanggal2 = $yy.'-'.$mm.'-'.$dd;
+
+        if ($request->grade == 'semua') {
+           $data = d_pelamar::join('d_pelamar_status','d_pelamar.p_apply_status','=','d_pelamar_status.p_st_id')
+                ->join('d_pelamar_statusdt','d_pelamar.p_apply_statusdt','=','d_pelamar_statusdt.p_stdt_id')
+                ->select('d_pelamar.*', 'd_pelamar_status.*', 'd_pelamar_statusdt.*')
+                ->where('d_pelamar.p_apply_statusdt', '9')
+                ->whereBetween('d_pelamar.p_date', [$tanggal1, $tanggal2])
+                ->orderBy('d_pelamar.p_created', 'DESC')
+                ->get(); 
+            }else{
+               $data = d_pelamar::join('d_pelamar_status','d_pelamar.p_apply_status','=','d_pelamar_status.p_st_id')
+                ->join('d_pelamar_statusdt','d_pelamar.p_apply_statusdt','=','d_pelamar_statusdt.p_stdt_id')
+                ->select('d_pelamar.*', 'd_pelamar_status.*', 'd_pelamar_statusdt.*')
+                ->where('d_pelamar.p_apply_statusdt', '9')
+                ->where('d_pelamar.p_education', $request->grade)
+                ->whereBetween('d_pelamar.p_date', [$tanggal1, $tanggal2])
+                ->orderBy('d_pelamar.p_created', 'DESC')
+                ->get(); 
+            }
+        
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->editColumn('tglBuat', function ($data) 
+            {
+                if ($data->p_created == null) {
+                    return '-';
+                } else {
+                    return $data->p_created ? with(new Carbon($data->p_created))->format('d M Y') : '';
+                }
+            })
+            ->editColumn('status', function ($data) 
+            {
+                if ($data->p_apply_status == 1) {
+                    return '<span style="color:#e557d0">'.$data->p_st_name.'</span>';
+                }else{
+                    return '<span>'.$data->p_st_name.'</span>';
+                }
+            })
+            ->editColumn('statusdt', function ($data) 
+            {
+                if ($data->p_apply_statusdt == 1) {
+                    return '-';
+                }elseif ($data->p_apply_statusdt == 9) {
+                    return '<span style="color:blue">'.$data->p_stdt_name.'</span>';
+                }elseif ($data->p_apply_statusdt == 2 || $data->p_apply_statusdt == 5 || $data->p_apply_statusdt == 8) {
+                    return '<span style="color:red">'.$data->p_stdt_name.'</span>';
+                }else{
+                    return $data->p_stdt_name;
+                }
+            })
+            ->addColumn('action', function($data)
+            {
+                return '<div class="text-center">
+                            <a href="./preview_rekrut/'.$data->p_id.'" class="btn btn-sm btn-success" title="Preview">
+                                <i class="glyphicon glyphicon-search"></i> 
+                            </a>
+                            <a href="javascript:void(0);" class="btn btn-sm btn-info" title="Process" onclick=prosesPegBaru("'.$data->p_id.'")>
+                                <i class="glyphicon glyphicon-ok"></i>
                             </a>
                         </div>';
             })
@@ -587,6 +696,7 @@ class RecruitmentController extends Controller
         DB::beginTransaction();
         try 
         {   
+            //dd($request->all());
             $id = DB::table('d_apply')->select('ap_id')->max('ap_id');
             if ($id == 0 || $id == '') { $id  = 1; } else { $id++; }
 
@@ -612,6 +722,47 @@ class RecruitmentController extends Controller
                     'p_updated'=> $tanggal
                 ]);
 
+            if ($request->approval_3 == '9') 
+            {
+                $maxid = DB::Table('m_pegawai_man')->select('c_id_by_production')->where([
+                    ['c_divisi_id', $request->get('c_divisi_id')],
+                    ['c_jabatan_id', $request->get('c_jabatan_id')]
+                ])->max('c_id_by_production');
+                // untuk +1 nilai yang ada,, jika kosong maka maxid = 1 , 
+                if ($maxid <= 0 || $maxid <= '') { $maxid  = 1; } else { $maxid += 1; }
+
+                $nik = date('y', strtotime($tanggal)).str_pad($request->h_divisi, 2, '0', STR_PAD_LEFT).str_pad($request->h_level, 2, '0', STR_PAD_LEFT).str_pad($maxid, 3, '0', STR_PAD_LEFT);
+
+                //$input['c_hari_kerja'] = $request->get('c_hari_awal')." - ".$request->get('c_hari_akhir');
+                $pelamar = d_pelamar::where('p_id', $request->id)->first();
+                if ($pelamar->p_status == 'S') { $nikah = 'Belum Menikah'; } else { $nikah = 'Menikah'; }
+                $ttl = $pelamar->p_birth_place.", ".$this->tgl_indo($pelamar->p_birthday);
+
+                DB::table('m_pegawai_man')
+                    ->insert([
+                        // 'c_id'=>$maxid,
+                        'c_id_by_production' => $maxid,
+                        'c_code'=> $this->kodePegawai(),
+                        'c_nik'=> $nik,
+                        'c_nama'=> $request->nama,
+                        'c_ktp'=> 'KTP ('.$pelamar->p_nip.')',
+                        'c_ktp_alamat'=> $pelamar->p_address,
+                        'c_alamat'=> $pelamar->p_address_now,
+                        'c_lahir'=> $ttl,
+                        'c_pendidikan'=> $pelamar->p_education,
+                        'c_email'=> $pelamar->p_email,
+                        'c_hp'=> $pelamar->p_tlp,
+                        'c_agama'=> $pelamar->p_religion,
+                        'c_nikah'=> $nikah,
+                        'c_pasangan'=> $pelamar->p_wife_name,
+                        'c_anak'=> $pelamar->p_child,
+                        'c_divisi_id'=> $request->h_divisi,
+                        'c_jabatan_id'=> $request->h_posisi,
+                        'c_shift_id'=> 1,
+                        'created_at'=> $tanggal,
+                    ]);
+            }
+
             DB::commit();
             return response()->json([
               'status' => 'sukses',
@@ -626,5 +777,219 @@ class RecruitmentController extends Controller
               'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
           ]);
         }
+    }
+
+    public function autocomplete(Request $request)
+    {
+        //dd($request->all());
+        $term = $request->term;
+        $results = array();
+        $queries = DB::table('m_pegawai_man')
+            ->where('c_nama', 'LIKE', '%'.$term.'%')
+            ->take(10)->get();
+      
+        if ($queries == null) 
+        {
+            $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];
+        } 
+        else 
+        {
+            foreach ($queries as $val) 
+            {
+                $results[] = [ 'id' => $val->c_id, 'label' => $val->c_nik .'  '.$val->c_nama, ];
+            }
+        }
+
+      return Response::json($results);
+    }
+
+    public function getJadwalInterview($id)
+    {
+        $data = d_pelamar_jadwal::join('d_pelamar','d_pelamar_jadwal.pj_pid','=','d_pelamar.p_id')
+            ->join('m_pegawai_man','d_pelamar_jadwal.pj_pmid','=','m_pegawai_man.c_id')
+            ->select('d_pelamar_jadwal.*', 'd_pelamar.*', 'm_pegawai_man.c_nama', 'm_pegawai_man.c_nik', 'm_pegawai_man.c_id')
+            ->where('d_pelamar_jadwal.pj_pid', '=', $id)
+            ->where('d_pelamar_jadwal.pj_type', '=', 'I')
+            ->where('d_pelamar_jadwal.pj_isactive', '=', 'Y')
+            ->get();
+
+        return response()->json([
+            'status' => 'sukses',
+            'data' => $data
+        ]);
+    }
+
+    public function procJadwalInterview(Request $request)
+    {
+        //dd($request->all());
+        DB::beginTransaction();
+        try 
+        {
+            $y = substr($request->i_tgl, -4);
+            $m = substr($request->i_tgl, -7, -5);
+            $d = substr($request->i_tgl, 0, 2);
+
+            $tanggal = date("Y-m-d h:i:s");
+            $tgl = $y.'-'.$m.'-'.$d;
+
+            if ($request->i_pjadwal_id != null) 
+            {
+                //update
+                d_pelamar_jadwal::where('pj_id','=',$request->i_pjadwal_id)
+                ->update([
+                    'pj_pid' => $request->i_pelamarid,
+                    'pj_pmid' => $request->i_pic_id,
+                    'pj_date' => $tgl,
+                    'pj_time' => $request->i_jam,
+                    'pj_lokasi' => strtoupper($request->i_lokasi),
+                    'pj_type' => 'I',
+                    'pj_isactive' => 'Y',
+                    'pj_updated' => $tanggal
+                ]);
+            }
+            else
+            {
+                $id = d_pelamar_jadwal::select('pj_id')->max('pj_id');
+                if ($id == 0 || $id == '') { $id  = 1; } else { $id++; }
+                //insert
+                $pj = new d_pelamar_jadwal;
+                $pj->pj_id = $id;
+                $pj->pj_pid = $request->i_pelamarid;
+                $pj->pj_pmid = $request->i_pic_id;
+                $pj->pj_date = $tgl;
+                $pj->pj_time = $request->i_jam;
+                $pj->pj_lokasi = strtoupper($request->i_lokasi);
+                $pj->pj_type = 'I';
+                $pj->pj_isactive = 'Y';
+                $pj->pj_created = $tanggal;
+                $pj->save();
+            }
+
+            DB::commit();
+            return response()->json([
+              'status' => 'sukses',
+              'pesan' => 'Jadwal berhasil di simpan'
+            ]);
+        } 
+        catch (\Exception $e) 
+        {
+          DB::rollback();
+          return response()->json([
+              'status' => 'gagal',
+              'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
+          ]);
+        }
+    }
+
+    public function getJadwalPresentasi($id)
+    {
+        $data = d_pelamar_jadwal::join('d_pelamar','d_pelamar_jadwal.pj_pid','=','d_pelamar.p_id')
+            ->join('m_pegawai_man','d_pelamar_jadwal.pj_pmid','=','m_pegawai_man.c_id')
+            ->select('d_pelamar_jadwal.*', 'd_pelamar.*', 'm_pegawai_man.c_nama', 'm_pegawai_man.c_nik', 'm_pegawai_man.c_id')
+            ->where('d_pelamar_jadwal.pj_pid', '=', $id)
+            ->where('d_pelamar_jadwal.pj_type', '=', 'P')
+            ->where('d_pelamar_jadwal.pj_isactive', '=', 'Y')
+            ->get();
+
+        return response()->json([
+            'status' => 'sukses',
+            'data' => $data
+        ]);
+    }
+
+    public function procJadwalPresentasi(Request $request)
+    {
+        //dd($request->all());
+        DB::beginTransaction();
+        try 
+        {
+            $y = substr($request->p_tgl, -4);
+            $m = substr($request->p_tgl, -7, -5);
+            $d = substr($request->p_tgl, 0, 2);
+
+            $tanggal = date("Y-m-d h:i:s");
+            $tgl = $y.'-'.$m.'-'.$d;
+
+            if ($request->p_pjadwal_id != null) 
+            {
+                //update
+                d_pelamar_jadwal::where('pj_id','=',$request->p_pjadwal_id)
+                ->update([
+                    'pj_pid' => $request->p_pelamarid,
+                    'pj_pmid' => $request->p_pic_id,
+                    'pj_date' => $tgl,
+                    'pj_time' => $request->p_jam,
+                    'pj_lokasi' => strtoupper($request->p_lokasi),
+                    'pj_type' => 'P',
+                    'pj_isactive' => 'Y',
+                    'pj_updated' => $tanggal
+                ]);
+            }
+            else
+            {
+                $id = d_pelamar_jadwal::select('pj_id')->max('pj_id');
+                if ($id == 0 || $id == '') { $id  = 1; } else { $id++; }
+                //insert
+                $pj = new d_pelamar_jadwal;
+                $pj->pj_id = $id;
+                $pj->pj_pid = $request->p_pelamarid;
+                $pj->pj_pmid = $request->p_pic_id;
+                $pj->pj_date = $tgl;
+                $pj->pj_time = $request->p_jam;
+                $pj->pj_lokasi = strtoupper($request->p_lokasi);
+                $pj->pj_type = 'P';
+                $pj->pj_isactive = 'Y';
+                $pj->pj_created = $tanggal;
+                $pj->save();
+            }
+
+            DB::commit();
+            return response()->json([
+              'status' => 'sukses',
+              'pesan' => 'Jadwal berhasil di simpan'
+            ]);
+        } 
+        catch (\Exception $e) 
+        {
+          DB::rollback();
+          return response()->json([
+              'status' => 'gagal',
+              'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
+          ]);
+        }
+    }
+
+    public function kodePegawai()
+    {
+        $tanggal = date("ym");
+        $maxid = DB::Table('m_pegawai_man')->select('c_id')->max('c_id');
+        if ($maxid <= 0 || $maxid <= '') { $maxid  = 1; }else { $maxid += 1; }
+
+        $kode = str_pad($maxid, 2, '0', STR_PAD_LEFT);
+        return $id_pegawai = 'PG-' . $tanggal . '/' .  $kode;
+    }
+
+    public function tgl_indo($tanggal)
+    {
+        $bulan = array (
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember'
+        );
+        $pecah = explode('-', $tanggal);
+        
+        // variabel pecah 0 = tahun
+        // variabel pecah 1 = bulan
+        // variabel pecah 2 = tanggal
+        return $pecah[2].' '.$bulan[$pecah[1]].' ' .$pecah[0];
     }
 }

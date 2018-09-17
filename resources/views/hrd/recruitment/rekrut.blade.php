@@ -40,156 +40,39 @@
     </div>
   </div>
   <div class="page-content fadeInRight">
-      <div id="tab-general">
-          <div class="row mbl">
-              <div class="col-lg-12">
-                  
-                <div class="col-md-12">
-                    <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
-                    </div>
-                </div>
-    
-                <?php 
-                  $person = ['Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo', 'Foxtrot', 'Golf', 'Hotel', 'India', 'Juliet', 'Kilo', 'Mike', 'November', 'Oscar', 'Papa', 'Quebec', 'Romeo', 'Sierra', 'Tango', 'Uniform', 'Victor', 'Whiskey', 'X-ray', 'Zulu'];
-                  $tanggal  = ['01-11-2018', '02-11-2018', '03-11-2018', '04-11-2018', '05-11-2018', '06-11-2018'];
-                  $lulusan = ['SD', 'SMP', 'SMA', 'SMK', 'D1', 'D3', 'S1', 'S2', 'S3'];
-                  $no_hp = ['0855331219757', '0853233221234', '0853321234484', '085585875855'];
-                ?>
-                  
-                <ul id="generalTab" class="nav nav-tabs">
-                  <li class="active"><a href="#alert-tab" data-toggle="tab">Recruitment</a></li>
-                  <!-- <li><a href="#note-tab" data-toggle="tab">2</a></li>
-                  <li><a href="#label-badge-tab" data-toggle="tab">3</a></li> -->
-                </ul>
-                <div id="generalTabContent" class="tab-content responsive">
-                  
-                  <div id="alert-tab" class="tab-pane fade in active">
-                    <div class="row tamma-bg" style="margin-top: -23px;padding-top: 23px;padding-bottom: 10px;border-radius: unset;">
-                      <div class="col-md-12 col-sm-12 col-xs-12">
-
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <div class="form-group">
-                            <label style="font-weight: bold;font-size: 16px;">Pencarian Berdasarkan :</label>
-                          </div>
-                        </div>
-
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                          <div class="form-group" style="float: right;">
-                            <button class="btn btn-primary btn-sm" onclick="cariDataIndex()"><i class="fa fa-search"></i></button>
-                            <button class="btn btn-default btn-sm" onclick="refreshTabelIndex()"><i class="fa fa-refresh"></i></button>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="col-md-12 col-sm-12 col-xs-12">
-
-                        <div class="col-md-2 col-sm-2 col-xs-12">
-                          <label>Tgl Awal</label>
-                        </div>
-
-                        <div class="col-md-4 col-sm-4 col-xs-12">
-                          <div class="form-group">
-                            <input type="text" class="form-control input-sm datepicker1" readonly="" id="head_tgl1" name="headTgl1" style="cursor: pointer;">
-                          </div>
-                        </div>
-
-                        <div class="col-md-2 col-sm-2 col-xs-12">
-                          <label>Tgl Akhir</label>
-                        </div>
-
-                        <div class="col-md-4 col-sm-4 col-xs-12">
-                          <div class="form-group">
-                            <input type="text" class="form-control input-sm datepicker2" readonly="" id="head_tgl2" name="headTgl2" style="cursor: pointer;">
-                          </div>
-                        </div>
-
-                        <div class="col-md-2 col-sm-2 col-xs-12">
-                          <label>Pendidikan Terakhir</label>
-                        </div>
-
-                        <div class="col-md-4 col-sm-4 col-xs-12">
-                          <div class="form-group">
-                            <select class="form-control input-sm" name="headGrade" id="head_grade">
-                              <option value="semua"> Tampilkan Semua </option>
-
-                                @foreach($lulusan as $index => $dataS)
-
-                                  <option value="{{$dataS}}">{{$dataS}}</option>
-
-                                @endforeach
-
-                             </select>
-                          </div>
-                        </div>
-
-                        <div class="col-md-2 col-sm-2 col-xs-12">
-                          <label>Status Recruitment</label>
-                        </div>
-
-                        <div class="col-md-4 col-sm-4 col-xs-12">
-                          <div class="form-group">
-                            <select class="form-control input-sm" name="headStatus" id="head_status">
-                              <option value="semua"> Tampilkan Semua </option>
-                                @foreach($statusApply as $val)
-
-                                  <option value="{{$val->p_st_id}}">{{$val->p_st_name}}</option>
-
-                                @endforeach
-                            </select>
-                          </div>
-                        </div>
-
-                      </div>
-
-                    </div>
-                    <div class="table-responsive" style="margin-top: 15px;">
-                      <table class="table tabelan table-hover table-bordered data-table" width="100%" cellspacing="0" id="tbl-index">
-                        <thead>
-                            <tr>
-                              <th class="wd-15p">No.</th>
-                              <th>Tanggal Apply</th>
-                              <th class="wd-15p">Nama Pelamar</th>
-                              <th class="wd-20p">No. HP</th>
-                              <th class="wd-20p">Email</th>
-                              <th class="wd-15p">Pedidikan</th>
-                              <th>Status</th>
-                              <th>Approval</th>
-                              <th style="text-align: center;">Aksi</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                          </tbody>
-                      
-                      </table> 
-                    </div>                                       
-
-                  </div><!-- /div alert-tab -->
-
-                  <!-- div note-tab -->
-                  <div id="note-tab" class="tab-pane fade">
-                    <div class="row">
-                      <div class="panel-body">
-                        <!-- Isi Content -->we we we
-                      </div>
-                    </div>
+    <div id="tab-general">
+        <div class="row mbl">
+            <div class="col-lg-12">
+                
+              <div class="col-md-12">
+                  <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
                   </div>
-                  <!--/div note-tab -->
-
-                  <!-- div label-badge-tab -->
-                  <div id="label-badge-tab" class="tab-pane fade">
-                    <div class="row">
-                      <div class="panel-body">
-                        <!-- Isi content -->we
-                      </div>
-                    </div>
-                  </div>
-                  <!-- /div label-badge-tab -->
-                </div>
-      
               </div>
-          </div>
+  
+              <?php 
+                $person = ['Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo', 'Foxtrot', 'Golf', 'Hotel', 'India', 'Juliet', 'Kilo', 'Mike', 'November', 'Oscar', 'Papa', 'Quebec', 'Romeo', 'Sierra', 'Tango', 'Uniform', 'Victor', 'Whiskey', 'X-ray', 'Zulu'];
+                $tanggal  = ['01-11-2018', '02-11-2018', '03-11-2018', '04-11-2018', '05-11-2018', '06-11-2018'];
+                $lulusan = ['SD', 'SMP', 'SMA', 'SMK', 'D1', 'D3', 'S1', 'S2', 'S3'];
+                $no_hp = ['0855331219757', '0853233221234', '0853321234484', '085585875855'];
+              ?>
+                
+              <ul id="generalTab" class="nav nav-tabs">
+                <li class="active"><a href="#index-tab" data-toggle="tab">Recruitment</a></li>
+                <li><a href="#diterima-tab" data-toggle="tab" onclick="cariDataDiterima()">Daftar Pelamar Diterima</a></li>
+                {{-- <li><a href="#label-badge-tab" data-toggle="tab">3</a></li> --}}
+              </ul>
+              <div id="generalTabContent" class="tab-content responsive">
+                <!-- tab index -->
+                @include('hrd.recruitment.tab-rekrut-index')
+                <!-- tab lolos final -->
+                @include('hrd.recruitment.tab-rekrut-diterima')
+                <!-- modal process peg baru -->
+                @include('hrd.recruitment.diterima')
+              </div>
+            </div>
+        </div>
 
-      </div>
+    </div>
   </div>
 </div>
 
@@ -273,6 +156,83 @@
               "previous": "Sebelumnya",
               "next": "Selanjutnya",
         }
+      }
+    });
+  }
+
+  function cariDataDiterima()
+  {
+    var tgl1 = $('#head_tgl3').val();
+    var tgl2 = $('#head_tgl4').val();
+    var grade = $('#head_grade2').val();
+    $('#tbl-diterima').dataTable({
+      "destroy": true,
+      "processing" : true,
+      "serverside" : true,
+      "ajax" : {
+        url: baseUrl + "/hrd/recruitment/get-data-hrd-diterima",
+        type: 'GET',
+        data: {tgl1:tgl1, tgl2:tgl2, grade:grade}
+      },
+      "columns" : [
+        {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"},
+        {"data" : "tglBuat", "width" : "5%"},
+        {"data" : "p_name", "width" : "15%"},
+        {"data" : "p_tlp", "width" : "10%"},
+        {"data" : "p_email", "width" : "10%"},
+        {"data" : "p_education", "width" : "10%"},
+        {"data" : "status", "width" : "10%"},
+        {"data" : "statusdt", "width" : "15%"},
+        {"data" : "action", orderable: false, searchable: false, "width" : "20%"}
+      ],
+      "language": {
+        "searchPlaceholder": "Cari Data",
+        "emptyTable": "Tidak ada data",
+        "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+        "sSearch": '<i class="fa fa-search"></i>',
+        "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+        "infoEmpty": "",
+        "paginate": {
+              "previous": "Sebelumnya",
+              "next": "Selanjutnya",
+        }
+      }
+    });
+  }
+
+  function prosesPegBaru(id) 
+  {
+    $.ajax({
+      url : baseUrl + "/hrd/recruitment/get-jadwal-interview/" + id,
+      type: "GET",
+      dataType: "JSON",
+      success: function(response)
+      {
+        if (response.data.length > 0) {
+          var date = response.data[0].pj_date;
+          var tglbaru = date.split("-").reverse().join("-");
+          $('#i_pjadwal_id').val(response.data[0].pj_id);
+          $('#i_pelamarid').val(response.data[0].pj_pid);
+          $('#i_tgl').val(tglbaru);
+          $('#i_jam').val(response.data[0].pj_time);
+          $('#i_lokasi').val(response.data[0].pj_lokasi);
+          $('#i_pic').val(response.data[0].c_nik+' '+response.data[0].c_nama);
+          $('#i_pic_id').val(response.data[0].pj_pmid);
+        }else{
+          $('#i_pjadwal_id').val('');
+          $('#i_pelamarid').val(id);
+          $('#i_tgl').val('');
+          $('#i_jam').val('');
+          $('#i_lokasi').val('');
+          $('#i_pic').val('');
+          $('#i_pic_id').val('');
+        }
+        
+        $('#diterima').modal('show');
+      },
+      error: function (jqXHR, textStatus, errorThrown)
+      {
+          alert('Error get data from ajax');
       }
     });
   }

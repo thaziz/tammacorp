@@ -595,6 +595,7 @@ class OrderPembelianController extends Controller
           $dataHeader->d_pcs_duedate = date('Y-m-d',strtotime($request->apdTgl));
           $dataHeader->d_pcs_tax_value = ($totalGross - $diskonPotHarga - $discValue) * $replaceCharPPN / 100;
           $dataHeader->d_pcs_total_net = $this->konvertRp($request->totalNett);
+          $dataHeader->d_pcs_sisapayment = $this->konvertRp($request->totalNett);
           $dataHeader->d_pcs_date_created = date('Y-m-d',strtotime($request->tanggal));
           $dataHeader->save(); 
         }
@@ -614,6 +615,7 @@ class OrderPembelianController extends Controller
           $dataHeader->d_pcs_tax_percent = $replaceCharPPN;
           $dataHeader->d_pcs_tax_value = ($totalGross - $diskonPotHarga - $discValue) * $replaceCharPPN / 100;
           $dataHeader->d_pcs_total_net = $this->konvertRp($request->totalNett);
+          $dataHeader->d_pcs_sisapayment = $this->konvertRp($request->totalNett);
           $dataHeader->d_pcs_date_created = date('Y-m-d',strtotime($request->tanggal));
           $dataHeader->save(); 
         }
@@ -690,6 +692,7 @@ class OrderPembelianController extends Controller
         $purchasing->d_pcs_tax_percent = $replaceCharPPN;
         $purchasing->d_pcs_tax_value = ($totalGross - $diskonPotHarga - $discValue) * $replaceCharPPN / 100;
         $purchasing->d_pcs_total_net = $this->konvertRp($request->totalNettEdit);
+        $purchasing->d_pcs_sisapayment = $this->konvertRp($request->totalNettEdit);
         $purchasing->d_pcs_updated = Carbon::now('Asia/Jakarta');
         $purchasing->save();
         
