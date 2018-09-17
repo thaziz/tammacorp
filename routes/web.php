@@ -485,7 +485,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/dataadministrasi/admin', 'HrdController@admin');
     Route::get('/hrd/datalembur/lembur', 'HrdController@lembur');
     Route::get('/hrd/scoreboard/score', 'HrdController@score');
-    Route::get('/hrd/training/training', 'HrdController@training');
+    Route::get('/hrd/training/training', 'HrdController@training')->name('training');
+    Route::get('/hrd/training/form_training', 'HrdController@tambah_training')->name('form_training');
 /*Recruitment*/
     Route::get('/hrd/recruitment/rekrut', 'HrdController@rekrut')->name('rekrut');
     Route::get('/hrd/recruitment/get-data-hrd', 'RecruitmentController@getDataHrd');

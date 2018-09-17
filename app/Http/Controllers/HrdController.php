@@ -78,7 +78,12 @@ class HrdController extends Controller
         return view('hrd/training/training');
 
     }
-	
+	public function tambah_training()
+    {
+        return view('hrd/training/tambah_training');
+
+    }
+    
         public function datajabatan()
     {
         return view('hrd/datajabatan/datajabatan');
