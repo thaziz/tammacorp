@@ -19,12 +19,12 @@
                 <!--BEGIN TITLE & BREADCRUMB PAGE-->
                 <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
                     <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
-                        <div class="page-title">Form Input Data Transaksi Kas</div>
+                        <div class="page-title">Form Input Data Transaksi Bank</div>
                     </div>
                     <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
                         <li><i class="fa fa-home"></i>&nbsp;<a href="{{ url('/home') }}">Home</a>&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
                         <li> &nbsp;Keuangan&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
-                        <li class="active">Input Transaksi Kas</li>
+                        <li class="active">Input Transaksi Bank</li>
                     </ol>
                     <div class="clearfix"></div>
                 </div>
@@ -49,10 +49,10 @@
                               <div class="row">
                                 <div class="col-md-12" style="margin-top: -10px;margin-bottom: 20px;">
                                    <div class="col-md-5 col-sm-6 col-xs-8">
-                                     <h4>Transaksi Kas</h4>
+                                     <h4>Transaksi Bank</h4>
                                    </div>
                                    <div class="col-md-7 col-sm-6 col-xs-4" align="right" style="margin-top:5px;margin-right: -25px;">
-                                     <a href="{{ url('master/datakeuangan/keuangan') }}" class="btn"><i class="fa fa-arrow-left"></i></a>
+                                     <a href="{{ url('/keuangan/p_inputtransaksi/index') }}" class="btn"><i class="fa fa-arrow-left"></i></a>
                                    </div>
                                 </div>
 
@@ -71,8 +71,8 @@
                                             </div>
                                             <div class="col-md-5 col-sm-8 col-xs-11 mb-3">
                                               <select class="form-control" name="jenis_transaksi" id="jenis_transaksi" name="jenis_transaksi" v-model="single_data.jenis_transaksi" :disabled="state == 'update'">
-                                                <option value="KM">Kas Masuk</option>
-                                                <option value="KK">Kas Keluar</option>
+                                                <option value="BM">Bank Masuk</option>
+                                                <option value="BK">Bank Keluar</option>
                                               </select>
                                             </div>
 
@@ -90,7 +90,7 @@
                                               <label class="tebal">Tanggal Transaksi</label>
                                             </div>
                                             <div class="col-md-7 col-sm-9 col-xs-12 mb-3" style="background:;">
-                                                <datepicker :placeholder="'Plih Tanggal Transaksi'" :name="'tanggal_transaksi'" :id="'tanggal_transaksi'"></datepicker>
+                                                <datepicker :placeholder="'Plih Tanggal Transaksi'" :name="'tanggal_transaksi'" :id="'tanggal_transaksi'" :disabled="state == 'update'"></datepicker>
                                             </div>
                                           </div>
 
@@ -114,7 +114,7 @@
 
                                           <div class="row">
                                             <div class="col-md-5 col-sm-3 col-xs-12 mb-3"> 
-                                              <label class="tebal">Pilih Akun Kas</label>
+                                              <label class="tebal">Pilih Akun </label>
                                             </div>
                                             <div class="col-md-7 col-sm-9 col-xs-12 mb-3">
                                                 <chosen :name="'perkiraan'" :option="akun_perkiraan" :id="'akun_perkiraan'"></chosen>
@@ -175,7 +175,7 @@
                     </div>
 
                     <div class="col-md-12" style="background: white; color: #3e3e3e; padding-top: 10px;">
-                      <xyz :data="list_transaksi" @get_data="get_data"></xyz>
+                      <xyz :data="list_transaksi" @get_data="get_data" :ajax_loading="on_ajax_loading"></xyz>
                     </div>
                   </div>
                 </div>
@@ -219,6 +219,21 @@
         </thead>
 
         <tbody>
+
+            <tr v-if="ajax_loading">
+              <td colspan="4" class="text-center">
+                <i class="fa fa-clock-o fa-3x fa-fw"></i> &nbsp; Sedang Mencari Transaksi. Harap Tunggu..
+                <span class="sr-only">Loading...</span>
+              </td>
+            </tr>
+
+            <tr v-if="data.length == 0 && !ajax_loading">
+              <td colspan="4" class="text-center">
+                <i class="fa fa-frown-o fa-3x fa-fw"></i> &nbsp; Tidak Ada Transaksi Yang Dimaksud Di Tanggal Yang Dipilih..
+                <span class="sr-only">Loading...</span>
+              </td>
+            </tr>
+
             <tr v-for="transaksi in data">
               <td class="text-center" style="cursor:pointer" @click="get_data(transaksi.id_transaksi)">@{{ transaksi.no_bukti }}</td>
               <td class="text-center">@{{ transaksi.tanggal_transaksi }}</td>
@@ -338,10 +353,11 @@
     })
 
     Vue.component('xyz', {
-      props: ['data', 'context'],
+      props: ['data', 'context', 'ajax_loading'],
       template: '#table-template',
       mounted: function(){
         // console.log(this.data)
+        // alert(this.ajax_loading);
       },
 
       watch: {
@@ -364,6 +380,7 @@
         baseUrl: '{{ url('/') }}',
         btn_save_disabled: false,
         state: 'simpan',
+        on_ajax_loading: false,
 
         akun_perkiraan: [],
         akun_lawan: [],
@@ -372,7 +389,7 @@
         single_data: {
 
           id_transaksi      : '',
-          jenis_transaksi   : 'KM',
+          jenis_transaksi   : 'BM',
           tanggal_transaksi : '',
           nama_transaksi    : '',
           keterangan        : '',
@@ -390,7 +407,7 @@
       },
 
       created: function(){
-        axios.get(this.baseUrl+'/keuangan/p_inputtransaksi/transaksi_kas/form-resource')
+        axios.get(this.baseUrl+'/keuangan/p_inputtransaksi/transaksi_bank/form-resource')
               .then((response) => {
                 console.log(response.data);
                 this.akun_perkiraan = response.data.akun_perkiraan;
@@ -412,7 +429,7 @@
           this.btn_save_disabled = true;
 
           if($('#data-form').data('bootstrapValidator').validate().isValid()){
-            axios.post(this.baseUrl+'/keuangan/p_inputtransaksi/transaksi_kas/save', 
+            axios.post(this.baseUrl+'/keuangan/p_inputtransaksi/transaksi_bank/save', 
               $('#data-form').serialize()
             ).then((response) => {
               console.log(response.data);
@@ -442,7 +459,7 @@
           this.btn_save_disabled = true;
 
           if($('#data-form').data('bootstrapValidator').validate().isValid()){
-            axios.post(this.baseUrl+'/keuangan/p_inputtransaksi/transaksi_kas/update', 
+            axios.post(this.baseUrl+'/keuangan/p_inputtransaksi/transaksi_bank/update', 
               $('#data-form').serialize()
             ).then((response) => {
               console.log(response.data);
@@ -473,7 +490,7 @@
           if(confirmed){
             this.btn_save_disabled = true;
 
-            axios.post(this.baseUrl+'/keuangan/p_inputtransaksi/transaksi_kas/delete', 
+            axios.post(this.baseUrl+'/keuangan/p_inputtransaksi/transaksi_bank/delete', 
               {id: this.single_data.id_transaksi}
             ).then((response) => {
               console.log(response.data);
@@ -522,11 +539,13 @@
         open_list: function(){
           $('.overlay.transaksi_list').fadeIn(200);
           this.list_transaksi = [];
+          this.on_ajax_loading = true;
 
-          axios.get(this.baseUrl+'/keuangan/p_inputtransaksi/transaksi_kas/list_transaksi?tgl='+$('#tanggal_transaksi').val()+'&idx='+this.single_data.jenis_transaksi)
+          axios.get(this.baseUrl+'/keuangan/p_inputtransaksi/transaksi_bank/list_transaksi?tgl='+$('#tanggal_transaksi').val()+'&idx='+this.single_data.jenis_transaksi)
                   .then((response) => {
                     // console.log(response.data);
                     this.list_transaksi = response.data;
+                    this.on_ajax_loading = false;
                   }).catch((err) => {
                     alert(err);
                   })
@@ -534,7 +553,7 @@
 
         form_reset: function(){
             this.single_data.id_transaksi = '';
-            this.single_data.jenis_transaksi   = 'KM';
+            this.single_data.jenis_transaksi   = 'BM';
             this.single_data.nama_transaksi    = '';
             this.single_data.keterangan        = '';
             this.single_data.nominal           = '';

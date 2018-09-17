@@ -218,8 +218,10 @@
 
       $("#kelompok_akun").change(function(event){
         event.preventDefault();
+        // alert('okee');
 
         $("#id_default").text($(this).val()+'.');
+        $('#nama_kelompok').val($(this).children('option:selected').text())
       })
 
       $('#simpan').click(function(event){

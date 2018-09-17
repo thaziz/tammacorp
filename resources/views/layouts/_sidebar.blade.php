@@ -239,8 +239,8 @@
                                 @endif
 
                                 @if(Auth::user()->punyaAkses('Data Transaksi Keuangan','ma_read'))
-                                    <li class="{{ Request::is('master/datatransaksi/transaksi') ? 'active' : '' || Request::is('master/datatransaksi/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/master/datatransaksi/transaksi') }}"><span
+                                    <li class="{{ Request::is('master/keuangan/master_transaksi') ? 'active' : '' || Request::is('master/keuangan/master_transaksi/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/master/keuangan/master_transaksi') }}"><span
                                                     class="submenu-title">Data Transaksi Keuangan</span><span
                                                     class="hidden">Master</span></a>
                                     </li>
@@ -302,6 +302,10 @@
                                         Return Pembelian
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Pembayaran Hutang','ma_read'))
+                                        Pembayaran Hutang
+                                    @endif
+
                             </span>
                                 <!-- End Filter Menu Submenu -->
                             </a>
@@ -340,7 +344,14 @@
                                         <a href="{{ url('/purchasing/returnpembelian/pembelian') }}"><span
                                                     class="submenu-title">Return Pembelian</span><span class="hidden">Purchasing</span></a>
                                     </li>
-                            @endif
+                                @endif
+
+                                {{-- @if(Auth::user()->punyaAkses('Return Pembelian','ma_read')) --}}
+                                    <li class="{{ Request::is('purchasing/pembayaran_hutang') ? 'active' : '' || Request::is('purchasing/pembayaran_hutang/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/purchasing/pembayaran_hutang') }}"><span
+                                                    class="submenu-title">Pembayaran Hutang</span><span class="hidden">Purchasing</span></a>
+                                    </li>
+                                {{-- @endif --}}
                             <!-- <li class="{{ Request::is('purchasing/belanjasuplier/suplier') ? 'active' : '' || Request::is('purchasing/belanjasuplier/suplier*') ? 'active' : '' }}">
                                 <a href="{{ url('/purchasing/belanjasuplier/suplier') }}"><span class="submenu-title">Belanja Suplier</span></a>
                                 </li> -->
@@ -859,7 +870,7 @@
                                 @endif
                                 @if(Auth::user()->punyaAkses('Proses Input Transaksi','ma_read'))
                                     <li class="{{ Request::is('keuangan/p_inputtransaksi/transaksi') ? 'active' : '' || Request::is('keuangan/p_inputtransaksi/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/keuangan/p_inputtransaksi/transaksi') }}"><span
+                                        <a href="{{ url('/keuangan/p_inputtransaksi/index') }}"><span
                                                     class="submenu-title">Proses Input Transaksi</span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
@@ -872,8 +883,8 @@
                                     </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Laporan (Jurnal,Buku Besar,Neraca,DLL)','ma_read'))
-                                    <li class="{{ Request::is('keuangan/l_jurnal/jurnal') ? 'active' : '' || Request::is('keuangan/l_jurnal/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/keuangan/l_jurnal/jurnal') }}"><span class="submenu-title">Laporan (Jurnal,Buku Besar,Neraca,DLL)</span><span
+                                    <li class="{{ Request::is('keuangan/laporan_keuangan') ? 'active' : '' || Request::is('keuangan/laporan_keuangan/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/keuangan/laporan_keuangan') }}"><span class="submenu-title">Laporan Keuangan    </span><span
                                                     class="hidden">Keuangan</span></a>
                                     </li>
                                 @endif
