@@ -12,18 +12,18 @@ use App\Model\Keuangan\transaksi_detail as transaksi_detail;
 
 use DB;
 
-class transaksi_kas_controller extends Controller
+class transaksi_bank_controller extends Controller
 {
     public function index(){
-    	return view('keuangan.input_transaksi.transaksi_kas.index');
+    	return view('keuangan.input_transaksi.transaksi_bank.index');
     }
 
     public function form_resource(){
     	// return json_encode('granted');
 
-    	$akun_perkiraan = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,4)'), '1.00')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
+    	$akun_perkiraan = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,4)'), '1.01')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
 
-    	$akun_lawan = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,4)'), '!=', '1.00')->where(DB::raw('substring(id_akun,1,4)'), '!=', '1.01')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
+    	$akun_lawan = DB::table('d_akun')->where(DB::raw('substring(id_akun,1,4)'), '!=', '1.01')->where(DB::raw('substring(id_akun,1,4)'), '!=', '1.00')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->get();
 
     	// return json_encode($list_transaksi);
 
@@ -36,7 +36,7 @@ class transaksi_kas_controller extends Controller
     public function list_transaksi(Request $request){
         // return json_encode($request->all());
 
-        $idx = ($request->idx == 'KM') ? 'BKM' : 'BKK';
+        $idx = ($request->idx == 'BM') ? 'BBM' : 'BBK';
         $tgl = date('Y-m-d', strtotime($request->tgl));
 
         $list_transaksi = transaksi::where(DB::raw('substring(no_bukti,1,3)'), $idx)->where('tanggal_transaksi', $tgl)->with('jurnal.detail')->get();
@@ -48,13 +48,13 @@ class transaksi_kas_controller extends Controller
 
     	// return json_encode($request->all());
 
-    	if($request->jenis_transaksi == 'KM'){
+    	if($request->jenis_transaksi == 'BM'){
 
-    		$cek = transaksi::where(DB::raw('month(tanggal_transaksi)'), date('n', strtotime($request->tanggal_transaksi)))->where(DB::raw('substring(no_bukti, 1, 3)'), 'BKM')->orderBy('id_transaksi', 'desc')->first();
+    		$cek = transaksi::where(DB::raw('month(tanggal_transaksi)'), date('n', strtotime($request->tanggal_transaksi)))->where(DB::raw('substring(no_bukti, 1, 3)'), 'BBM')->orderBy('id_transaksi', 'desc')->first();
 
     		$next = ($cek) ? (int)substr($cek->no_bukti, -5) : 0;
 
-    		$bukti = 'BKM-'.date('myd', strtotime($request->tanggal_transaksi)).str_pad(($next + 1), 5, '0', STR_PAD_LEFT);
+    		$bukti = 'BBM-'.date('myd', strtotime($request->tanggal_transaksi)).str_pad(($next + 1), 5, '0', STR_PAD_LEFT);
 
             $id = (transaksi::max('id_transaksi')) ? (transaksi::max('id_transaksi') + 1) : 1;
 
@@ -95,11 +95,11 @@ class transaksi_kas_controller extends Controller
 
     		// Pembukuan Jurnal
 
-	    		$jurnal_cek = jurnal::where(DB::raw('month(tanggal_jurnal)'), date('n', strtotime($request->tanggal_transaksi)))->where(DB::raw('substring(no_jurnal, 1, 2)'), 'KM')->orderBy('jurnal_id', 'desc')->first();
+	    		$jurnal_cek = jurnal::where(DB::raw('month(tanggal_jurnal)'), date('n', strtotime($request->tanggal_transaksi)))->where(DB::raw('substring(no_jurnal, 1, 2)'), 'BM')->orderBy('jurnal_id', 'desc')->first();
 
 	    		$next_jurnal = ($cek) ? (int)substr($cek->no_bukti, -5) : 0;
 
-	    		$bukti_jurnal = 'KM-'.date('myd', strtotime($request->tanggal_transaksi)).str_pad(($next + 1), 5, '0', STR_PAD_LEFT);
+	    		$bukti_jurnal = 'BM-'.date('myd', strtotime($request->tanggal_transaksi)).str_pad(($next + 1), 5, '0', STR_PAD_LEFT);
 
 	    		$id_jurnal = (jurnal::max('jurnal_id')) ? (jurnal::max('jurnal_id') + 1) : 1;
 
@@ -148,11 +148,11 @@ class transaksi_kas_controller extends Controller
 
     	}else{
             // return json_encode(str_replace('.', '', explode(',', $request->nominal)[0]));
-    		$cek = transaksi::where(DB::raw('month(tanggal_transaksi)'), date('n', strtotime($request->tanggal_transaksi)))->where(DB::raw('substring(no_bukti, 1, 3)'), 'BKK')->orderBy('id_transaksi', 'desc')->first();
+    		$cek = transaksi::where(DB::raw('month(tanggal_transaksi)'), date('n', strtotime($request->tanggal_transaksi)))->where(DB::raw('substring(no_bukti, 1, 3)'), 'BBK')->orderBy('id_transaksi', 'desc')->first();
 
     		$next = ($cek) ? (int)substr($cek->no_bukti, -5) : 0;
 
-    		$bukti = 'BKK-'.date('myd', strtotime($request->tanggal_transaksi)).str_pad(($next + 1), 5, '0', STR_PAD_LEFT);
+    		$bukti = 'BBK-'.date('myd', strtotime($request->tanggal_transaksi)).str_pad(($next + 1), 5, '0', STR_PAD_LEFT);
 
     		$id = (transaksi::max('id_transaksi')) ? (transaksi::max('id_transaksi') + 1) : 1;
 
@@ -193,11 +193,11 @@ class transaksi_kas_controller extends Controller
 
             // Pembukuan Jurnal
 
-                $jurnal_cek = jurnal::where(DB::raw('month(tanggal_jurnal)'), date('n', strtotime($request->tanggal_transaksi)))->where(DB::raw('substring(no_jurnal, 1, 2)'), 'KK')->orderBy('jurnal_id', 'desc')->first();
+                $jurnal_cek = jurnal::where(DB::raw('month(tanggal_jurnal)'), date('n', strtotime($request->tanggal_transaksi)))->where(DB::raw('substring(no_jurnal, 1, 2)'), 'BK')->orderBy('jurnal_id', 'desc')->first();
 
                 $next_jurnal = ($cek) ? (int)substr($cek->no_bukti, -5) : 0;
 
-                $bukti_jurnal = 'KK-'.date('myd', strtotime($request->tanggal_transaksi)).str_pad(($next + 1), 5, '0', STR_PAD_LEFT);
+                $bukti_jurnal = 'BK-'.date('myd', strtotime($request->tanggal_transaksi)).str_pad(($next + 1), 5, '0', STR_PAD_LEFT);
 
                 $id_jurnal = (jurnal::max('jurnal_id')) ? (jurnal::max('jurnal_id') + 1) : 1;
 
@@ -259,8 +259,7 @@ class transaksi_kas_controller extends Controller
 
         transaksi_detail::where('tkd_transaksi', $request->id_transaksi)->delete();
 
-        if(substr($transaksi->first()->no_bukti, 0, 3) == 'BKM'){
-
+        if(substr($transaksi->first()->no_bukti, 0, 2) == 'BBM'){
             transaksi_detail::insert([
                 'tkd_transaksi'     => $request->id_transaksi,
                 'tkd_no'            => 1,
@@ -286,7 +285,6 @@ class transaksi_kas_controller extends Controller
                 'tkd_value'         => $val,
                 'tkd_dk'            => $pos
             ]);
-
         }else{
             transaksi_detail::insert([
                 'tkd_transaksi'     => $request->id_transaksi,
@@ -315,7 +313,6 @@ class transaksi_kas_controller extends Controller
             ]);
         }
 
-
         // Pembukuan Jurnal
             $jurnal = jurnal::where('jurnal_ref', $transaksi->first()->no_bukti);
 
@@ -325,7 +322,7 @@ class transaksi_kas_controller extends Controller
 
             jurnal_dt::where('jrdt_jurnal', $jurnal->first()->jurnal_id)->delete();
 
-            if(substr($jurnal->first()->no_jurnal, 0, 2) == 'KM'){
+            if(substr($jurnal->first()->no_jurnal, 0, 2) == 'BM'){
                 jurnal_dt::insert([
                     'jrdt_jurnal'   => $jurnal->first()->jurnal_id,
                     'jrdt_no'       => 1,

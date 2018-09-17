@@ -485,6 +485,226 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/dataadministrasi/admin', 'HrdController@admin');
     Route::get('/hrd/datalembur/lembur', 'HrdController@lembur');
     Route::get('/hrd/scoreboard/score', 'HrdController@score');
+
+    /*Keuangan*/
+
+        //transaksi index
+            Route::get('/keuangan/p_inputtransaksi/index', function(){
+                return view('keuangan.input_transaksi.index');
+            });
+
+        // Transaksi Kas
+
+            Route::get('/keuangan/p_inputtransaksi/transaksi_kas', 'Keuangan\Transaksi\transaksi_kas_controller@index');
+            Route::get('/keuangan/p_inputtransaksi/transaksi_kas/form-resource', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_kas_controller@form_resource',
+                'as'    => 'transaksi_kas.form_resource'
+            ]);
+            Route::get('/keuangan/p_inputtransaksi/transaksi_kas/list_transaksi', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_kas_controller@list_transaksi',
+                'as'    => 'transaksi_kas.list_transaksi'
+            ]);
+            Route::post('/keuangan/p_inputtransaksi/transaksi_kas/save', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_kas_controller@save',
+                'as'    => 'transaksi_kas.save'
+            ]);
+            Route::post('/keuangan/p_inputtransaksi/transaksi_kas/update', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_kas_controller@update',
+                'as'    => 'transaksi_kas.update'
+            ]);
+            Route::post('/keuangan/p_inputtransaksi/transaksi_kas/delete', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_kas_controller@delete',
+                'as'    => 'transaksi_kas.delete'
+            ]);
+
+
+        // End Transaksi Kas
+
+        // Transaksi Bank
+
+            Route::get('/keuangan/p_inputtransaksi/transaksi_bank', 'Keuangan\Transaksi\transaksi_bank_controller@index');
+            Route::get('/keuangan/p_inputtransaksi/transaksi_bank/form-resource', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_bank_controller@form_resource',
+                'as'    => 'transaksi_bank.form_resource'
+            ]);
+            Route::get('/keuangan/p_inputtransaksi/transaksi_bank/list_transaksi', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_bank_controller@list_transaksi',
+                'as'    => 'transaksi_bank.list_transaksi'
+            ]);
+            Route::post('/keuangan/p_inputtransaksi/transaksi_bank/save', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_bank_controller@save',
+                'as'    => 'transaksi_bank.save'
+            ]);
+            Route::post('/keuangan/p_inputtransaksi/transaksi_bank/update', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_bank_controller@update',
+                'as'    => 'transaksi_bank.update'
+            ]);
+            Route::post('/keuangan/p_inputtransaksi/transaksi_bank/delete', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_bank_controller@delete',
+                'as'    => 'transaksi_bank.delete'
+            ]);
+
+
+        // End Transaksi Bank
+
+        // Transaksi Bank
+
+            Route::get('/keuangan/p_inputtransaksi/transaksi_memorial', 'Keuangan\Transaksi\transaksi_memorial_controller@index');
+            Route::get('/keuangan/p_inputtransaksi/transaksi_memorial/form-resource', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_memorial_controller@form_resource',
+                'as'    => 'transaksi_memorial.form_resource'
+            ]);
+            Route::get('/keuangan/p_inputtransaksi/transaksi_memorial/list_transaksi', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_memorial_controller@list_transaksi',
+                'as'    => 'transaksi_memorial.list_transaksi'
+            ]);
+            Route::post('/keuangan/p_inputtransaksi/transaksi_memorial/save', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_memorial_controller@save',
+                'as'    => 'transaksi_memorial.save'
+            ]);
+            Route::post('/keuangan/p_inputtransaksi/transaksi_memorial/update', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_memorial_controller@update',
+                'as'    => 'transaksi_memorial.update'
+            ]);
+            Route::post('/keuangan/p_inputtransaksi/transaksi_memorial/delete', [
+                'uses'   => 'Keuangan\Transaksi\transaksi_memorial_controller@delete',
+                'as'    => 'transaksi_memorial.delete'
+            ]);
+
+
+        // End Transaksi Bank
+
+        // Pembayaran Hutang
+
+            Route::get('/purchasing/pembayaran_hutang', [
+                'uses'  => 'Keuangan\Pembayaran_hutang\pembayaran_hutang_controller@index',
+                'as'    => 'pembayaran_hutang.index'
+            ]);
+
+            Route::get('/purchasing/pembayaran_hutang/form-resource', [
+                'uses'  => 'Keuangan\Pembayaran_hutang\pembayaran_hutang_controller@form_resource',
+                'as'    => 'pembayaran_hutang.form_resource'
+            ]);
+
+            Route::get('/purchasing/pembayaran_hutang/get-po', [
+                'uses'  => 'Keuangan\Pembayaran_hutang\pembayaran_hutang_controller@get_po',
+                'as'    => 'pembayaran_hutang.get_po'
+            ]);
+
+            Route::get('/purchasing/pembayaran_hutang/get-transaksi', [
+                'uses'  => 'Keuangan\Pembayaran_hutang\pembayaran_hutang_controller@get_transaksi',
+                'as'    => 'pembayaran_hutang.get_transaksi'
+            ]);
+
+            Route::post('/purchasing/pembayaran_hutang/save', [
+                'uses'  => 'Keuangan\Pembayaran_hutang\pembayaran_hutang_controller@save',
+                'as'    => 'pembayaran_hutang.save'
+            ]);
+
+            Route::post('/purchasing/pembayaran_hutang/update', [
+                'uses'  => 'Keuangan\Pembayaran_hutang\pembayaran_hutang_controller@update',
+                'as'    => 'pembayaran_hutang.update'
+            ]);
+
+            Route::post('/purchasing/pembayaran_hutang/delete', [
+                'uses'  => 'Keuangan\Pembayaran_hutang\pembayaran_hutang_controller@delete',
+                'as'    => 'pembayaran_hutang.delete'
+            ]);
+
+        // End Pembayaran Hutang
+
+        // Master Transaksi
+
+            Route::get('master/keuangan/master_transaksi', [
+                'uses'  => 'Keuangan\Master_transaksi\master_transaksi_controller@index',
+                'as'    => 'master_transaksi.index'
+            ]);
+
+            Route::get('master/keuangan/master_transaksi/add', [
+                'uses'  => 'Keuangan\Master_transaksi\master_transaksi_controller@add',
+                'as'    => 'master_transaksi.add'
+            ]);
+
+            Route::post('master/keuangan/master_transaksi/save', [
+                'uses'  => 'Keuangan\Master_transaksi\master_transaksi_controller@save',
+                'as'    => 'master_transaksi.save'
+            ]);
+
+            Route::get('master/keuangan/master_transaksi/get_transaksi', [
+                'uses'  => 'Keuangan\Master_transaksi\master_transaksi_controller@get_transaksi',
+                'as'    => 'master_transaksi.get_transaksi'
+            ]);
+
+            Route::get('master/keuangan/master_transaksi/edit', [
+                'uses'  => 'Keuangan\Master_transaksi\master_transaksi_controller@edit',
+                'as'    => 'master_transaksi.edit'
+            ]);
+
+            Route::get('master/keuangan/master_transaksi/form_resource', [
+                'uses'  => 'Keuangan\Master_transaksi\master_transaksi_controller@form_resource',
+                'as'    => 'master_transaksi.form_resource'
+            ]);
+
+            Route::get('master/keuangan/master_transaksi/get_data_transaksi', [
+                'uses'  => 'Keuangan\Master_transaksi\master_transaksi_controller@get_data_transaksi',
+                'as'    => 'master_transaksi.get_data_transaksi'
+            ]);
+
+            Route::post('master/keuangan/master_transaksi/update', [
+                'uses'  => 'Keuangan\Master_transaksi\master_transaksi_controller@update',
+                'as'    => 'master_transaksi.update'
+            ]);
+
+        // End Master Transaksi
+
+
+        //Laporan Keuangan
+            Route::get('keuangan/laporan_keuangan', function(){
+                $data = DB::table('d_akun')->where('type_akun', 'DETAIL')->select('id_akun', 'nama_akun')->orderBy('id_akun', 'asc')->get();
+                return view('keuangan.laporan_keuangan.index', compact('data'));
+            });
+
+            //laporan jurnal
+                Route::get('keuangan/laporan_keuangan/laporan_jurnal', [
+                    'uses'  => 'keuangan\laporan_keuangan\laporan_jurnal_controller@index',
+                    'as'    => 'laporan_jurnal.index'
+                ]);
+            // end laporan jurnal
+
+            //laporan Buku Besar
+                Route::get('keuangan/laporan_keuangan/laporan_buku_besar', [
+                    'uses'  => 'keuangan\laporan_keuangan\laporan_buku_besar_controller@index',
+                    'as'    => 'laporan_buku_besar.index'
+                ]);
+            // end laporan buku besar
+
+            //laporan neraca Saldo
+                Route::get('keuangan/laporan_keuangan/laporan_neraca_saldo', [
+                    'uses'  => 'keuangan\laporan_keuangan\laporan_neraca_saldo_controller@index',
+                    'as'    => 'laporan_neraca_saldo.index'
+                ]);
+            // end laporan neraca saldo
+
+        // end Laporan
+
+
+    Route::get('/keuangan/l_hutangpiutang/hutang', 'Keuangan\KeuanganController@hutang');
+    Route::get('/keuangan/l_jurnal/jurnal', 'Keuangan\KeuanganController@jurnal');
+    Route::get('/keuangan/analisaprogress/analisa', 'Keuangan\KeuanganController@analisa');
+    Route::get('/keuangan/analisaocf/analisa2', 'Keuangan\KeuanganController@analisa2');
+    Route::get('/keuangan/analisaaset/analisa3', 'Keuangan\KeuanganController@analisa3');
+    Route::get('/keuangan/analisacashflow/analisa4', 'Keuangan\KeuanganController@analisa4');
+    Route::get('/keuangan/analisaindex/analisa5', 'Keuangan\KeuanganController@analisa5');
+    Route::get('/keuangan/analisarasio/analisa6', 'Keuangan\KeuanganController@analisa6');
+    Route::get('/keuangan/analisabottom/analisa7', 'Keuangan\KeuanganController@analisa7');
+    Route::get('/keuangan/analisaroe/analisa8', 'Keuangan\KeuanganController@analisa8');
+    Route::get('/keuangan/spk/create-id', 'Keuangan\spkFinancialController@spkCreateId');
+    Route::get('/keuangan/spk/data-produc-plan', 'Keuangan\spkFinancialController@productplan');
+    Route::get('/produksi/spk/final/simpan-spk', 'Keuangan\spkFinancialController@simpanSpk');
+    Route::get('/produksi/spk/draft/simpan-spk', 'Keuangan\spkFinancialController@simpanDraftSpk');
+    Route::get('/produksi/spk/edit/{id}', 'Keuangan\spkFinancialController@editSpk');
+    Route::get('/keuangan/spk/lihat-detail', 'Keuangan\spkFinancialController@detailSpk');
+    Route::get('/keuangan/spk/update-status/{id}', 'Keuangan\spkFinancialController@updateStatus');
     Route::get('/hrd/training/training', 'HrdController@training')->name('training');
     Route::get('/hrd/training/form_training', 'HrdController@tambah_training')->name('form_training');
 /*Recruitment*/
@@ -504,6 +724,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/recruitment/get-jadwal-presentasi/{id}', 'RecruitmentController@getJadwalPresentasi');
     Route::post('/hrd/recruitment/proc-jadwal-presentasi', 'RecruitmentController@procJadwalPresentasi');
 //Master Data Lowongan
+    
 // rizky
     Route::get('/keuangan/p_hasilproduksi/pembatalanPenerimaan', 'Keuangan\KeuanganController@pembatalanPenerimaan');
     Route::get('/keuangan/p_hasilproduksi/ubah_status_transaksi/{id}/{id2}', 'Keuangan\KeuanganController@ubahStatusTransaksi');
