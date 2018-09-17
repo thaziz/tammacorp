@@ -39,6 +39,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/hrd/datajabatan/update-jabatan/{id}', 'Hrd\JabatanController@updateJabatan');
     Route::get('/hrd/datajabatan/tambah-jabatan', 'Hrd\JabatanController@tambahJabatan');
     Route::delete('/hrd/datajabatan/delete-jabatan/{id}', 'Hrd\ManajemenSuratController@deleteJabatan');
+//Mahmud Absensi
+    Route::get('/hrd/absensi/index', 'Hrd\AbsensiController@index');
+    Route::get('/hrd/absensi/table/{tgl1}/{data}', 'Hrd\AbsensiController@table');
+    Route::get('/hrd/absensi/peg/save', 'Hrd\AbsensiController@savePeg');
+    Route::get('/hrd/absensi/detail/{tgl1}/{tgl2}/{tampil}', 'Hrd\AbsensiController@detAbsensi');
+//Mahmud Pengajuan Pelatihan
+    Route::get('/hrd/pengajuan/index', 'Hrd\PengajuanController@index');
+    Route::get('/hrd/Pengajuan/table', 'Hrd\PengajuanController@tablePengajuan');
 //surat
     Route::get('/hrd/manajemensurat', 'Hrd\ManajemenSuratController@index');
     Route::get('/hrd/manajemensurat/surat-phk', 'Hrd\ManajemenSuratController@indexPhk');
