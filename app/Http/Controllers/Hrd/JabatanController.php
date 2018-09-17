@@ -15,11 +15,12 @@ class JabatanController extends Controller
     }
     public function jabatanData(){
         $list = DB::table('m_jabatan')
-                ->join('m_divisi', 'm_divisi.c_id', '=', 'm_jabatan.c_divisi_id')
-                ->select('m_jabatan.*', 'm_divisi.c_divisi')
+                ->join('m_divisi', 'm_divisi.d_id', '=', 'm_jabatan.c_divisi_id')
+                ->select('m_jabatan.*', 'm_divisi.d_name')
                 ->get();
+                
         $data = collect($list);
-        return Datatables::of($data)           
+        return Datatables::of($data)
                 ->addColumn('action', function ($data) {
                          return  '<button id="edit" onclick="edit('.$data->c_id.')" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
                                 <button id="delete" onclick="hapus('.$data->c_id.')" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
@@ -35,7 +36,7 @@ class JabatanController extends Controller
     }
     public function getPegawai(Request $request, $id){
         $maxid = DB::Table('m_pegawai')->select('c_id_by_production')->where('c_jabatan_id', $id)->max('c_id_by_production');
-        // untuk +1 nilai yang ada,, jika kosong maka maxid = 1 , 
+        // untuk +1 nilai yang ada,, jika kosong maka maxid = 1 ,
         if ($maxid <= 0 || $maxid <= '') {
             $maxid  = 1;
         }else{
@@ -59,7 +60,7 @@ class JabatanController extends Controller
                 ->where('c_jabatan_id', $id)
                 ->get();
         $data = collect($list);
-        return Datatables::of($data)           
+        return Datatables::of($data)
                 ->addColumn('action', function ($data) {
                          return  '<button id="edit" onclick="edit('.$data->c_id.')" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
                                         <button id="delete" onclick="hapus('.$data->c_id.')" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
