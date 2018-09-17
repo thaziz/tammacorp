@@ -112,7 +112,7 @@
                                       </div>
 
                                       <div class="col-md-12 text">
-                                        <a href="{{ url('/keuangan/p_inputtransaksi/transaksi_kas') }}">Neraca</a>
+                                        <a href="#" data-toggle="modal" data-target="#modal_neraca">Neraca</a>
                                       </div>
                                     </div>
 
@@ -122,7 +122,7 @@
                                       </div>
 
                                       <div class="col-md-12 text">
-                                        <a href="{{ url('/keuangan/p_inputtransaksi/transaksi_bank') }}">Laba Rugi</a>
+                                        <a href="#" data-toggle="modal" data-target="#modal_laba_rugi">Laba Rugi</a>
                                       </div>
                                     </div>
                                 </div>                                                
@@ -334,6 +334,102 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Modal -->
+              <div class="modal fade" id="modal_neraca" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document" style="width: 35%;">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <h4 class="modal-title" id="myModalLabel">Setting Neraca</h4>
+                    </div>
+
+                    <form id="form-jurnal" method="get" action="{{ route('laporan_neraca.index') }}" target="_blank">
+                    <div class="modal-body">
+                      <div class="row" style="margin-bottom: 15px;">
+                        <div class="col-md-3">
+                          Jenis Periode
+                        </div>
+
+                        <div class="col-md-4">
+                          <select name="jenis" class="form-control" id="jenis_periode_neraca">
+                            <option value="bulan">Bulan</option>
+                            <option value="tahun">Tahun</option>
+                          </select>
+                        </div>
+                    </div>
+
+                      <div class="row" style="margin-bottom: 15px;">
+                        <div class="col-md-3">
+                          Periode
+                        </div>
+
+                        <div class="col-md-9 durasi_bulan_neraca">
+                          <input type="text" name="durasi_1_neraca_bulan" placeholder="periode Mulai" class="form-control" id="d1_neraca" autocomplete="off" required readonly style="cursor: pointer;">
+                        </div>
+
+                        <div class="col-md-9 durasi_tahun_neraca" style="display: none;">
+                          <input type="text" name="durasi_1_neraca_tahun" placeholder="periode Mulai" class="form-control" id="d1_neraca_tahun" autocomplete="off" required readonly style="cursor: pointer;">
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-primary">Proses</button>
+                    </div>
+
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal -->
+              <div class="modal fade" id="modal_laba_rugi" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document" style="width: 35%;">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <h4 class="modal-title" id="myModalLabel">Setting Laba Rugi</h4>
+                    </div>
+
+                    <form id="form-jurnal" method="get" action="{{ route('laporan_laba_rugi.index') }}" target="_blank">
+                    <div class="modal-body">
+                      <div class="row" style="margin-bottom: 15px;">
+                        <div class="col-md-3">
+                          Jenis Periode
+                        </div>
+
+                        <div class="col-md-4">
+                          <select name="jenis" class="form-control" id="jenis_periode_laba_rugi">
+                            <option value="bulan">Bulan</option>
+                            <option value="tahun">Tahun</option>
+                          </select>
+                        </div>
+                    </div>
+
+                      <div class="row" style="margin-bottom: 15px;">
+                        <div class="col-md-3">
+                          Periode
+                        </div>
+
+                        <div class="col-md-9 durasi_bulan_laba_rugi">
+                          <input type="text" name="durasi_1_laba_rugi_bulan" placeholder="periode Mulai" class="form-control" id="d1_laba_rugi" autocomplete="off" required readonly style="cursor: pointer;">
+                        </div>
+
+                        <div class="col-md-9 durasi_tahun_laba_rugi" style="display: none;">
+                          <input type="text" name="durasi_1_laba_rugi_tahun" placeholder="periode Mulai" class="form-control" id="d1_laba_rugi_tahun" autocomplete="off" required readonly style="cursor: pointer;">
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                      <button type="submit" class="btn btn-primary">Proses</button>
+                    </div>
+
+                    </form>
+                  </div>
+                </div>
+              </div>
                             
 @endsection
 
@@ -444,6 +540,74 @@
         });
 
       // modal neraca saldo
+
+      // modal neraca
+
+        $('#d2_neraca').datepicker( {
+            format: "yyyy-mm",
+            viewMode: "months", 
+            minViewMode: "months"
+        });
+
+        $('#d1_neraca').datepicker({
+          format: "yyyy-mm",
+          viewMode: "months", 
+          minViewMode: "months"
+        })
+
+        $('#d1_neraca_tahun').datepicker({
+          format: "yyyy",
+          viewMode: "years", 
+          minViewMode: "years"
+        })
+
+        $('#jenis_periode_neraca').change(function(evt){
+          evt.preventDefault();
+
+          if($(this).val() == 'bulan'){
+            $('.durasi_bulan_neraca').show();
+            $('.durasi_tahun_neraca').hide();
+          }else{
+            $('.durasi_bulan_neraca').hide();
+            $('.durasi_tahun_neraca').show();
+          }
+        })
+
+      // modal neraca
+
+      // modal laba rugi
+
+        $('#d2_laba_rugi').datepicker( {
+            format: "yyyy-mm",
+            viewMode: "months", 
+            minViewMode: "months"
+        });
+
+        $('#d1_laba_rugi').datepicker({
+          format: "yyyy-mm",
+          viewMode: "months", 
+          minViewMode: "months"
+        })
+
+        $('#d1_laba_rugi_tahun').datepicker({
+          format: "yyyy",
+          viewMode: "years", 
+          minViewMode: "years"
+        })
+
+        $('#jenis_periode_laba_rugi').change(function(evt){
+          evt.preventDefault();
+
+          if($(this).val() == 'bulan'){
+            $('.durasi_bulan_laba_rugi').show();
+            $('.durasi_tahun_laba_rugi').hide();
+          }else{
+            $('.durasi_bulan_laba_rugi').hide();
+            $('.durasi_tahun_laba_rugi').show();
+          }
+        })
+
+      // modal laba rugi
 
     });
   </script>

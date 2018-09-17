@@ -112,6 +112,25 @@
 	          font-size: 8pt;
 	        }
 	    </style>
+
+      <style type="text/css" media="print">
+          @page { size: landscape; }
+          #navigation{
+                display: none;
+              }
+
+          #table-data td.total{
+             background-color: #ccc !important;
+             -webkit-print-color-adjust: exact;
+          }
+
+          #table-data td.not-same{
+             color: red !important;
+             -webkit-print-color-adjust: exact;
+          }
+
+          .page-break { display: block; page-break-before: always; }
+      </style>
 	</head>
 
 	<body style="background: #555;">
@@ -523,6 +542,12 @@
 		        });
 
 		      // modal neraca saldo
+
+            $('#print').click(function(evt){
+              evt.preventDefault();
+
+              window.print();
+            })
 	    </script>
 
 	</body>

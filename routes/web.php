@@ -685,6 +685,20 @@ Route::group(['middleware' => 'auth'], function () {
                 ]);
             // end laporan neraca saldo
 
+            //laporan neraca
+                Route::get('keuangan/laporan_keuangan/laporan_neraca', [
+                    'uses'  => 'keuangan\laporan_keuangan\laporan_neraca_controller@index',
+                    'as'    => 'laporan_neraca.index'
+                ]);
+            // end laporan neraca
+
+            //laporan neraca
+                Route::get('keuangan/laporan_keuangan/laporan_laba_rugi', [
+                    'uses'  => 'keuangan\laporan_keuangan\laporan_laba_rugi_controller@index',
+                    'as'    => 'laporan_laba_rugi.index'
+                ]);
+            // end laporan neraca
+
         // end Laporan
 
 
