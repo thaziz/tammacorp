@@ -44,9 +44,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/absensi/table/{tgl1}/{data}', 'Hrd\AbsensiController@table');
     Route::get('/hrd/absensi/peg/save', 'Hrd\AbsensiController@savePeg');
     Route::get('/hrd/absensi/detail/{tgl1}/{tgl2}/{tampil}', 'Hrd\AbsensiController@detAbsensi');
-//Mahmud Pengajuan Pelatihan
-    Route::get('/hrd/pengajuan/index', 'Hrd\PengajuanController@index');
-    Route::get('/hrd/Pengajuan/table', 'Hrd\PengajuanController@tablePengajuan');
 //surat
     Route::get('/hrd/manajemensurat', 'Hrd\ManajemenSuratController@index');
     Route::get('/hrd/manajemensurat/surat-phk', 'Hrd\ManajemenSuratController@indexPhk');
@@ -738,7 +735,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/recruitment/get-jadwal-presentasi/{id}', 'RecruitmentController@getJadwalPresentasi');
     Route::post('/hrd/recruitment/proc-jadwal-presentasi', 'RecruitmentController@procJadwalPresentasi');
 //Master Data Lowongan
-    
+
 // rizky
     Route::get('/keuangan/p_hasilproduksi/pembatalanPenerimaan', 'Keuangan\KeuanganController@pembatalanPenerimaan');
     Route::get('/keuangan/p_hasilproduksi/ubah_status_transaksi/{id}/{id2}', 'Keuangan\KeuanganController@ubahStatusTransaksi');

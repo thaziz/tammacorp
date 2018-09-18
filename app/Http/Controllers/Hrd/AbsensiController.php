@@ -28,17 +28,17 @@ class AbsensiController extends Controller
         $tgl = $y.'-'.$m.'-'.$d;
 
       $pegawai = m_pegawai_man::select(
-          'c_id',
-          'd_id',
+          'm_pegawai_man.c_id as mp_id',
+          'm_divisi.c_id as md_id',
           'c_nik',
           'c_nama',
           'apm_ket')
-        ->join('m_divisi','d_id','=','c_divisi_id')
+        ->join('m_divisi','m_divisi.c_id','=','c_divisi_id')
         ->leftjoin('abs_pegawai_man', function($join) use ($tgl) {
-            $join->on('apm_pm', '=', 'c_id')
+            $join->on('apm_pm', '=', 'm_pegawai_man.c_id')
               ->where('apm_date',$tgl);
           })
-        ->where('d_id',$data)
+        ->where('m_divisi.c_id',$data)
         ->get();
       // dd($pegawai);
       return DataTables::of($pegawai)
@@ -53,19 +53,19 @@ class AbsensiController extends Controller
             return '<input type="hidden"
                         name="apm_pm[]"
                         class="form-control input-sm"
-                        value="'.$data->c_id.'">
+                        value="'.$data->mp_id.'">
                     <input type="hidden"
                         name="apm_ket[]"
                         class="form-control input-sm"
-                        id="data'.$data->c_id.'"
+                        id="data'.$data->mp_id.'"
                         value="'.$data->apm_ket.'">
                     <div class="text-center">
                           <div class="radio icheck-primary">
                               <input checked type="radio"
-                                    id="'.$data->c_id.'-1"
-                                    name="data'.$data->c_id.'"
-                                    value="A|'.$data->c_id.'">
-                              <label for="'.$data->c_id.'-1">
+                                    id="'.$data->mp_id.'-1"
+                                    name="data'.$data->mp_id.'"
+                                    value="A|'.$data->mp_id.'">
+                              <label for="'.$data->mp_id.'-1">
                               </label>
                           </div>
                     </div>';
@@ -73,19 +73,19 @@ class AbsensiController extends Controller
             return '<input type="hidden"
                         name="apm_pm[]"
                         class="form-control input-sm"
-                        value="'.$data->c_id.'">
+                        value="'.$data->mp_id.'">
                     <input type="hidden"
                         name="apm_ket[]"
                         class="form-control input-sm"
-                        id="data'.$data->c_id.'"
+                        id="data'.$data->mp_id.'"
                         value="">
                     <div class="text-center">
                           <div class="radio icheck-primary">
                               <input type="radio"
-                                    id="'.$data->c_id.'-1"
-                                    name="data'.$data->c_id.'"
-                                    value="A|'.$data->c_id.'">
-                              <label for="'.$data->c_id.'-1">
+                                    id="'.$data->mp_id.'-1"
+                                    name="data'.$data->mp_id.'"
+                                    value="A|'.$data->mp_id.'">
+                              <label for="'.$data->mp_id.'-1">
                               </label>
                           </div>
                     </div>';
@@ -98,10 +98,10 @@ class AbsensiController extends Controller
             return '<div class="text-center">
                           <div class="radio icheck-primary">
                               <input checked type="radio"
-                                  id="'.$data->c_id.'-2"
-                                  name="data'.$data->c_id.'"
-                                  value="I|'.$data->c_id.'">
-                              <label for="'.$data->c_id.'-2">
+                                  id="'.$data->mp_id.'-2"
+                                  name="data'.$data->mp_id.'"
+                                  value="I|'.$data->mp_id.'">
+                              <label for="'.$data->mp_id.'-2">
                               </label>
                           </div>
                     </div>';
@@ -109,10 +109,10 @@ class AbsensiController extends Controller
             return '<div class="text-center">
                           <div class="radio icheck-primary">
                               <input type="radio"
-                                  id="'.$data->c_id.'-2"
-                                  name="data'.$data->c_id.'"
-                                  value="I|'.$data->c_id.'">
-                              <label for="'.$data->c_id.'-2">
+                                  id="'.$data->mp_id.'-2"
+                                  name="data'.$data->mp_id.'"
+                                  value="I|'.$data->mp_id.'">
+                              <label for="'.$data->mp_id.'-2">
                               </label>
                           </div>
                     </div>';
@@ -125,10 +125,10 @@ class AbsensiController extends Controller
             return '<div class="text-center">
                           <div class="radio icheck-primary">
                               <input checked type="radio"
-                                  id="'.$data->c_id.'-3"
-                                  name="data'.$data->c_id.'"
-                                  value="S|'.$data->c_id.'">
-                              <label for="'.$data->c_id.'-3">
+                                  id="'.$data->mp_id.'-3"
+                                  name="data'.$data->mp_id.'"
+                                  value="S|'.$data->mp_id.'">
+                              <label for="'.$data->mp_id.'-3">
                               </label>
                           </div>
                     </div>';
@@ -136,10 +136,10 @@ class AbsensiController extends Controller
             return '<div class="text-center">
                           <div class="radio icheck-primary">
                               <input type="radio"
-                                  id="'.$data->c_id.'-3"
-                                  name="data'.$data->c_id.'"
-                                  value="S|'.$data->c_id.'">
-                              <label for="'.$data->c_id.'-3">
+                                  id="'.$data->mp_id.'-3"
+                                  name="data'.$data->mp_id.'"
+                                  value="S|'.$data->mp_id.'">
+                              <label for="'.$data->mp_id.'-3">
                               </label>
                           </div>
                     </div>';
@@ -152,10 +152,10 @@ class AbsensiController extends Controller
           return '<div class="text-center">
                         <div class="radio icheck-primary">
                             <input checked type="radio"
-                              id="'.$data->c_id.'-4"
-                              name="data'.$data->c_id.'"
-                              value="C|'.$data->c_id.'">
-                            <label for="'.$data->c_id.'-4">
+                              id="'.$data->mp_id.'-4"
+                              name="data'.$data->mp_id.'"
+                              value="C|'.$data->mp_id.'">
+                            <label for="'.$data->mp_id.'-4">
                             </label>
                         </div>
                   </div>';
@@ -163,10 +163,10 @@ class AbsensiController extends Controller
           return '<div class="text-center">
                         <div class="radio icheck-primary">
                             <input type="radio"
-                              id="'.$data->c_id.'-4"
-                              name="data'.$data->c_id.'"
-                              value="C|'.$data->c_id.'">
-                            <label for="'.$data->c_id.'-4">
+                              id="'.$data->mp_id.'-4"
+                              name="data'.$data->mp_id.'"
+                              value="C|'.$data->mp_id.'">
+                            <label for="'.$data->mp_id.'-4">
                             </label>
                         </div>
                   </div>';
@@ -179,10 +179,10 @@ class AbsensiController extends Controller
           return '<div class="text-center">
                         <div class="radio icheck-primary">
                             <input checked type="radio"
-                              id="'.$data->c_id.'-5"
-                              name="data'.$data->c_id.'"
-                              value="H|'.$data->c_id.'">
-                            <label for="'.$data->c_id.'-5">
+                              id="'.$data->mp_id.'-5"
+                              name="data'.$data->mp_id.'"
+                              value="H|'.$data->mp_id.'">
+                            <label for="'.$data->mp_id.'-5">
                             </label>
                         </div>
                   </div>';
@@ -190,10 +190,10 @@ class AbsensiController extends Controller
           return '<div class="text-center">
                       <div class="radio icheck-primary">
                             <input type="radio"
-                              id="'.$data->c_id.'-5"
-                              name="data'.$data->c_id.'"
-                              value="H|'.$data->c_id.'">
-                            <label for="'.$data->c_id.'-5">
+                              id="'.$data->mp_id.'-5"
+                              name="data'.$data->mp_id.'"
+                              value="H|'.$data->mp_id.'">
+                            <label for="'.$data->mp_id.'-5">
                             </label>
                       </div>
                   </div>';
@@ -269,8 +269,8 @@ class AbsensiController extends Controller
       $tgl2 = $y2.'-'.$m2.'-'.$d2;
 
     $pegawai = m_pegawai_man::select(
-        'c_id',
-        'd_id',
+        'm_pegawai_man.c_id as mp_id',
+        'm_divisi.c_id as md_id',
         'c_nik',
         'c_nama',
         'apm_pm',
@@ -289,13 +289,13 @@ class AbsensiController extends Controller
         DB::raw("(SELECT count(apm_pm) as a from abs_pegawai_man as ap
         where ap.apm_pm=abs_pegawai_man.apm_pm and apm_ket='H') as Hadir"))
 
-      ->join('m_divisi','d_id','=','c_divisi_id')
-      ->leftJoin('abs_pegawai_man','apm_pm','=','c_id')
-      ->where('d_id',$data)
+      ->join('m_divisi','m_divisi.c_id','=','c_divisi_id')
+      ->leftJoin('abs_pegawai_man','abs_pegawai_man.apm_pm','=','m_pegawai_man.c_id')
+      ->where('m_divisi.c_id',$data)
       ->where('apm_date','>=', $tgl1)
       ->where('apm_date','<=', $tgl2)
-      ->groupBy('c_id')
-      ->tosql();
+      ->groupBy('m_pegawai_man.c_id')
+      ->get();
 
       // dd($pegawai);
     return DataTables::of($pegawai)
