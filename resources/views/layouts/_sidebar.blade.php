@@ -719,10 +719,6 @@
                                         Absensi
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Pengajuan Pelatihan','ma_read'))
-                                        Pengajuan Pelatihan
-                                    @endif
-
                                     @if(Auth::user()->punyaAkses('Data Administrasi Pegawai','ma_read'))
                                         Data Administrasi Pegawai
                                     @endif
@@ -766,13 +762,6 @@
                                     <li class="{{ Request::is('hrd/absensi/index') ? 'active' : '' || Request::is('hrd/absensi/*') ? 'active' : '' }}">
                                         <a href="{{ url('/hrd/absensi/index')}}"><span
                                                     class="submenu-title">Absensi</span><span
-                                                    class="hidden">HRD</span></a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->punyaAkses('Pengajuan Pelatihan','ma_read'))
-                                    <li class="{{ Request::is('hrd/pengajuan/index') ? 'active' : '' || Request::is('hrd/pengajuan/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/hrd/pengajuan/index')}}"><span
-                                                    class="submenu-title">Pengajuan Pelatihan</span><span
                                                     class="hidden">HRD</span></a>
                                     </li>
                                 @endif
