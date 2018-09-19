@@ -21,7 +21,7 @@ class LowonganController extends Controller
 
     public function tambah_data()
     {
-        
+    	
         $kode = $this->kode_lowongan();
         return view('master.datalowongan.tambah',compact('kode'));
     }
@@ -32,8 +32,8 @@ class LowonganController extends Controller
         DB::beginTransaction();
         try 
         {   
-            $id = DB::table('d_lowongan')->select('l_id')->max('l_id');
-            if ($id == 0 || $id == '') { $id  = 1; } else { $id++; }
+        	$id = DB::table('d_lowongan')->select('l_id')->max('l_id');
+        	if ($id == 0 || $id == '') { $id  = 1; } else { $id++; }
 
             $tanggal = date("Y-m-d h:i:s");
             DB::table('d_lowongan')
@@ -103,9 +103,9 @@ class LowonganController extends Controller
         })
         ->addColumn('status', function ($data) {
             if ($data->l_isactive == 'Y') {
-                return '<span style="color:blue">Aktif</span>';
+            	return '<span style="color:blue">Aktif</span>';
             }else{
-                return '<span style="color:red">Nonaktif</span>';
+            	return '<span style="color:red">Nonaktif</span>';
             }
         })
         ->rawColumns(['aksi','status'])

@@ -116,6 +116,10 @@
       format:"dd-mm-yyyy"
     }).datepicker("setDate", "0");
 
+    $(".modal").on("hidden.bs.modal", function(){
+      $('#tr_shift').empty();
+    });
+
     cariDataIndex();
   });//end jquery
 
@@ -200,34 +204,36 @@
     });
   }
 
-  function prosesPegBaru(id) 
+  function prosesPegBaru(id, p_empset) 
   {
     $.ajax({
-      url : baseUrl + "/hrd/recruitment/get-jadwal-interview/" + id,
+      url : baseUrl + "/hrd/recruitment/get-data-set-pegawai/"+id+"/"+p_empset,
       type: "GET",
       dataType: "JSON",
       success: function(response)
       {
-        if (response.data.length > 0) {
-          var date = response.data[0].pj_date;
-          var tglbaru = date.split("-").reverse().join("-");
-          $('#i_pjadwal_id').val(response.data[0].pj_id);
-          $('#i_pelamarid').val(response.data[0].pj_pid);
-          $('#i_tgl').val(tglbaru);
-          $('#i_jam').val(response.data[0].pj_time);
-          $('#i_lokasi').val(response.data[0].pj_lokasi);
-          $('#i_pic').val(response.data[0].c_nik+' '+response.data[0].c_nama);
-          $('#i_pic_id').val(response.data[0].pj_pmid);
-        }else{
-          $('#i_pjadwal_id').val('');
-          $('#i_pelamarid').val(id);
-          $('#i_tgl').val('');
-          $('#i_jam').val('');
-          $('#i_lokasi').val('');
-          $('#i_pic').val('');
-          $('#i_pic_id').val('');
-        }
-        
+        var key = 0;
+        var date = response.data2['tgl_masuk'];
+        var tglbaru = date.split("-").reverse().join("-");
+        $('#tr_tgl').val(tglbaru);
+        $('#tr_nama').val(response.data2['nama']);
+        $('#tr_idlamar').val(response.data2['idpelamar']);
+        $('#tr_idpegman').val(response.d_pegman.c_id);
+        $('#tr_hariawal').val(response.data2['hari_awal']);
+        $('#tr_hariakhir').val(response.data2['hari_akhir']);
+        $('#tr_divisi').val(response.data[0].c_divisi);
+        $('#tr_divisiid').val(response.data2['id_divisi']);
+        $('#tr_posisi').val(response.data[0].c_posisi);
+        $('#tr_posisiid').val(response.data2['id_jabatan']);
+        // console.log(response.shift[0]);
+        Object.keys(response.data2['shift']).forEach(function(){
+          $('#tr_shift').append($('<option>', { 
+            value: response.data2['shift'][key].c_id,
+            text : response.data2['shift'][key].c_name+' | '+response.data2['shift'][key].c_start+' - '+response.data2['shift'][key].c_end,
+          }));
+          key++;
+        });
+        $('#tr_shift').val(response.data2['data_shift']);
         $('#diterima').modal('show');
       },
       error: function (jqXHR, textStatus, errorThrown)
@@ -235,6 +241,123 @@
           alert('Error get data from ajax');
       }
     });
+  }
+
+  function simpanPegawaiBaru() 
+  {
+    $.ajax({
+      type: "POST",
+      url : baseUrl + "/hrd/recruitment/simpan-pegawai-baru",
+      data: $('#form-peg-baru').serialize(),
+      success: function(response)
+      {
+        if(response.status == "sukses")
+        {
+          iziToast.success({
+            position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+            title: 'Pemberitahuan',
+            message: response.pesan,
+            onClosing: function(instance, toast, closedBy){
+               $('#diterima').modal('hide');
+               refreshTabelDiterima();
+            }
+          });
+        }
+        else
+        {
+          iziToast.error({
+            position: 'center', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+            title: 'Pemberitahuan',
+            message: "Data Gagal disimpan !",
+            onClosing: function(instance, toast, closedBy){
+               $('#diterima').modal('hide');
+               refreshTabelDiterima();
+            }
+          });
+        }              
+      },
+      error: function()
+      {
+        iziToast.error({
+          position: 'topRight', //center, bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+          title: 'Pemberitahuan',
+          message: "Data gagal disimpan !",
+          onClosing: function(instance, toast, closedBy){
+            $('#test_presentasi').modal('hide');
+            location.reload();
+          }
+        });
+      },
+      async: false
+    }); 
+  }
+
+  function deleteDataPelamar(idpelamar) 
+  {
+    iziToast.question({
+      timeout: 20000,
+      close: false,
+      overlay: true,
+      displayMode: 'once',
+      title: 'Hapus data',
+      message: 'Apakah anda yakin ?',
+      position: 'center',
+      buttons: [
+        ['<button><b>Ya</b></button>', function (instance, toast) {
+          $.ajax({
+            url : baseUrl + "/hrd/recruitment/delete-data-pelamar",
+            type: "POST",
+            dataType: "JSON",
+            data: {idpelamar:idpelamar, "_token": "{{ csrf_token() }}"},
+            success: function(response)
+            {
+              if(response.status == "sukses")
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.success({
+                  position: 'topRight',
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    refreshTabelIndex();
+                  }
+                });
+              }
+              else
+              {
+                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                iziToast.error({
+                  position: 'topRight',
+                  title: 'Pemberitahuan',
+                  message: response.pesan,
+                  onClosing: function(instance, toast, closedBy){
+                    refreshTabelIndex();
+                  }
+                });
+              }
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+              iziToast.error({
+                icon: 'fa fa-times',
+                message: 'Terjadi Kesalahan!'
+              });
+            }
+          });
+        }, true],
+        ['<button>Tidak</button>', function (instance, toast) {
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+        }],
+      ]
+    });
+  }
+
+  function refreshTabelIndex() {
+    $('#tbl-index').DataTable().ajax.reload();
+  }
+
+  function refreshTabelDiterima() {
+    $('#tbl-diterima').DataTable().ajax.reload();
   }
 </script>
 @endsection()
