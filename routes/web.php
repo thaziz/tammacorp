@@ -734,8 +734,23 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/hrd/recruitment/proc-jadwal-interview', 'RecruitmentController@procJadwalInterview');
     Route::get('/hrd/recruitment/get-jadwal-presentasi/{id}', 'RecruitmentController@getJadwalPresentasi');
     Route::post('/hrd/recruitment/proc-jadwal-presentasi', 'RecruitmentController@procJadwalPresentasi');
+    Route::get('/hrd/recruitment/get-data-set-pegawai/{id}/{id2}', 'RecruitmentController@getDataSetPegawai');
+    Route::post('/hrd/recruitment/simpan-pegawai-baru', 'RecruitmentController@simpanPegawaiBaru');
+    Route::post('/hrd/recruitment/delete-data-pelamar', 'RecruitmentController@deleteDataPelamar');
+    Route::get('/hrd/recruitment/buat_pdf', 'RecruitmentController@buat_pdf');
 //Master Data Lowongan
+    Route::get('/master/datalowongan/index', 'Master\LowonganController@index');
+    Route::get('/master/datalowongan/datatable-index', 'Master\LowonganController@get_datatable_index');
+    Route::get('/master/datalowongan/tambah_lowongan', 'master\LowonganController@tambah_data');
+    Route::post('/master/datalowongan/simpan_lowongan', 'master\LowonganController@simpan_data');
+    Route::post('/master/datalowongan/ubah_status', 'master\LowonganController@ubah_status');
+    Route::get('/master/datalowongan/edit_lowongan', 'master\LowonganController@edit_data');
+    Route::post('/master/datalowongan/update_lowongan', 'master\LowonganController@update_data');
+    Route::get('/master/datalowongan/lookup-data-divisi', 'master\LowonganController@lookup_divisi');
+    Route::get('/master/datalowongan/lookup-data-level', 'master\LowonganController@lookup_level');
+    Route::get('/master/datalowongan/lookup-data-jabatan', 'master\LowonganController@lookup_jabatan');
 
+/*Keuangan*/
 // rizky
     Route::get('/keuangan/p_hasilproduksi/pembatalanPenerimaan', 'Keuangan\KeuanganController@pembatalanPenerimaan');
     Route::get('/keuangan/p_hasilproduksi/ubah_status_transaksi/{id}/{id2}', 'Keuangan\KeuanganController@ubahStatusTransaksi');

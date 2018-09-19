@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use DB;
+use PDF;
 use DataTables;
 use Auth;
 //class untuk menangani storege file (unlink misal)
@@ -183,7 +184,6 @@ class RecruitmentController extends Controller
         $dataLowongan = DB::table('d_lowongan')->select('l_id')->where('l_code', strtoupper($request->kdlowong))->first();
         if (count($dataLowongan) == 0) 
         {
-            // return redirect('/recruitment#apply')->with(['gagal' => 'Kode Posisi Anda Salah, mohon periksa/hubungi kami untuk konfirmasi kode']);
             $request->session()->flash('gagal', 'Kode Posisi Anda Salah, mohon periksa/hubungi kami untuk konfirmasi kode');
             return redirect('/recruitment#apply');
         }
@@ -241,7 +241,7 @@ class RecruitmentController extends Controller
                 $berkas = new d_berkas_pelamar;
                 $image = $request->file('image');
                 $path = public_path(). '/assets/berkas/foto-pelamar';
-                $filename = time().'foto' . '.' . $image->getClientOriginalExtension();
+                $filename = $request->nama.'_'.$id.'_foto' . '.' . $image->getClientOriginalExtension();
                 $image->move($path, $filename);
                 //load object dari package image resize
                 Image::make($path.'/'.$filename)->resize(800, 800)->save();
@@ -257,7 +257,7 @@ class RecruitmentController extends Controller
                 $berkas = new d_berkas_pelamar;
                 $sertifikat = $request->file('sertifikat');
                 $path = public_path(). '/assets/berkas/dokumen-pelamar';
-                $filename = time().'_sertifikat' . '.' . $sertifikat->getClientOriginalExtension();
+                $filename = $request->nama.'_'.$id.'_sertifikat' . '.' . $sertifikat->getClientOriginalExtension();
                 $sertifikat->move($path, $filename);
                 // set field to table
                 $berkas->bks_name = $filename;
@@ -272,7 +272,7 @@ class RecruitmentController extends Controller
                 $berkas = new d_berkas_pelamar;
                 $ijazah = $request->file('ijazah');
                 $path = public_path(). '/assets/berkas/dokumen-pelamar';
-                $filename = time().'_ijazah' . '.' . $ijazah->getClientOriginalExtension();
+                $filename = $request->nama.'_'.$id.'_ijazah' . '.' . $ijazah->getClientOriginalExtension();
                 $ijazah->move($path, $filename);
                 // set field to table
                 $berkas->bks_name = $filename;
@@ -287,7 +287,7 @@ class RecruitmentController extends Controller
                 $berkas = new d_berkas_pelamar;
                 $file_lain_lain = $request->file('file_lain_lain');
                 $path = public_path(). '/assets/berkas/dokumen-pelamar';
-                $filename = time().'_lain' . '.' . $file_lain_lain->getClientOriginalExtension();
+                $filename = $request->nama.'_'.$id.'_lain' . '.' . $file_lain_lain->getClientOriginalExtension();
                 $file_lain_lain->move($path, $filename);
                 // set field to table
                 $berkas->bks_name = $filename;
@@ -297,6 +297,8 @@ class RecruitmentController extends Controller
                 $savedIjazah = $berkas->save();
             }
 
+            //generate pdf
+            $this->buat_pdf($id);
             DB::commit();
             // return redirect('/recruitment#apply')->with(['sukses' => 'Data berhasil disimpan, Anda Akan dihubungi apabila lolos administrasi. Terima Kasih']);
             $request->session()->flash('sukses', 'Data berhasil disimpan, Anda Akan dihubungi apabila lolos administrasi. Terima Kasih');
@@ -437,83 +439,6 @@ class RecruitmentController extends Controller
                             </a>
                             <a href="javascript:void(0);" class="btn btn-sm btn-danger" title="Delete" onclick=deleteDataPelamar("'.$data->p_id.'")>
                                 <i class="glyphicon glyphicon-trash"></i>
-                            </a>
-                        </div>';
-            })
-            ->rawColumns(['status', 'action', 'statusdt'])
-            ->make(true);
-    }
-
-    public function getDataHrdDiterima(Request $request)
-    {
-        //dd($request->all());
-        $y = substr($request->tgl1, -4);
-        $m = substr($request->tgl1, -7, -5);
-        $d = substr($request->tgl1, 0, 2);
-        $tanggal1 = $y.'-'.$m.'-'.$d;
-
-        $yy = substr($request->tgl2, -4);
-        $mm = substr($request->tgl2, -7, -5);
-        $dd = substr($request->tgl2, 0, 2);
-        $tanggal2 = $yy.'-'.$mm.'-'.$dd;
-
-        if ($request->grade == 'semua') {
-           $data = d_pelamar::join('d_pelamar_status','d_pelamar.p_apply_status','=','d_pelamar_status.p_st_id')
-                ->join('d_pelamar_statusdt','d_pelamar.p_apply_statusdt','=','d_pelamar_statusdt.p_stdt_id')
-                ->select('d_pelamar.*', 'd_pelamar_status.*', 'd_pelamar_statusdt.*')
-                ->where('d_pelamar.p_apply_statusdt', '9')
-                ->whereBetween('d_pelamar.p_date', [$tanggal1, $tanggal2])
-                ->orderBy('d_pelamar.p_created', 'DESC')
-                ->get(); 
-            }else{
-               $data = d_pelamar::join('d_pelamar_status','d_pelamar.p_apply_status','=','d_pelamar_status.p_st_id')
-                ->join('d_pelamar_statusdt','d_pelamar.p_apply_statusdt','=','d_pelamar_statusdt.p_stdt_id')
-                ->select('d_pelamar.*', 'd_pelamar_status.*', 'd_pelamar_statusdt.*')
-                ->where('d_pelamar.p_apply_statusdt', '9')
-                ->where('d_pelamar.p_education', $request->grade)
-                ->whereBetween('d_pelamar.p_date', [$tanggal1, $tanggal2])
-                ->orderBy('d_pelamar.p_created', 'DESC')
-                ->get(); 
-            }
-        
-        return DataTables::of($data)
-            ->addIndexColumn()
-            ->editColumn('tglBuat', function ($data) 
-            {
-                if ($data->p_created == null) {
-                    return '-';
-                } else {
-                    return $data->p_created ? with(new Carbon($data->p_created))->format('d M Y') : '';
-                }
-            })
-            ->editColumn('status', function ($data) 
-            {
-                if ($data->p_apply_status == 1) {
-                    return '<span style="color:#e557d0">'.$data->p_st_name.'</span>';
-                }else{
-                    return '<span>'.$data->p_st_name.'</span>';
-                }
-            })
-            ->editColumn('statusdt', function ($data) 
-            {
-                if ($data->p_apply_statusdt == 1) {
-                    return '-';
-                }elseif ($data->p_apply_statusdt == 9) {
-                    return '<span style="color:blue">'.$data->p_stdt_name.'</span>';
-                }elseif ($data->p_apply_statusdt == 2 || $data->p_apply_statusdt == 5 || $data->p_apply_statusdt == 8) {
-                    return '<span style="color:red">'.$data->p_stdt_name.'</span>';
-                }else{
-                    return $data->p_stdt_name;
-                }
-            })
-            ->addColumn('action', function($data)
-            {
-                return '<div class="text-center">
-                            <a href="./preview_rekrut/'.$data->p_id.'" class="btn btn-sm btn-success" title="Preview">
-                                <i class="glyphicon glyphicon-search"></i> 
-                            </a>
-                            <a href="javascript:void(0);" class="btn btn-sm btn-info" title="Process" onclick=prosesPegBaru("'.$data->p_id.'")>
-                                <i class="glyphicon glyphicon-ok"></i>
                             </a>
                         </div>';
             })
@@ -779,6 +704,80 @@ class RecruitmentController extends Controller
         }
     }
 
+    public function deleteDataPelamar(Request $request)
+    {
+      //dd($request->all());
+      DB::beginTransaction();
+      try {
+        $d_lamar = d_pelamar::where('p_id', $request->idpelamar)->first();
+        $pegawai = DB::table('m_pegawai_man')
+                    ->where('m_pegawai_man.c_nama', '=', $d_lamar->p_name)
+                    ->where('m_pegawai_man.c_email', '=', $d_lamar->p_email)
+                    ->where('m_pegawai_man.c_hp', '=', $d_lamar->p_tlp)
+                    ->where('m_pegawai_man.c_ktp', '=', 'KTP ('.$d_lamar->p_nip.')')
+                    ->first();
+
+        if (count($pegawai) > 0 ) {
+            //delete pegawai manajemen
+            DB::table('m_pegawai_man')->where('c_id', $pegawai->c_id)->delete();
+        }
+
+        //delete row table d_apply
+        DB::table('d_apply')->where('ap_pid', $request->idpelamar)->delete();
+        //delete row table d_pelamar_jadwal
+        DB::table('d_pelamar_jadwal')->where('pj_pid', $request->idpelamar)->delete();
+        //delete row table d_cv_pelamar
+        $data_cv = DB::table('d_cv_pelamar')->where('d_cv_pid', $request->idpelamar)->get();
+        if (count($data_cv) > 0) {
+            DB::table('d_cv_pelamar')->where('d_cv_pid', $request->idpelamar)->delete();
+        }
+        //unlink all file
+        $berkas_foto = d_berkas_pelamar::where('bks_pid', $request->idpelamar)->where('bks_type', 'I')->get();
+        $berkas_dokumen = d_berkas_pelamar::where('bks_pid', $request->idpelamar)->where('bks_type', 'D')->get();
+        
+        if(count($berkas_foto) > 0) {
+            foreach ($berkas_foto as $val_img) {
+                $img_path = public_path(). '/assets/berkas/foto-pelamar/'.$val_img->bks_name;
+                if(File::exists($img_path)) {
+                    File::delete($img_path);
+                }
+            }
+        }
+
+        if(count($berkas_dokumen) > 0) {
+            foreach ($berkas_dokumen as $val_doc) {
+                $doc_path = public_path(). '/assets/berkas/dokumen-pelamar/'.$val_doc->bks_name;
+                if(File::exists($doc_path)) {
+                    File::delete($doc_path);
+                }
+            }
+        }
+
+        //delete row table d_berkas_pelamar
+        $data_berkas = d_berkas_pelamar::where('bks_pid', $request->idpelamar)->get();
+        if (count($data_berkas) > 0) {
+            d_berkas_pelamar::where('bks_pid', $request->idpelamar)->delete();
+        }
+
+        //delete row table d_pelamar
+        d_pelamar::where('p_id', $request->idpelamar)->delete();
+
+        DB::commit();
+        return response()->json([
+            'status' => 'sukses',
+            'pesan' => 'Data Pelamar Berhasil Dihapus'
+        ]);
+      } 
+      catch (\Exception $e) 
+      {
+        DB::rollback();
+        return response()->json([
+            'status' => 'gagal',
+            'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
+        ]);
+      }
+    }
+
     public function autocomplete(Request $request)
     {
         //dd($request->all());
@@ -969,6 +968,199 @@ class RecruitmentController extends Controller
         return $id_pegawai = 'PG-' . $tanggal . '/' .  $kode;
     }
 
+    public function getDataHrdDiterima(Request $request)
+    {
+        //dd($request->all());
+        $y = substr($request->tgl1, -4);
+        $m = substr($request->tgl1, -7, -5);
+        $d = substr($request->tgl1, 0, 2);
+        $tanggal1 = $y.'-'.$m.'-'.$d;
+
+        $yy = substr($request->tgl2, -4);
+        $mm = substr($request->tgl2, -7, -5);
+        $dd = substr($request->tgl2, 0, 2);
+        $tanggal2 = $yy.'-'.$mm.'-'.$dd;
+
+        if ($request->grade == 'semua') {
+           $data = d_pelamar::join('d_pelamar_status','d_pelamar.p_apply_status','=','d_pelamar_status.p_st_id')
+                ->join('d_pelamar_statusdt','d_pelamar.p_apply_statusdt','=','d_pelamar_statusdt.p_stdt_id')
+                ->select('d_pelamar.*', 'd_pelamar_status.*', 'd_pelamar_statusdt.*')
+                ->where('d_pelamar.p_apply_statusdt', '9')
+                ->whereBetween('d_pelamar.p_date', [$tanggal1, $tanggal2])
+                ->orderBy('d_pelamar.p_created', 'DESC')
+                ->get(); 
+            }else{
+               $data = d_pelamar::join('d_pelamar_status','d_pelamar.p_apply_status','=','d_pelamar_status.p_st_id')
+                ->join('d_pelamar_statusdt','d_pelamar.p_apply_statusdt','=','d_pelamar_statusdt.p_stdt_id')
+                ->select('d_pelamar.*', 'd_pelamar_status.*', 'd_pelamar_statusdt.*')
+                ->where('d_pelamar.p_apply_statusdt', '9')
+                ->where('d_pelamar.p_education', $request->grade)
+                ->whereBetween('d_pelamar.p_date', [$tanggal1, $tanggal2])
+                ->orderBy('d_pelamar.p_created', 'DESC')
+                ->get(); 
+            }
+        
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->editColumn('tglBuat', function ($data) 
+            {
+                if ($data->p_created == null) {
+                    return '-';
+                } else {
+                    return $data->p_created ? with(new Carbon($data->p_created))->format('d M Y') : '';
+                }
+            })
+            ->editColumn('status', function ($data) 
+            {
+                if ($data->p_apply_status == 1) {
+                    return '<span style="color:#e557d0">'.$data->p_st_name.'</span>';
+                }else{
+                    return '<span>'.$data->p_st_name.'</span>';
+                }
+            })
+            ->editColumn('statusdt', function ($data) 
+            {
+                if ($data->p_apply_statusdt == 1) {
+                    return '-';
+                }elseif ($data->p_apply_statusdt == 9) {
+                    return '<span style="color:blue">'.$data->p_stdt_name.'</span>';
+                }elseif ($data->p_apply_statusdt == 2 || $data->p_apply_statusdt == 5 || $data->p_apply_statusdt == 8) {
+                    return '<span style="color:red">'.$data->p_stdt_name.'</span>';
+                }else{
+                    return $data->p_stdt_name;
+                }
+            })
+            ->addColumn('action', function($data)
+            {
+                return '<div class="text-center">
+                            <a href="./preview_rekrut/'.$data->p_id.'" class="btn btn-sm btn-success" title="Preview">
+                                <i class="glyphicon glyphicon-search"></i> 
+                            </a>
+                            <a href="javascript:void(0);" class="btn btn-sm btn-info" title="Process" onclick=prosesPegBaru("'.$data->p_id.'","'.$data->p_isset_employee.'")>
+                                <i class="glyphicon glyphicon-ok"></i>
+                            </a>
+                        </div>';
+            })
+            ->rawColumns(['status', 'action', 'statusdt'])
+            ->make(true);
+    }
+
+    public function getDataSetPegawai($id, $p_empset)
+    {
+        if ($p_empset == 'N') 
+        {
+            $data = d_pelamar::join('d_lowongan','d_pelamar.p_vacancyid','=','d_lowongan.l_id')
+                ->join('m_divisi','d_lowongan.l_divisi','=','m_divisi.c_id')
+                ->join('m_jabatan','d_lowongan.l_jabatan','=','m_jabatan.c_id')
+                ->select('d_pelamar.*', 'd_lowongan.*', 'm_divisi.*', 'm_jabatan.*')
+                ->where('d_pelamar.p_id', '=', $id)
+                ->get();
+
+            $data2 = array();
+            $data2['nama'] = $data[0]->p_name;
+            $data2['tgl_masuk'] = date("Y-m-d");
+            $data2['hari_awal'] = 'Senin';
+            $data2['hari_akhir'] = 'Senin';
+            $data2['data_shift'] = '1';
+            $data2['id_divisi'] = $data[0]->l_divisi;
+            $data2['id_jabatan'] = $data[0]->l_jabatan;
+        }
+        else
+        {
+            $lamar = d_pelamar::where('p_id', $id)->first();
+            $data = DB::table('m_pegawai_man')
+                ->join('m_divisi','m_pegawai_man.c_divisi_id','=','m_divisi.c_id')
+                ->join('m_jabatan','m_pegawai_man.c_jabatan_id','=','m_jabatan.c_id')
+                ->select('m_pegawai_man.*', 'm_divisi.*', 'm_jabatan.*')
+                ->where('m_pegawai_man.c_nama', '=', $lamar->p_name)
+                ->where('m_pegawai_man.c_email', '=', $lamar->p_email)
+                ->where('m_pegawai_man.c_hp', '=', $lamar->p_tlp)
+                ->where('m_pegawai_man.c_ktp', '=', 'KTP ('.$lamar->p_nip.')')
+                ->get();
+            
+            $data2 = array();
+            $data2['nama'] = $data[0]->c_nama;
+
+            if ($data[0]->c_tahun_masuk == '0000-00-00') {
+                $data2['tgl_masuk'] = date("Y-m-d");
+            }else{
+                $data2['tgl_masuk'] = $data[0]->c_tahun_masuk;
+            }
+
+            if ($data[0]->c_hari_kerja == '' || $data[0]->c_hari_kerja == null) {
+                $data2['hari_awal'] = 'Senin';
+                $data2['hari_akhir'] = 'Senin';
+            }else{
+                $hari = explode(' - ', $data[0]->c_hari_kerja);
+                $data2['hari_awal'] = $hari[0];
+                $data2['hari_akhir'] = $hari[1];
+            }
+
+            $data2['data_shift'] = $data[0]->c_shift_id;
+            $data2['id_divisi'] = $data[0]->c_divisi_id;
+            $data2['id_jabatan'] = $data[0]->c_jabatan_id;
+        }
+        
+        $d_lamar = d_pelamar::where('p_id', $id)->first();
+        $d_pegman =  DB::table('m_pegawai_man')
+                        ->where('m_pegawai_man.c_nama', '=', $d_lamar->p_name)
+                        ->where('m_pegawai_man.c_email', '=', $d_lamar->p_email)
+                        ->where('m_pegawai_man.c_hp', '=', $d_lamar->p_tlp)
+                        ->where('m_pegawai_man.c_ktp', '=', 'KTP ('.$d_lamar->p_nip.')')
+                        ->first();
+
+        $data2['shift'] = DB::table('m_shift')->get();
+        $data2['idpelamar'] = $id;
+
+        return response()->json([
+            'status' => 'sukses',
+            'data' => $data,
+            'data2' => $data2,
+            'd_pegman' => $d_pegman
+        ]);
+    }
+
+    public function simpanPegawaiBaru(Request $request)
+    {
+        DB::beginTransaction();
+        try 
+        {   
+            //dd($request->all());
+            $tanggal = date("Y-m-d h:i:s");
+            $tgl = date("Y-m-d");
+
+            //update m_pegawai_man
+            DB::table('m_pegawai_man')->where('c_id','=',$request->tr_idpegman)
+                ->update([
+                    'c_hari_kerja' => $request->tr_hariawal.' - '.$request->tr_hariakhir,
+                    'c_tahun_masuk' => date('Y-m-d',strtotime($request->tr_tgl)),
+                    'c_shift_id' => $request->tr_shift,
+                    'updated_at' => $tanggal
+                ]);
+
+             //update d_pelamar
+             d_pelamar::where('p_id','=',$request->tr_idlamar)
+                ->update([
+                    'p_isset_employee' => 'Y',
+                    'p_updated' => $tanggal
+                ]);
+
+            DB::commit();
+            return response()->json([
+              'status' => 'sukses',
+              'pesan' => 'Sukses Atur data karyawan baru'
+            ]);
+        } 
+        catch (\Exception $e) 
+        {
+          DB::rollback();
+          return response()->json([
+              'status' => 'gagal',
+              'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
+          ]);
+        }
+    }
+
     public function tgl_indo($tanggal)
     {
         $bulan = array (
@@ -991,5 +1183,28 @@ class RecruitmentController extends Controller
         // variabel pecah 1 = bulan
         // variabel pecah 2 = tanggal
         return $pecah[2].' '.$bulan[$pecah[1]].' ' .$pecah[0];
+    }
+
+    public function buat_pdf($id_pelamar)
+    {
+        $pelamar = d_pelamar::where('p_id', $id_pelamar)->first();
+        $foto = d_berkas_pelamar::where('bks_pid', $id_pelamar)->where('bks_type', 'I')->first();
+        $cv = d_cv_pelamar::where('d_cv_pid', $id_pelamar)->get();
+        
+        // Send data to the view using loadView function of PDF facade
+        $pdf = PDF::loadView('hrd.recruitment.pdf-cv', array('pelamar' => $pelamar, 'foto' => $foto, 'cv' => $cv));
+        $path_cv = public_path(). '/assets/berkas/dokumen-pelamar';
+        $namafile = $pelamar->c_nama.'_'.$id_pelamar.'_cv.pdf';
+        //save
+        $pdf->save($path_cv.'/'.$namafile);
+        // file preview function
+        //return $pdf->stream($namafile);
+        //simpan pdf ke db
+        $berkas_cv = new d_berkas_pelamar;
+        $berkas_cv->bks_name = $namafile;
+        $berkas_cv->bks_type = 'D';
+        $berkas_cv->bks_dtype = 'CV';
+        $berkas_cv->bks_pid = $id_pelamar;
+        $berkas_cv->save();
     }
 }
