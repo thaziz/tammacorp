@@ -101,7 +101,7 @@ class RecruitmentController extends Controller
         $lain[] = array('bks_id' => '', 'bks_pid' => '', 'bks_type' => '', 'bks_name' => '', 'bks_dtype' => '');
         $drh[] = array('bks_id' => '', 'bks_pid' => '', 'bks_type' => '', 'bks_name' => '', 'bks_dtype' => '');
         $berkas = d_berkas_pelamar::where('bks_pid', $id)->where('bks_type', 'D')->get();
-        foreach ($berkas as $value) 
+        foreach ($berkas as $value)
         {
             if ($value->bks_dtype == 'ST') {
                 $result = d_berkas_pelamar::where('bks_pid', $id)->where('bks_dtype', 'ST')->limit(1)->get()->toArray();
@@ -123,7 +123,7 @@ class RecruitmentController extends Controller
                 $drh = array_replace($drh, $result);
             }
         }
-       
+
         //dd($serti, $lain, $ijasah);
         return view('hrd/recruitment/preview_rekrut', compact('data', 'cv1', 'cv2', 'ijasah', 'serti', 'lain', 'drh'));
     }
@@ -182,7 +182,7 @@ class RecruitmentController extends Controller
         if ($request->status == 'menikah') { $status = 'M'; } else { $status = 'S'; }
 
         $dataLowongan = DB::table('d_lowongan')->select('l_id')->where('l_code', strtoupper($request->kdlowong))->first();
-        if (count($dataLowongan) == 0) 
+        if (count($dataLowongan) == 0)
         {
             $request->session()->flash('gagal', 'Kode Posisi Anda Salah, mohon periksa/hubungi kami untuk konfirmasi kode');
             return redirect('/recruitment#apply');
@@ -211,7 +211,7 @@ class RecruitmentController extends Controller
                 $data->save();
 
             //d_cv_pelamar
-            if ($request->perusahaan1 != null) 
+            if ($request->perusahaan1 != null)
             {
                 $cv = new d_cv_pelamar;
                 $cv->d_cv_pid = $id;
@@ -223,7 +223,7 @@ class RecruitmentController extends Controller
                 $cv->save();
             }
 
-            if ($request->perusahaan2 != null) 
+            if ($request->perusahaan2 != null)
             {
                 $cv = new d_cv_pelamar;
                 $cv->d_cv_pid = $id;
@@ -236,7 +236,7 @@ class RecruitmentController extends Controller
             }
 
             //d_berkas_pelamar
-            if($request->hasFile('image')) 
+            if($request->hasFile('image'))
             {
                 $berkas = new d_berkas_pelamar;
                 $image = $request->file('image');
@@ -252,7 +252,7 @@ class RecruitmentController extends Controller
                 $savedImg = $berkas->save();
             }
 
-            if($request->hasFile('sertifikat')) 
+            if($request->hasFile('sertifikat'))
             {
                 $berkas = new d_berkas_pelamar;
                 $sertifikat = $request->file('sertifikat');
@@ -267,7 +267,7 @@ class RecruitmentController extends Controller
                 $savedSertifikat = $berkas->save();
             }
 
-            if($request->hasFile('ijazah')) 
+            if($request->hasFile('ijazah'))
             {
                 $berkas = new d_berkas_pelamar;
                 $ijazah = $request->file('ijazah');
@@ -282,7 +282,7 @@ class RecruitmentController extends Controller
                 $savedIjazah = $berkas->save();
             }
 
-            if($request->hasFile('file_lain_lain')) 
+            if($request->hasFile('file_lain_lain'))
             {
                 $berkas = new d_berkas_pelamar;
                 $file_lain_lain = $request->file('file_lain_lain');
@@ -310,21 +310,21 @@ class RecruitmentController extends Controller
     {
         $e = trim($request->email);
         $data = d_pelamar::select('p_email')->where('p_email', '=', $e)->first();
-        if (count($data) > 0) {
-            return response()->json([
-                'status' => 'gagal',
-                'pesan' => 'Email Telah terdaftar, Mohon cek kembali email anda'
-            ]);
+        //dd($data);
+        if (!empty($data) || isset($data)) {
+          return response()->json([
+            'status' => 'gagal',
+            'pesan' => 'Email Telah terdaftar, Mohon cek kembali email anda'
+          ]);
         }elseif ($e == null) {
-            return response()->json([
-                'status' => 'gagal',
-                'pesan' => 'Mohon Input Email terlebih dahulu'
-            ]);
-        }
-        else{
+          return response()->json([
+              'status' => 'gagal',
+              'pesan' => 'Mohon Input Email terlebih dahulu'
+          ]);
+        }else {
            return response()->json([
                 'status' => 'sukses',
-            ]); 
+            ]);
         }
     }
 
@@ -332,7 +332,7 @@ class RecruitmentController extends Controller
     {
         $e = trim($request->wa);
         $data = d_pelamar::select('p_tlp')->where('p_tlp', '=', $e)->first();
-        if (count($data) > 0) {
+        if (!empty($data) || isset($data)) {
             return response()->json([
                 'status' => 'gagal',
                 'pesan' => 'No Telp/WA Telah terdaftar, Mohon cek kembali'
@@ -347,7 +347,7 @@ class RecruitmentController extends Controller
         else{
            return response()->json([
                 'status' => 'sukses'
-            ]); 
+            ]);
         }
     }
 
@@ -400,7 +400,7 @@ class RecruitmentController extends Controller
 
         return DataTables::of($data)
             ->addIndexColumn()
-            ->editColumn('tglBuat', function ($data) 
+            ->editColumn('tglBuat', function ($data)
             {
                 if ($data->p_created == null) {
                     return '-';
@@ -408,7 +408,7 @@ class RecruitmentController extends Controller
                     return $data->p_created ? with(new Carbon($data->p_created))->format('d M Y') : '';
                 }
             })
-            ->editColumn('status', function ($data) 
+            ->editColumn('status', function ($data)
             {
                 if ($data->p_apply_status == 1) {
                     return '<span style="color:#e557d0">'.$data->p_st_name.'</span>';
@@ -416,7 +416,7 @@ class RecruitmentController extends Controller
                     return '<span>'.$data->p_st_name.'</span>';
                 }
             })
-            ->editColumn('statusdt', function ($data) 
+            ->editColumn('statusdt', function ($data)
             {
                 if ($data->p_apply_statusdt == 1) {
                     return '-';
@@ -432,7 +432,7 @@ class RecruitmentController extends Controller
             {
                 return '<div class="text-center">
                             <a href="./preview_rekrut/'.$data->p_id.'" class="btn btn-sm btn-success" title="Preview">
-                                <i class="glyphicon glyphicon-search"></i> 
+                                <i class="glyphicon glyphicon-search"></i>
                             </a>
                             <a href="./process_rekrut/'.$data->p_id.'" class="btn btn-sm btn-info" title="Process">
                                 <i class="glyphicon glyphicon-ok"></i>
@@ -450,8 +450,8 @@ class RecruitmentController extends Controller
     {
         //dd($request->all());
         DB::beginTransaction();
-        try 
-        {   
+        try
+        {
             $id = DB::table('d_apply')->select('ap_id')->max('ap_id');
             if ($id == 0 || $id == '') { $id  = 1; } else { $id++; }
 
@@ -482,8 +482,8 @@ class RecruitmentController extends Controller
               'status' => 'sukses',
               'pesan' => 'Data Approval 1 Berhasil Disimpan'
             ]);
-        } 
-        catch (\Exception $e) 
+        }
+        catch (\Exception $e)
         {
           DB::rollback();
           return response()->json([
@@ -496,7 +496,7 @@ class RecruitmentController extends Controller
     public function update_approval_1(Request $request)
     {
         DB::beginTransaction();
-        try 
+        try
         {
             $tanggal = date("Y-m-d h:i:s");
             $tgl = date("Y-m-d");
@@ -520,8 +520,8 @@ class RecruitmentController extends Controller
               'status' => 'sukses',
               'pesan' => 'Data Approval 1 Berhasil Diupdate'
             ]);
-        } 
-        catch (\Exception $e) 
+        }
+        catch (\Exception $e)
         {
           DB::rollback();
           return response()->json([
@@ -535,8 +535,8 @@ class RecruitmentController extends Controller
     {
         //dd($request->all());
         DB::beginTransaction();
-        try 
-        {   
+        try
+        {
             $id = DB::table('d_apply')->select('ap_id')->max('ap_id');
             if ($id == 0 || $id == '') { $id  = 1; } else { $id++; }
 
@@ -567,8 +567,8 @@ class RecruitmentController extends Controller
               'status' => 'sukses',
               'pesan' => 'Data Approval 2 Berhasil Disimpan'
             ]);
-        } 
-        catch (\Exception $e) 
+        }
+        catch (\Exception $e)
         {
           DB::rollback();
           return response()->json([
@@ -581,7 +581,7 @@ class RecruitmentController extends Controller
     public function update_approval_2(Request $request)
     {
         DB::beginTransaction();
-        try 
+        try
         {
             $tanggal = date("Y-m-d h:i:s");
             $tgl = date("Y-m-d");
@@ -605,8 +605,8 @@ class RecruitmentController extends Controller
               'status' => 'sukses',
               'pesan' => 'Data Approval 2 Berhasil Diupdate'
             ]);
-        } 
-        catch (\Exception $e) 
+        }
+        catch (\Exception $e)
         {
           DB::rollback();
           return response()->json([
@@ -619,8 +619,8 @@ class RecruitmentController extends Controller
     public function approval_3(Request $request)
     {
         DB::beginTransaction();
-        try 
-        {   
+        try
+        {
             //dd($request->all());
             $id = DB::table('d_apply')->select('ap_id')->max('ap_id');
             if ($id == 0 || $id == '') { $id  = 1; } else { $id++; }
@@ -647,13 +647,13 @@ class RecruitmentController extends Controller
                     'p_updated'=> $tanggal
                 ]);
 
-            if ($request->approval_3 == '9') 
+            if ($request->approval_3 == '9')
             {
                 $maxid = DB::Table('m_pegawai_man')->select('c_id_by_production')->where([
                     ['c_divisi_id', $request->get('c_divisi_id')],
                     ['c_jabatan_id', $request->get('c_jabatan_id')]
                 ])->max('c_id_by_production');
-                // untuk +1 nilai yang ada,, jika kosong maka maxid = 1 , 
+                // untuk +1 nilai yang ada,, jika kosong maka maxid = 1 ,
                 if ($maxid <= 0 || $maxid <= '') { $maxid  = 1; } else { $maxid += 1; }
 
                 $nik = date('y', strtotime($tanggal)).str_pad($request->h_divisi, 2, '0', STR_PAD_LEFT).str_pad($request->h_level, 2, '0', STR_PAD_LEFT).str_pad($maxid, 3, '0', STR_PAD_LEFT);
@@ -693,8 +693,8 @@ class RecruitmentController extends Controller
               'status' => 'sukses',
               'pesan' => 'Data Approval 3 Berhasil Disimpan'
             ]);
-        } 
-        catch (\Exception $e) 
+        }
+        catch (\Exception $e)
         {
           DB::rollback();
           return response()->json([
@@ -734,7 +734,7 @@ class RecruitmentController extends Controller
         //unlink all file
         $berkas_foto = d_berkas_pelamar::where('bks_pid', $request->idpelamar)->where('bks_type', 'I')->get();
         $berkas_dokumen = d_berkas_pelamar::where('bks_pid', $request->idpelamar)->where('bks_type', 'D')->get();
-        
+
         if(count($berkas_foto) > 0) {
             foreach ($berkas_foto as $val_img) {
                 $img_path = public_path(). '/assets/berkas/foto-pelamar/'.$val_img->bks_name;
@@ -767,8 +767,8 @@ class RecruitmentController extends Controller
             'status' => 'sukses',
             'pesan' => 'Data Pelamar Berhasil Dihapus'
         ]);
-      } 
-      catch (\Exception $e) 
+      }
+      catch (\Exception $e)
       {
         DB::rollback();
         return response()->json([
@@ -786,14 +786,14 @@ class RecruitmentController extends Controller
         $queries = DB::table('m_pegawai_man')
             ->where('c_nama', 'LIKE', '%'.$term.'%')
             ->take(10)->get();
-      
-        if ($queries == null) 
+
+        if ($queries == null)
         {
             $results[] = [ 'id' => null, 'label' =>'tidak di temukan data terkait'];
-        } 
-        else 
+        }
+        else
         {
-            foreach ($queries as $val) 
+            foreach ($queries as $val)
             {
                 $results[] = [ 'id' => $val->c_id, 'label' => $val->c_nik .'  '.$val->c_nama, ];
             }
@@ -822,7 +822,7 @@ class RecruitmentController extends Controller
     {
         //dd($request->all());
         DB::beginTransaction();
-        try 
+        try
         {
             $y = substr($request->i_tgl, -4);
             $m = substr($request->i_tgl, -7, -5);
@@ -831,7 +831,7 @@ class RecruitmentController extends Controller
             $tanggal = date("Y-m-d h:i:s");
             $tgl = $y.'-'.$m.'-'.$d;
 
-            if ($request->i_pjadwal_id != null) 
+            if ($request->i_pjadwal_id != null)
             {
                 //update
                 d_pelamar_jadwal::where('pj_id','=',$request->i_pjadwal_id)
@@ -869,8 +869,8 @@ class RecruitmentController extends Controller
               'status' => 'sukses',
               'pesan' => 'Jadwal berhasil di simpan'
             ]);
-        } 
-        catch (\Exception $e) 
+        }
+        catch (\Exception $e)
         {
           DB::rollback();
           return response()->json([
@@ -900,7 +900,7 @@ class RecruitmentController extends Controller
     {
         //dd($request->all());
         DB::beginTransaction();
-        try 
+        try
         {
             $y = substr($request->p_tgl, -4);
             $m = substr($request->p_tgl, -7, -5);
@@ -909,7 +909,7 @@ class RecruitmentController extends Controller
             $tanggal = date("Y-m-d h:i:s");
             $tgl = $y.'-'.$m.'-'.$d;
 
-            if ($request->p_pjadwal_id != null) 
+            if ($request->p_pjadwal_id != null)
             {
                 //update
                 d_pelamar_jadwal::where('pj_id','=',$request->p_pjadwal_id)
@@ -947,8 +947,8 @@ class RecruitmentController extends Controller
               'status' => 'sukses',
               'pesan' => 'Jadwal berhasil di simpan'
             ]);
-        } 
-        catch (\Exception $e) 
+        }
+        catch (\Exception $e)
         {
           DB::rollback();
           return response()->json([
@@ -988,7 +988,7 @@ class RecruitmentController extends Controller
                 ->where('d_pelamar.p_apply_statusdt', '9')
                 ->whereBetween('d_pelamar.p_date', [$tanggal1, $tanggal2])
                 ->orderBy('d_pelamar.p_created', 'DESC')
-                ->get(); 
+                ->get();
             }else{
                $data = d_pelamar::join('d_pelamar_status','d_pelamar.p_apply_status','=','d_pelamar_status.p_st_id')
                 ->join('d_pelamar_statusdt','d_pelamar.p_apply_statusdt','=','d_pelamar_statusdt.p_stdt_id')
@@ -997,12 +997,12 @@ class RecruitmentController extends Controller
                 ->where('d_pelamar.p_education', $request->grade)
                 ->whereBetween('d_pelamar.p_date', [$tanggal1, $tanggal2])
                 ->orderBy('d_pelamar.p_created', 'DESC')
-                ->get(); 
+                ->get();
             }
-        
+
         return DataTables::of($data)
             ->addIndexColumn()
-            ->editColumn('tglBuat', function ($data) 
+            ->editColumn('tglBuat', function ($data)
             {
                 if ($data->p_created == null) {
                     return '-';
@@ -1010,7 +1010,7 @@ class RecruitmentController extends Controller
                     return $data->p_created ? with(new Carbon($data->p_created))->format('d M Y') : '';
                 }
             })
-            ->editColumn('status', function ($data) 
+            ->editColumn('status', function ($data)
             {
                 if ($data->p_apply_status == 1) {
                     return '<span style="color:#e557d0">'.$data->p_st_name.'</span>';
@@ -1018,7 +1018,7 @@ class RecruitmentController extends Controller
                     return '<span>'.$data->p_st_name.'</span>';
                 }
             })
-            ->editColumn('statusdt', function ($data) 
+            ->editColumn('statusdt', function ($data)
             {
                 if ($data->p_apply_statusdt == 1) {
                     return '-';
@@ -1034,7 +1034,7 @@ class RecruitmentController extends Controller
             {
                 return '<div class="text-center">
                             <a href="./preview_rekrut/'.$data->p_id.'" class="btn btn-sm btn-success" title="Preview">
-                                <i class="glyphicon glyphicon-search"></i> 
+                                <i class="glyphicon glyphicon-search"></i>
                             </a>
                             <a href="javascript:void(0);" class="btn btn-sm btn-info" title="Process" onclick=prosesPegBaru("'.$data->p_id.'","'.$data->p_isset_employee.'")>
                                 <i class="glyphicon glyphicon-ok"></i>
@@ -1047,7 +1047,7 @@ class RecruitmentController extends Controller
 
     public function getDataSetPegawai($id, $p_empset)
     {
-        if ($p_empset == 'N') 
+        if ($p_empset == 'N')
         {
             $data = d_pelamar::join('d_lowongan','d_pelamar.p_vacancyid','=','d_lowongan.l_id')
                 ->join('m_divisi','d_lowongan.l_divisi','=','m_divisi.c_id')
@@ -1077,7 +1077,7 @@ class RecruitmentController extends Controller
                 ->where('m_pegawai_man.c_hp', '=', $lamar->p_tlp)
                 ->where('m_pegawai_man.c_ktp', '=', 'KTP ('.$lamar->p_nip.')')
                 ->get();
-            
+
             $data2 = array();
             $data2['nama'] = $data[0]->c_nama;
 
@@ -1100,7 +1100,7 @@ class RecruitmentController extends Controller
             $data2['id_divisi'] = $data[0]->c_divisi_id;
             $data2['id_jabatan'] = $data[0]->c_jabatan_id;
         }
-        
+
         $d_lamar = d_pelamar::where('p_id', $id)->first();
         $d_pegman =  DB::table('m_pegawai_man')
                         ->where('m_pegawai_man.c_nama', '=', $d_lamar->p_name)
@@ -1123,8 +1123,8 @@ class RecruitmentController extends Controller
     public function simpanPegawaiBaru(Request $request)
     {
         DB::beginTransaction();
-        try 
-        {   
+        try
+        {
             //dd($request->all());
             $tanggal = date("Y-m-d h:i:s");
             $tgl = date("Y-m-d");
@@ -1150,8 +1150,8 @@ class RecruitmentController extends Controller
               'status' => 'sukses',
               'pesan' => 'Sukses Atur data karyawan baru'
             ]);
-        } 
-        catch (\Exception $e) 
+        }
+        catch (\Exception $e)
         {
           DB::rollback();
           return response()->json([
@@ -1178,7 +1178,7 @@ class RecruitmentController extends Controller
             '12' => 'Desember'
         );
         $pecah = explode('-', $tanggal);
-        
+
         // variabel pecah 0 = tahun
         // variabel pecah 1 = bulan
         // variabel pecah 2 = tanggal
@@ -1190,7 +1190,7 @@ class RecruitmentController extends Controller
         $pelamar = d_pelamar::where('p_id', $id_pelamar)->first();
         $foto = d_berkas_pelamar::where('bks_pid', $id_pelamar)->where('bks_type', 'I')->first();
         $cv = d_cv_pelamar::where('d_cv_pid', $id_pelamar)->get();
-        
+
         // Send data to the view using loadView function of PDF facade
         $pdf = PDF::loadView('hrd.recruitment.pdf-cv', array('pelamar' => $pelamar, 'foto' => $foto, 'cv' => $cv));
         $path_cv = public_path(). '/assets/berkas/dokumen-pelamar';

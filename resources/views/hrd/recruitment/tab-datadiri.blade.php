@@ -82,9 +82,9 @@
           <span style="color: red">*</span>
         </label>
         <div class="col-sm-10 row form-group" style="margin-left: 0px; margin-bottom: -10px;">
-          <select id="dobday" class="form-control col-sm-2" style="margin-right: 5px;" name="tanggal" id="tanggal" required></select>
-          <select id="dobmonth" class="form-control col-sm-4" style="margin-right: 5px;" name="bulan" id="bulan" required></select>
-          <select id="dobyear" class="form-control col-sm-3" style="margin-right: 5px;" name="tahun" id="tahun" required></select>
+          <select id="dobday" class="form-control col-sm-2" style="margin-right: 5px;" name="tanggal" id="tanggal"></select>
+          <select id="dobmonth" class="form-control col-sm-4" style="margin-right: 5px;" name="bulan" id="bulan"></select>
+          <select id="dobyear" class="form-control col-sm-3" style="margin-right: 5px;" name="tahun" id="tahun"></select>
         </div>
         @if ($errors->has('tanggal'))
           <span style="color: red;" class="col-sm-12">{{$errors->first('tanggal')}}</span>
