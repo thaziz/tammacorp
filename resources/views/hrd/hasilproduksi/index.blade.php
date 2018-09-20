@@ -4,7 +4,7 @@
   <!--BEGIN TITLE & BREADCRUMB PAGE-->
   <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
     <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
-      <div class="page-title">Data Administrasi Karyawan</div>
+      <div class="page-title">Data hasil Pengerjaan Produksi</div>
     </div>
     <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
       <li>
@@ -14,7 +14,7 @@
       <li>
         <i></i>&nbsp;HRD&nbsp;&nbsp;
         <i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
-      <li class="active">Data Administrasi Karyawan</li>
+      <li class="active">Data Hasil Pengerjaan Produksi</li>
     </ol>
     <div class="clearfix">
     </div>
@@ -32,7 +32,7 @@
 
           <ul id="generalTab" class="nav nav-tabs">
             <li class="active">
-              <a href="#alert-tab" data-toggle="tab">Data Administrasi Karyawan</a>
+              <a href="#alert-tab" data-toggle="tab">Data Hasil Produksi</a>
             </li>
             <!-- <li><a href="#note-tab" data-toggle="tab">2</a></li>
                                 <li><a href="#label-badge-tab" data-toggle="tab">3</a></li> -->
