@@ -30,15 +30,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datasuplier/suplier', 'MasterController@suplier')->name('suplier');
     /* ari */
     /*---------*/
-//huda
-    Route::get('/hrd/datajabatan', 'Hrd\JabatanController@index');
-    Route::get('/hrd/datajabatan/data-jabatan', 'Hrd\JabatanController@jabatanData');
-    Route::get('/hrd/datajabatan/edit-jabatan/{id}', 'Hrd\JabatanController@editJabatan');
-    Route::get('/hrd/datajabatan/datatable-pegawai/{id}', 'Hrd\JabatanController@pegawaiData');
-    Route::post('/hrd/datajabatan/simpan-jabatan', 'Hrd\JabatanController@simpanJabatan');
-    Route::put('/hrd/datajabatan/update-jabatan/{id}', 'Hrd\JabatanController@updateJabatan');
-    Route::get('/hrd/datajabatan/tambah-jabatan', 'Hrd\JabatanController@tambahJabatan');
-    Route::delete('/hrd/datajabatan/delete-jabatan/{id}', 'Hrd\ManajemenSuratController@deleteJabatan');
 //Mahmud Absensi
     Route::get('/hrd/absensi/index', 'Hrd\AbsensiController@index');
     Route::get('/hrd/absensi/table/{tgl1}/{data}', 'Hrd\AbsensiController@table');
@@ -478,7 +469,6 @@ Route::group(['middleware' => 'auth'], function () {
 /*HRD*/
     Route::get('/hrd/manajemenkpipegawai/kpi', 'HrdController@kpi');
     Route::get('/hrd/payroll/table', 'HrdController@table');
-    Route::get('/hrd/datajabatan/edit_jabatan', 'HrdController@edit_jabatan');
     Route::get('/hrd/dataadministrasi/admin', 'HrdController@admin');
     Route::get('/hrd/datalembur/lembur', 'HrdController@lembur');
     Route::get('/hrd/scoreboard/score', 'HrdController@score');
@@ -738,18 +728,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/hrd/recruitment/simpan-pegawai-baru', 'RecruitmentController@simpanPegawaiBaru');
     Route::post('/hrd/recruitment/delete-data-pelamar', 'RecruitmentController@deleteDataPelamar');
     Route::get('/hrd/recruitment/buat_pdf', 'RecruitmentController@buat_pdf');
-//Master Data Lowongan
-    Route::get('/master/datalowongan/index', 'Master\LowonganController@index');
-    Route::get('/master/datalowongan/datatable-index', 'Master\LowonganController@get_datatable_index');
-    Route::get('/master/datalowongan/tambah_lowongan', 'master\LowonganController@tambah_data');
-    Route::post('/master/datalowongan/simpan_lowongan', 'master\LowonganController@simpan_data');
-    Route::post('/master/datalowongan/ubah_status', 'master\LowonganController@ubah_status');
-    Route::get('/master/datalowongan/edit_lowongan', 'master\LowonganController@edit_data');
-    Route::post('/master/datalowongan/update_lowongan', 'master\LowonganController@update_data');
-    Route::get('/master/datalowongan/lookup-data-divisi', 'master\LowonganController@lookup_divisi');
-    Route::get('/master/datalowongan/lookup-data-level', 'master\LowonganController@lookup_level');
-    Route::get('/master/datalowongan/lookup-data-jabatan', 'master\LowonganController@lookup_jabatan');
-
 /*Keuangan*/
 // rizky
     Route::get('/keuangan/p_hasilproduksi/pembatalanPenerimaan', 'Keuangan\KeuanganController@pembatalanPenerimaan');
@@ -919,6 +897,26 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datatransaksi/edit', 'Keuangan\transaksiController@edit');
 // transaksi keuangan end
 // Route Keuangan End
+//Master Data Lowongan
+    Route::get('/master/datalowongan/index', 'Master\LowonganController@index');
+    Route::get('/master/datalowongan/datatable-index', 'Master\LowonganController@get_datatable_index');
+    Route::get('/master/datalowongan/tambah_lowongan', 'master\LowonganController@tambah_data');
+    Route::post('/master/datalowongan/simpan_lowongan', 'master\LowonganController@simpan_data');
+    Route::post('/master/datalowongan/ubah_status', 'master\LowonganController@ubah_status');
+    Route::get('/master/datalowongan/edit_lowongan', 'master\LowonganController@edit_data');
+    Route::post('/master/datalowongan/update_lowongan', 'master\LowonganController@update_data');
+    Route::get('/master/datalowongan/lookup-data-divisi', 'master\LowonganController@lookup_divisi');
+    Route::get('/master/datalowongan/lookup-data-level', 'master\LowonganController@lookup_level');
+    Route::get('/master/datalowongan/lookup-data-jabatan', 'master\LowonganController@lookup_jabatan');
+//*Data Jabatan*/
+    Route::get('/master/datajabatan', 'Master\JabatanController@index');
+    Route::get('/master/datajabatan/data-jabatan', 'Master\JabatanController@jabatanData');
+    Route::get('/master/datajabatan/edit-jabatan/{id}', 'Master\JabatanController@editJabatan');
+    Route::get('/master/datajabatan/datatable-pegawai/{id}', 'Master\JabatanController@pegawaiData');
+    Route::post('/master/datajabatan/simpan-jabatan', 'Master\JabatanController@simpanJabatan');
+    Route::put('/master/datajabatan/update-jabatan/{id}', 'Master\JabatanController@updateJabatan');
+    Route::get('/master/datajabatan/tambah-jabatan', 'Master\JabatanController@tambahJabatan');
+    Route::delete('/master/datajabatan/delete-jabatan/{id}', 'Master\ManajemenSuratController@deleteJabatan');
 
 // Ari
     Route::get('/purchasing/orderpembelian/print/{id}', 'Pembelian\OrderPembelianController@print');

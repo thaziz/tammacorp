@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Hrd;
+namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -11,16 +11,15 @@ use App\Jabatan;
 class JabatanController extends Controller
 {
     public function index(){
-       return view('hrd/datajabatan/datajabatan');
+       return view('master/datajabatan/datajabatan');
     }
     public function jabatanData(){
         $list = DB::table('m_jabatan')
-                ->join('m_divisi', 'm_divisi.d_id', '=', 'm_jabatan.c_divisi_id')
-                ->select('m_jabatan.*', 'm_divisi.d_name')
+                ->join('m_divisi', 'm_divisi.c_id', '=', 'm_jabatan.c_divisi_id')
+                ->select('m_jabatan.*', 'm_divisi.c_divisi')
                 ->get();
-                
         $data = collect($list);
-        return Datatables::of($data)
+        return Datatables::of($data)           
                 ->addColumn('action', function ($data) {
                          return  '<button id="edit" onclick="edit('.$data->c_id.')" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
                                 <button id="delete" onclick="hapus('.$data->c_id.')" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
@@ -36,7 +35,7 @@ class JabatanController extends Controller
     }
     public function getPegawai(Request $request, $id){
         $maxid = DB::Table('m_pegawai')->select('c_id_by_production')->where('c_jabatan_id', $id)->max('c_id_by_production');
-        // untuk +1 nilai yang ada,, jika kosong maka maxid = 1 ,
+        // untuk +1 nilai yang ada,, jika kosong maka maxid = 1 , 
         if ($maxid <= 0 || $maxid <= '') {
             $maxid  = 1;
         }else{
@@ -51,7 +50,7 @@ class JabatanController extends Controller
         }
         // dd($kode);
         $shift = DB::table('m_shift')->get();
-        return view('hrd/datajabatan/pegawai', ['kode' => $kode, 'shift' => $shift]);
+        return view('master/datajabatan/pegawai', ['kode' => $kode, 'shift' => $shift]);
     }
     public function pegawaiData($id){
         $list = DB::table('m_pegawai')
@@ -60,7 +59,7 @@ class JabatanController extends Controller
                 ->where('c_jabatan_id', $id)
                 ->get();
         $data = collect($list);
-        return Datatables::of($data)
+        return Datatables::of($data)           
                 ->addColumn('action', function ($data) {
                          return  '<button id="edit" onclick="edit('.$data->c_id.')" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
                                         <button id="delete" onclick="hapus('.$data->c_id.')" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
@@ -77,30 +76,30 @@ class JabatanController extends Controller
     public function tambahJabatan(Request $request){
         $divisi = DB::table('m_divisi')->get();
         $subdivisi = DB::table('m_sub_divisi')->get();
-        return view('hrd/datajabatan/tambah_jabatan', ['divisi' => $divisi, 'subdivisi' => $subdivisi]);
+        return view('master/datajabatan/tambah_jabatan', ['divisi' => $divisi, 'subdivisi' => $subdivisi]);
     }
     public function simpanJabatan(Request $request){
         $input = $request->all();
         // dd($input);
         $data = Jabatan::create($input);
-        return redirect('hrd/datajabatan');
+        return redirect('master/datajabatan');
     }
     public function editJabatan($id){
         $jabatan = DB::table('m_jabatan')->where('c_id', $id)->first();
         $divisi = DB::table('m_divisi')->get();
         $subdivisi = DB::table('m_sub_divisi')->get();
         // dd($jabatan);
-        return view('hrd/datajabatan/edit_jabatan', ['jabatan' => $jabatan, 'divisi' => $divisi, 'subdivisi' => $subdivisi]);
+        return view('master/datajabatan/edit_jabatan', ['jabatan' => $jabatan, 'divisi' => $divisi, 'subdivisi' => $subdivisi]);
     }
     public function updateJabatan(Request $request, $id){
         $input = $request->except('_token', '_method');
         $data = Jabatan::where('c_id', $id)->update($input);
 
-        return redirect('hrd/datajabatan');
+        return redirect('master/datajabatan');
     }
     public function deleteJabatan($id){
         $data = DB::table('m_jabatan')->where('c_id', $id)->delete();
 
-        return redirect('hrd/datajabatan');
+        return redirect('master/datajabatan');
     }
 }

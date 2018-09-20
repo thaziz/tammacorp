@@ -20,7 +20,7 @@
 
               <div class="col-md-8 col-sm-8 col-xs-12">
                 <div class="form-group">
-                  <input type="text" class="form-control input-sm datepicker1" readonly="" style="cursor: pointer;" name="i_tgl" id="i_tgl">
+                  <input type="text" class="form-control input-sm datepicker2" readonly="" style="cursor: pointer;" name="i_tgl" id="i_tgl">
                 </div>
               </div>
 

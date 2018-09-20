@@ -1,7 +1,7 @@
 @extends('main')
 @section('extra_styles')
 <style type="text/css">
-
+  
   .ui-autocomplete { z-index:2147483647; }
   .error { border: 1px solid #f00; }
   .valid { border: 1px solid #8080ff; }
@@ -43,19 +43,19 @@
     <div id="tab-general">
         <div class="row mbl">
             <div class="col-lg-12">
-
+                
               <div class="col-md-12">
                   <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
                   </div>
               </div>
-
-              <?php
+  
+              <?php 
                 $person = ['Alpha', 'Bravo', 'Charlie', 'Delta', 'Echo', 'Foxtrot', 'Golf', 'Hotel', 'India', 'Juliet', 'Kilo', 'Mike', 'November', 'Oscar', 'Papa', 'Quebec', 'Romeo', 'Sierra', 'Tango', 'Uniform', 'Victor', 'Whiskey', 'X-ray', 'Zulu'];
                 $tanggal  = ['01-11-2018', '02-11-2018', '03-11-2018', '04-11-2018', '05-11-2018', '06-11-2018'];
                 $lulusan = ['SD', 'SMP', 'SMA', 'SMK', 'D1', 'D3', 'S1', 'S2', 'S3'];
                 $no_hp = ['0855331219757', '0853233221234', '0853321234484', '085585875855'];
               ?>
-
+                
               <ul id="generalTab" class="nav nav-tabs">
                 <li class="active"><a href="#index-tab" data-toggle="tab">Recruitment</a></li>
                 <li><a href="#diterima-tab" data-toggle="tab" onclick="cariDataDiterima()">Daftar Pelamar Diterima</a></li>
@@ -204,7 +204,7 @@
     });
   }
 
-  function prosesPegBaru(id, p_empset)
+  function prosesPegBaru(id, p_empset) 
   {
     $.ajax({
       url : baseUrl + "/hrd/recruitment/get-data-set-pegawai/"+id+"/"+p_empset,
@@ -227,7 +227,7 @@
         $('#tr_posisiid').val(response.data2['id_jabatan']);
         // console.log(response.shift[0]);
         Object.keys(response.data2['shift']).forEach(function(){
-          $('#tr_shift').append($('<option>', {
+          $('#tr_shift').append($('<option>', { 
             value: response.data2['shift'][key].c_id,
             text : response.data2['shift'][key].c_name+' | '+response.data2['shift'][key].c_start+' - '+response.data2['shift'][key].c_end,
           }));
@@ -243,7 +243,7 @@
     });
   }
 
-  function simpanPegawaiBaru()
+  function simpanPegawaiBaru() 
   {
     $.ajax({
       type: "POST",
@@ -274,7 +274,7 @@
                refreshTabelDiterima();
             }
           });
-        }
+        }              
       },
       error: function()
       {
@@ -289,10 +289,10 @@
         });
       },
       async: false
-    });
+    }); 
   }
 
-  function deleteDataPelamar(idpelamar)
+  function deleteDataPelamar(idpelamar) 
   {
     iziToast.question({
       timeout: 20000,

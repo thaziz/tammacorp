@@ -159,9 +159,9 @@
                                         Data Group
                                     @endif
 
-                                    {{-- @if(Auth::user()->punyaAkses('Data Jenis Produksi','ma_read'))
-                                        Data Jenis Produksi
-                                    @endif --}}
+                                    @if(Auth::user()->punyaAkses('Data Jabatan','ma_read'))
+                                        Data Jabatan
+                                    @endif
 
                                     @if(Auth::user()->punyaAkses('Data Pegawai','ma_read'))
                                         Data Pegawai
@@ -221,12 +221,13 @@
                                                     class="hidden">Master</span></a>
                                 @endif
 
-                                {{-- @if(Auth::user()->punyaAkses('Data Jenis Produksi','ma_read'))
-                                    <li class="{{ Request::is('master/datajenis/jenis') ? 'active' : '' || Request::is('master/datajenis/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/master/datajenis/jenis') }}"><span class="submenu-title">Data Jenis Produksi</span><span
-                                                    class="hidden">Master</span></a>
+                                @if(Auth::user()->punyaAkses('Data Jabatan','ma_read'))
+                                    <li class="{{ Request::is('master/datajabatan') ? 'active' : '' || Request::is('master/datajabatan/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/master/datajabatan')}}">
+                                            <span class="submenu-title">Data Jabatan</span>
+                                        </a>
                                     </li>
-                                @endif --}}
+                                @endif
 
                                 @if(Auth::user()->punyaAkses('Data Pegawai','ma_read'))
                                     <li class="{{ Request::is('master/datapegawai/pegawai') ? 'active' : '' || Request::is('master/datapegawai/*') ? 'active' : '' }}">
@@ -362,10 +363,6 @@
                                         <a href="{{ url('/purchasing/pembayaran_hutang') }}"><span
                                                     class="submenu-title">Pembayaran Hutang</span><span class="hidden">Purchasing</span></a>
                                     </li>
-                                {{-- @endif --}}
-                            <!-- <li class="{{ Request::is('purchasing/belanjasuplier/suplier') ? 'active' : '' || Request::is('purchasing/belanjasuplier/suplier*') ? 'active' : '' }}">
-                                <a href="{{ url('/purchasing/belanjasuplier/suplier') }}"><span class="submenu-title">Belanja Suplier</span></a>
-                                </li> -->
                             </ul>
                         </li>
                     @endif
@@ -711,10 +708,6 @@
                                 </i><span class="menu-title">HRD</span><span class="fa arrow"></span>
                                 <span class="hidden">
 
-                                    @if(Auth::user()->punyaAkses('Data Karyawan','ma_read'))
-                                        Data Karyawan
-                                    @endif
-
                                     @if(Auth::user()->punyaAkses('Absensi','ma_read'))
                                         Absensi
                                     @endif
@@ -751,13 +744,6 @@
                             </a>
                             <ul class="nav nav-second-level">
 
-                                @if(Auth::user()->punyaAkses('Data Karyawan','ma_read'))
-                                    <li class="{{ Request::is('hrd/datajabatan') ? 'active' : '' || Request::is('hrd/datajabatan/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/hrd/datajabatan')}}"><span
-                                                    class="submenu-title">Data Jabatan</span><span
-                                                    class="hidden">HRD</span></a>
-                                    </li>
-                                @endif
                                 @if(Auth::user()->punyaAkses('Absensi','ma_read'))
                                     <li class="{{ Request::is('hrd/absensi/index') ? 'active' : '' || Request::is('hrd/absensi/*') ? 'active' : '' }}">
                                         <a href="{{ url('/hrd/absensi/index')}}"><span

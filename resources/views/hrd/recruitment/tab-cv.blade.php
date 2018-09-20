@@ -14,10 +14,10 @@
           <div class="form-group row">
             <label for="tahun1" class="col-sm-2 col-form-label font-weight-bold">Tahun</label>
             <div class="col-sm-5">
-              <select id="dob_cv_awal1" class="form-control" style="margin-right: 5px;" name="dob_cv_awal1"></select>
+              <select id="dob_cv_awal1" class="form-control" style="margin-right: 5px;" name="dob_cv_awal1" required></select>
             </div>
             <div class="col-sm-5">
-              <select id="dob_cv_akhir1" class="form-control" style="margin-right: 5px;" name="dob_cv_akhir1"></select>
+              <select id="dob_cv_akhir1" class="form-control" style="margin-right: 5px;" name="dob_cv_akhir1" required></select>
             </div>
           </div>
         </div>
@@ -46,11 +46,11 @@
           <div class="form-group row">
             <label for="tahun2" class="col-sm-2 col-form-label font-weight-bold">Tahun</label>
             <div class="col-sm-5">
-              <select id="dob_cv_awal2" class="form-control" style="margin-right: 5px;" name="dob_cv_awal2"></select>
+              <select id="dob_cv_awal2" class="form-control" style="margin-right: 5px;" name="dob_cv_awal2" required></select>
             </div>
             <div class="col-sm-5">
-              <select id="dob_cv_akhir2" class="form-control" style="margin-right: 5px;" name="dob_cv_akhir2"></select>
-            </div>
+              <select id="dob_cv_akhir2" class="form-control" style="margin-right: 5px;" name="dob_cv_akhir2" required></select>
+            </div>                                      
           </div>
         </div>
 

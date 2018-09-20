@@ -123,7 +123,7 @@
           border: 2px solid #333;
       }
 
-
+      
 
       .wizard li a:after {
           content: " ";
@@ -201,7 +201,7 @@
     </style>
 
     <style type="text/css">
-
+      
       .file-upload{display:block;text-align:center;font-family: Helvetica, Arial, sans-serif;font-size: 12px;}
       .file-upload .file-select{display:block;border: 2px solid #dce4ec;color: #34495e;cursor:pointer;height:40px;line-height:40px;text-align:left;background:#FFFFFF;overflow:hidden;position:relative;}
       .file-upload .file-select .file-select-button{background:#dce4ec;padding:0 10px;display:inline-block;height:40px;line-height:40px;}
@@ -264,7 +264,7 @@
                     </span>
                   </a>
                 </li>
-
+                
                 <li role="presentation" class="nav-item">
                   <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" title="Daftar Riwayat Hidup" class="nav-link disabled">
                     <span class="round-tab">
@@ -272,7 +272,7 @@
                     </span>
                   </a>
                 </li>
-
+                
                 <li role="presentation" class="nav-item">
                   <a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" title="Upload Berkas" class="nav-link disabled">
                     <span class="round-tab">
@@ -280,7 +280,7 @@
                     </span>
                   </a>
                 </li>
-
+                
                 <li role="presentation" class="nav-item">
                   <a href="#step4" data-toggle="tab" aria-controls="step4" role="tab" title="Finish" class="nav-link disabled">
                     <span class="round-tab">
@@ -370,11 +370,11 @@
         }
         if (/^\s*$/.test(filename)) {
           $(".file-upload").removeClass('active');
-          $("#noFile").text("No file chosen...");
+          $("#noFile").text("No file chosen..."); 
         }
         else {
           $(".file-upload").addClass('active');
-          $("#noFile").text(filename.replace("C:\\fakepath\\", ""));
+          $("#noFile").text(filename.replace("C:\\fakepath\\", "")); 
         }
       });
 
@@ -395,7 +395,7 @@
         };
         reader.readAsDataURL(event.target.files[0]);
       };
-
+      
       $(document).ready(function(){
         $.dobPicker({
           // Selectopr IDs
@@ -470,7 +470,7 @@
                   onClosing: function(instance, toast, closedBy){
                     $('#email').focus(); //change button text
                   }
-                });
+                }); 
               }
             },
             error: function(){
@@ -508,7 +508,7 @@
                   onClosing: function(instance, toast, closedBy){
                     $('#notlp').focus(); //change button text
                   }
-                });
+                }); 
               }
             },
             error: function(){

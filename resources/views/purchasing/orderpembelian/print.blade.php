@@ -148,9 +148,9 @@
 							<td class="text-center">{{$j+1}}</td>
 							<td>{{$dataIsi[$i][$j]['i_name']}}</td>
 							<td class="text-center">{{$dataIsi[$i][$j]['m_sname']}}</td>
-							<td>{{$dataIsi[$i][$j]['d_pcsdt_qty']}}</td>
+							<td style="text-align: center;">{{$dataIsi[$i][$j]['d_pcsdt_qty']}}</td>
 							<td>
-								{{$dataStok[$i][$j]->qtyStok}}
+								{{$dataStokQty[$i][$j]->qtyStok.' '.$dataStokTxt[$i][$j]}}
 							</td>
 							<td>
 								<div class="float-left">
@@ -301,9 +301,9 @@
 							<td class="text-center">{{$j+1}}</td>
 							<td>{{$dataIsi[$i][$j]['i_name']}}</td>
 							<td class="text-center">{{$dataIsi[$i][$j]['m_sname']}}</td>
-							<td>{{$dataIsi[$i][$j]['d_pcsdt_qty']}}</td>
+							<td style="text-align: center;">{{$dataIsi[$i][$j]['d_pcsdt_qty']}}</td>
 							<td>
-								{{$dataStok[$i][$j]->qtyStok}}
+								{{$dataStokQty[$i][$j]->qtyStok.' '.$dataStokTxt[$i][$j]}}
 							</td>
 							<td>
 								<div class="float-left">
