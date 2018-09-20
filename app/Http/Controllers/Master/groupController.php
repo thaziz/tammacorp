@@ -22,13 +22,22 @@ class groupController extends Controller
     }
     public function datatable_group()
     {
-        $list = DB::select("SELECT * from m_group");
+        $list = DB::table('m_group')
+          ->select('m_gid',
+                   'm_gcode',
+                   'm_gname',
+                   'nama_akun')
+         ->leftjoin('d_akun', function($join) {
+             $join->on('id_akun', '=', 'm_group.m_akun_persediaan')
+               ->where('type_akun','DETAIL');
+           })
+         ->get();
         // return $list;
         $data = collect($list);
 
         // return $data;
 
-        return Datatables::of($data)
+        return Datatables::of($list)
 
                 ->addColumn('aksi', function ($data) {
                   return
