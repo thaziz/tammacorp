@@ -19,12 +19,12 @@
                     <div id="tab-general">
                         <div class="row mbl">
                             <div class="col-lg-12">
-                                
+
                                             <div class="col-md-12">
                                                 <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
                                                 </div>
                                             </div>
-                                 
+
                             <ul id="generalTab" class="nav nav-tabs">
                               <li class="active"><a href="#alert-tab" data-toggle="tab">Form Master Data Group</a></li>
                             <!-- <li><a href="#note-tab" data-toggle="tab">2</a></li>
@@ -46,83 +46,60 @@
 
                             <form id="form-save">
                               <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:5px;padding-top:20px; ">
-                                <div class="col-md-2 col-sm-3 col-xs-12"> 
-                                      <label class="tebal">Kode Group</label>
-                                </div>
-                                <div class="col-md-4 col-sm-9 col-xs-12">
-                                  <div class="form-group">
-                                      <input type="text" class="form-control input-sm" value="{{ $nota }}" id="id" readonly="true" name="id">
-                                      <input type="hidden" name="id_cus_ut">
-                                  </div>
-                                </div>
                                 <div class="col-md-12">
-                                  
+
                                 </div>
                                 <div class="col-md-2 col-sm-3 col-xs-12">
-                                      <label class="tebal">Nama Group</label>
+                                      <label class="tebal">Nama Group Item</label>
                                 </div>
                                 <div class="col-md-4 col-sm-9 col-xs-12">
                                   <div class="form-group">
-                                      <input type="text" id="nama" name="nama" class="form-control input-sm" > 
+                                      <input type="text" id="nama" name="nama" class="form-control input-sm" >
                                   </div>
                                 </div>
                                 <div class="col-md-12">
-                                  
-                                </div>
-                                 <div class="col-md-2 col-sm-3 col-xs-12">
-                                      <label class="tebal">Nama Item</label>
-                                </div>
-                                <div class="col-md-4 col-sm-9 col-xs-12">
-                                  <div class="form-group">
-                                      <select name="item" class="form-control" id="item">
-                                        <option selected="">- Pilih -</option>
-                                        @foreach ($item as $e)
-                                          <option value="{{ $e->i_code }}">{{ $e->i_code }} - {{ $e->i_name }}</option>
-                                        @endforeach
-                                      </select>
-                                  </div>
-                                </div>
-                                <div class="col-md-12">
-                                  
-                                </div>
-                                <div class="col-md-2 col-sm-3 col-xs-12">
-                                      <label class="tebal">Type Item</label>
-                                </div>
-                                <div class="col-md-4 col-sm-9 col-xs-12">
-                                  <div class="form-group">
-                                      <select name="type" class="form-control" id="type">
-                                        <option selected="">- Pilih -</option>
-                                        <option value="BB">BAHAN BAKU</option>
-                                        <option value="BJ">BAHAN JUAL</option>
-                                        <option value="BP">BAHAN PRODUKSI</option>
-                                      </select>
-                                  </div>
+
                                 </div>
 
+                                <div class="col-md-12">
+
+                                </div>
+                                <div class="col-md-2 col-sm-3 col-xs-12">
+                                     <label class="tebal">Nama Akun</label>
+                               </div>
+                               <div class="col-md-4 col-sm-9 col-xs-12">
+                                 <div class="form-group">
+                                     <select name="akun" class="form-control" id="item">
+                                       @foreach ($item as $e)
+                                           <option value="{{ $e->id_akun }}">{{ $e->nama_akun }}</option>
+                                       @endforeach
+                                     </select>
+                                 </div>
+                               </div>
                               </div>
 
 
                               <div align="right">
                                 <div class="form-group">
                                   <button type="button" name="tambah_data" class="btn btn-primary" onclick="simpan()">Simpan Data</button>
-                                </div> 
+                                </div>
                               </div>
-                             
+
                             </form>
-                        
 
 
-                </div>                                       
+
+                </div>
                     </div>
                         </div>
-                                
+
                                     </div>
                                          </div>
                             </div>
-                            
+
 @endsection
 @section("extra_scripts")
-<script type="text/javascript">     
+<script type="text/javascript">
 
     function simpan (){
       var a = $('#form-save').serialize();
@@ -130,25 +107,13 @@
       var id = $("#id").val();
       var nama = $("#nama").val();
       var item = $("#item").val();
-      if(id == '' || id == null ){
-
-        toastr.warning('Data id Harap Diisi!','Peringatan')
-      
-        return false;
-      }
       if(nama == '' || nama == null ){
 
         toastr.warning('Data Nama Harap Diisi!','Peringatan')
-      
-        return false;
-      }
-      if(item == '' || item == null ){
 
-        toastr.warning('Data Item Harap Diisi!','Peringatan')
-      
         return false;
       }
-      
+
       $.ajax({
         url : '{{ route('simpan_group') }}',
         type:'get',
@@ -156,24 +121,24 @@
         success:function(response){
         toastr.success('Data Telah Tersimpan!','Pemberitahuan')
           window.location = ('{{ route('group') }}')
-        
+
         }
       })
 
     }
 
-    
+
     $(document).on("click","input[name='tambah_data']",function(e){
-     
+
 
       });
 
       $("#nama_cus").load("/master/datacust/tambah_cust", function(){
       $("#nama_cus").focus();
       });
-     
-     
+
+
 
 
 </script>
-@endsection                            
+@endsection
