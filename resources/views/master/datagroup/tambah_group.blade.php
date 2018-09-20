@@ -70,6 +70,7 @@
                                <div class="col-md-4 col-sm-9 col-xs-12">
                                  <div class="form-group">
                                      <select name="akun" class="form-control" id="item">
+                                           <option value=" ">- Pilih Nama Akun</option>
                                        @foreach ($item as $e)
                                            <option value="{{ $e->id_akun }}">{{ $e->nama_akun }}</option>
                                        @endforeach
