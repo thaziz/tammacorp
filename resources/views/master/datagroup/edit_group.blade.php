@@ -75,9 +75,13 @@
                                 <div class="col-md-4 col-sm-9 col-xs-12">
                                   <div class="form-group">
                                       <select name="akun" class="form-control" id="item">
-                                        <option value="{{ $data->id_akun }}" readonly>{{ $data->nama_akun }}</option>
+                                          <option value=" ">- Pilih Nama Akun</option>
                                         @foreach ($item as $akun)
-                                          <option value="{{ $akun->id_akun }}" readonly>{{ $akun->nama_akun }}</option>
+                                          @if ($akun->id_akun == $data->id_akun)
+                                            <option value="{{ $data->id_akun }}" selected>{{ $data->nama_akun }}</option>
+                                          @else
+                                            <option value="{{ $akun->id_akun }}" >{{ $akun->nama_akun }}</option>
+                                          @endif
                                         @endforeach
                                       </select>
                                   </div>
