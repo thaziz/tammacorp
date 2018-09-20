@@ -712,8 +712,8 @@
                                         Absensi
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Data Administrasi Pegawai','ma_read'))
-                                        Data Administrasi Pegawai
+                                    @if(Auth::user()->punyaAkses('Data Pekerjaan Produksi','ma_read'))
+                                        Data Pekerjaan Produksi
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Data Lembur Pegawai','ma_read'))
@@ -751,9 +751,9 @@
                                                     class="hidden">HRD</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Data Administrasi Pegawai','ma_read'))
-                                    <li class="{{ Request::is('hrd/dataadministrasi/admin') ? 'active' : '' || Request::is('hrd/dataadministrasi/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/hrd/dataadministrasi/admin')}}"><span class="submenu-title">Data Administrasi Pegawai</span><span
+                                @if(Auth::user()->punyaAkses('Data Pekerjaan Produksi','ma_read'))
+                                    <li class="{{ Request::is('hrd/hasilproduksi/index') ? 'active' : '' || Request::is('hrd/hasilproduksi/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/hrd/hasilproduksi/index')}}"><span class="submenu-title">Data Pekerjaan Produksi</span><span
                                                     class="hidden">HRD</span></a>
                                     </li>
                                 @endif
