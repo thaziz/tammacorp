@@ -799,8 +799,6 @@ class OrderPembelianController extends Controller
                 ->orderBy('d_pcs_date_created', 'DESC')
                 ->get()->toArray();
 
-
-
       $dataIsi = d_purchasing_dt::join('m_item', 'd_purchasing_dt.i_id', '=', 'm_item.i_id')
                 ->join('m_satuan', 'd_purchasing_dt.d_pcsdt_sat', '=', 'm_satuan.m_sid')
                 ->select('d_purchasing_dt.d_pcsdt_id',
@@ -820,11 +818,7 @@ class OrderPembelianController extends Controller
                 ->where('d_purchasing_dt.d_pcs_id', '=', $id)
                 ->orderBy('d_purchasing_dt.d_pcsdt_created', 'DESC')
                 ->get()->toArray();
-
-
-      // return $dataIsi;
       
-
       foreach ($dataIsi as $val) 
       {
           //cek item type
@@ -837,11 +831,12 @@ class OrderPembelianController extends Controller
       $counter = 0;
       //ambil value stok by item type
       $dataStok = $this->getStokByType($itemType, $sat1, $counter);
-      $dataStok = array_chunk($dataStok['val_stok'], 10);
+      $dataStokQty = array_chunk($dataStok['val_stok'], 10);
+      $dataStokTxt = array_chunk($dataStok['txt_satuan'], 10);
       $dataIsi = array_chunk($dataIsi, 10);
 
       // return $dataStok;
 
-      return view('purchasing/orderpembelian/print', compact('dataHeader', 'dataIsi', 'dataStok'));
+      return view('purchasing/orderpembelian/print', compact('dataHeader', 'dataIsi', 'dataStokQty', 'dataStokTxt'));
     }
 }

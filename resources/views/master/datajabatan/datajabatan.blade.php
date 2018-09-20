@@ -44,7 +44,7 @@
 
                   <div class="col-md-12 col-sm-12 col-xs-12" align="right" style="margin-bottom: 10px;">
 
-                    <a href="{{ url('hrd/datajabatan/tambah-jabatan') }}">
+                    <a href="{{ url('master/datajabatan/tambah-jabatan') }}">
                       <button type="button" class="btn btn-box-tool" title="Tambahkan Data Item">
                         <i class="fa fa-plus" aria-hidden="true" /> &nbsp;
                         </i>Tambah Data</button>
@@ -112,7 +112,7 @@
       // responsive:true,
       serverSide: true,
       ajax: {
-        url: '{{ url("hrd/datajabatan/data-jabatan") }}',
+        url: '{{ url("master/datajabatan/data-jabatan") }}',
       },
       columnDefs: [
         {
@@ -123,7 +123,7 @@
       "columns": [
         { "data": "kode" },
         { "data": "c_posisi" },
-        { "data": "d_name" },
+        { "data": "c_divisi" },
         { "data": "action" },
       ],
       "responsive": true,
@@ -149,7 +149,7 @@
           console.log(id);
           $.ajax({
             type: "PUT",
-            url: '{{ url("hrd/datajabatan/edit-jabatan") }}' + '/' + a,
+            url: '{{ url("master/datajabatan/edit-jabatan") }}' + '/' + a,
             data: { id },
             success: function (data) {
             },
@@ -176,7 +176,7 @@
               buttons: [
                 ['<button><b>YA</b></button>', function (instance, toast) {
                   $.ajax({
-                  url: '{{ url("hrd/datajabatan/delete-jabatan") }}'+'/'+id,
+                  url: '{{ url("master/datajabatan/delete-jabatan") }}'+'/'+id,
                   async: false,
                   type: "DELETE",
                   data: {
@@ -189,12 +189,12 @@
                 });
                             window.location.reload();
                   instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
-
+            
                 }, true],
                 ['<button>TIDAK</button>', function (instance, toast) {
-
+            
                   instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
-
+            
                 }]
               ],
               onClosing: function(instance, toast, closedBy){
