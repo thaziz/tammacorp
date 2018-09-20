@@ -6,7 +6,7 @@
     cursor: pointer;
 }
  .sorting_disabled {
-    
+
 }
 tr.details td.details-control {
      background: url({{ asset('assets/images/details_close.png')}}) no-repeat center center;
@@ -36,18 +36,18 @@ tr.details td.details-control {
       <div id="tab-general">
         <div class="row mbl">
           <div class="col-lg-12">
-                    
+
             <div class="col-md-12">
               <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
               </div>
             </div>
-                    
+
             <ul id="generalTab" class="nav nav-tabs">
               <li class="active"><a href="#alert-tab" data-toggle="tab">Master Data Group</a></li>
               <!-- <li><a href="#note-tab" data-toggle="tab">2</a></li>
                 <li><a href="#label-badge-tab-tab" data-toggle="tab">3</a></li> -->
             </ul>
-            
+
             <div id="generalTabContent" class="tab-content responsive">
               <div id="alert-tab" class="tab-pane fade in active">
                 <div class="row" style="margin-top:-20px;">
@@ -73,17 +73,17 @@ tr.details td.details-control {
                             <th class="wd-15p">Aksi</th>
                           </tr>
                         </thead>
-                       
+
                         <tbody>
 
                         </tbody>
 
-                                            
-                      </table> 
+
+                      </table>
                     </div>
 
                   </div>
-                
+
                 </div>
               </div>
             </div>
@@ -99,7 +99,7 @@ tr.details td.details-control {
 @section("extra_scripts")
   <script type="text/javascript">
 
-  $('#tbl_customer').DataTable({
+  var tableGroup = $('#tbl_customer').DataTable({
             processing: true,
             // responsive:true,
             serverSide: true,
@@ -111,27 +111,40 @@ tr.details td.details-control {
                   {
                      targets: 0 ,
                      className: 'center d_id'
-                  }, 
+                  },
                 ],
             "columns": [
-            { "data": "m_gcode" },
-            { "data": "m_gname" },
-            { "data": "aksi" },
+            { "data": "m_gcode", "width": "10%" },
+            { "data": "m_gname", "width": "70%" },
+            { "data": "aksi", "width": "20%", "className": "center"  },
             ]
       });
+
    function hapus(a) {
-          var parent = $(a).parents('tr');
-          var id = $(parent).find('.d_id').text();
-          console.log(id);
+     iziToast.show({
+       color: 'red',
+       title: 'Peringatan',
+       message: 'Apakah anda yakin!',
+       position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+       progressBarColor: 'rgb(0, 255, 184)',
+       buttons: [
+         [
+           '<button>Ok</button>',
+           function (instance, toast) {
+             instance.hide({
+               transitionOut: 'fadeOutUp'
+             }, toast);
+             var parent = $(a).parents('tr');
+             var id = $(parent).find('.d_id').text();
+             console.log(id);
           $.ajax({
                type: "get",
-               url: '{{ route('hapus_group') }}',
-               data: {id},
+               url: baseUrl + '/master/datagroup/hapus_group/'+a,
                success: function(data){
                   if (data.status == 1) {
-                      location.reload();
+                      tableGroup.ajax.reload();
                   }
-                  
+
                },
                error: function(){
                 iziToast.warning({
@@ -140,30 +153,38 @@ tr.details td.details-control {
                 });
                },
                async: false
-             });  
+             });
+           }
+         ],
+         [
+           '<button>Close</button>',
+            function (instance, toast) {
+             instance.hide({
+               transitionOut: 'fadeOutUp'
+             }, toast);
+           }
+         ]
+       ]
+     });
         }
 
 
          function edit(a) {
-          var parent = $(a).parents('tr');
-          var id = $(parent).find('.d_id').text();
-          console.log(id);
           $.ajax({
                type: "get",
-               url: '{{ route('edit_group') }}',
-               data: {id},
+               url: baseUrl + '/master/datagroup/edit_group/'+a,
                success: function(data){
                },
                complete:function (argument) {
                 window.location=(this.url)
                },
                error: function(){
-               
+
                },
                async: false
-             });  
+             });
         }
 
-    
+
 </script>
 @endsection

@@ -874,8 +874,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datagroup/group', 'master\groupController@group')->name('group');
     Route::get('/master/datagroup/tambah_group', 'master\groupController@tambah_group')->name('tambah_group');
     Route::get('/master/datagroup/simpan_group', 'master\groupController@simpan_group')->name('simpan_group');
-    Route::get('/master/datagroup/hapus_group', 'master\groupController@hapus_group')->name('hapus_group');
-    Route::get('/master/datagroup/edit_group', 'master\groupController@edit_group')->name('edit_group');
+    Route::get('/master/datagroup/hapus_group/{id}', 'master\groupController@hapus_group')->name('hapus_group');
+    Route::get('/master/datagroup/edit_group/{id}', 'master\groupController@edit_group')->name('edit_group');
     Route::get('/master/datagroup/update_group', 'master\groupController@update_group')->name('update_group');
     Route::get('/master/datagroup/datatable_group', 'master\groupController@datatable_group')->name('datatable_group');
 //-[]-belum-[]-//
