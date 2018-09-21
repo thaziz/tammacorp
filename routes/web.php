@@ -420,6 +420,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/absensi/detail/{tgl1}/{tgl2}/{tampil}', 'Hrd\AbsensiController@detAbsensi');
 /*hasil Pengerjaan Produksi*/
     Route::get('/hrd/hasilproduksi/index', 'Hrd\HproduksiController@index');
+    Route::get('/hrd/hasilproduksi/get-hasil-by-tgl/{tgl1}/{tgl2}', 'Hrd\HproduksiController@getHasilByTgl');
+    Route::get('/hrd/hasilproduksi/get-detail/{id}', 'Hrd\HproduksiController@getDataDetail');
 /*Recruitment*/
     Route::get('/hrd/recruitment/rekrut', 'HrdController@rekrut')->name('rekrut');
     Route::get('/hrd/recruitment/get-data-hrd', 'RecruitmentController@getDataHrd');

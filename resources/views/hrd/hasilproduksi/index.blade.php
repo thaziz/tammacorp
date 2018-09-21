@@ -1,4 +1,5 @@
-@extends('main') @section('content')
+@extends('main') 
+@section('content')
 <!--BEGIN PAGE WRAPPER-->
 <div id="page-wrapper">
   <!--BEGIN TITLE & BREADCRUMB PAGE-->
@@ -29,182 +30,151 @@
             </div>
           </div>
 
-
           <ul id="generalTab" class="nav nav-tabs">
             <li class="active">
               <a href="#alert-tab" data-toggle="tab">Data Hasil Produksi</a>
             </li>
-            <!-- <li><a href="#note-tab" data-toggle="tab">2</a></li>
-                                <li><a href="#label-badge-tab" data-toggle="tab">3</a></li> -->
           </ul>
+
           <div id="generalTabContent" class="tab-content responsive">
-
-            <div id="alert-tab" class="tab-pane fade in active">
-
-              <div class="row">
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                  <div class="col-md-8 col-sm-12 col-xs-12" style="padding-bottom: 10px;">
-                    <div style="margin-left:-30px;">
-                      <div class="col-md-2 col-sm-2 col-xs-12">
-                        <label style="padding-top: 7px; font-size: 15px; margin-right:100px;">Periode</label>
-                      </div>
-                      <div class="col-md-6 col-sm-7 col-xs-12">
-                        <div class="form-group" style="display: ">
-                          <div class="input-daterange input-group">
-                            <input id="tanggal" data-provide="datepicker" class="form-control input-sm" name="tanggal" type="text">
-                            <span class="input-group-addon">-</span>
-                            <input id="tanggal" data-provide="datepicker" class="input-sm form-control" name="tanggal" type="text">
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col-md-3 col-sm-3 col-xs-12" align="center">
-                      <button class="btn btn-warning btn-sm btn-flat" type="button">
-                        <strong>
-                          <i class="fa fa-search" aria-hidden="true"></i>
-                        </strong>
-                      </button>
-                      <button class="btn btn-danger btn-sm btn-flat" type="button">
-                        <strong>
-                          <i class="fa fa-undo" aria-hidden="true"></i>
-                        </strong>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                  <div class="table-responsive">
-                    <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data">
-                      <thead>
-                        <tr>
-                          <th class="wd-15p">No.Order</th>
-                          <th class="wd-15p">Nama Supplier</th>
-                          <th class="wd-20p">Data Baku</th>
-                          <th class="wd-15p">Total Harga</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>1</td>
-                          <td>Andi</td>
-                          <td>Bla,Bla,Bla</td>
-                          <td>Rp.5000</td>
-                        </tr>
-                        <tr>
-                          <td>2</td>
-                          <td>Bina</td>
-                          <td>Ble,Ble,Ble</td>
-                          <td>Rp.6000</td>
-                        </tr>
-                      </tbody>
-
-                    </table>
-                  </div>
-                </div>
-              </div>
-
-            </div>
             <!-- /div alert-tab -->
-            <!-- div note-tab -->
-            <div id="note-tab" class="tab-pane fade">
-              <div class="row">
-                <div class="panel-body">
-                  <!-- Isi Content -->we we we
-                </div>
-              </div>
-            </div>
-            <!--/div note-tab -->
-            <!-- div label-badge-tab -->
-            <div id="label-badge-tab" class="tab-pane fade">
-              <div class="row">
-                <div class="panel-body">
-                  <!-- Isi content -->we
-                </div>
-              </div>
-            </div>
-            <!-- /div label-badge-tab -->
+            @include('hrd.hasilproduksi.tab-index')
           </div>
 
         </div>
       </div>
+    </div>
+  </div> 
+  @include('hrd.hasilproduksi.modal-detail')
+</div>
+@endsection 
+@section("extra_scripts")
+  <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
+  <script type="text/javascript">
+    $(document).ready(function () {
+      //fix to issue select2 on modal when opening in firefox
+      $.fn.modal.Constructor.prototype.enforceFocus = function() {};
 
-      @endsection @section("extra_scripts")
-      <script type="text/javascript">
-        $(document).ready(function () {
-          var extensions = {
-            "sFilterInput": "form-control input-sm",
-            "sLengthSelect": "form-control input-sm"
+      var extensions = {
+          "sFilterInput": "form-control input-sm",
+          "sLengthSelect": "form-control input-sm"
+      }
+      // Used when bJQueryUI is false
+      $.extend($.fn.dataTableExt.oStdClasses, extensions);
+      // Used when bJQueryUI is true
+      $.extend($.fn.dataTableExt.oJUIClasses, extensions);
+
+      var date = new Date();
+      var newdate = new Date(date);
+
+      newdate.setDate(newdate.getDate()-30);
+      var nd = new Date(newdate);
+
+      $('.datepicker1').datepicker({
+        autoclose: true,
+        format:"dd-mm-yyyy",
+        endDate: 'today'
+      }).datepicker("setDate", nd);
+
+      $('.datepicker2').datepicker({
+        autoclose: true,
+        format:"dd-mm-yyyy",
+        endDate: 'today'
+      });//datepicker("setDate", "0");
+
+      //load fungsi
+      lihatHasilByTanggal();
+
+      // fungsi jika modal hidden
+      $(".modal").on("hidden.bs.modal", function(){
+        //remove append tr
+        $('tr').remove('.tbl_modal_detail_row');
+      });
+    });//end jquery
+
+    function lihatHasilByTanggal()
+    {
+      var tgl1 = $('#tanggal1').val();
+      var tgl2 = $('#tanggal2').val();
+      $('#tbl-index').dataTable({
+        "destroy": true,
+        "processing" : true,
+        "serverside" : true,
+        "ajax" : {
+          url: baseUrl + "/hrd/hasilproduksi/get-hasil-by-tgl/"+tgl1+"/"+tgl2,
+          type: 'GET'
+        },
+        "columns" : [
+          {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
+          {"data" : "tglBuat", "width" : "10%"},
+          {"data" : "c_nama", "width" : "30%"},
+          {"data" : "c_nik", "width" : "20%"},
+          {"data" : "qty_reguler", "width" : "10%"},
+          {"data" : "qty_lembur", "width" : "10%"},
+          {"data" : "qty_total", "width" : "10%"},
+          {"data" : "action", orderable: false, searchable: false, "width" : "5%"}
+        ],
+        "language": {
+          "searchPlaceholder": "Cari Data",
+          "emptyTable": "Tidak ada data",
+          "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+          "sSearch": '<i class="fa fa-search"></i>',
+          "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+          "infoEmpty": "",
+          "paginate": {
+                "previous": "Sebelumnya",
+                "next": "Selanjutnya",
           }
-          // Used when bJQueryUI is false
-          $.extend($.fn.dataTableExt.oStdClasses, extensions);
-          // Used when bJQueryUI is true
-          $.extend($.fn.dataTableExt.oJUIClasses, extensions);
-          $('#data').dataTable({
-            "responsive": true,
+        }
+      });
+    }
 
-            "pageLength": 10,
-            "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
-            "language": {
-              "searchPlaceholder": "Cari Data",
-              "emptyTable": "Tidak ada data",
-              "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-              "sSearch": '<i class="fa fa-search"></i>',
-              "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-              "infoEmpty": "",
-              "paginate": {
-                "previous": "Sebelumnya",
-                "next": "Selanjutnya",
-              }
-            }
+    function detailHasil(id) 
+    {
+      $.ajax({
+        url : baseUrl + "/hrd/hasilproduksi/get-detail/" + id,
+        type: "GET",
+        dataType: "JSON",
+        success: function(data)
+        {
+          var date = data.data[0].d_hg_tgl;
+          if(date != null) { var newDueDate = date.split("-").reverse().join("-"); }
+          
+          //ambil data ke json->modal
+          $('#lblTgl').text(newDueDate);
+          $('#lblNama').text(data.data[0].c_nama);
+          $('#lblNik').text(data.data[0].c_nik);
+          $('#lblRmhPro').text(data.data[0].c_rumah_produksi);
+          $('#lblTotalHasil').text(parseInt(data.data[0].qty_reguler) + parseInt(data.data[0].qty_lembur));
 
-          });
-          $('#data2').dataTable({
-            "responsive": true,
+          $('#div_item_reguler').append(
+            '<tr class="tbl_modal_detail_row">'
+              +'<td align="center">'+parseInt(data.data[0].d_hg_jumbo_r)+'</td>'
+              +'<td align="center">'+parseInt(data.data[0].d_hg_tb_r)+'</td>'
+              +'<td align="center">'+parseInt(data.data[0].d_hg_ts_r)+'</td>'
+              +'<td align="center">'+parseInt(data.data[0].d_hg_tm_r)+'</td>'
+              +'<td align="center">'+parseInt(data.data[0].d_hg_tc_r)+'</td>'
+              +'<td align="center">'+parseInt(data.data[0].qty_reguler)+'</td>'
+            +'</tr>');
 
-            "pageLength": 10,
-            "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
-            "language": {
-              "searchPlaceholder": "Cari Data",
-              "emptyTable": "Tidak ada data",
-              "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-              "sSearch": '<i class="fa fa-search"></i>',
-              "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-              "infoEmpty": "",
-              "paginate": {
-                "previous": "Sebelumnya",
-                "next": "Selanjutnya",
-              }
-            }
-
-          });
-          $('#data3').dataTable({
-            "responsive": true,
-
-            "pageLength": 10,
-            "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
-            "language": {
-              "searchPlaceholder": "Cari Data",
-              "emptyTable": "Tidak ada data",
-              "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-              "sSearch": '<i class="fa fa-search"></i>',
-              "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-              "infoEmpty": "",
-              "paginate": {
-                "previous": "Sebelumnya",
-                "next": "Selanjutnya",
-              }
-            }
-
-          });
-        });
-        $('.datepicker').datepicker({
-          format: "mm",
-          viewMode: "months",
-          minViewMode: "months"
-        });
-        $('.datepicker2').datepicker({
-          format: "dd/mm/yyyy"
-        });    
-      </script> @endsection()
+           $('#div_item_lembur').append(
+            '<tr class="tbl_modal_detail_row">'
+              +'<td align="center">'+parseInt(data.data[0].d_hg_jumbo_l)+'</td>'
+              +'<td align="center">'+parseInt(data.data[0].d_hg_tb_l)+'</td>'
+              +'<td align="center">'+parseInt(data.data[0].d_hg_ts_l)+'</td>'
+              +'<td align="center">'+parseInt(data.data[0].d_hg_tm_l)+'</td>'
+              +'<td align="center">'+parseInt(data.data[0].d_hg_tc_l)+'</td>'
+              +'<td align="center">'+parseInt(data.data[0].qty_lembur)+'</td>'
+            +'</tr>');
+          
+          $('#apdsfs').html('<button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>');
+          $('#modal_detail').modal('show');
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            alert('Error get data from ajax');
+        }
+      });
+    }
+  </script> 
+@endsection()
