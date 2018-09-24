@@ -476,6 +476,18 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/payroll/edit-potongan/{id}', 'Hrd\GajiController@editPotongan');
     Route::put('/hrd/payroll/update-potongan/{id}', 'Hrd\GajiController@updatePotongan');
     Route::delete('/hrd/payroll/delete-potongan/{id}', 'Hrd\GajiController@deletePotongan');
+/*Data Lembur*/
+    Route::get('/hrd/datalembur/index', 'Hrd\HlemburController@index');
+    Route::get('/hrd/datalembur/get-lembur-by-tgl/{tgl1}/{tgl2}', 'Hrd\HlemburController@getLemburByTgl');
+    Route::get('/hrd/datalembur/lookup-data-divisi', 'Hrd\HlemburController@lookup_divisi');
+    Route::get('/hrd/datalembur/lookup-data-jabatan', 'Hrd\HlemburController@lookup_jabatan');
+    Route::get('/hrd/datalembur/lookup-data-pegawai', 'Hrd\HlemburController@lookup_pegawai');
+    Route::post('/hrd/datalembur/simpan-lembur', 'Hrd\HlemburController@simpanLembur');
+    Route::get('/hrd/datalembur/get-detail/{id}/{id2}', 'Hrd\HlemburController@getDataDetail');
+    Route::get('/hrd/datalembur/get-edit/{id}/{id2}', 'Hrd\HlemburController@getDataEdit');
+    Route::post('/hrd/datalembur/update-lembur', 'Hrd\HlemburController@updateLembur');
+    Route::post('/hrd/datalembur/delete-lembur', 'Hrd\HlemburController@deleteLembur');
+    Route::get('/hrd/datalembur/print/{id}', 'Hrd\HlemburController@print');
     /*Keuangan*/
 
         //transaksi index
