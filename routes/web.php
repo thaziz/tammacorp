@@ -931,6 +931,16 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/master/datapegawai/delete-pegawai/{id}', 'Master\PegawaiController@deletePegawai');
     Route::post('/master/datapegawai/import', 'Master\PegawaiController@importPegawai');
     Route::get('/master/datapegawai/master-import', 'Master\PegawaiController@getFile');
+//Master data KPI
+    Route::get('/master/datakpi/index', 'Master\KpiController@index');
+    Route::get('/master/datakpi/tambah_kpi', 'Master\KpiController@tambah_kpi');
+    Route::get('/master/datakpi/datatable-index', 'Master\KpiController@get_datatable_index');
+    Route::get('/master/datakpi/lookup-data-jabatan', 'Master\KpiController@lookup_jabatan');
+    Route::get('/master/datakpi/lookup-data-pegawai', 'Master\KpiController@lookup_pegawai');
+    Route::post('/master/datakpi/simpan-kpi', 'Master\KpiController@simpan_kpi');
+    Route::get('/master/datakpi/edit-kpi', 'Master\KpiController@edit_kpi');
+    Route::post('/master/datakpi/update-kpi', 'Master\KpiController@update_kpi');
+    Route::post('/master/datakpi/delete-kpi', 'Master\KpiController@delete_kpi');
 // Ari
     Route::get('/purchasing/orderpembelian/print/{id}', 'Pembelian\OrderPembelianController@print');
     Route::get('/inventory/p_suplier/print/{id}', 'Inventory\PenerimaanBrgSupController@print');
