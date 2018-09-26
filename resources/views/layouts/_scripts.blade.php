@@ -22,14 +22,14 @@
     <script src="{{ asset ('assets/script/pace.min.js') }}"></script>
     <script src="{{ asset ('assets/script/holder.js') }}"></script>
     <script src="{{ asset ('assets/script/responsive-tabs.js') }}"></script>
-    <script src="{{ asset ('assets/script/jquery.flot.js') }}"></script>
+    {{-- <script src="{{ asset ('assets/script/jquery.flot.js') }}"></script>
     <script src="{{ asset ('assets/script/jquery.flot.categories.js') }}"></script>
     <script src="{{ asset ('assets/script/jquery.flot.pie.js') }}"></script>
     <script src="{{ asset ('assets/script/jquery.flot.tooltip.js') }}"></script>
     <script src="{{ asset ('assets/script/jquery.flot.resize.js') }}"></script>
     <script src="{{ asset ('assets/script/jquery.flot.fillbetween.js') }}"></script>
     <script src="{{ asset ('assets/script/jquery.flot.stack.js') }}"></script>
-    <script src="{{ asset ('assets/script/jquery.flot.spline.js') }}"></script>
+    <script src="{{ asset ('assets/script/jquery.flot.spline.js') }}"></script> --}}
     <script src="{{ asset ('assets/script/zabuto_calendar.min.js') }}"></script>
     {{-- <script src="{{ asset ('assets/script/index.js') }}"></script> --}}
     <script src="{{ asset ('assets/script/dataTables.bootstrap.js') }}"></script>

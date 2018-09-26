@@ -443,13 +443,21 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/hrd/recruitment/delete-data-pelamar', 'RecruitmentController@deleteDataPelamar');
     Route::get('/hrd/recruitment/buat_pdf', 'RecruitmentController@buat_pdf');
 //surat
-    Route::get('/hrd/manajemensurat', 'Hrd\ManajemenSuratController@index');
+    Route::get('/hrd/manajemensurat', 'Hrd\ManajemenSuratController@index')->name('manajemensurat');
     Route::get('/hrd/manajemensurat/surat-phk', 'Hrd\ManajemenSuratController@indexPhk');
     Route::get('/hrd/manajemensurat/data-phk', 'Hrd\ManajemenSuratController@phkData');
     Route::post('/hrd/manajemensurat/simpan-phk', 'Hrd\ManajemenSuratController@simpanPhk');
     Route::get('/hrd/manajemensurat/edit-phk/{id}', 'Hrd\ManajemenSuratController@editPhk');
     Route::put('/hrd/manajemensurat/update-phk/{id}', 'Hrd\ManajemenSuratController@updatePhk');
     Route::delete('/hrd/manajemensurat/delete-phk/{id}', 'Hrd\ManajemenSuratController@deletePhk');
+
+    // surat2
+    // form kenaikan gaji
+    Route::get('/hrd/manajemensurat/form_kenaikan_gaji', 'Hrd\ManajemenSuratController@form_kenaikan_gaji')->name('form_kenaikan_gaji');
+    Route::get('/hrd/manajemensurat/form_kenaikan_gaji_print', 'Hrd\ManajemenSuratController@form_kenaikan_gaji_print')->name('form_kenaikan_gaji_print');
+    // form laporan leader
+    Route::get('/hrd/manajemensurat/form_laporan_leader', 'Hrd\ManajemenSuratController@form_laporan_leader')->name('form_laporan_leader');
+    Route::get('/hrd/manajemensurat/form_laporan_leader_print', 'Hrd\ManajemenSuratController@form_laporan_leader_print')->name('form_laporan_leader_print');
 //gaji
     Route::get('/hrd/payroll/payroll', 'Hrd\PayrollController@payroll');
     Route::get('/hrd/payroll/view/{id}', 'Hrd\PayrollController@viewPayroll');

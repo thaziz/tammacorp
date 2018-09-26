@@ -1,5 +1,5 @@
 <div id="index-tab" class="tab-pane fade in active">
-  <div class="row tamma-bg" style="margin-top: -23px;padding-top: 23px;padding-bottom: 10px;border-radius: unset;">
+  <div class="row tamma-bg tamma-bg-form-top">
     <div class="col-md-12 col-sm-12 col-xs-12">
 
       <div class="col-md-6 col-sm-6 col-xs-12">
