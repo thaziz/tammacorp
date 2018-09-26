@@ -488,6 +488,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/hrd/datalembur/update-lembur', 'Hrd\HlemburController@updateLembur');
     Route::post('/hrd/datalembur/delete-lembur', 'Hrd\HlemburController@deleteLembur');
     Route::get('/hrd/datalembur/print/{id}', 'Hrd\HlemburController@print');
+/*Input KPI*/
+    Route::get('/hrd/inputkpi/index', 'Hrd\DkpiController@index');
+    Route::get('/hrd/inputkpi/get-kpi-by-tgl/{tgl1}/{tgl2}', 'Hrd\DkpiController@getKpiByTgl');
+    Route::get('/hrd/inputkpi/set-field-modal', 'Hrd\DkpiController@setFieldModal');
+    Route::post('/hrd/inputkpi/simpan-data', 'Hrd\DkpiController@simpanData');
+    Route::get('/hrd/inputkpi/get-edit/{id}', 'Hrd\DkpiController@getDataEdit');
+    Route::post('/hrd/inputkpi/update-data', 'Hrd\DkpiController@updateData');
+    Route::post('/hrd/inputkpi/delete-data', 'Hrd\DkpiController@deleteData');
     /*Keuangan*/
 
         //transaksi index
