@@ -171,6 +171,10 @@
                                         Data Lowongan
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Data KPI','ma_read'))
+                                        Data KPI
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Data Akun Keuangan','ma_read'))
                                         Data Akun Keuangan
                                     @endif
@@ -239,6 +243,13 @@
                                 @if(Auth::user()->punyaAkses('Data Lowongan','ma_read'))
                                     <li class="{{ Request::is('master/datalowongan/index') ? 'active' : '' || Request::is('master/datalowongan/*') ? 'active' : '' }}">
                                         <a href="{{ url('/master/datalowongan/index') }}"><span class="submenu-title">Data Lowongan</span><span
+                                                    class="hidden">Master</span></a>
+                                    </li>
+                                @endif
+
+                                @if(Auth::user()->punyaAkses('Data KPI','ma_read'))
+                                    <li class="{{ Request::is('master/datakpi/index') ? 'active' : '' || Request::is('master/datakpi/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/master/datakpi/index') }}"><span class="submenu-title">Data KPI</span><span
                                                     class="hidden">Master</span></a>
                                     </li>
                                 @endif
