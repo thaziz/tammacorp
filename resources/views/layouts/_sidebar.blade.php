@@ -800,8 +800,8 @@
                                     </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Manajemen KPI Pegawai','ma_read'))
-                                    <li class="{{ Request::is('hrd/manajemenkpipegawai/kpi') ? 'active' : '' || Request::is('hrd/manajemenkpipegawai/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/hrd/manajemenkpipegawai/kpi') }}"><span class="submenu-title">Manajemen KPI Pegawai</span><span
+                                    <li class="{{ Request::is('hrd/manajemenkpipegawai/index') ? 'active' : '' || Request::is('hrd/manajemenkpipegawai/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/hrd/manajemenkpipegawai/index') }}"><span class="submenu-title">Manajemen KPI Pegawai</span><span
                                                     class="hidden">HRD</span></a>
                                     </li>
                                 @endif
