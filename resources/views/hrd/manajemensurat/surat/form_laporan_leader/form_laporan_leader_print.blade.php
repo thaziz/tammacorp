@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>FORM KENAIKAN GAJI ATAU TINGKAT</title>
+	<title>FORM LAPORAN LEADER</title>
 	<style type="text/css">
 		*:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(small):not(label){
 			font-size: 14px;
@@ -14,6 +14,22 @@
 			padding: 0 15px 15px 15px;
 			
 
+		}
+		.div-width-background{
+			content: "";
+			background-image: url("{{asset('assets/img/background-tammafood-surat.jpg')}}");
+			background-repeat: no-repeat;
+			background-position: center; 
+			background-size: 700px 700px;
+			position: absolute;
+			z-index: -1;
+			margin-top: 170px;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			right: 0;
+			opacity: 0.1; 
+			width: 95vw;
 		}
 		.underline{
 			text-decoration: underline;
@@ -72,7 +88,7 @@
 		.empty{
 			height: 18px;
 		}
-		table,td{
+		table,td,th{
 			border:1px solid black;
 		}
 		table{
@@ -112,6 +128,18 @@
 				position: absolute;
 				width: 100%;
 			}
+			.div-width-background{
+				content: "";
+				background-image: url("{{asset('assets/img/background-tammafood-surat.jpg')}}");
+				background-repeat: no-repeat;
+				background-position: center; 
+				background-size: 700px 700px;
+				position: absolute;
+				z-index: -1;
+				margin: auto;
+				opacity: 0.1; 
+				width: 95vw;
+			}
 		}
 		fieldset{
 			border: 1px solid black;
@@ -120,13 +148,18 @@
 		header{
 			top: 0;
 			width: 900px;
+			z-index: 99;
 		}
 		footer{
 			bottom: 0;
 			width: 900px;
+			z-index: 99;
 		}
 		.border-top{
 			border-top: 1px solid black;
+		}
+		.border-bottom{
+			border-bottom: 1px solid black;
 		}
 		.btn-print{
 			position: fixed;
@@ -142,7 +175,7 @@
 	</style>
 </head>
 <body>
-	<div class="btn-print" align="right">
+	<div class="btn-print">
 		<button onclick="javascript:window.print();">Print</button>
 	</div>
 		<header>
@@ -150,125 +183,108 @@
 		</header>
 	<div class="div-width">
 
-		<h2 style="margin: 30px 15px 0 15px;">FORMULIR KENAIKAN GAJI ATAU TINGKAT KARYAWAN</h2>
+		<h2 style="margin: 30px 15px 0 15px;">FORM LAPORAN LEADER</h2>
 		<small style="margin: 15px 15px 15px 15px;">FM-SDM-01-2018</small>
 
-		<table width="100%" class="border-none" style="margin: 30px 15px 15px 15px;">
+		<table width="100%" class="border-none" style="margin: 30px 15px 0 15px;">
 			<tr>
-				<td>Nama</td>
+				<td>PIC</td>
 				<td>:</td>
-				<td colspan="2">Alpha</td>
+				<td>Alpha</td>
 			</tr>
 			<tr>
-				<td>Departemen</td>
+				<td>Divisi</td>
 				<td>:</td>
-				<td colspan="2">1</td>
+				<td>1</td>
 			</tr>
 			<tr>
-				<td>Tanggal Mulai Kerja</td>
+				<td>Hari</td>
 				<td>:</td>
-				<td colspan="2">28 Sep 2018</td>
+				<td>28 Sep 2018</td>
 			</tr>
 			<tr>
-				<td>Kenaikan</td>
-				<td>:</td>
-				<td><label><input type="radio" disabled="" value="gaji" name="">Gaji</label></td>
-				<td><label><input type="radio" disabled="" value="tingkat" name="">Grade/Tingkat</label></td>
+				<td class="italic" colspan="3">(Tuliskan 6 pekerjaan harian rutin dan 6 pekerjaan yang akan di lakukan besok)</td>
 			</tr>
 			
 		</table>
 
-		<table width="100%" style="margin-top: 30px;margin-bottom: 15px;">
-			<tr>
-				<td width="25%"></td>
-				<td width="35%">Kondisi saat ini</td>
-				<td width="35%">Diusulkan</td>
-			</tr>
-			<tr>
-				<td>Jabatan</td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>Grade/Tingkat</td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>Gaji</td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>Efektif per Tanggal</td>
-				<td></td>
-				<td></td>
-			</tr>
+		<table width="100%" style="margin-bottom: 15px;">
+			<thead class="top">
+				<tr>
+					<th width="5%" style="height: 30px;">No</th>
+					<th>Aktivitas</th>
+					<th>Keterangan</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td align="center">1</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td align="center">2</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td align="center">3</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td align="center">4</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td align="center">5</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td align="center">6</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td align="center">7</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td align="center">8</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td align="center">9</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td align="center">10</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td align="center">11</td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td align="center">12</td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tbody>
 		</table>
 
-		<label class="bold">Alasan Kenaikan</label>
-		<p>Berhasil merampok bank sebesar Rp. 100.000.000.000.000,00 (Seratus Triliun Rupiah)</p>
+		<div class="float-right border-bottom ttd" align="center" style="height: 70px;margin-bottom: 15px;margin-top: 30px;">
+			<label class="bold">TTD</label>
+		</div>
 
-
-		<table width="100%">
-			<tr>
-				<td colspan="2" class="border-none-bottom top" style="height: 70px;">
-					
-						Diusulkan oleh,
-					
-				</td>
-			</tr>
-			<tr>
-				<td class="border-none-right">
-					<div class="border-top ttd">
-						Nama / Jabatan
-					</div>
-				</td>
-				<td>
-					<div class="float-left">
-						Tanggal : 28 Sep 2018
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2" class="border-none-bottom top" style="height: 70px;">
-					
-						Diusulkan oleh,
-					
-				</td>
-			</tr>
-			<tr>
-				<td class="border-none-right">
-					<div class="border-top ttd">
-						Kepala HRD
-					</div>
-				</td>
-				<td>
-					<div class="float-left">
-						Tanggal : 
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2" class="border-none-bottom top" style="height: 70px;">
-					
-						Diusulkan oleh,
-					
-				</td>
-			</tr>
-			<tr>
-				<td class="border-none-right">
-					<div class="border-top ttd">
-						Direktur Utama
-					</div>
-				</td>
-				<td>
-					<div class="float-left">
-						Tanggal : 
-					</div>
-				</td>
-			</tr>
-		</table>
+		
 	</div>
 		<footer>
 			<img width="100%" src="{{asset('assets/img/footer-tammafood-surat.png')}}">
