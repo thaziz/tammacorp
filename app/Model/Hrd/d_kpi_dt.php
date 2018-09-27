@@ -16,7 +16,6 @@ class d_kpi_dt extends Model
         'd_kpidt_dkpi_id',
         'd_kpidt_mkpi_id', 
         'd_kpidt_value',
-        'd_kpidt_valconfirm',
         'd_kpidt_created',
         'd_kpidt_updated'
     ];

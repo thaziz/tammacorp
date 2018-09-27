@@ -14,21 +14,25 @@ use DB;
 use DataTables;
 use Auth;
 
-class DkpiController extends Controller
+class MankpiController extends Controller
 {
     public function index()
     {
         //dd(Auth::user());
-        return view('hrd/datainputkpi/index');
+        return view('hrd/manajemenkpi/index');
     }
 
-    public function getKpiByTgl($tgl1, $tgl2)
+    public function getKpiByTgl($tgl1, $tgl2, $tampil)
     {
         $id_peg = Auth::user()->m_pegawai_id;
         $tanggal1 = date('Y-m-d',strtotime($tgl1));
         $tanggal2 = date('Y-m-d',strtotime($tgl2));
-        $data = d_kpi::join('m_pegawai_man','d_kpi.d_kpi_pid','=','m_pegawai_man.c_id')->where('d_kpi.d_kpi_pid', '=', $id_peg)->whereBetween('d_kpi_date', [$tanggal1, $tanggal2])->orderBy('d_kpi_created', 'DESC')->get();
-
+        if ($tampil == 'ALL') {
+            $data = d_kpi::join('m_pegawai_man','d_kpi.d_kpi_pid','=','m_pegawai_man.c_id')->whereBetween('d_kpi_date', [$tanggal1, $tanggal2])->orderBy('d_kpi_created', 'DESC')->get();
+        }else{
+            $data = d_kpi::join('m_pegawai_man','d_kpi.d_kpi_pid','=','m_pegawai_man.c_id')->where('d_kpi.d_kpi_isconfirm', '=', $tampil)->whereBetween('d_kpi_date', [$tanggal1, $tanggal2])->orderBy('d_kpi_created', 'DESC')->get();    
+        }
+        
         return DataTables::of($data)
         ->addIndexColumn()
         ->editColumn('tglBuat', function ($data) 
@@ -37,6 +41,14 @@ class DkpiController extends Controller
                 return '-';
             } else {
                 return $data->d_kpi_date ? with(new Carbon($data->d_kpi_date))->format('d M Y') : '';
+            }
+        })
+        ->editColumn('status', function ($data) 
+        {
+            if ($data->d_kpi_isconfirm == 'N') {
+                return '<span style="color:red;text-align:center;"> Belum Dikonfirmasi </span>';
+            } else {
+                return '<span style="color:blue;text-align:center;"> Sudah Dikonfirmasi </span>';
             }
         })
         ->editColumn('tglConfirm', function ($data) 
@@ -54,11 +66,11 @@ class DkpiController extends Controller
                             <button class="btn btn-sm btn-success" title="Detail"
                                 onclick=detailKpi("'.$data->d_kpi_id.'")><i class="fa fa-info-circle"></i> 
                             </button>
-                            <button class="btn btn-sm btn-warning" title="Edit"
-                                onclick=editKpi("'.$data->d_kpi_id.'") disabled><i class="fa fa-edit"></i> 
+                            <button class="btn btn-sm btn-info" title="Confirm"
+                                onclick=confirmKpi("'.$data->d_kpi_id.'") disabled><i class="fa fa-edit"></i> 
                             </button>
-                            <button class="btn btn-sm btn-danger" title="Hapus"
-                                onclick=hapusKpi("'.$data->d_kpi_id.'") disabled><i class="fa fa-times-circle"></i>
+                            <button class="btn btn-sm btn-danger" title="Batalkan Konfirmasi"
+                                onclick=ubahStatus("'.$data->d_kpi_id.'","Y")><i class="fa fa-mail-forward"></i>
                             </button>
                         </div>';
             }else{
@@ -66,17 +78,16 @@ class DkpiController extends Controller
                             <button class="btn btn-sm btn-success" title="Detail"
                                 onclick=detailKpi("'.$data->d_kpi_id.'")><i class="fa fa-info-circle"></i> 
                             </button>
-                            <button class="btn btn-sm btn-warning" title="Edit"
-                                onclick=editKpi("'.$data->d_kpi_id.'")><i class="fa fa-edit"></i> 
+                            <button class="btn btn-sm btn-info" title="Confirm"
+                                onclick=confirmKpi("'.$data->d_kpi_id.'")><i class="fa fa-edit"></i> 
                             </button>
-                            <button class="btn btn-sm btn-danger" title="Hapus"
-                                onclick=hapusKpi("'.$data->d_kpi_id.'")><i class="fa fa-times-circle"></i>
+                            <button class="btn btn-sm btn-default" title="Konfirmasi"
+                                onclick=ubahStatus("'.$data->d_kpi_id.'","N") disabled><i class="fa fa-mail-reply"></i>
                             </button>
                         </div>';
-            }
-            
+            }  
         })
-        ->rawColumns(['action'])
+        ->rawColumns(['action','status'])
         ->make(true);
     }
 
@@ -252,12 +263,14 @@ class DkpiController extends Controller
         //dd($request->all());
         DB::beginTransaction();
         try 
-        {   
+        {
             $tanggal = date("Y-m-d h:i:s");
 
             $d_kpi = d_kpi::find($request->e_old);
             $d_kpi->d_kpi_date = date('Y-m-d',strtotime($request->eTglKpi));
             $d_kpi->d_kpi_updated = $tanggal;
+            $d_kpi->d_kpi_isconfirm = 'Y';
+            $d_kpi->d_kpi_dateconfirm = $tanggal;
             $d_kpi->save();
 
             if (isset($request->e_index_kpi_opsi)) 
@@ -268,7 +281,7 @@ class DkpiController extends Controller
                 d_kpi_dt::where('d_kpidt_id','=',$request->e_index_dt_opsi[0])
                         ->update([
                             'd_kpidt_value' => strtoupper($str_opsi),
-                            'd_kpidt_updated' => date("Y-m-d h:i:s")
+                            'd_kpidt_updated' => date("Y-m-d h:i:s"),
                         ]);
             }
 
@@ -284,7 +297,7 @@ class DkpiController extends Controller
             DB::commit();
             return response()->json([
               'status' => 'sukses',
-              'pesan' => 'Data Input KPI Berhasil Diupdate'
+              'pesan' => 'Data Input KPI Berhasil Dikonfirmasi'
             ]);
         } 
         catch (\Exception $e) 
@@ -297,17 +310,31 @@ class DkpiController extends Controller
         }
     }
 
-    public function deleteData(Request $request)
+    public function ubahStatus(Request $request)
     {
       DB::beginTransaction();
-      try {
-        d_kpi_dt::where('d_kpidt_dkpi_id', $request->id)->delete();
-        d_kpi::where('d_kpi_id', $request->id)->delete();
+      try 
+      {
+        $tanggal = date("Y-m-d h:i:s");
+        $d_kpi = d_kpi::find($request->id);
+        if ($request->status == 'Y') 
+        {
+            $d_kpi->d_kpi_dateconfirm = null;
+            $d_kpi->d_kpi_isconfirm = 'N';
+            $pesan = 'Pembatalan konfirmasi data KPI berhasil';
+        }
+        else
+        {
+            $d_kpi->d_kpi_dateconfirm = $tanggal;
+            $d_kpi->d_kpi_isconfirm = 'Y';
+            $pesan = 'Konfirmasi data KPI berhasil';
+        }
+        $d_kpi->save();
 
         DB::commit();
         return response()->json([
             'status' => 'sukses',
-            'pesan' => 'Data Input KPI Berhasil Dihapus'
+            'pesan' => $pesan
         ]);
       } 
       catch (\Exception $e) 

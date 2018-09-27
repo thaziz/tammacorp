@@ -504,6 +504,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/inputkpi/get-edit/{id}', 'Hrd\DkpiController@getDataEdit');
     Route::post('/hrd/inputkpi/update-data', 'Hrd\DkpiController@updateData');
     Route::post('/hrd/inputkpi/delete-data', 'Hrd\DkpiController@deleteData');
+/*Manajemen KPI*/
+    Route::get('/hrd/manajemenkpipegawai/index', 'Hrd\MankpiController@index');
+    Route::get('/hrd/manajemenkpipegawai/get-kpi-by-tgl/{tgl1}/{tgl2}/{tampil}', 'Hrd\MankpiController@getKpiByTgl');
+    Route::get('/hrd/manajemenkpipegawai/get-edit/{id}', 'Hrd\MankpiController@getDataEdit');
+    Route::post('/hrd/manajemenkpipegawai/update-data', 'Hrd\MankpiController@updateData');
+    Route::post('/hrd/manajemenkpipegawai/ubah-status', 'Hrd\MankpiController@ubahStatus');
     /*Keuangan*/
 
         //transaksi index
