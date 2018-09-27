@@ -754,6 +754,9 @@
                                     @if(Auth::user()->punyaAkses('Recruitment','ma_read'))
                                         Recruitment
                                     @endif
+                                    @if(Auth::user()->punyaAkses('Manajemen Surat','ma_read'))
+                                        Manajemen Surat
+                                    @endif
 
                             </span>
                             </a>

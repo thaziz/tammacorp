@@ -1,10 +1,12 @@
-@extends('main') @section('content')
+@extends('main') 
+
+@section('content')
 <!--BEGIN PAGE WRAPPER-->
 <div id="page-wrapper">
   <!--BEGIN TITLE & BREADCRUMB PAGE-->
   <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
     <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
-      <div class="page-title">Human Resource</div>
+      <div class="page-title">Manajemen Surat</div>
     </div>
     <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
       <li>
@@ -12,9 +14,9 @@
         <a href="{{ url('/home') }}">Home</a>&nbsp;&nbsp;
         <i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
       <li>
-        <i></i>&nbsp;Produksi&nbsp;&nbsp;
+        <i></i>&nbsp;HRD&nbsp;&nbsp;
         <i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
-      <li class="active">Manajemen Produksi</li>
+      <li class="active">Manajemen Surat</li>
     </ol>
     <div class="clearfix">
     </div>
@@ -31,44 +33,47 @@
             <li class="active">
               <a href="#index-tab" data-toggle="tab" onclick="cariTanggal()">Manajemen SPK</a>
             </li>
-            <li>
+            {{-- <li>
               <a href="#finishResult-tab" data-toggle="tab" onclick="cariTanggal2()">Daftar SPK Selesai</a>
-            </li>
+            </li> --}}
           </ul>
           <div id="generalTabContent" class="tab-content responsive">
             <!-- /div index-tab -->
             <div id="index-tab" class="tab-pane fade in active">
               <div class="row" style="margin-top: -5px;">
                 <div class="panel-body">
-                  <div class="table-responsive" style="padding-top: 15px;">
+
+
+
+                  <div class="table-responsive">
                     <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data1">
                       <tbody>
                         <tr>
-                          <td><a href="#">Application form</a></td>
+                          <td><a href="javascript:void(0);" class="btn btn-block btn-secondary">Application form</a></td>
                         </tr>
                         <tr>
-                          <td><a href="#">Form kenaikan gaji atau tingkat</a></td>
+                          <td><a href="{{route('form_kenaikan_gaji')}}" class="btn btn-block btn-secondary">Form kenaikan gaji atau tingkat</a></td>
                         </tr>
                         <tr>
-                          <td><a href="#">Form laporan leader</a></td>
+                          <td><a href="{{route('form_laporan_leader')}}" class="btn btn-block btn-secondary">Form laporan leader</a></td>
                         </tr>
                         <tr>
-                          <td><a href="#">Form lembur</a></td>
+                          <td><a href="javascript:void(0);" class="btn btn-block btn-secondary">Form lembur</a></td>
                         </tr>
                         <tr>
-                          <td><a href="#">Form overhandle</a></td>
+                          <td><a href="javascript:void(0);" class="btn btn-block btn-secondary">Form overhandle</a></td>
                         </tr>
                         <tr>
-                          <td><a href="#">Form permintaan</a></td>
+                          <td><a href="javascript:void(0);" class="btn btn-block btn-secondary">Form permintaan</a></td>
                         </tr>
                         <tr>
-                          <td><a href="#">Surat keterangan kerja</a></td>
+                          <td><a href="javascript:void(0);" class="btn btn-block btn-secondary">Surat keterangan kerja</a></td>
                         </tr>
                         <tr>
-                          <td><a href="{{ url('hrd/manajemensurat/surat-phk') }}">Surat pemutusan hubungan kerja</a></td>
+                          <td><a href="{{ url('hrd/manajemensurat/surat-phk') }}" class="btn btn-block btn-secondary">Surat pemutusan hubungan kerja</a></td>
                         </tr>
                         <tr>
-                          <td><a href="#">Surat perintah lembur</a></td>
+                          <td><a href="javascript:void(0);" class="btn btn-block btn-secondary">Surat perintah lembur</a></td>
                         </tr>
                       </tbody>
                     </table> 
@@ -79,7 +84,7 @@
             <!-- /div index-tab -->
 
             <!-- div finishResult-tab -->
-            @include('produksi.spk.finish-result-tab')
+            {{-- @include('produksi.spk.finish-result-tab') --}}
             <!-- End DIv finishResult-tab -->
 
           </div>
@@ -87,113 +92,119 @@
         </div>
       </div>
     </div>
-    @endsection @section("extra_scripts")
+  </div>
+</div>
+@endsection 
 
-    <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
-    <script type="text/javascript">
-      var extensions = {
-        "sFilterInput": "form-control input-sm",
-        "sLengthSelect": "form-control input-sm"
+@section("extra_scripts")
+
+{{-- <script src="{{ asset ('assets/script/icheck.min.js') }}"></script> --}}
+
+<script type="text/javascript">
+  var extensions = {
+    "sFilterInput": "form-control input-sm",
+    "sLengthSelect": "form-control input-sm"
+  }
+  // Used when bJQueryUI is false
+  $.extend($.fn.dataTableExt.oStdClasses, extensions);
+  // Used when bJQueryUI is true
+  $.extend($.fn.dataTableExt.oJUIClasses, extensions);
+  $('#tbl_jabatan').DataTable({
+    processing: true,
+    // responsive:true,
+    serverSide: true,
+    ajax: {
+      url: '{{ url("hrd/datajabatan/data-jabatan") }}',
+    },
+    columnDefs: [
+      {
+        targets: 0,
+        className: 'center d_id'
+      },
+    ],
+    "columns": [
+      { "data": "kode" },
+      { "data": "c_posisi" },
+      { "data": "c_divisi" },
+      { "data": "action" },
+    ],
+    "responsive": true,
+    "pageLength": 10,
+    "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
+    "language": {
+      "searchPlaceholder": "Cari Data",
+      "emptyTable": "Tidak ada data",
+      "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+      "sSearch": '<i class="fa fa-search"></i>',
+      "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+      "infoEmpty": "",
+      "paginate": {
+        "previous": "Sebelumnya",
+        "next": "Selanjutnya",
       }
-      // Used when bJQueryUI is false
-      $.extend($.fn.dataTableExt.oStdClasses, extensions);
-      // Used when bJQueryUI is true
-      $.extend($.fn.dataTableExt.oJUIClasses, extensions);
-      $('#tbl_jabatan').DataTable({
-        processing: true,
-        // responsive:true,
-        serverSide: true,
-        ajax: {
-          url: '{{ url("hrd/datajabatan/data-jabatan") }}',
-        },
-        columnDefs: [
-          {
-            targets: 0,
-            className: 'center d_id'
-          },
-        ],
-        "columns": [
-          { "data": "kode" },
-          { "data": "c_posisi" },
-          { "data": "c_divisi" },
-          { "data": "action" },
-        ],
-        "responsive": true,
-        "pageLength": 10,
-        "lengthMenu": [[10, 20, 50, - 1], [10, 20, 50, "All"]],
-        "language": {
-          "searchPlaceholder": "Cari Data",
-          "emptyTable": "Tidak ada data",
-          "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
-          "sSearch": '<i class="fa fa-search"></i>',
-          "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-          "infoEmpty": "",
-          "paginate": {
-            "previous": "Sebelumnya",
-            "next": "Selanjutnya",
-          }
-        }
-      });
-      function edit(a) {
-        var parent = $(a).parents('tr');
-        var id = $(parent).find('.d_id').text();
-        console.log(id);
-        $.ajax({
-          type: "PUT",
-          url: '{{ url("hrd/datajabatan/edit-jabatan") }}' + '/' + a,
-          data: { id },
-          success: function (data) {
-          },
-          complete: function (argument) {
-            window.location = (this.url)
-          },
-          error: function () {
+    }
+  });
+  function edit(a) {
+    var parent = $(a).parents('tr');
+    var id = $(parent).find('.d_id').text();
+    console.log(id);
+    $.ajax({
+      type: "PUT",
+      url: '{{ url("hrd/datajabatan/edit-jabatan") }}' + '/' + a,
+      data: { id },
+      success: function (data) {
+      },
+      complete: function (argument) {
+        window.location = (this.url)
+      },
+      error: function () {
 
-          },
-          async: false
-        });
+      },
+      async: false
+    });
+  }
+  function hapus(id) {
+    iziToast.question({
+      timeout: 20000,
+      close: false,
+      overlay: true,
+      toastOnce: true,
+      id: 'question',
+      zindex: 999,
+      title: 'Hey',
+      message: 'Apakah anda yakin?',
+      position: 'center',
+      buttons: [
+        ['<button><b>YA</b></button>', function (instance, toast) {
+          $.ajax({
+            url: '{{ url("hrd/datajabatan/delete-jabatan") }}' + '/' + id,
+            async: false,
+            type: "DELETE",
+            data: {
+              "id": id,
+              "_method": 'DELETE',
+              "_token": '{{ csrf_token() }}',
+            },
+            dataType: "json",
+            success: function (data) { }
+          });
+          window.location.reload();
+          instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
+
+        }, true],
+        ['<button>TIDAK</button>', function (instance, toast) {
+
+          instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
+
+        }]
+      ],
+      onClosing: function (instance, toast, closedBy) {
+        console.info('Closing | closedBy: ' + closedBy);
+      },
+      onClosed: function (instance, toast, closedBy) {
+        console.info('Closed | closedBy: ' + closedBy);
       }
-      function hapus(id) {
-        iziToast.question({
-          timeout: 20000,
-          close: false,
-          overlay: true,
-          toastOnce: true,
-          id: 'question',
-          zindex: 999,
-          title: 'Hey',
-          message: 'Apakah anda yakin?',
-          position: 'center',
-          buttons: [
-            ['<button><b>YA</b></button>', function (instance, toast) {
-              $.ajax({
-                url: '{{ url("hrd/datajabatan/delete-jabatan") }}' + '/' + id,
-                async: false,
-                type: "DELETE",
-                data: {
-                  "id": id,
-                  "_method": 'DELETE',
-                  "_token": '{{ csrf_token() }}',
-                },
-                dataType: "json",
-                success: function (data) { }
-              });
-              window.location.reload();
-              instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
-
-            }, true],
-            ['<button>TIDAK</button>', function (instance, toast) {
-
-              instance.hide(toast, { transitionOut: 'fadeOut' }, 'button');
-
-            }]
-          ],
-          onClosing: function (instance, toast, closedBy) {
-            console.info('Closing | closedBy: ' + closedBy);
-          },
-          onClosed: function (instance, toast, closedBy) {
-            console.info('Closed | closedBy: ' + closedBy);
-          }
-        });
-      }
-    </script> @endsection
+    });
+  }
+</script> 
+@endsection

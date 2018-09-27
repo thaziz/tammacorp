@@ -117,4 +117,18 @@ class ManajemenSuratController extends Controller
 
         return redirect('/hrd/manajemensurat/surat-phk');
     }
+
+    public function form_kenaikan_gaji(){
+        return view('hrd/manajemensurat/surat/form_kenaikan_gaji');
+    }
+    public function form_kenaikan_gaji_print(){
+        return view('hrd/manajemensurat/surat/form_kenaikan_gaji_print');
+    }
+
+    public function form_laporan_leader(){
+        return view('hrd/manajemensurat/surat/form_laporan_leader');
+    }
+    public function form_laporan_leader_print(){
+        return view('hrd/manajemensurat/surat/form_laporan_leader_print');
+    }
 }

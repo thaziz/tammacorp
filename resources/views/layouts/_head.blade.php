@@ -59,4 +59,18 @@
             pointer-events: none;
             background-color: #eee;
         }
+        .tamma-bg-form-top{
+            margin-top: -23px;
+            padding-top: 23px;
+            padding-bottom: 10px;
+            border-radius: unset;
+        }
+        .tamma-bg-form-mid{
+            padding-top: 23px;
+            padding-bottom: 10px;
+            border-radius: unset;
+        }
+        .select2-container{
+            width: 100% !important;
+        }
     </style>
