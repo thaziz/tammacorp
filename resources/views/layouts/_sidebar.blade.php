@@ -739,6 +739,10 @@
                                         Payroll
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Input KPI Pegawai','ma_read'))
+                                        Input KPI Pegawai
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Manajemen KPI Pegawai','ma_read'))
                                         Manajemen KPI Pegawai
                                     @endif
@@ -784,6 +788,12 @@
                                     <li class="{{ Request::is('hrd/payroll/payroll') ? 'active' : '' || Request::is('hrd/payroll/*') ? 'active' : '' }}">
                                         <a href="{{ url('/hrd/payroll/payroll') }}"><span
                                                     class="submenu-title">Payroll</span><span class="hidden">HRD</span></a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->punyaAkses('Input KPI Pegawai','ma_read'))
+                                    <li class="{{ Request::is('hrd/inputkpi/index') ? 'active' : '' || Request::is('hrd/inputkpi/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/hrd/inputkpi/index') }}"><span class="submenu-title">Input KPI Pegawai</span><span
+                                                    class="hidden">HRD</span></a>
                                     </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Manajemen KPI Pegawai','ma_read'))
