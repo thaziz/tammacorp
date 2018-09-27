@@ -19,36 +19,36 @@
                     <div id="tab-general">
                         <div class="row mbl">
                             <div class="col-lg-12">
-                                
+
                               <div class="col-md-12">
                                   <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
                                   </div>
                               </div>
-                  
-                                
+
+
                               <ul id="generalTab" class="nav nav-tabs">
                                 <li class="active"><a href="#alert-tab" data-toggle="tab">Master Data Barang</a></li>
                                 <!-- <li><a href="#note-tab" data-toggle="tab">2</a></li>
                                 <li><a href="#label-badge-tab" data-toggle="tab">3</a></li> -->
                               </ul>
                               <div id="generalTabContent" class="tab-content responsive">
-                                
+
                                 <div id="alert-tab" class="tab-pane fade in active">
-                                 
+
                                   <div class="row" style="margin-top:-15px;">
-                                   
+
 
                                   <div align="right" class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom:10px;">
-    
+
                                     <a href="{{ url('master/itemproduksi/tambah_item') }}">
                                     <button type="button" class="btn btn-box-tool" title="Tambahkan Data Item">
                                      <i class="fa fa-plus" aria-hidden="true">
                                          &nbsp;
                                      </i>Tambah Data
                                     </button></a>
-    
+
                                   </div>
-                           
+
                       <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="table-responsive">
                           <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data">
@@ -63,16 +63,16 @@
                                 </tr>
                               </thead>
                               <tbody>
-                               
+
                               </tbody>
-                          
-                            </table> 
-                          </div>                                       
+
+                            </table>
+                          </div>
                         </div>
                   </div>
-                                  
+
                 </div>
-                    
+
             </div>
           </div>
 
@@ -91,7 +91,7 @@
       $.extend($.fn.dataTableExt.oStdClasses, extensions);
       // Used when bJQueryUI is true
       $.extend($.fn.dataTableExt.oJUIClasses, extensions);
-      
+
     var tableItem = $('#data').DataTable({
             processing: true,
             // responsive:true,
@@ -104,7 +104,7 @@
                   {
                      targets: 0 ,
                      className: 'd_id center'
-                  }, 
+                  },
                   {
                      targets: 1 ,
                      className: 'right format_money'
@@ -134,7 +134,7 @@
                          }
                   }
       });
-      
+
   function ubahStatus(a){
     $('#status'+a).attr('disabled','disabled');
     $.ajaxSetup({
@@ -162,21 +162,21 @@
                 data: a,
                 success:function(response){
                 if (response.status=='sukses') {
-                    iziToast.success({timeout: 5000, 
+                    iziToast.success({timeout: 5000,
                                     position: "topRight",
-                                    icon: 'fa fa-chrome', 
-                                    title: '', 
+                                    icon: 'fa fa-chrome',
+                                    title: '',
                                     message: 'Status brhasil di ganti.'});
                     tableItem.ajax.reload();
                     $('#status'+a).removeAttr('disabled','disabled');
                   }else{
                     iziToast.error({position: "topRight",
-                                  title: '', 
+                                  title: '',
                                   message: 'Status gagal di ubah.'});
                     $('#status'+a).removeAttr('disabled','disabled');
                   }
                 }
-                
+
               });
             }
           ],
@@ -204,10 +204,10 @@
                 window.location=(this.url)
                },
                error: function(){
-               
+
                },
                async: false
-             });  
+             });
         }
       </script>
 @endsection()
