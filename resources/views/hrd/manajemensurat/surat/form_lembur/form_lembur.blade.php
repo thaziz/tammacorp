@@ -6,7 +6,7 @@
   <!--BEGIN TITLE & BREADCRUMB PAGE-->
   <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
     <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
-      <div class="page-title">Form Kenaikan Gaji atau Tingkat</div>
+      <div class="page-title">Form Lembur</div>
     </div>
     <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
       <li>
@@ -21,7 +21,7 @@
           &nbsp;&nbsp;
           <i class="fa fa-angle-right"></i>
       </li>
-      <li class="active">Form Kenaikan Gaji atau Tingkat</li>
+      <li class="active">Form Lembur</li>
     </ol>
     <div class="clearfix">
     </div>
@@ -36,19 +36,19 @@
           </div>
           <ul id="generalTab" class="nav nav-tabs">
             <li class="active">
-              <a href="#form-tab" data-toggle="tab">Form Kenaikan Gaji atau Tingkat</a>
+              <a href="#form-tab" data-toggle="tab">Form Lembur</a>
             </li>
             <li>
-              <a href="#list-tab" data-toggle="tab">List Form Kenaikan Gaji atau Tingkat</a>
+              <a href="#list-tab" data-toggle="tab">List Form Lembur</a>
             </li>
           </ul>
           <div id="generalTabContent" class="tab-content responsive">
             <!-- /div form-tab -->
-            @include('hrd.manajemensurat.surat.form_kenaikan_gaji_tab_index')
+            @include('hrd.manajemensurat.surat.form_lembur.form_lembur_tab_index')
             <!-- /div form-tab -->
 
             {{-- list-tab --}}
-            @include('hrd.manajemensurat.surat.form_kenaikan_gaji_tab_list')
+            @include('hrd.manajemensurat.surat.form_lembur.form_lembur_tab_list')
             {{-- end list-tab --}}
 
           </div>

@@ -1,13 +1,12 @@
 @extends('main') 
 
-
 @section('content')
 <!--BEGIN PAGE WRAPPER-->
 <div id="page-wrapper">
   <!--BEGIN TITLE & BREADCRUMB PAGE-->
   <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
     <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
-      <div class="page-title">Form Laporan Leader</div>
+      <div class="page-title">Form Kenaikan Gaji atau Tingkat</div>
     </div>
     <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
       <li>
@@ -22,7 +21,7 @@
           &nbsp;&nbsp;
           <i class="fa fa-angle-right"></i>
       </li>
-      <li class="active">Form Laporan Leader</li>
+      <li class="active">Form Kenaikan Gaji atau Tingkat</li>
     </ol>
     <div class="clearfix">
     </div>
@@ -37,19 +36,19 @@
           </div>
           <ul id="generalTab" class="nav nav-tabs">
             <li class="active">
-              <a href="#form-tab" data-toggle="tab">Form Laporan Leader</a>
+              <a href="#form-tab" data-toggle="tab">Form Kenaikan Gaji atau Tingkat</a>
             </li>
             <li>
-              <a href="#list-tab" data-toggle="tab">List Form Laporan Leader</a>
+              <a href="#list-tab" data-toggle="tab">List Form Kenaikan Gaji atau Tingkat</a>
             </li>
           </ul>
           <div id="generalTabContent" class="tab-content responsive">
             <!-- /div form-tab -->
-            @include('hrd.manajemensurat.surat.form_laporan_leader_tab_index')
+            @include('hrd.manajemensurat.surat.form_kenaikan_gaji.form_kenaikan_gaji_tab_index')
             <!-- /div form-tab -->
 
             {{-- list-tab --}}
-            @include('hrd.manajemensurat.surat.form_laporan_leader_tab_list')
+            @include('hrd.manajemensurat.surat.form_kenaikan_gaji.form_kenaikan_gaji_tab_list')
             {{-- end list-tab --}}
 
           </div>
@@ -113,30 +112,5 @@
     format : 'dd-mm-yyyy'
   });
   $('.select2').select2();
-
-  $(document).ready(function(){
-    var plus_append = 2;
-    $(document).on('click', '.tambah', function(){
-      if(plus_append != 12){
-        plus_append+=1;
-        $('#tabel_aktifitas tbody').append(
-          '<tr>'+
-            '<td>#</td>'+
-            '<td><textarea class="form-control" rows="3"></textarea></td>'+
-            '<td><textarea class="form-control" rows="3"></textarea></td>'+
-            '<td><button class="btn btn-danger hapus"><i class="fa fa-trash-o"></i></button>'+
-          '</tr>'
-          );
-      } else {
-        alert('sudah 12');
-      }
-      
-    });
-    $(document).on('click', '.hapus', function(){
-      $(this).parents('tr').remove();
-      plus_append -= 1;
-    });
-  });
-
 </script> 
 @endsection

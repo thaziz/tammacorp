@@ -46,7 +46,7 @@
 
 
                   <div class="table-responsive">
-                    <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" id="data1">
+                    <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" cellpadding="0" id="data1">
                       <tbody>
                         <tr>
                           <td><a href="javascript:void(0);" class="btn btn-block btn-secondary">Application form</a></td>
@@ -58,22 +58,22 @@
                           <td><a href="{{route('form_laporan_leader')}}" class="btn btn-block btn-secondary">Form laporan leader</a></td>
                         </tr>
                         <tr>
-                          <td><a href="javascript:void(0);" class="btn btn-block btn-secondary">Form lembur</a></td>
+                          <td><a href="{{route('form_lembur')}}" class="btn btn-block btn-secondary">Form lembur</a></td>
                         </tr>
                         <tr>
-                          <td><a href="javascript:void(0);" class="btn btn-block btn-secondary">Form overhandle</a></td>
+                          <td><a href="{{route('form_overhandle')}}" class="btn btn-block btn-secondary">Form overhandle</a></td>
                         </tr>
                         <tr>
-                          <td><a href="javascript:void(0);" class="btn btn-block btn-secondary">Form permintaan</a></td>
+                          <td><a href="{{route('form_permintaan')}}" class="btn btn-block btn-secondary">Form permintaan</a></td>
                         </tr>
                         <tr>
-                          <td><a href="javascript:void(0);" class="btn btn-block btn-secondary">Surat keterangan kerja</a></td>
+                          <td><a href="{{route('form_keterangan_kerja')}}" class="btn btn-block btn-secondary">Surat keterangan kerja</a></td>
                         </tr>
                         <tr>
                           <td><a href="{{ url('hrd/manajemensurat/surat-phk') }}" class="btn btn-block btn-secondary">Surat pemutusan hubungan kerja</a></td>
                         </tr>
                         <tr>
-                          <td><a href="javascript:void(0);" class="btn btn-block btn-secondary">Surat perintah lembur</a></td>
+                          <td><a href="{{route('form_perintah_lembur')}}" class="btn btn-block btn-secondary">Surat perintah lembur</a></td>
                         </tr>
                       </tbody>
                     </table> 
