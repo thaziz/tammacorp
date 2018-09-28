@@ -119,16 +119,55 @@ class ManajemenSuratController extends Controller
     }
 
     public function form_kenaikan_gaji(){
-        return view('hrd/manajemensurat/surat/form_kenaikan_gaji');
+        return view('hrd/manajemensurat/surat/form_kenaikan_gaji/form_kenaikan_gaji');
     }
     public function form_kenaikan_gaji_print(){
-        return view('hrd/manajemensurat/surat/form_kenaikan_gaji_print');
+        return view('hrd/manajemensurat/surat/form_kenaikan_gaji/form_kenaikan_gaji_print');
     }
 
     public function form_laporan_leader(){
-        return view('hrd/manajemensurat/surat/form_laporan_leader');
+        return view('hrd/manajemensurat/surat/form_laporan_leader/form_laporan_leader');
     }
     public function form_laporan_leader_print(){
-        return view('hrd/manajemensurat/surat/form_laporan_leader_print');
+        return view('hrd/manajemensurat/surat/form_laporan_leader/form_laporan_leader_print');
+    }
+    public function form_lembur(){
+        return view('hrd/manajemensurat/surat/form_lembur/form_lembur');
+    }
+    public function form_lembur_print(){
+        return view('hrd/manajemensurat/surat/form_lembur/form_lembur_print');
+    }
+    public function form_overhandle(){
+        return view('hrd/manajemensurat/surat/form_overhandle/form_overhandle');
+    }
+    public function form_overhandle_print(){
+        return view('hrd/manajemensurat/surat/form_overhandle/form_overhandle_print');
+    }
+    public function form_permintaan(){
+        return view('hrd/manajemensurat/surat/form_permintaan/form_permintaan');
+    }
+    public function form_permintaan_print(){
+        return view('hrd/manajemensurat/surat/form_permintaan/form_permintaan_print');
+    }
+    public function form_keterangan_kerja(){
+        return view('hrd/manajemensurat/surat/form_keterangan_kerja/form_keterangan_kerja');
+    }
+    public function form_keterangan_kerja_print(){
+        return view('hrd/manajemensurat/surat/form_keterangan_kerja/form_keterangan_kerja_print');
+    }
+    public function form_perintah_lembur(){
+        return view('hrd/manajemensurat/surat/form_perintah_lembur/form_perintah_lembur');
+    }
+    public function form_perintah_lembur_print(){
+        return view('hrd/manajemensurat/surat/form_perintah_lembur/form_perintah_lembur_print');
+    }
+    public function surat_phk_print(){
+        return view('hrd/manajemensurat/surat_phk_print');
+    }
+    public function surat_phk_print_berat(){
+        return view('hrd/manajemensurat/surat_phk_print_berat');
+    }
+    public function form_application_print(){
+        return view('hrd/manajemensurat/surat/form_application/form_application');
     }
 }

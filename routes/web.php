@@ -451,6 +451,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/hrd/manajemensurat/update-phk/{id}', 'Hrd\ManajemenSuratController@updatePhk');
     Route::delete('/hrd/manajemensurat/delete-phk/{id}', 'Hrd\ManajemenSuratController@deletePhk');
 
+// Ari
     // surat2
     // form kenaikan gaji
     Route::get('/hrd/manajemensurat/form_kenaikan_gaji', 'Hrd\ManajemenSuratController@form_kenaikan_gaji')->name('form_kenaikan_gaji');
@@ -458,6 +459,29 @@ Route::group(['middleware' => 'auth'], function () {
     // form laporan leader
     Route::get('/hrd/manajemensurat/form_laporan_leader', 'Hrd\ManajemenSuratController@form_laporan_leader')->name('form_laporan_leader');
     Route::get('/hrd/manajemensurat/form_laporan_leader_print', 'Hrd\ManajemenSuratController@form_laporan_leader_print')->name('form_laporan_leader_print');
+    // form lembur
+    Route::get('/hrd/manajemensurat/form_lembur', 'Hrd\ManajemenSuratController@form_lembur')->name('form_lembur');
+    Route::get('/hrd/manajemensurat/form_lembur_print', 'Hrd\ManajemenSuratController@form_lembur_print')->name('form_lembur_print');
+    // form overhandle
+    Route::get('/hrd/manajemensurat/form_overhandle', 'Hrd\ManajemenSuratController@form_overhandle')->name('form_overhandle');
+    Route::get('/hrd/manajemensurat/form_overhandle_print', 'Hrd\ManajemenSuratController@form_overhandle_print')->name('form_overhandle_print');
+    // form permintaan
+    Route::get('/hrd/manajemensurat/form_permintaan', 'Hrd\ManajemenSuratController@form_permintaan')->name('form_permintaan');
+    Route::get('/hrd/manajemensurat/form_permintaan_print', 'Hrd\ManajemenSuratController@form_permintaan_print')->name('form_permintaan_print');
+    // form keterangan kerja
+    Route::get('/hrd/manajemensurat/form_keterangan_kerja', 'Hrd\ManajemenSuratController@form_keterangan_kerja')->name('form_keterangan_kerja');
+    Route::get('/hrd/manajemensurat/form_keterangan_kerja_print', 'Hrd\ManajemenSuratController@form_keterangan_kerja_print')->name('form_keterangan_kerja_print');
+    // form perintah lembur
+    Route::get('/hrd/manajemensurat/form_perintah_lembur', 'Hrd\ManajemenSuratController@form_perintah_lembur')->name('form_perintah_lembur');
+    Route::get('/hrd/manajemensurat/form_perintah_lembur_print', 'Hrd\ManajemenSuratController@form_perintah_lembur_print')->name('form_perintah_lembur_print');
+    // surat-phk pengurangan pegawai
+    Route::get('/hrd/manajemensurat/surat_phk_print_pengurangan', 'Hrd\ManajemenSuratController@surat_phk_print')->name('surat_phk_print_pengurangan');
+    // surat-phk kesalahan berat
+    Route::get('/hrd/manajemensurat/surat_phk_print_berat', 'Hrd\ManajemenSuratController@surat_phk_print_berat')->name('surat_phk_print_berat');
+    // application form
+    Route::get('/hrd/manajemensurat/form_application_print', 'Hrd\ManajemenSuratController@form_application_print')->name('form_application_print');
+
+
 //gaji
     Route::get('/hrd/payroll/payroll', 'Hrd\PayrollController@payroll');
     Route::get('/hrd/payroll/view/{id}', 'Hrd\PayrollController@viewPayroll');
