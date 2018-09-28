@@ -49,7 +49,7 @@
                     <table class="table tabelan table-hover table-bordered" width="100%" cellspacing="0" cellpadding="0" id="data1">
                       <tbody>
                         <tr>
-                          <td><a href="javascript:void(0);" class="btn btn-block btn-secondary">Application form</a></td>
+                          <td><a href="{{route('form_application_print')}}" class="btn btn-block btn-secondary">Application form</a></td>
                         </tr>
                         <tr>
                           <td><a href="{{route('form_kenaikan_gaji')}}" class="btn btn-block btn-secondary">Form kenaikan gaji atau tingkat</a></td>

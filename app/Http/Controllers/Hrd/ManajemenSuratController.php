@@ -161,4 +161,13 @@ class ManajemenSuratController extends Controller
     public function form_perintah_lembur_print(){
         return view('hrd/manajemensurat/surat/form_perintah_lembur/form_perintah_lembur_print');
     }
+    public function surat_phk_print(){
+        return view('hrd/manajemensurat/surat_phk_print');
+    }
+    public function surat_phk_print_berat(){
+        return view('hrd/manajemensurat/surat_phk_print_berat');
+    }
+    public function form_application_print(){
+        return view('hrd/manajemensurat/surat/form_application/form_application');
+    }
 }

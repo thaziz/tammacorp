@@ -322,13 +322,11 @@
 		</table>
 		<table width="100%" class="border-none-top" cellpadding="5px">
 			<tr>
-				<td align="center">Diajukan oleh,</td>
-				<td align="center">Disetujui oleh,<br>Kepala Divisi</td>
+				<td align="center">Dikeluarkan oleh,<br>Kepala Divisi</td>
 				<td align="center">Diketahui oleh :<br>Ka. HRD & Umum</td>
 			</tr>
 			<tr>
 				<td height="70px" valign="bottom" align="center">..................................</td>
-				<td valign="bottom" align="center">..................................</td>
 				<td valign="bottom" align="center">..................................</td>
 			</tr>
 		</table>

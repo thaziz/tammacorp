@@ -474,6 +474,14 @@ Route::group(['middleware' => 'auth'], function () {
     // form perintah lembur
     Route::get('/hrd/manajemensurat/form_perintah_lembur', 'Hrd\ManajemenSuratController@form_perintah_lembur')->name('form_perintah_lembur');
     Route::get('/hrd/manajemensurat/form_perintah_lembur_print', 'Hrd\ManajemenSuratController@form_perintah_lembur_print')->name('form_perintah_lembur_print');
+    // surat-phk pengurangan pegawai
+    Route::get('/hrd/manajemensurat/surat_phk_print_pengurangan', 'Hrd\ManajemenSuratController@surat_phk_print')->name('surat_phk_print_pengurangan');
+    // surat-phk kesalahan berat
+    Route::get('/hrd/manajemensurat/surat_phk_print_berat', 'Hrd\ManajemenSuratController@surat_phk_print_berat')->name('surat_phk_print_berat');
+    // application form
+    Route::get('/hrd/manajemensurat/form_application_print', 'Hrd\ManajemenSuratController@form_application_print')->name('form_application_print');
+
+
 //gaji
     Route::get('/hrd/payroll/payroll', 'Hrd\PayrollController@payroll');
     Route::get('/hrd/payroll/view/{id}', 'Hrd\PayrollController@viewPayroll');
