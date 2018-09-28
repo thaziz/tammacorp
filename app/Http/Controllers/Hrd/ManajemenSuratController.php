@@ -167,4 +167,7 @@ class ManajemenSuratController extends Controller
     public function surat_phk_print_berat(){
         return view('hrd/manajemensurat/surat_phk_print_berat');
     }
+    public function form_application_print(){
+        return view('hrd/manajemensurat/surat/form_application/form_application');
+    }
 }

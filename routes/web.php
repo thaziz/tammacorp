@@ -478,6 +478,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/manajemensurat/surat_phk_print_pengurangan', 'Hrd\ManajemenSuratController@surat_phk_print')->name('surat_phk_print_pengurangan');
     // surat-phk kesalahan berat
     Route::get('/hrd/manajemensurat/surat_phk_print_berat', 'Hrd\ManajemenSuratController@surat_phk_print_berat')->name('surat_phk_print_berat');
+    // application form
+    Route::get('/hrd/manajemensurat/form_application_print', 'Hrd\ManajemenSuratController@form_application_print')->name('form_application_print');
 
 
 //gaji
