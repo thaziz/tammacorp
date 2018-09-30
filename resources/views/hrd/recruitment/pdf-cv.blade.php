@@ -138,7 +138,7 @@
         <tr class="text-left">
           <td style="width: 20%;"><strong>Nama Lengkap</strong></td>
           <td style="width: 50%;">{{$pelamar->p_name}}</td>
-          <td rowspan="12">
+          <td rowspan="17">
             <div style="width: 200px; height: 200px; background-color: blue;">
               <img src="{{ public_path('assets/berkas/foto-pelamar/'.$foto->bks_name)}}" alt="Foto" class="img-foto">
             </div>
