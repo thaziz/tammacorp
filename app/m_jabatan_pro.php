@@ -4,17 +4,17 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class m_divisi extends Model
+class m_jabatan_pro extends Model
 {
-  protected $table = 'm_divisi';
+  protected $table = 'm_jabatan_pro';
   protected $primaryKey = 'c_id';
   protected $fillable = [ 'c_id',
-                          'c_divisi'
+                          'c_jabatan_pro'
                         ];
 
   public $incrementing = false;
   public $remember_token = false;
   //public $timestamps = false;
   const CREATED_AT = 'created_at';
-  const updated_at = 'updated_at';
+  const UPDATED_AT = 'updated_at';
 }

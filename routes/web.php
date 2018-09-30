@@ -231,6 +231,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('produksi/spk/lihat-detail', 'Produksi\spkProductionController@lihatFormula');
     Route::get('produksi/spk/input-data', 'Produksi\spkProductionController@inputData');
     Route::get('/produksi/o_produksi/save/actual/{id}', 'Produksi\spkProductionController@saveActual');
+//Data Garapan/
+    Route::get('produksi/garapan/index', 'Produksi\GarapanPegawaiController@index');
+    Route::get('produksi/garapan/table/{rumah}/{item}/{jabatan}/{tgl}', 'Produksi\GarapanPegawaiController@tableGarapan');
+    Route::get('produksi/garapan/save', 'Produksi\GarapanPegawaiController@saveGarapan');
+    Route::get('produksi/garapan/table/data/{rumah}/{item}/{jabatan}/{tgl1}/{tgl2}', 'Produksi\GarapanPegawaiController@tableDataGarapan');
 //mahmud
     Route::get('/produksi/o_produksi/index', 'Produksi\ManOutputProduksiController@OutputProduksi');
     Route::get('/produksi/o_produksi/tabel', 'Produksi\ManOutputProduksiController@tabel');
@@ -515,6 +520,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/payroll/edit-tunjangan-man/{id}', 'Hrd\GajiController@editTunjangan');
     Route::post('/hrd/payroll/update-tunjangan/{id}', 'Hrd\GajiController@updateTunjangan');
     Route::delete('/hrd/payroll/delete-tunjangan/{id}', 'Hrd\GajiController@deleteTunjangan');
+    //payroll produksi Mahmud
+        Route::get('/hrd/produksi/payroll', 'Hrd\PayrollProduksiController@index');
+        Route::get('/hrd/payroll/table/gaji/{rumah}/{jabatan}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@tableDataGarapan');
+        Route::get('/hrd/payroll/lihat-gaji/{id}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@lihatGaji');
 /*Data Lembur*/
     Route::get('/hrd/datalembur/index', 'Hrd\HlemburController@index');
     Route::get('/hrd/datalembur/get-lembur-by-tgl/{tgl1}/{tgl2}', 'Hrd\HlemburController@getLemburByTgl');
@@ -945,6 +954,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datatransaksi/edit', 'Keuangan\transaksiController@edit');
 // transaksi keuangan end
 // Route Keuangan End
+//Mahmud Training
+    Route::get('/hrd/training/form_training', 'Hrd\TrainingContoller@tambah_training')->name('form_training');
+    Route::get('/hrd/training/training', 'Hrd\TrainingContoller@training')->name('training');
+    Route::post('/hrd/training/save', 'Hrd\TrainingContoller@savePengajuan');
+    Route::get('/hrd/training/tablePengajuan/{tgl1}/{tgl2}/{data}', 'Hrd\TrainingContoller@tablePengajuan');
+
 //Master Data Lowongan
     Route::get('/master/datalowongan/index', 'Master\LowonganController@index');
     Route::get('/master/datalowongan/datatable-index', 'Master\LowonganController@get_datatable_index');
