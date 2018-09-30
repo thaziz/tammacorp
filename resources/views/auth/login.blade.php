@@ -52,7 +52,7 @@
 
                                     
                  
-                                     <button  type="button" onclick="login()" class="btn btn-danger">Sign in!</button> 
+                                     <button  type="button" class="btn btn-danger btn-login">Sign in!</button> 
                                     
 
                                 </form>
@@ -152,6 +152,22 @@
         }
 
 
+    $(document).ready(function(){
+
+        $('#login-form input').on('keypress', function(e){
+            if(e.which == 13 || e.keyCode == 13){
+                login();
+            }
+        });
+
+        $('.btn-login').on('click',function(){
+            login();
+        });
+
+
+
+    });
+
     </script>
 
 
@@ -160,8 +176,5 @@
 
 
 </body>        
-
-@endsection
-@section('extra_scripts')
 
 @endsection
