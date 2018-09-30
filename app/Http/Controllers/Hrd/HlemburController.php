@@ -274,7 +274,6 @@ class HlemburController extends Controller
             $lembur->d_lembur_keperluan = strtoupper($request->keperluan);
             $lembur->d_lembur_created = date("Y-m-d h:i:s");
             $lembur->save();
-                   
             DB::commit();
             return response()->json([
                 'status' => 'sukses',

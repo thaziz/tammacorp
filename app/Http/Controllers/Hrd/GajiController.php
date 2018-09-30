@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 use App\GajiManajemen;
 use App\GajiProduksi;
 use App\Potongan;
+use App\Model\Master\m_tunjangan_man;
 use DB;
 use DataTables;
+use Carbon\Carbon;
 class GajiController extends Controller
 {
     public function settingGajiMan(){
@@ -173,4 +175,73 @@ class GajiController extends Controller
 
         return redirect('/hrd/payroll/setting-gaji');
     }
+    public function tambahTunjangan(){
+        return view('hrd/payroll/tambah_set_tunjangan');
+    }
+    public function tunjanganManData(){
+        $list = DB::table('m_tunjangan_man')->get();
+        $data = collect($list);
+        return Datatables::of($data)           
+                ->addColumn('action', function ($data) {
+                    return '<button id="edit" onclick="editTunjangan('.$data->tman_id.')" class="btn btn-warning btn-sm" title="Edit"><i class="glyphicon glyphicon-pencil"></i></button>'.'
+                            <button id="delete" onclick="hapusTunjangan('.$data->tman_id.')" class="btn btn-danger btn-sm" title="Hapus"><i class="glyphicon glyphicon-trash"></i></button>';
+                })
+                ->addColumn('none', function ($data) {
+                    return '-';
+                })
+                ->addColumn('nilai', function ($data) {
+                    return '<div>Rp.
+                      <span class="pull-right">
+                        '.number_format( floatval($data->tman_value) ,2,',','.').'
+                      </span>
+                    </div>';
+                })
+                ->addColumn('periode', function ($data) {
+                    if($data->tman_periode == "ST"){
+                        $periode = "Statis";
+                    }elseif($data->tman_periode == "JM"){
+                        $periode = "Jam";
+                    }elseif($data->tman_periode == "HR"){
+                        $periode = "Hari";
+                    }elseif($data->tman_periode == "MG"){
+                        $periode = "Minggu";
+                    }elseif($data->tman_periode == "BL"){
+                        $periode = "Bulan";
+                    }elseif($data->tman_periode == "TH"){
+                        $periode = "Tahun";
+                    }
+                    return $periode;
+                })
+                ->rawColumns(['action','nilai'])
+                ->make(true);
+    }
+    public function simpanTunjangan(Request $request){
+        $data = new m_tunjangan_man;
+        $data->tman_nama = $request->nama;
+        $data->tman_periode = $request->periode;
+        $data->tman_value = str_replace('.', '', $request->nilai);
+        $data->tman_created = Carbon::now('Asia/Jakarta');
+        $data->save();
+        return redirect('/hrd/payroll/setting-gaji');
+    }
+    public function editTunjangan($id){
+        $data = DB::table('m_tunjangan_man')->where('tman_id', $id)->first();
+        return view('hrd/payroll/edit_set_tunjangan',['data' => $data]);
+    }
+    public function updateTunjangan(Request $request, $id){
+        m_tunjangan_man::where('tman_id','=', $id)
+            ->update([
+                'tman_nama' => $request->nama,
+                'tman_periode' => $request->periode,
+                'tman_value' => str_replace('.', '', $request->nilai),
+                'tman_updated' => Carbon::now('Asia/Jakarta')
+            ]);
+        
+        return redirect('/hrd/payroll/setting-gaji');
+    }
+    public function deleteTunjangan($id){
+        $data = DB::table('m_tunjangan_man')->where('tman_id', $id)->delete();
+        return redirect('/hrd/payroll/setting-gaji');
+    }
+
 }

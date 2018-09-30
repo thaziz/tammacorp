@@ -8,5 +8,5 @@ class Potongan extends Model
 {
     protected $table = "m_potongan";
 
-    protected $fillable = [ 'c_nama' ];
+    protected $fillable = [ 'c_nama', 'c_value' ];
 }
