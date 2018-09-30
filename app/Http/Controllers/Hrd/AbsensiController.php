@@ -213,15 +213,13 @@ class AbsensiController extends Controller
     }
 
   public function savePeg(Request $request){
-    // dd($request->all());
+    DB::beginTransaction();
+      try {
     $tgl = $request->tanggal;
     $d = substr($tgl,0,2);
     $y = substr($tgl, -4);
     $m = substr($tgl, -7,-5);
       $tgl = $y.'-'.$m.'-'.$d;
-
-    DB::beginTransaction();
-      try {
         for ($i=0; $i <count($request->apm_ket) ; $i++) {
           $id = abs_pegawai_man::select('apm_id')->max('apm_id')+1;
             $cek = abs_pegawai_man::where('apm_pm',$request->apm_pm[$i])
