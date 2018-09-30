@@ -177,6 +177,26 @@
           <td style="width: 60%;">{{$pelamar->p_education}}</td>
         </tr>
         <tr class="text-left">
+          <td style="width: 20%;"><strong>Nama Sekolah</strong></td>
+          <td style="width: 60%;">{{$pelamar->p_schoolname}}</td>
+        </tr>
+        <tr class="text-left">
+          <td style="width: 20%;"><strong>Tahun Masuk</strong></td>
+          <td style="width: 60%;">{{$pelamar->p_yearin}}</td>
+        </tr>
+        <tr class="text-left">
+          <td style="width: 20%;"><strong>Tahun Lulus</strong></td>
+          <td style="width: 60%;">{{$pelamar->p_yearout}}</td>
+        </tr>
+        <tr class="text-left">
+          <td style="width: 20%;"><strong>Jurusan</strong></td>
+          <td style="width: 60%;">{{$pelamar->p_jurusan}}</td>
+        </tr>
+        <tr class="text-left">
+          <td style="width: 20%;"><strong>Nilai</strong></td>
+          <td style="width: 60%;">{{$pelamar->p_nilai}}</td>
+        </tr>
+        <tr class="text-left">
           <td style="width: 20%;"><strong>Status</strong></td>
           @if ($pelamar->p_status == 'M')
             <td style="width: 60%;">Menikah</td>

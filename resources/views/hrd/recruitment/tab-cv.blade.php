@@ -1,4 +1,59 @@
 <div class="tab-pane" role="tabpanel" id="step2">
+    <h1 class="text-md-center">Pendidikan Terakhir</h1>
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <div class="form-group row">
+          <label for="pendidikan" class="col-sm-2 col-form-label font-weight-bold">Nama Sekolah
+            <span style="color: red">*</span>
+          </label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="pendidikan" name="pendidikan" placeholder="Nama Sekolah / Universitas" value="{{ old('pendidikan')}}">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-10 mx-auto">
+        <div class="form-group row">
+          <label for="tahun1" class="col-sm-2 col-form-label font-weight-bold">Tahun
+            <span style="color: red">*</span>
+          </label>
+          <div class="col-sm-5">
+            <select id="dob_pend_awal1" class="form-control" style="margin-right: 5px;" name="dob_pend_awal1"></select>
+          </div>
+          <div class="col-sm-5">
+            <select id="dob_pend_akhir1" class="form-control" style="margin-right: 5px;" name="dob_pend_akhir1"></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-10 mx-auto">
+        <div class="form-group row">
+          <label for="jurusan" class="col-sm-2 col-form-label font-weight-bold">Jurusan
+            <span style="color: red">*</span>
+          </label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="jurusan" name="jurusan" placeholder="Nama Jurusan" value="{{ old('jurusan')}}">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-10 mx-auto">
+        <div class="form-group row">
+          <label for="nilai" class="col-sm-2 col-form-label font-weight-bold">Nilai/IPK
+            <span style="color: red">*</span>
+          </label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="nilai" name="nilai" placeholder="Nilai / IPK pada ijasah" value="{{ old('nilai')}}">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-10 mx-auto">
+        <label class="tebal" style="color: red; float: left;">Keterangan : * Wajib diisi.</label>
+      </div>
+
+    </div>
+    <hr>
     <h1 class="text-md-center">Daftar Riwayat Hidup</h1>
     <div class="row">
         <div class="col-lg-10 mx-auto">
@@ -14,10 +69,10 @@
           <div class="form-group row">
             <label for="tahun1" class="col-sm-2 col-form-label font-weight-bold">Tahun</label>
             <div class="col-sm-5">
-              <select id="dob_cv_awal1" class="form-control" style="margin-right: 5px;" name="dob_cv_awal1" required></select>
+              <select id="dob_cv_awal1" class="form-control" style="margin-right: 5px;" name="dob_cv_awal1"></select>
             </div>
             <div class="col-sm-5">
-              <select id="dob_cv_akhir1" class="form-control" style="margin-right: 5px;" name="dob_cv_akhir1" required></select>
+              <select id="dob_cv_akhir1" class="form-control" style="margin-right: 5px;" name="dob_cv_akhir1"></select>
             </div>
           </div>
         </div>
@@ -46,10 +101,10 @@
           <div class="form-group row">
             <label for="tahun2" class="col-sm-2 col-form-label font-weight-bold">Tahun</label>
             <div class="col-sm-5">
-              <select id="dob_cv_awal2" class="form-control" style="margin-right: 5px;" name="dob_cv_awal2" required></select>
+              <select id="dob_cv_awal2" class="form-control" style="margin-right: 5px;" name="dob_cv_awal2"></select>
             </div>
             <div class="col-sm-5">
-              <select id="dob_cv_akhir2" class="form-control" style="margin-right: 5px;" name="dob_cv_akhir2" required></select>
+              <select id="dob_cv_akhir2" class="form-control" style="margin-right: 5px;" name="dob_cv_akhir2"></select>
             </div>                                      
           </div>
         </div>
@@ -68,7 +123,6 @@
             <label class="tebal" style="color: black; float: left;">Skip Halaman ini apabila anda Fresh Graduate.</label>
           </div>
         </div>
-
     </div>
 
     <ul class="list-inline text-md-center">
