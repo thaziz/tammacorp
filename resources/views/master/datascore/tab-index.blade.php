@@ -7,7 +7,7 @@
     </div>
 
     <div align="right" class="col-md-6 col-sm-6 col-xs-6" style="margin-bottom:10px;">
-      <a href="{{ url('master/datakpi/tambah_kpi') }}">
+      <a href="{{ url('master/datascore/tambah-score') }}">
         <button type="button" class="btn btn-box-tool" title="Tambahkan Data Item">
           <i class="fa fa-plus" aria-hidden="true">
           &nbsp;
@@ -25,7 +25,7 @@
               <th class="wd-15p" width="5%">Nama Parameter</th>
               <th class="wd-15p" width="5%">Pegawai</th>
               <th class="wd-15p" width="5%">Divisi</th>
-              <th class="wd-15p" width="5%">Opsi</th>
+              <th class="wd-15p" width="5%">Posisi</th>
               <th class="wd-15p" width="10%">Aksi</th>
             </tr>
           </thead>

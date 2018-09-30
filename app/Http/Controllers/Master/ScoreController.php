@@ -13,16 +13,16 @@ use App\Model\Master\m_kpi;
 
 // use App\mmember
 
-class KpiController extends Controller
+class ScoreController extends Controller
 {
     public function index()
     {
-        return view('master.datakpi.index');
+        return view('master.datascore.index');
     }
 
-    public function tambah_kpi()
+    public function tambah_score()
     {
-        return view('master.datakpi.tambah');
+        return view('master.datascore.tambah');
     }
 
     public function get_datatable_index()
@@ -41,18 +41,6 @@ class KpiController extends Controller
                     <button id="delete" onclick=hapus("'.$data->kpi_id.'") class="btn btn-danger btn-sm" title="Hapus">
                         <i class="fa fa-times-circle"></i>
                     </button>';
-        })
-        ->addColumn('opsi', function ($data) 
-        {  
-            if ($data->kpi_opsi != "" || $data->kpi_opsi != null ) 
-            {
-                //$arr = explode(',', $data->kpi_opsi);\
-                return $data->kpi_opsi;
-            }
-            else 
-            {
-                return "-";
-            }
         })
         ->rawColumns(['action','opsi'])
         ->make(true);
@@ -108,7 +96,7 @@ class KpiController extends Controller
         }
     }
 
-    public function simpan_kpi(Request $request)
+    public function simpan_score(Request $request)
     {
         DB::beginTransaction();
         try 
@@ -117,22 +105,19 @@ class KpiController extends Controller
             if ($id == 0 || $id == '') { $id  = 1; } else { $id++; }
 
             $tanggal = date("Y-m-d h:i:s");
-            $str_opsi = implode(",",$request->opsi_kpi);
-
             $kpi = new m_kpi();
             $kpi->kpi_id = $id;
             $kpi->kpi_name = $request->nama_kpi;
             $kpi->kpi_p_id = $request->peg_kpi;
             $kpi->kpi_div_id = $request->div_kpi;
             $kpi->kpi_jabatan_id = $request->jbtn_kpi;
-            if ($str_opsi == "") { $kpi->kpi_opsi = null; }else{ $kpi->kpi_opsi = $str_opsi; }
             $kpi->kpi_created = $tanggal;
             $kpi->save();
 
             DB::commit();
             return response()->json([
               'status' => 'sukses',
-              'pesan' => 'Data Master KPI Berhasil Disimpan'
+              'pesan' => 'Data Master Scoreboard Berhasil Disimpan'
             ]);
         } 
         catch (\Exception $e) 
@@ -145,49 +130,36 @@ class KpiController extends Controller
         }
     }
 
-    public function edit_kpi(Request $request)
+    public function edit_score(Request $request)
     {
         $data = m_kpi::join('m_pegawai_man', 'm_kpi.kpi_p_id', '=', 'm_pegawai_man.c_id')
                     ->join('m_divisi', 'm_kpi.kpi_div_id', '=', 'm_divisi.c_id')
                     ->join('m_jabatan', 'm_kpi.kpi_jabatan_id', '=', 'm_jabatan.c_id')
                     ->where('m_kpi.kpi_id', '=', $request->id)
                     ->first();
-        if ($data->kpi_opsi != null) {
-            $arr_opsi = explode(',', $data->kpi_opsi);
-            //rand string untuk div id html
-            $rand_string = array();
-            for ($i=0; $i < count($arr_opsi); $i++) { 
-                $rand_string[$i] = $this->generateRandomString();
-            }
-        }else{
-            $arr_opsi = '';
-            $rand_string = '';
-        }
-        return view('master/datakpi/edit', compact('data', 'arr_opsi', 'rand_string'));
+        return view('master/datascore/edit', compact('data'));
     }
 
-    public function update_kpi(Request $request)
+    public function update_score(Request $request)
     {
         //dd($request->all());
         DB::beginTransaction();
         try 
         {   
             $tanggal = date("Y-m-d h:i:s");
-            $str_opsi = implode(",",$request->opsi_kpi);
 
             $kpi = m_kpi::find($request->kode_old);
             $kpi->kpi_name = $request->nama_kpi;
             $kpi->kpi_p_id = $request->peg_kpi;
             $kpi->kpi_div_id = $request->div_kpi;
             $kpi->kpi_jabatan_id = $request->jbtn_kpi;
-            if ($str_opsi == "") { $kpi->kpi_opsi = null; }else{ $kpi->kpi_opsi = $str_opsi; }
             $kpi->kpi_updated = $tanggal;
             $kpi->save();
 
             DB::commit();
             return response()->json([
               'status' => 'sukses',
-              'pesan' => 'Data Master KPI Berhasil Diupdate'
+              'pesan' => 'Data Master Scoreboard Berhasil Diupdate'
             ]);
         } 
         catch (\Exception $e) 
@@ -200,7 +172,7 @@ class KpiController extends Controller
         }
     }
 
-    public function delete_kpi(Request $request)
+    public function delete_score(Request $request)
     {
         DB::beginTransaction();
         try 
@@ -211,7 +183,7 @@ class KpiController extends Controller
             DB::commit();
             return response()->json([
               'status' => 'sukses',
-              'pesan' => 'Data Master KPI Berhasil Dihapus'
+              'pesan' => 'Data Master Scoreboard Berhasil Dihapus'
             ]);
         } 
         catch (\Exception $e) 
@@ -236,5 +208,5 @@ class KpiController extends Controller
     }
 
 
-    // =======================================================================================================================
+    // ==================================================================================================================
 }

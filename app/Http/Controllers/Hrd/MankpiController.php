@@ -27,10 +27,31 @@ class MankpiController extends Controller
         $id_peg = Auth::user()->m_pegawai_id;
         $tanggal1 = date('Y-m-d',strtotime($tgl1));
         $tanggal2 = date('Y-m-d',strtotime($tgl2));
+        $d_pegawai = DB::table('m_pegawai_man')->where('c_id', $id_peg)->first();
+        
+        if ($d_pegawai->c_divisi_id == '1' && $d_pegawai->c_jabatan_id == '1') {
+            $div_id = $d_pegawai->c_divisi_id;
+        }elseif($d_pegawai->c_divisi_id == '2' && $d_pegawai->c_jabatan_id == '6'){
+            $div_id = $d_pegawai->c_divisi_id;
+        }elseif($d_pegawai->c_divisi_id == '3' && $d_pegawai->c_jabatan_id == '9'){
+            $div_id = $d_pegawai->c_divisi_id;
+        }elseif($d_pegawai->c_divisi_id == '4' && $d_pegawai->c_jabatan_id == '14'){
+            $div_id = $d_pegawai->c_divisi_id;
+        }elseif($d_pegawai->c_divisi_id == '5' && $d_pegawai->c_jabatan_id == '24'){
+            $div_id = $d_pegawai->c_divisi_id;
+        }
+        
         if ($tampil == 'ALL') {
-            $data = d_kpi::join('m_pegawai_man','d_kpi.d_kpi_pid','=','m_pegawai_man.c_id')->whereBetween('d_kpi_date', [$tanggal1, $tanggal2])->orderBy('d_kpi_created', 'DESC')->get();
+            $data = d_kpi::join('m_pegawai_man','d_kpi.d_kpi_pid','=','m_pegawai_man.c_id')
+                        ->where('c_divisi_id', $div_id)
+                        ->whereBetween('d_kpi_date', [$tanggal1, $tanggal2])
+                        ->orderBy('d_kpi_created', 'DESC')->get();
         }else{
-            $data = d_kpi::join('m_pegawai_man','d_kpi.d_kpi_pid','=','m_pegawai_man.c_id')->where('d_kpi.d_kpi_isconfirm', '=', $tampil)->whereBetween('d_kpi_date', [$tanggal1, $tanggal2])->orderBy('d_kpi_created', 'DESC')->get();    
+            $data = d_kpi::join('m_pegawai_man','d_kpi.d_kpi_pid','=','m_pegawai_man.c_id')
+                        ->where('c_divisi_id', $div_id)
+                        ->where('d_kpi.d_kpi_isconfirm', '=', $tampil)
+                        ->whereBetween('d_kpi_date', [$tanggal1, $tanggal2])
+                        ->orderBy('d_kpi_created', 'DESC')->get();    
         }
         
         return DataTables::of($data)
@@ -153,85 +174,6 @@ class MankpiController extends Controller
         ]);
     }
 
-    public function simpanData(Request $request)
-    {
-        //dd($request->all());
-        DB::beginTransaction();
-        try 
-        {
-            //code penerimaan
-            $kode = $this->kodeKpiAuto();
-            $lastId = d_kpi::select('d_kpi_id')->max('d_kpi_id');
-            if ($lastId == 0 || $lastId == '') { $lastId  = 1; } else { $lastId += 1; } 
-            
-            $kpi = new d_kpi;
-            $kpi->d_kpi_id = $lastId;
-            $kpi->d_kpi_code = $kode;
-            $kpi->d_kpi_pid = $request->idpegawai;
-            $kpi->d_kpi_date = date('Y-m-d',strtotime($request->tglKpi));
-            $kpi->d_kpi_created = date("Y-m-d h:i:s");
-            $kpi->save();
-
-            if (isset($request->index_kpi_opsi)) 
-            {
-                $str_opsi = implode(",", $request->value_kpi_opsi);
-                $index_opsi = $request->index_kpi_opsi[0];
-
-                $kpi_dt = new d_kpi_dt;
-                $kpi_dt->d_kpidt_dkpi_id = $lastId;
-                $kpi_dt->d_kpidt_mkpi_id = $index_opsi;
-                $kpi_dt->d_kpidt_value = strtoupper($str_opsi);
-                $kpi_dt->d_kpidt_created = date("Y-m-d h:i:s");
-                $kpi_dt->save();
-            }
-
-            for ($i=0; $i < count($request->value_kpi); $i++) 
-            { 
-                d_kpi_dt::insert([
-                            'd_kpidt_dkpi_id' => $lastId,
-                            'd_kpidt_mkpi_id' => $request->index_kpi[$i],
-                            'd_kpidt_value' => strtoupper($request->value_kpi[$i]),
-                            'd_kpidt_created' => date("Y-m-d h:i:s")
-                        ]);
-            }
-                   
-            DB::commit();
-            return response()->json([
-                'status' => 'sukses',
-                'pesan' => 'Data KPI Berhasil Disimpan'
-            ]);
-        } 
-        catch (\Exception $e) 
-        {
-          DB::rollback();
-          return response()->json([
-              'status' => 'gagal',
-              'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
-          ]);
-        }
-    }
-
-    public function kodeKpiAuto()
-    {
-        $query = DB::select(DB::raw("SELECT MAX(RIGHT(d_kpi_code,4)) as kode_max from d_kpi WHERE DATE_FORMAT(d_kpi_created, '%Y-%m') = DATE_FORMAT(CURRENT_DATE(), '%Y-%m')"));
-        $kd = "";
-
-        if(count($query)>0)
-        {
-          foreach($query as $k)
-          {
-            $tmp = ((int)$k->kode_max)+1;
-            $kd = sprintf("%04s", $tmp);
-          }
-        }
-        else
-        {
-          $kd = "0001";
-        }
-
-        return $code = "KPI-".date('ym')."-".$kd;
-    }
-
     public function getDataEdit($id)
     {
         $id_peg = Auth::user()->m_pegawai_id;
@@ -273,31 +215,19 @@ class MankpiController extends Controller
             $d_kpi->d_kpi_dateconfirm = $tanggal;
             $d_kpi->save();
 
-            if (isset($request->e_index_kpi_opsi)) 
-            {
-                $str_opsi = implode(",", $request->e_value_kpi_opsi);
-                $index_opsi = $request->e_index_kpi_opsi[0];
-
-                d_kpi_dt::where('d_kpidt_id','=',$request->e_index_dt_opsi[0])
-                        ->update([
-                            'd_kpidt_value' => strtoupper($str_opsi),
-                            'd_kpidt_updated' => date("Y-m-d h:i:s"),
-                        ]);
-            }
-
             for ($i=0; $i < count($request->e_value_kpi); $i++) 
             { 
                 d_kpi_dt::where('d_kpidt_id','=',$request->e_index_dt[$i])
                         ->update([
                             'd_kpidt_value' => strtoupper($request->e_value_kpi[$i]),
-                            'd_kpidt_updated' => date("Y-m-d h:i:s")
+                            'd_kpidt_updated' => Carbon::now('Asia/Jakarta')
                         ]);
             }
 
             DB::commit();
             return response()->json([
               'status' => 'sukses',
-              'pesan' => 'Data Input KPI Berhasil Dikonfirmasi'
+              'pesan' => 'Data Input Scoreboard Berhasil Dikonfirmasi'
             ]);
         } 
         catch (\Exception $e) 
@@ -321,13 +251,13 @@ class MankpiController extends Controller
         {
             $d_kpi->d_kpi_dateconfirm = null;
             $d_kpi->d_kpi_isconfirm = 'N';
-            $pesan = 'Pembatalan konfirmasi data KPI berhasil';
+            $pesan = 'Pembatalan konfirmasi data Scoreboard berhasil';
         }
         else
         {
             $d_kpi->d_kpi_dateconfirm = $tanggal;
             $d_kpi->d_kpi_isconfirm = 'Y';
-            $pesan = 'Konfirmasi data KPI berhasil';
+            $pesan = 'Konfirmasi data Scoreboard berhasil';
         }
         $d_kpi->save();
 

@@ -17,7 +17,6 @@ class m_kpi extends Model
         'kpi_p_id',
         'kpi_div_id',
         'kpi_jabatan_id',
-        'kpi_opsi',
         'kpi_created',
         'kpi_updated'
     ];

@@ -38,7 +38,17 @@
            </select>                               
         </div>
       </div>
-   
+
+      <!-- <div class="col-md-2 col-sm-2 col-xs-12">
+        <label class="tebal">Pegawai</label>
+      </div>
+      
+      <div class="col-md-10 col-sm-10 col-xs-12">
+        <div class="form-group" style="padding-bottom: 20px;">
+          <select class="form-control input-sm select2" name="s_pegawai" id="s_pegawai" onchange="lihatKpiByTgl()">
+           </select>
+        </div>
+      </div> -->
    
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="table-responsive">

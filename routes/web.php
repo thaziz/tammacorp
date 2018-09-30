@@ -973,7 +973,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/master/datapegawai/update-pegawai-pro/{id}', 'Master\PegawaiController@updatePegawaiPro');
     Route::delete('/master/datapegawai/delete-pegawai-pro/{id}', 'Master\PegawaiController@deletePegawaiPro');
     Route::post('/master/datapegawai/import-pro', 'Master\PegawaiController@importPegawaiPro');
-    Route::get('/master/datapegawai/master-import-pro', 'Master\PegawaiController@getFilePro');
+    Route::get('/master/datapegawai/`import-pro', 'Master\PegawaiController@getFilePro');
     Route::get('/master/datapegawai/pegawai', 'Master\PegawaiController@pegawai')->name('pegawai');
     Route::get('/master/datapegawai/edit-pegawai/{id}', 'Master\PegawaiController@editPegawai');
     Route::put('/master/datapegawai/update-pegawai/{id}', 'Master\PegawaiController@updatePegawai');
@@ -984,16 +984,16 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/master/datapegawai/delete-pegawai/{id}', 'Master\PegawaiController@deletePegawai');
     Route::post('/master/datapegawai/import', 'Master\PegawaiController@importPegawai');
     Route::get('/master/datapegawai/master-import', 'Master\PegawaiController@getFile');
-//Master data KPI
-    Route::get('/master/datakpi/index', 'Master\KpiController@index');
-    Route::get('/master/datakpi/tambah_kpi', 'Master\KpiController@tambah_kpi');
-    Route::get('/master/datakpi/datatable-index', 'Master\KpiController@get_datatable_index');
-    Route::get('/master/datakpi/lookup-data-jabatan', 'Master\KpiController@lookup_jabatan');
-    Route::get('/master/datakpi/lookup-data-pegawai', 'Master\KpiController@lookup_pegawai');
-    Route::post('/master/datakpi/simpan-kpi', 'Master\KpiController@simpan_kpi');
-    Route::get('/master/datakpi/edit-kpi', 'Master\KpiController@edit_kpi');
-    Route::post('/master/datakpi/update-kpi', 'Master\KpiController@update_kpi');
-    Route::post('/master/datakpi/delete-kpi', 'Master\KpiController@delete_kpi');
+//Master data Scoreboard
+    Route::get('/master/datascore/index', 'Master\ScoreController@index');
+    Route::get('/master/datascore/tambah-score', 'Master\ScoreController@tambah_score');
+    Route::get('/master/datascore/datatable-index', 'Master\ScoreController@get_datatable_index');
+    Route::get('/master/datascore/lookup-data-jabatan', 'Master\ScoreController@lookup_jabatan');
+    Route::get('/master/datascore/lookup-data-pegawai', 'Master\ScoreController@lookup_pegawai');
+    Route::post('/master/datascore/simpan-score', 'Master\ScoreController@simpan_score');
+    Route::get('/master/datascore/edit-score', 'Master\ScoreController@edit_score');
+    Route::post('/master/datascore/update-score', 'Master\ScoreController@update_score');
+    Route::post('/master/datascore/delete-score', 'Master\ScoreController@delete_score');
 // Ari
     Route::get('/purchasing/orderpembelian/print/{id}', 'Pembelian\OrderPembelianController@print');
     Route::get('/inventory/p_suplier/print/{id}', 'Inventory\PenerimaanBrgSupController@print');
