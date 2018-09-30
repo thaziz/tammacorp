@@ -533,6 +533,10 @@
                                         Data Actual SPK
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Data Garapan Produksi','ma_read'))
+                                        Data Garapan Produksi
+                                    @endif
+
                             </span>
                             </a>
                             <ul class="nav nav-second-level">
@@ -581,6 +585,14 @@
                                     <li class="{{ Request::is('produksi/waste/waste') ? 'active' : '' || Request::is('produksi/waste/*') ? 'active' : '' }}">
                                         <a href="{{ url('/produksi/waste/waste') }}"><span
                                                     class="submenu-title">Data Actual SPK</span><span
+                                                    class="hidden">Produksi</span></a>
+                                    </li>
+                                @endif
+
+                                @if(Auth::user()->punyaAkses('Data Actual SPK','ma_read'))
+                                    <li class="{{ Request::is('produksi/garapan/index') ? 'active' : '' || Request::is('produksi/garapan/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/produksi/garapan/index') }}"><span
+                                                    class="submenu-title">Data Garapan Produksi</span><span
                                                     class="hidden">Produksi</span></a>
                                     </li>
                                 @endif
@@ -739,6 +751,10 @@
                                         Payroll
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Payroll Pegawai Produksi','ma_read'))
+                                        Payroll Pegawai Produksi
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Manajemen KPI Pegawai','ma_read'))
                                         Manajemen KPI Pegawai
                                     @endif
@@ -781,6 +797,13 @@
                                     <li class="{{ Request::is('hrd/payroll/setting-gaji') ? 'active' : '' || Request::is('hrd/payroll/*') ? 'active' : '' }}">
                                         <a href="{{ url('/hrd/payroll/setting-gaji') }}"><span
                                                     class="submenu-title">Payroll</span><span class="hidden">HRD</span></a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->punyaAkses('Payroll','ma_read'))
+                                    <li class="{{ Request::is('hrd/produksi/payroll') ? 'active' : '' || Request::is('hrd/produksi/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/hrd/produksi/payroll') }}"><span
+                                                    class="submenu-title">Payroll Pegawai Produksi</span>
+                                                    <span class="hidden">HRD</span></a>
                                     </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Scoreboard Pegawai Per Hari','ma_read'))
