@@ -489,6 +489,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/hrd/payroll/simpan', 'Hrd\PayrollController@simpanDetail');
     Route::get('/hrd/payroll/datatable-payroll', 'Hrd\PayrollController@payrollData');
     Route::get('/hrd/payroll/datatable-view/{id}', 'Hrd\PayrollController@pegawai');
+//setting payroll
     Route::get('/hrd/payroll/setting-gaji', 'Hrd\GajiController@settingGajiMan');
     Route::get('/hrd/payroll/datatable-gaji-man', 'Hrd\GajiController@gajiManData');
     Route::get('/hrd/payroll/tambah-gaji-man', 'Hrd\GajiController@tambahGajiMan');
@@ -508,6 +509,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/payroll/edit-potongan/{id}', 'Hrd\GajiController@editPotongan');
     Route::put('/hrd/payroll/update-potongan/{id}', 'Hrd\GajiController@updatePotongan');
     Route::delete('/hrd/payroll/delete-potongan/{id}', 'Hrd\GajiController@deletePotongan');
+    Route::get('/hrd/payroll/tambah-tunjangan', 'Hrd\GajiController@tambahTunjangan');
+    Route::post('/hrd/payroll/simpan-tunjangan', 'Hrd\GajiController@simpanTunjangan');
+    Route::get('/hrd/payroll/datatable-tunjangan-man', 'Hrd\GajiController@tunjanganManData');
+    Route::get('/hrd/payroll/edit-tunjangan-man/{id}', 'Hrd\GajiController@editTunjangan');
+    Route::post('/hrd/payroll/update-tunjangan/{id}', 'Hrd\GajiController@updateTunjangan');
+    Route::delete('/hrd/payroll/delete-tunjangan/{id}', 'Hrd\GajiController@deleteTunjangan');
 /*Data Lembur*/
     Route::get('/hrd/datalembur/index', 'Hrd\HlemburController@index');
     Route::get('/hrd/datalembur/get-lembur-by-tgl/{tgl1}/{tgl2}', 'Hrd\HlemburController@getLemburByTgl');

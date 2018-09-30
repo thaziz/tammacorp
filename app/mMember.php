@@ -24,6 +24,7 @@ class mMember extends Model implements AuthenticatableContract, CanResetPassword
     const CREATED_AT = 'm_insert';
 
     protected $fillable = [ 'm_id',
+                            'm_pegawai_id',
                             'm_username',
                             'm_passwd',
                             'm_paket',
