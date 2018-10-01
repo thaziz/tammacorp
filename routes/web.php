@@ -878,23 +878,23 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('master/datasuplier/suplier_hapus', 'Master\SuplierController@suplier_hapus');
 //-deny
 //customer
-    Route::get('/master/datacust/cust', 'master\custController@cust')->name('cust');
-    Route::get('/master/datacust/tambah_cust', 'master\custController@tambah_cust')->name('tambah_cust');
-    Route::get('/master/datacust/simpan_cust', 'master\custController@simpan_cust')->name('simpan_cust');
-    Route::get('/master/datacust/hapus_cust', 'master\custController@hapus_cust')->name('hapus_cust');
-    Route::get('/master/datacust/edit_cust', 'master\custController@edit_cust')->name('edit_cust');
-    Route::get('/master/datacust/update_cust', 'master\custController@update_cust')->name('update_cust');
-    Route::get('/master/datacust/datatable_cust', 'master\custController@datatable_cust')->name('datatable_cust');
+    Route::get('/master/datacust/cust', 'Master\custController@cust')->name('cust');
+    Route::get('/master/datacust/tambah_cust', 'Master\custController@tambah_cust')->name('tambah_cust');
+    Route::get('/master/datacust/simpan_cust', 'Master\custController@simpan_cust')->name('simpan_cust');
+    Route::get('/master/datacust/hapus_cust', 'Master\custController@hapus_cust')->name('hapus_cust');
+    Route::get('/master/datacust/edit_cust', 'Master\custController@edit_cust')->name('edit_cust');
+    Route::get('/master/datacust/update_cust', 'Master\custController@update_cust')->name('update_cust');
+    Route::get('/master/datacust/datatable_cust', 'Master\custController@datatable_cust')->name('datatable_cust');
 //barang
-    Route::get('/master/databarang/barang', 'master\barangController@barang')->name('barang');
-    Route::get('/master/databarang/tambah_barang', 'master\barangController@tambah_barang');
-    Route::post('/master/databarang/simpan_barang', 'master\barangController@simpan_barang')->name('simpan_barang');
-    Route::post('/master/databarang/ubah_status_barang', 'master\barangController@ubah_status')->name('ubah_status');
-    Route::get('/master/databarang/edit_barang', 'master\barangController@edit_barang')->name('edit_barang');
-    Route::post('/master/databarang/update_barang', 'master\barangController@update_barang')->name('update_barang');
-    Route::get('/master/databarang/datatable_barang', 'master\barangController@datatable_barang')->name('datatable_barang');
-    Route::get('/master/databarang/kode_barang', 'master\barangController@kode_barang')->name('kode_barang');
-    Route::get('/master/databarang/cari_group_barang', 'master\barangController@cari_group_barang')->name('cari_group_barang');
+    Route::get('/master/databarang/barang', 'Master\barangController@barang')->name('barang');
+    Route::get('/master/databarang/tambah_barang', 'Master\barangController@tambah_barang');
+    Route::post('/master/databarang/simpan_barang', 'Master\barangController@simpan_barang')->name('simpan_barang');
+    Route::post('/master/databarang/ubah_status_barang', 'Master\barangController@ubah_status')->name('ubah_status');
+    Route::get('/master/databarang/edit_barang', 'Master\barangController@edit_barang')->name('edit_barang');
+    Route::post('/master/databarang/update_barang', 'Master\barangController@update_barang')->name('update_barang');
+    Route::get('/master/databarang/datatable_barang', 'Master\barangController@datatable_barang')->name('datatable_barang');
+    Route::get('/master/databarang/kode_barang', 'Master\barangController@kode_barang')->name('kode_barang');
+    Route::get('/master/databarang/cari_group_barang', 'Master\barangController@cari_group_barang')->name('cari_group_barang');
 //itemproduksi mahmud
     Route::get('/master/itemproduksi/index', 'Master\itemProduksiController@index');
     Route::get('/master/tableproduksi/table', 'Master\itemProduksiController@tableProduksi');
@@ -904,13 +904,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/itemproduksi/edit_item/{a}', 'Master\itemProduksiController@editBarang');
     Route::get('/master/itemproduksi/update_item/{a}', 'Master\itemProduksiController@updateItem');
 //bahan baku
-    Route::get('/master/databaku/baku', 'master\bahan_bakuController@baku')->name('baku');
-    Route::get('/master/databaku/tambah_baku', 'master\bahan_bakuController@tambah_baku')->name('tambah_baku');
-    Route::get('/master/databaku/simpan_baku', 'master\bahan_bakuController@simpan_baku')->name('simpan_baku');
-    Route::get('/master/databaku/hapus_baku', 'master\bahan_bakuController@hapus_baku')->name('hapus_baku');
-    Route::get('/master/databaku/edit_baku', 'master\bahan_bakuController@edit_baku')->name('edit_baku');
-    Route::get('/master/databaku/update_baku', 'master\bahan_bakuController@update_baku')->name('update_baku');
-    Route::get('/master/databaku/datatable_baku', 'master\bahan_bakuController@datatable_baku')->name('datatable_baku');
+    Route::get('/master/databaku/baku', 'Master\bahan_bakuController@baku')->name('baku');
+    Route::get('/master/databaku/tambah_baku', 'Master\bahan_bakuController@tambah_baku')->name('tambah_baku');
+    Route::get('/master/databaku/simpan_baku', 'Master\bahan_bakuController@simpan_baku')->name('simpan_baku');
+    Route::get('/master/databaku/hapus_baku', 'Master\bahan_bakuController@hapus_baku')->name('hapus_baku');
+    Route::get('/master/databaku/edit_baku', 'Master\bahan_bakuController@edit_baku')->name('edit_baku');
+    Route::get('/master/databaku/update_baku', 'Master\bahan_bakuController@update_baku')->name('update_baku');
+    Route::get('/master/databaku/datatable_baku', 'Master\bahan_bakuController@datatable_baku')->name('datatable_baku');
 //jenis produksi
     Route::get('/master/datajenis/jenis', 'Master\jenis_produksiController@jenis')->name('jenis');
     Route::get('/master/datajenis/tambah_jenis', 'Master\jenis_produksiController@tambah_jenis')->name('tambah_jenis');
@@ -920,21 +920,21 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datajenis/update_jenis', 'Master\jenis_produksiController@update_jenis')->name('update_jenis');
     Route::get('/master/datajenis/datatable_jenis', 'Master\jenis_produksiController@datatable_jenis')->name('datatable_jenis');
 //satuan
-    Route::get('/master/datasatuan/satuan', 'master\satuanController@satuan')->name('satuan');
-    Route::get('/master/datasatuan/tambah_satuan', 'master\satuanController@tambah_satuan')->name('tambah_satuan');
-    Route::get('/master/datasatuan/simpan_satuan', 'master\satuanController@simpan_satuan')->name('simpan_satuan');
-    Route::get('/master/datasatuan/hapus_satuan', 'master\satuanController@hapus_satuan')->name('hapus_satuan');
-    Route::get('/master/datasatuan/edit_satuan', 'master\satuanController@edit_satuan')->name('edit_satuan');
-    Route::get('/master/datasatuan/update_satuan', 'master\satuanController@update_satuan')->name('update_satuan');
-    Route::get('/master/datasatuan/datatable_satuan', 'master\satuanController@datatable_satuan')->name('datatable_satuan');
+    Route::get('/master/datasatuan/satuan', 'Master\satuanController@satuan')->name('satuan');
+    Route::get('/master/datasatuan/tambah_satuan', 'Master\satuanController@tambah_satuan')->name('tambah_satuan');
+    Route::get('/master/datasatuan/simpan_satuan', 'Master\satuanController@simpan_satuan')->name('simpan_satuan');
+    Route::get('/master/datasatuan/hapus_satuan', 'Master\satuanController@hapus_satuan')->name('hapus_satuan');
+    Route::get('/master/datasatuan/edit_satuan', 'Master\satuanController@edit_satuan')->name('edit_satuan');
+    Route::get('/master/datasatuan/update_satuan', 'Master\satuanController@update_satuan')->name('update_satuan');
+    Route::get('/master/datasatuan/datatable_satuan', 'Master\satuanController@datatable_satuan')->name('datatable_satuan');
 //group
-    Route::get('/master/datagroup/group', 'master\groupController@group')->name('group');
-    Route::get('/master/datagroup/tambah_group', 'master\groupController@tambah_group')->name('tambah_group');
-    Route::get('/master/datagroup/simpan_group', 'master\groupController@simpan_group')->name('simpan_group');
-    Route::get('/master/datagroup/hapus_group/{id}', 'master\groupController@hapus_group')->name('hapus_group');
-    Route::get('/master/datagroup/edit_group/{id}', 'master\groupController@edit_group')->name('edit_group');
-    Route::get('/master/datagroup/update_group', 'master\groupController@update_group')->name('update_group');
-    Route::get('/master/datagroup/datatable_group', 'master\groupController@datatable_group')->name('datatable_group');
+    Route::get('/master/datagroup/group', 'Master\groupController@group')->name('group');
+    Route::get('/master/datagroup/tambah_group', 'Master\groupController@tambah_group')->name('tambah_group');
+    Route::get('/master/datagroup/simpan_group', 'Master\groupController@simpan_group')->name('simpan_group');
+    Route::get('/master/datagroup/hapus_group/{id}', 'Master\groupController@hapus_group')->name('hapus_group');
+    Route::get('/master/datagroup/edit_group/{id}', 'Master\groupController@edit_group')->name('edit_group');
+    Route::get('/master/datagroup/update_group', 'Master\groupController@update_group')->name('update_group');
+    Route::get('/master/datagroup/datatable_group', 'Master\groupController@datatable_group')->name('datatable_group');
 //-[]-belum-[]-//
 // route Keuangan (Dirga)
 // akun keuangan route
@@ -963,14 +963,14 @@ Route::group(['middleware' => 'auth'], function () {
 //Master Data Lowongan
     Route::get('/master/datalowongan/index', 'Master\LowonganController@index');
     Route::get('/master/datalowongan/datatable-index', 'Master\LowonganController@get_datatable_index');
-    Route::get('/master/datalowongan/tambah_lowongan', 'master\LowonganController@tambah_data');
-    Route::post('/master/datalowongan/simpan_lowongan', 'master\LowonganController@simpan_data');
-    Route::post('/master/datalowongan/ubah_status', 'master\LowonganController@ubah_status');
-    Route::get('/master/datalowongan/edit_lowongan', 'master\LowonganController@edit_data');
-    Route::post('/master/datalowongan/update_lowongan', 'master\LowonganController@update_data');
-    Route::get('/master/datalowongan/lookup-data-divisi', 'master\LowonganController@lookup_divisi');
-    Route::get('/master/datalowongan/lookup-data-level', 'master\LowonganController@lookup_level');
-    Route::get('/master/datalowongan/lookup-data-jabatan', 'master\LowonganController@lookup_jabatan');
+    Route::get('/master/datalowongan/tambah_lowongan', 'Master\LowonganController@tambah_data');
+    Route::post('/master/datalowongan/simpan_lowongan', 'Master\LowonganController@simpan_data');
+    Route::post('/master/datalowongan/ubah_status', 'Master\LowonganController@ubah_status');
+    Route::get('/master/datalowongan/edit_lowongan', 'Master\LowonganController@edit_data');
+    Route::post('/master/datalowongan/update_lowongan', 'Master\LowonganController@update_data');
+    Route::get('/master/datalowongan/lookup-data-divisi', 'Master\LowonganController@lookup_divisi');
+    Route::get('/master/datalowongan/lookup-data-level', 'Master\LowonganController@lookup_level');
+    Route::get('/master/datalowongan/lookup-data-jabatan', 'Master\LowonganController@lookup_jabatan');
 //*Data Jabatan*/
     Route::get('/master/datajabatan', 'Master\JabatanController@index');
     Route::get('/master/datajabatan/data-jabatan', 'Master\JabatanController@jabatanData');
