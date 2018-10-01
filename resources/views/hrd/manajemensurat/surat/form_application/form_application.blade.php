@@ -388,7 +388,7 @@
 							<tr>
 								<td>Kota</td>
 								<td>:</td>
-								<td>........................................</td>
+								<td>........................................&nbsp;&nbsp;&nbsp;Kode POS&nbsp;&nbsp;&nbsp;.................</td>
 
 							</tr>
 
@@ -420,6 +420,9 @@
 			<footer>
 				<img width="100%" src="{{asset('assets/img/footer-tammafood-surat.png')}}">
 			</footer>
+	</div>
+	<div class="page-break-after">
+		
 	</div>
 </body>
 </html>
