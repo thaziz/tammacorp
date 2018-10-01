@@ -158,21 +158,8 @@ class DkpiController extends Controller
             $kpi->d_kpi_code = $kode;
             $kpi->d_kpi_pid = $request->idpegawai;
             $kpi->d_kpi_date = date('Y-m-d',strtotime($request->tglKpi));
-            $kpi->d_kpi_created = date("Y-m-d h:i:s");
+            $kpi->d_kpi_created = Carbon::now('Asia/Jakarta');
             $kpi->save();
-
-            if (isset($request->index_kpi_opsi)) 
-            {
-                $str_opsi = implode(",", $request->value_kpi_opsi);
-                $index_opsi = $request->index_kpi_opsi[0];
-
-                $kpi_dt = new d_kpi_dt;
-                $kpi_dt->d_kpidt_dkpi_id = $lastId;
-                $kpi_dt->d_kpidt_mkpi_id = $index_opsi;
-                $kpi_dt->d_kpidt_value = strtoupper($str_opsi);
-                $kpi_dt->d_kpidt_created = date("Y-m-d h:i:s");
-                $kpi_dt->save();
-            }
 
             for ($i=0; $i < count($request->value_kpi); $i++) 
             { 
@@ -180,7 +167,7 @@ class DkpiController extends Controller
                             'd_kpidt_dkpi_id' => $lastId,
                             'd_kpidt_mkpi_id' => $request->index_kpi[$i],
                             'd_kpidt_value' => strtoupper($request->value_kpi[$i]),
-                            'd_kpidt_created' => date("Y-m-d h:i:s")
+                            'd_kpidt_created' => Carbon::now('Asia/Jakarta')
                         ]);
             }
                    
@@ -218,7 +205,7 @@ class DkpiController extends Controller
           $kd = "0001";
         }
 
-        return $code = "KPI-".date('ym')."-".$kd;
+        return $code = "SCR-".date('ym')."-".$kd;
     }
 
     public function getDataEdit($id)
@@ -253,31 +240,19 @@ class DkpiController extends Controller
         DB::beginTransaction();
         try 
         {   
-            $tanggal = date("Y-m-d h:i:s");
+            $tanggal = Carbon::now('Asia/Jakarta');
 
             $d_kpi = d_kpi::find($request->e_old);
             $d_kpi->d_kpi_date = date('Y-m-d',strtotime($request->eTglKpi));
             $d_kpi->d_kpi_updated = $tanggal;
             $d_kpi->save();
 
-            if (isset($request->e_index_kpi_opsi)) 
-            {
-                $str_opsi = implode(",", $request->e_value_kpi_opsi);
-                $index_opsi = $request->e_index_kpi_opsi[0];
-
-                d_kpi_dt::where('d_kpidt_id','=',$request->e_index_dt_opsi[0])
-                        ->update([
-                            'd_kpidt_value' => strtoupper($str_opsi),
-                            'd_kpidt_updated' => date("Y-m-d h:i:s")
-                        ]);
-            }
-
             for ($i=0; $i < count($request->e_value_kpi); $i++) 
             { 
                 d_kpi_dt::where('d_kpidt_id','=',$request->e_index_dt[$i])
                         ->update([
                             'd_kpidt_value' => strtoupper($request->e_value_kpi[$i]),
-                            'd_kpidt_updated' => date("Y-m-d h:i:s")
+                            'd_kpidt_updated' => Carbon::now('Asia/Jakarta')
                         ]);
             }
 

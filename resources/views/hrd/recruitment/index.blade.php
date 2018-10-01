@@ -420,6 +420,20 @@
         });
 
         $.dobPicker({
+          yearSelector: '#dob_pend_awal1',
+          yearDefault: 'Tahun',
+          minimumAge: 0,
+          maximumAge: 20
+        });
+
+        $.dobPicker({
+          yearSelector: '#dob_pend_akhir1',
+          yearDefault: 'Tahun',
+          minimumAge: 0,
+          maximumAge: 20
+        });
+
+        $.dobPicker({
           yearSelector: '#dob_cv_awal1',
           yearDefault: 'Tahun',
           minimumAge: 0,

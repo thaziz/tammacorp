@@ -43,7 +43,7 @@
 
           <ul id="generalTab" class="nav nav-tabs">
             <li class="active">
-              <a href="#index-tab" data-toggle="tab">Manajemen KPI</a>
+              <a href="#index-tab" data-toggle="tab">Konfirmasi Scoreboard</a>
             </li>
             <!-- <li><a href="#laporan-tab" data-toggle="tab" onclick="lihatLaporanByTgl()">Laporan Data KPI</a></li> -->
           </ul>
@@ -248,47 +248,17 @@
           //loop data
           Object.keys(response.data).forEach(function()
           {
-            if (response.data[key-1].kpi_opsi != null) 
-            {
-              var opsi_str = response.data[key-1].kpi_opsi;
-              var opsi_arr = opsi_str.split(",");
-              var value_str = response.data[key-1].d_kpidt_value;
-              var value_arr = value_str.split(",");
-              //console.log(opsi_arr);
-              //var myvar = myarr[0] + ":" + myarr[1];
-              $('#e_appending').append(
-                '<div class="col-md-12 col-sm-12 col-xs-12">'
-                  +'<label class="tebal">'+response.data[key-1].kpi_name+'</label>'
-                +'</div>');
-                
-                for (var j = 0; j < opsi_arr.length; j++) 
-                {
-                  $('#e_appending').append(
-                  '<div class="col-md-12 col-sm-12 col-xs-12" id="row'+i+'">'
-                    +'<div class="form-group">'
-                      +'<label>'+opsi_arr[j]+' : </label>'
-                      +'<input type="text" id="e_value_kpi" name="e_value_kpi_opsi[]" class="form-control input-sm" value="'+value_arr[j]+'">'
-                      +'<input type="hidden" id="e_index_kpi" name="e_index_kpi_opsi[]" class="form-control input-sm" value="'+response.data[key-1].kpi_id+'">'
-                      +'<input type="hidden" id="e_dt" name="e_index_dt_opsi[]" class="form-control input-sm" value="'+response.data[key-1].d_kpidt_id+'">'
-                    +'</div>'
-                  +'</div>'); 
-                }
-            }
-            else
-            {
-              $('#e_appending').append(
-                '<div class="col-md-12 col-sm-12 col-xs-12">'
-                  +'<label class="tebal">'+response.data[key-1].kpi_name+'</label>'
+            $('#e_appending').append(
+              '<div class="col-md-12 col-sm-12 col-xs-12">'
+                +'<label class="tebal">'+response.data[key-1].kpi_name+'</label>'
+              +'</div>'
+              +'<div class="col-md-12 col-sm-12 col-xs-12" id="row'+i+'">'
+                +'<div class="form-group">'
+                  +'<textarea class="form-control input-sm" id="e_value_kpi" name="e_value_kpi[]" rows="3">'+response.data[key-1].d_kpidt_value+'</textarea>'
+                  +'<input type="hidden" id="e_index_kpi" name="e_index_kpi[]" class="form-control input-sm" value="'+response.data[key-1].kpi_id+'">'
+                   +'<input type="hidden" id="e_dt" name="e_index_dt[]" class="form-control input-sm" value="'+response.data[key-1].d_kpidt_id+'">'
                 +'</div>'
-                +'<div class="col-md-12 col-sm-12 col-xs-12" id="row'+i+'">'
-                  +'<div class="form-group">'
-                    +'<input type="text" id="e_value_kpi" name="e_value_kpi[]" class="form-control input-sm" value="'+response.data[key-1].d_kpidt_value+'">'
-                    +'<input type="hidden" id="e_index_kpi" name="e_index_kpi[]" class="form-control input-sm" value="'+response.data[key-1].kpi_id+'">'
-                     +'<input type="hidden" id="e_dt" name="e_index_dt[]" class="form-control input-sm" value="'+response.data[key-1].d_kpidt_id+'">'
-                  +'</div>'
-                +'</div>');
-            }
-
+              +'</div>');
             i = randString(5);
             key++;
           });
@@ -323,37 +293,11 @@
           //loop data
           Object.keys(response.data).forEach(function()
           {
-            if (response.data[key-1].kpi_opsi != null) 
-            {
-              var opsi_str = response.data[key-1].kpi_opsi;
-              var opsi_arr = opsi_str.split(",");
-              var value_str = response.data[key-1].d_kpidt_value;
-              var value_arr = value_str.split(",");
-              //console.log(opsi_arr);
-              //var myvar = myarr[0] + ":" + myarr[1];
-              $('#d_appending').append(
-                '<div class="col-md-12 col-sm-12 col-xs-12">'
-                  +'<label class="tebal">'+response.data[key-1].kpi_name+'</label>'
-                +'</div>');
-                
-                for (var j = 0; j < opsi_arr.length; j++) 
-                {
-                  $('#d_appending').append(
-                  '<div class="col-md-12 col-sm-12 col-xs-12" id="row'+i+'">'
-                      +'<label>'+opsi_arr[j]+' :</label>'
-                      +'<span id="d_value_kpi"> '+value_arr[j]+'</span>'
-                  +'</div>'); 
-                }
-            }
-            else
-            {
-              $('#d_appending').append(
-                '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-top:10px">'
-                  +'<label class="tebal">'+response.data[key-1].kpi_name+' :</label>'
-                  +'<span id="d_value_kpi"> '+response.data[key-1].d_kpidt_value+'</span>'
-                +'</div>');
-            }
-
+            $('#d_appending').append(
+              '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-top:10px">'
+                +'<label class="tebal">'+response.data[key-1].kpi_name+' :</label>'
+                +'<span id="d_value_kpi"> '+response.data[key-1].d_kpidt_value+'</span>'
+              +'</div>');
             i = randString(5);
             key++;
           });

@@ -27,7 +27,8 @@ class RecruitmentController extends Controller
 {
     public function recruitment()
     {
-        return view('hrd/recruitment/index');
+        $lowongan = DB::table('d_lowongan')->select('l_code')->where('l_isactive', 'Y')->get();
+        return view('hrd/recruitment/index', compact('lowongan'));
     }
 
     public function process_rekrut($id)
@@ -142,6 +143,11 @@ class RecruitmentController extends Controller
             'bulan' => 'required',
             'tahun' => 'required',
             'pendidikanterakhir' => 'required|min:2',
+            'pendidikan' => 'required',
+            'dob_pend_awal1' => 'required',
+            'dob_pend_akhir1' => 'required',
+            'jurusan' => 'required',
+            'nilai' => 'required',
             // 'email' => 'required|d_pelamar|unique:email',
             'email' => 'required',
             'notlp' => 'required|min:7',
@@ -165,6 +171,11 @@ class RecruitmentController extends Controller
             'tahun.required' => ' Wajib Memilih Tahun Lahir',
             'pendidikanterakhir.required' => ' Pendidikan tidak boleh kosong',
             'pendidikanterakhir.min' => ' Pendidikan minimal harus 16 karakter',
+            'pendidikan' => ' Nama Sekolah/Universitas tidak boleh kosong',
+            'dob_pend_awal1' => ' Wajib Memilih Tahun Masuk',
+            'dob_pend_akhir1' => ' Wajib Memilih Tahun Lulus',
+            'jurusan' => ' Jurusan tidak boleh kosong',
+            'nilai' => ' Nilai tidak boleh kosong',
             'email.required' => ' Email tidak boleh kosong',
             'notlp.required' => ' Nomor Telepon tidak boleh kosong',
             'notlp.min' => ' Nomor Telepon Minimal harus 7 karakter',
@@ -201,6 +212,11 @@ class RecruitmentController extends Controller
                 $data->p_birth_place = $request->tempatlahir;
                 $data->p_birthday = $birth;
                 $data->p_education = $request->pendidikanterakhir;
+                $data->p_schoolname = $request->pendidikan;
+                $data->p_yearin = $request->dob_pend_awal1;
+                $data->p_yearout = $request->dob_pend_akhir1;
+                $data->p_jurusan = $request->jurusan;
+                $data->p_nilai = $request->nilai; 
                 $data->p_email = $request->email;
                 $data->p_tlp = $request->notlp;
                 $data->p_religion = $request->agama;
@@ -1194,7 +1210,7 @@ class RecruitmentController extends Controller
         // Send data to the view using loadView function of PDF facade
         $pdf = PDF::loadView('hrd.recruitment.pdf-cv', array('pelamar' => $pelamar, 'foto' => $foto, 'cv' => $cv));
         $path_cv = public_path(). '/assets/berkas/dokumen-pelamar';
-        $namafile = $pelamar->c_nama.'_'.$id_pelamar.'_cv.pdf';
+        $namafile = $pelamar->p_name.'_'.$id_pelamar.'_cv.pdf';
         //save
         $pdf->save($path_cv.'/'.$namafile);
         // file preview function

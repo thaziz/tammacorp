@@ -143,7 +143,7 @@
 
                                 <!-- Filter Menu Submenu -->
                                 <span class="hidden">
-                                @if(Auth::user()->punyaAkses('Data Supplier','ma_read'))
+                                    @if(Auth::user()->punyaAkses('Data Supplier','ma_read'))
                                         Data Suplier
                                     @endif
 
@@ -171,8 +171,8 @@
                                         Data Lowongan
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Data KPI','ma_read'))
-                                        Data KPI
+                                    @if(Auth::user()->punyaAkses('Data Scoreboard','ma_read'))
+                                        Data Scoreboard
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Data Akun Keuangan','ma_read'))
@@ -247,9 +247,9 @@
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->punyaAkses('Data KPI','ma_read'))
-                                    <li class="{{ Request::is('master/datakpi/index') ? 'active' : '' || Request::is('master/datakpi/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/master/datakpi/index') }}"><span class="submenu-title">Data KPI</span><span
+                                @if(Auth::user()->punyaAkses('Data Scoreboard','ma_read'))
+                                    <li class="{{ Request::is('master/datascore/index') ? 'active' : '' || Request::is('master/datascore/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/master/datascore/index') }}"><span class="submenu-title">Data Scoreboard</span><span
                                                     class="hidden">Master</span></a>
                                     </li>
                                 @endif

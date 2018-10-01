@@ -138,7 +138,7 @@
         <tr class="text-left">
           <td style="width: 20%;"><strong>Nama Lengkap</strong></td>
           <td style="width: 50%;">{{$pelamar->p_name}}</td>
-          <td rowspan="12">
+          <td rowspan="17">
             <div style="width: 200px; height: 200px; background-color: blue;">
               <img src="{{ public_path('assets/berkas/foto-pelamar/'.$foto->bks_name)}}" alt="Foto" class="img-foto">
             </div>
@@ -175,6 +175,26 @@
         <tr class="text-left">
           <td style="width: 20%;"><strong>Pendidikan Terakhir</strong></td>
           <td style="width: 60%;">{{$pelamar->p_education}}</td>
+        </tr>
+        <tr class="text-left">
+          <td style="width: 20%;"><strong>Nama Sekolah</strong></td>
+          <td style="width: 60%;">{{$pelamar->p_schoolname}}</td>
+        </tr>
+        <tr class="text-left">
+          <td style="width: 20%;"><strong>Tahun Masuk</strong></td>
+          <td style="width: 60%;">{{$pelamar->p_yearin}}</td>
+        </tr>
+        <tr class="text-left">
+          <td style="width: 20%;"><strong>Tahun Lulus</strong></td>
+          <td style="width: 60%;">{{$pelamar->p_yearout}}</td>
+        </tr>
+        <tr class="text-left">
+          <td style="width: 20%;"><strong>Jurusan</strong></td>
+          <td style="width: 60%;">{{$pelamar->p_jurusan}}</td>
+        </tr>
+        <tr class="text-left">
+          <td style="width: 20%;"><strong>Nilai</strong></td>
+          <td style="width: 60%;">{{$pelamar->p_nilai}}</td>
         </tr>
         <tr class="text-left">
           <td style="width: 20%;"><strong>Status</strong></td>
