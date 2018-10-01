@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Keuangan\Pembayaran_hutang;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Model\keuangan\purchase_payment as payment;
+use App\Model\Keuangan\purchase_payment as payment;
 
 use DB;
 

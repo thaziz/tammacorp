@@ -488,6 +488,29 @@ Route::group(['middleware' => 'auth'], function () {
 
     /*Keuangan*/
 
+        Route::get('/keuangan/tes_jurnal', function(){
+
+            $cek = [
+                [
+                    'td_acc'    => '1.10.01',
+                    'td_posisi' => 'K',
+                    'value'     => 25000000
+                ],
+
+                [
+                    'td_acc'    => '1.10.01',
+                    'td_posisi' => 'D',
+                    'value'     => 25000000
+                ]
+            ];
+
+            // return _initiateJournal_self_detail('Hanya Coba 1', 'KK', '2018-09-02', 'Tes Self_detail', $cek);
+            // return _initiateJournal_from_transaksi('Hanya Coba 2', '2019-08-01', 'Test From Transaksi', 1, [25000000, 20000000, 5000000]);
+            // return _updateJournal_from_transaksi('Hanya Coba 2', '2018-08-02', 'Setelah Update FT 4', 1, [10000000, 5000000, 5000000]);
+            // return  _updateJournal_self_detail('Hanya Coba 1', 'BM', '2018-09-01', 'Tes Self_detail', $cek);
+            // return _delete_jurnal('Hanya Coba 2');
+        });
+
         //transaksi index
             Route::get('/keuangan/p_inputtransaksi/index', function(){
                 return view('keuangan.input_transaksi.index');
@@ -666,40 +689,42 @@ Route::group(['middleware' => 'auth'], function () {
 
             //laporan jurnal
                 Route::get('keuangan/laporan_keuangan/laporan_jurnal', [
-                    'uses'  => 'keuangan\laporan_keuangan\laporan_jurnal_controller@index',
+                    'uses'  => 'Keuangan\laporan_keuangan\laporan_jurnal_controller@index',
                     'as'    => 'laporan_jurnal.index'
                 ]);
             // end laporan jurnal
 
             //laporan Buku Besar
                 Route::get('keuangan/laporan_keuangan/laporan_buku_besar', [
-                    'uses'  => 'keuangan\laporan_keuangan\laporan_buku_besar_controller@index',
+                    'uses'  => 'Keuangan\laporan_keuangan\laporan_buku_besar_controller@index',
                     'as'    => 'laporan_buku_besar.index'
                 ]);
             // end laporan buku besar
 
             //laporan neraca Saldo
                 Route::get('keuangan/laporan_keuangan/laporan_neraca_saldo', [
-                    'uses'  => 'keuangan\laporan_keuangan\laporan_neraca_saldo_controller@index',
+                    'uses'  => 'Keuangan\laporan_keuangan\laporan_neraca_saldo_controller@index',
                     'as'    => 'laporan_neraca_saldo.index'
                 ]);
             // end laporan neraca saldo
 
             //laporan neraca
                 Route::get('keuangan/laporan_keuangan/laporan_neraca', [
-                    'uses'  => 'keuangan\laporan_keuangan\laporan_neraca_controller@index',
+                    'uses'  => 'Keuangan\laporan_keuangan\laporan_neraca_controller@index',
                     'as'    => 'laporan_neraca.index'
                 ]);
             // end laporan neraca
 
             //laporan neraca
                 Route::get('keuangan/laporan_keuangan/laporan_laba_rugi', [
-                    'uses'  => 'keuangan\laporan_keuangan\laporan_laba_rugi_controller@index',
+                    'uses'  => 'Keuangan\laporan_keuangan\laporan_laba_rugi_controller@index',
                     'as'    => 'laporan_laba_rugi.index'
                 ]);
             // end laporan neraca
 
         // end Laporan
+
+    // keuangan end
 
 
     Route::get('/keuangan/l_hutangpiutang/hutang', 'Keuangan\KeuanganController@hutang');

@@ -104,58 +104,21 @@ class transaksi_memorial_controller extends Controller
 
     		// Pembukuan Jurnal
 
-	    		$jurnal_cek = jurnal::where(DB::raw('month(tanggal_jurnal)'), date('n', strtotime($request->tanggal_transaksi)))->where(DB::raw('substring(no_jurnal, 1, 2)'), 'MD')->orderBy('jurnal_id', 'desc')->first();
+	    		$acc = [
+                    [
+                        "td_acc"    => $request->perkiraan,
+                        "td_posisi" => 'D',
+                        'value'     => str_replace('.', '', explode(',', $request->nominal)[0])
+                    ],
 
-	    		$next_jurnal = ($cek) ? (int)substr($cek->no_bukti, -5) : 0;
+                    [
+                        "td_acc"    => $request->akun_lawan,
+                        "td_posisi" => "K",
+                        "value"     => str_replace('.', '', explode(',', $request->nominal)[0])
+                    ]
+                ];
 
-	    		$bukti_jurnal = 'MD-'.date('myd', strtotime($request->tanggal_transaksi)).str_pad(($next + 1), 5, '0', STR_PAD_LEFT);
-
-	    		$id_jurnal = (jurnal::max('jurnal_id')) ? (jurnal::max('jurnal_id') + 1) : 1;
-
-	    		// return json_encode($id_jurnal);
-
-	    		jurnal::insert([
-	    			'jurnal_id'			 => $id_jurnal,
-	    			'no_jurnal'		 	 => $bukti_jurnal,
-	    			'jurnal_ref'		 => $bukti,
-	    			'tanggal_jurnal'	 => date('Y-m-d', strtotime($request->tanggal_transaksi)),
-	    			'keterangan'		 => $request->keterangan
-	    		]);
-
-
-	    		$akun = DB::table('d_akun')->where('id_akun', $request->perkiraan)->first();
-	    		$pos = "D";
-	    		$val = str_replace('.', '', explode(',', $request->nominal)[0]);
-
-	    		if($akun->posisi_akun != $pos){
-	    			$val = '-'.str_replace('.', '', explode(',', $request->nominal)[0]);
-	    		}
-
-	    		jurnal_dt::insert([
-	    			'jrdt_jurnal'	=> $id_jurnal,
-	    			'jrdt_no'		=> 1,
-	    			'jrdt_acc' 		=> $request->perkiraan,
-	    			'jrdt_value'	=> $val,
-	    			'jrdt_dk'		=> $pos
-	    		]);
-
-	    		$akun = DB::table('d_akun')->where('id_akun', $request->akun_lawan)->first();
-	    		$pos = "K";
-	    		$val = str_replace('.', '', explode(',', $request->nominal)[0]);
-
-	    		if($akun->posisi_akun != $pos){
-	    			$val = '-'.str_replace('.', '', explode(',', $request->nominal)[0]);
-	    		}
-
-	    		// return json_encode($akun);
-
-	    		jurnal_dt::insert([
-	    			'jrdt_jurnal'	=> $id_jurnal,
-	    			'jrdt_no'		=> 2,
-	    			'jrdt_acc' 		=> $request->akun_lawan,
-	    			'jrdt_value'	=> $val,
-	    			'jrdt_dk'		=> $pos
-	    		]);
+                _initiateJournal_self_detail($bukti, "MM", $request->tanggal_transaksi, $request->keterangan, $acc);
 
 	    	// Pembukuan Jurnal End
 
@@ -220,58 +183,21 @@ class transaksi_memorial_controller extends Controller
 
             // Pembukuan Jurnal
 
-                $jurnal_cek = jurnal::where(DB::raw('month(tanggal_jurnal)'), date('n', strtotime($request->tanggal_transaksi)))->where(DB::raw('substring(no_jurnal, 1, 2)'), 'MK')->orderBy('jurnal_id', 'desc')->first();
+                $acc = [
+                    [
+                        "td_acc"    => $request->perkiraan,
+                        "td_posisi" => 'K',
+                        'value'     => str_replace('.', '', explode(',', $request->nominal)[0])
+                    ],
 
-                $next_jurnal = ($cek) ? (int)substr($cek->no_bukti, -5) : 0;
+                    [
+                        "td_acc"    => $request->akun_lawan,
+                        "td_posisi" => "D",
+                        "value"     => str_replace('.', '', explode(',', $request->nominal)[0])
+                    ]
+                ];
 
-                $bukti_jurnal = 'MK-'.date('myd', strtotime($request->tanggal_transaksi)).str_pad(($next + 1), 5, '0', STR_PAD_LEFT);
-
-                $id_jurnal = (jurnal::max('jurnal_id')) ? (jurnal::max('jurnal_id') + 1) : 1;
-
-                // return json_encode($id_jurnal);
-
-                jurnal::insert([
-                    'jurnal_id'          => $id_jurnal,
-                    'no_jurnal'          => $bukti_jurnal,
-                    'jurnal_ref'         => $bukti,
-                    'tanggal_jurnal'     => date('Y-m-d', strtotime($request->tanggal_transaksi)),
-                    'keterangan'         => $request->keterangan
-                ]);
-
-
-                $akun = DB::table('d_akun')->where('id_akun', $request->perkiraan)->first();
-                $pos = "K";
-                $val = str_replace('.', '', explode(',', $request->nominal)[0]);
-
-                if($akun->posisi_akun != $pos){
-                    $val = '-'.str_replace('.', '', explode(',', $request->nominal)[0]);
-                }
-
-                jurnal_dt::insert([
-                    'jrdt_jurnal'   => $id_jurnal,
-                    'jrdt_no'       => 1,
-                    'jrdt_acc'      => $request->perkiraan,
-                    'jrdt_value'    => $val,
-                    'jrdt_dk'       => $pos,
-                ]);
-
-                $akun = DB::table('d_akun')->where('id_akun', $request->akun_lawan)->first();
-                $pos = "D";
-                $val = str_replace('.', '', explode(',', $request->nominal)[0]);
-
-                if($akun->posisi_akun != $pos){
-                    $val = '-'.str_replace('.', '', explode(',', $request->nominal)[0]);
-                }
-
-                // return json_encode($akun);
-
-                jurnal_dt::insert([
-                    'jrdt_jurnal'   => $id_jurnal,
-                    'jrdt_no'       => 2,
-                    'jrdt_acc'      => $request->akun_lawan,
-                    'jrdt_value'    => $val,
-                    'jrdt_dk'       => $pos
-                ]);
+                _initiateJournal_self_detail($bukti, "MM", $request->tanggal_transaksi, $request->keterangan, $acc);
 
             // Pembukuan Jurnal End
 
