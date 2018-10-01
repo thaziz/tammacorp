@@ -10,6 +10,6 @@ class m_transaksi extends Model
     protected $primaryKey = 'id_transaksi';
 
     public function detail(){
-    	return $this->hasMany('App\Model\keuangan\m_transaksi_detail', 'td_transaksi', 'id_transaksi');
+    	return $this->hasMany('App\Model\Keuangan\m_transaksi_detail', 'td_transaksi', 'id_transaksi');
     }
 }

@@ -12,6 +12,6 @@ class d_jurnal extends Model
     public $timestamps = false;
 
     public function detail(){
-    	return $this->hasMany('App\Model\keuangan\d_jurnal_dt', 'jrdt_jurnal', 'jurnal_id');
+    	return $this->hasMany('App\Model\Keuangan\d_jurnal_dt', 'jrdt_jurnal', 'jurnal_id');
     }
 }
