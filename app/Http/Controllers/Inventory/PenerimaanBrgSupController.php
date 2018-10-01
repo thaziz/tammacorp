@@ -275,7 +275,7 @@ class PenerimaanBrgSupController extends Controller
 
     public function simpanPenerimaan(Request $request)
     {
-        //dd($request->all());
+        dd($request->all());
         DB::beginTransaction();
         try 
         {

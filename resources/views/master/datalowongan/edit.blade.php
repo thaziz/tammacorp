@@ -77,7 +77,7 @@
                         <div class="form-group" id="divSelectDivisi">
                           <input type="hidden" id="h_divisi" name="h_divisi" value="{{ $data->c_divisi }}" class="form-control input-sm" readonly> 
                           <input type="hidden" id="h_divisiid" name="h_divisiid" value="{{ $data->l_divisi }}" class="form-control input-sm" readonly> 
-                          <select class="form-control input-sm select2" id="ip_divisi" name="divisi" style="width: 100% !important;">
+                          <select class="form-control input-sm select2" id="ip_divisi" name="divisi" style="width: 100% !important;" disabled>
                           </select>
                         </div> 
                       </div>
@@ -238,34 +238,32 @@
         cache: true
       }, 
     });
+
     $('#ip_level').select2({
     });
-    $('#ip_jabatan').select2({
-    });
 
-    $('#ip_divisi').change(function() 
-    {
-      $('#ip_level').empty();
-      $('#ip_jabatan').empty();
-      $( "#ip_level" ).select2({
-        placeholder: "Pilih Level...",
-        ajax: {
-          url: baseUrl + '/master/datalowongan/lookup-data-level',
-          dataType: 'json',
-          data: function (params) {
+    $('#ip_jabatan').select2({
+    }); 
+      
+    $( "#ip_level" ).select2({
+      placeholder: "Pilih Level...",
+      ajax: {
+        url: baseUrl + '/master/datalowongan/lookup-data-level',
+        dataType: 'json',
+        data: function (params) {
+          return {
+              q: $.trim(params.term)
+          };
+        },
+        processResults: function (data) {
             return {
-                q: $.trim(params.term)
+                results: data
             };
-          },
-          processResults: function (data) {
-              return {
-                  results: data
-              };
-          },
-          cache: true
-        }, 
-      });
+        },
+        cache: true
+      }, 
     });
+    
 
     $('#ip_level').change(function() 
     {
