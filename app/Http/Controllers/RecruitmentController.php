@@ -196,7 +196,7 @@ class RecruitmentController extends Controller
         $data = new d_pelamar;
             $data->p_id = $id;
             $data->p_date = date('Y-m-d');
-            $data->p_vacancyid = $dataLowongan->l_id;
+            $data->p_vacancyid = $request->kdlowong;
             $data->p_name = $request->nama;
             $data->p_nip = $request->noktp;
             $data->p_address = $request->alamat;
