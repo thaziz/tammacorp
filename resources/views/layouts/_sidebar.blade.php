@@ -735,10 +735,6 @@
                                         Absensi
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Data Pekerjaan Produksi','ma_read'))
-                                        Data Pekerjaan Produksi
-                                    @endif
-
                                     @if(Auth::user()->punyaAkses('Data Lembur Pegawai','ma_read'))
                                         Data Lembur Pegawai
                                     @endif
@@ -778,12 +774,6 @@
                                     <li class="{{ Request::is('hrd/absensi/index') ? 'active' : '' || Request::is('hrd/absensi/*') ? 'active' : '' }}">
                                         <a href="{{ url('/hrd/absensi/index')}}"><span
                                                     class="submenu-title">Absensi</span><span
-                                                    class="hidden">HRD</span></a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->punyaAkses('Data Pekerjaan Produksi','ma_read'))
-                                    <li class="{{ Request::is('hrd/hasilproduksi/index') ? 'active' : '' || Request::is('hrd/hasilproduksi/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/hrd/hasilproduksi/index')}}"><span class="submenu-title">Data Pekerjaan Produksi</span><span
                                                     class="hidden">HRD</span></a>
                                     </li>
                                 @endif
