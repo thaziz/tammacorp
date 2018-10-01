@@ -192,134 +192,126 @@ class RecruitmentController extends Controller
 
         if ($request->status == 'menikah') { $status = 'M'; } else { $status = 'S'; }
 
-        $dataLowongan = DB::table('d_lowongan')->select('l_id')->where('l_code', strtoupper($request->kdlowong))->first();
-        if (count($dataLowongan) == 0)
+        //d_pelamar
+        $data = new d_pelamar;
+            $data->p_id = $id;
+            $data->p_date = date('Y-m-d');
+            $data->p_vacancyid = $dataLowongan->l_id;
+            $data->p_name = $request->nama;
+            $data->p_nip = $request->noktp;
+            $data->p_address = $request->alamat;
+            $data->p_address_now = $request->alamatnow;
+            $data->p_birth_place = $request->tempatlahir;
+            $data->p_birthday = $birth;
+            $data->p_education = $request->pendidikanterakhir;
+            $data->p_schoolname = $request->pendidikan;
+            $data->p_yearin = $request->dob_pend_awal1;
+            $data->p_yearout = $request->dob_pend_akhir1;
+            $data->p_jurusan = $request->jurusan;
+            $data->p_nilai = $request->nilai; 
+            $data->p_email = $request->email;
+            $data->p_tlp = $request->notlp;
+            $data->p_religion = $request->agama;
+            $data->p_status = $status;
+            $data->p_child = $request->anak;
+            $data->p_wife_name = $request->partner_name;
+            $data->p_created = Carbon::now('Asia/Jakarta');
+            $data->save();
+
+        //d_cv_pelamar
+        if ($request->perusahaan1 != null)
         {
-            $request->session()->flash('gagal', 'Kode Posisi Anda Salah, mohon periksa/hubungi kami untuk konfirmasi kode');
-            return redirect('/recruitment#apply');
+            $cv = new d_cv_pelamar;
+            $cv->d_cv_pid = $id;
+            $cv->d_cv_company = $request->perusahaan1;
+            $cv->d_cv_thnmasuk = $request->dob_cv_awal1;
+            $cv->d_cv_thnkeluar = $request->dob_cv_akhir1;
+            $cv->d_cv_jobdesc = $request->jobdesc1;
+            $cv->d_cv_created = Carbon::now('Asia/Jakarta');
+            $cv->save();
         }
-        else
+
+        if ($request->perusahaan2 != null)
         {
-            //d_pelamar
-            $data = new d_pelamar;
-                $data->p_id = $id;
-                $data->p_date = date('Y-m-d');
-                $data->p_vacancyid = $dataLowongan->l_id;
-                $data->p_name = $request->nama;
-                $data->p_nip = $request->noktp;
-                $data->p_address = $request->alamat;
-                $data->p_address_now = $request->alamatnow;
-                $data->p_birth_place = $request->tempatlahir;
-                $data->p_birthday = $birth;
-                $data->p_education = $request->pendidikanterakhir;
-                $data->p_schoolname = $request->pendidikan;
-                $data->p_yearin = $request->dob_pend_awal1;
-                $data->p_yearout = $request->dob_pend_akhir1;
-                $data->p_jurusan = $request->jurusan;
-                $data->p_nilai = $request->nilai; 
-                $data->p_email = $request->email;
-                $data->p_tlp = $request->notlp;
-                $data->p_religion = $request->agama;
-                $data->p_status = $status;
-                $data->p_child = $request->anak;
-                $data->p_wife_name = $request->partner_name;
-                $data->p_created = Carbon::now('Asia/Jakarta');
-                $data->save();
-
-            //d_cv_pelamar
-            if ($request->perusahaan1 != null)
-            {
-                $cv = new d_cv_pelamar;
-                $cv->d_cv_pid = $id;
-                $cv->d_cv_company = $request->perusahaan1;
-                $cv->d_cv_thnmasuk = $request->dob_cv_awal1;
-                $cv->d_cv_thnkeluar = $request->dob_cv_akhir1;
-                $cv->d_cv_jobdesc = $request->jobdesc1;
-                $cv->d_cv_created = Carbon::now('Asia/Jakarta');
-                $cv->save();
-            }
-
-            if ($request->perusahaan2 != null)
-            {
-                $cv = new d_cv_pelamar;
-                $cv->d_cv_pid = $id;
-                $cv->d_cv_company = $request->perusahaan2;
-                $cv->d_cv_thnmasuk = $request->dob_cv_awal2;
-                $cv->d_cv_thnkeluar = $request->dob_cv_akhir2;
-                $cv->d_cv_jobdesc = $request->jobdesc2;
-                $cv->d_cv_created = Carbon::now('Asia/Jakarta');
-                $cv->save();
-            }
-
-            //d_berkas_pelamar
-            if($request->hasFile('image'))
-            {
-                $berkas = new d_berkas_pelamar;
-                $image = $request->file('image');
-                $path = public_path(). '/assets/berkas/foto-pelamar';
-                $filename = $request->nama.'_'.$id.'_foto' . '.' . $image->getClientOriginalExtension();
-                $image->move($path, $filename);
-                //load object dari package image resize
-                Image::make($path.'/'.$filename)->resize(800, 800)->save();
-                // set field to table
-                $berkas->bks_name = $filename;
-                $berkas->bks_type = 'I';
-                $berkas->bks_pid = $id;
-                $savedImg = $berkas->save();
-            }
-
-            if($request->hasFile('sertifikat'))
-            {
-                $berkas = new d_berkas_pelamar;
-                $sertifikat = $request->file('sertifikat');
-                $path = public_path(). '/assets/berkas/dokumen-pelamar';
-                $filename = $request->nama.'_'.$id.'_sertifikat' . '.' . $sertifikat->getClientOriginalExtension();
-                $sertifikat->move($path, $filename);
-                // set field to table
-                $berkas->bks_name = $filename;
-                $berkas->bks_type = 'D';
-                $berkas->bks_dtype = 'ST';
-                $berkas->bks_pid = $id;
-                $savedSertifikat = $berkas->save();
-            }
-
-            if($request->hasFile('ijazah'))
-            {
-                $berkas = new d_berkas_pelamar;
-                $ijazah = $request->file('ijazah');
-                $path = public_path(). '/assets/berkas/dokumen-pelamar';
-                $filename = $request->nama.'_'.$id.'_ijazah' . '.' . $ijazah->getClientOriginalExtension();
-                $ijazah->move($path, $filename);
-                // set field to table
-                $berkas->bks_name = $filename;
-                $berkas->bks_type = 'D';
-                $berkas->bks_dtype = 'IJ';
-                $berkas->bks_pid = $id;
-                $savedIjazah = $berkas->save();
-            }
-
-            if($request->hasFile('file_lain_lain'))
-            {
-                $berkas = new d_berkas_pelamar;
-                $file_lain_lain = $request->file('file_lain_lain');
-                $path = public_path(). '/assets/berkas/dokumen-pelamar';
-                $filename = $request->nama.'_'.$id.'_lain' . '.' . $file_lain_lain->getClientOriginalExtension();
-                $file_lain_lain->move($path, $filename);
-                // set field to table
-                $berkas->bks_name = $filename;
-                $berkas->bks_type = 'D';
-                $berkas->bks_dtype = 'LL';
-                $berkas->bks_pid = $id;
-                $savedIjazah = $berkas->save();
-            }
-
-            //generate pdf
-            $this->buat_pdf($id);
-            DB::commit();
-            // return redirect('/recruitment#apply')->with(['sukses' => 'Data berhasil disimpan, Anda Akan dihubungi apabila lolos administrasi. Terima Kasih']);
-            $request->session()->flash('sukses', 'Data berhasil disimpan, Anda Akan dihubungi apabila lolos administrasi. Terima Kasih');
-            return redirect('/recruitment#apply');
+            $cv = new d_cv_pelamar;
+            $cv->d_cv_pid = $id;
+            $cv->d_cv_company = $request->perusahaan2;
+            $cv->d_cv_thnmasuk = $request->dob_cv_awal2;
+            $cv->d_cv_thnkeluar = $request->dob_cv_akhir2;
+            $cv->d_cv_jobdesc = $request->jobdesc2;
+            $cv->d_cv_created = Carbon::now('Asia/Jakarta');
+            $cv->save();
         }
+
+        //d_berkas_pelamar
+        if($request->hasFile('image'))
+        {
+            $berkas = new d_berkas_pelamar;
+            $image = $request->file('image');
+            $path = public_path(). '/assets/berkas/foto-pelamar';
+            $filename = $request->nama.'_'.$id.'_foto' . '.' . $image->getClientOriginalExtension();
+            $image->move($path, $filename);
+            //load object dari package image resize
+            Image::make($path.'/'.$filename)->resize(800, 800)->save();
+            // set field to table
+            $berkas->bks_name = $filename;
+            $berkas->bks_type = 'I';
+            $berkas->bks_pid = $id;
+            $savedImg = $berkas->save();
+        }
+
+        if($request->hasFile('sertifikat'))
+        {
+            $berkas = new d_berkas_pelamar;
+            $sertifikat = $request->file('sertifikat');
+            $path = public_path(). '/assets/berkas/dokumen-pelamar';
+            $filename = $request->nama.'_'.$id.'_sertifikat' . '.' . $sertifikat->getClientOriginalExtension();
+            $sertifikat->move($path, $filename);
+            // set field to table
+            $berkas->bks_name = $filename;
+            $berkas->bks_type = 'D';
+            $berkas->bks_dtype = 'ST';
+            $berkas->bks_pid = $id;
+            $savedSertifikat = $berkas->save();
+        }
+
+        if($request->hasFile('ijazah'))
+        {
+            $berkas = new d_berkas_pelamar;
+            $ijazah = $request->file('ijazah');
+            $path = public_path(). '/assets/berkas/dokumen-pelamar';
+            $filename = $request->nama.'_'.$id.'_ijazah' . '.' . $ijazah->getClientOriginalExtension();
+            $ijazah->move($path, $filename);
+            // set field to table
+            $berkas->bks_name = $filename;
+            $berkas->bks_type = 'D';
+            $berkas->bks_dtype = 'IJ';
+            $berkas->bks_pid = $id;
+            $savedIjazah = $berkas->save();
+        }
+
+        if($request->hasFile('file_lain_lain'))
+        {
+            $berkas = new d_berkas_pelamar;
+            $file_lain_lain = $request->file('file_lain_lain');
+            $path = public_path(). '/assets/berkas/dokumen-pelamar';
+            $filename = $request->nama.'_'.$id.'_lain' . '.' . $file_lain_lain->getClientOriginalExtension();
+            $file_lain_lain->move($path, $filename);
+            // set field to table
+            $berkas->bks_name = $filename;
+            $berkas->bks_type = 'D';
+            $berkas->bks_dtype = 'LL';
+            $berkas->bks_pid = $id;
+            $savedIjazah = $berkas->save();
+        }
+
+        //generate pdf
+        $this->buat_pdf($id);
+        DB::commit();
+        // return redirect('/recruitment#apply')->with(['sukses' => 'Data berhasil disimpan, Anda Akan dihubungi apabila lolos administrasi. Terima Kasih']);
+        $request->session()->flash('sukses', 'Data berhasil disimpan, Anda Akan dihubungi apabila lolos administrasi. Terima Kasih');
+        return redirect('/recruitment#apply');
+        
     }
 
     public function cekEmail(Request $request)

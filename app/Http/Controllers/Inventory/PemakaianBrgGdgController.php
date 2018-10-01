@@ -37,7 +37,7 @@ class PemakaianBrgGdgController extends Controller
         $id_peg = Auth::user()->m_pegawai_id;
         $d_peg = DB::table('m_pegawai_man')->select('c_divisi_id', 'c_jabatan_id')->where('c_id', $id_peg)->first();
         if ($d_peg->c_divisi_id == '5' && $d_peg->c_jabatan_id == '24') {
-            # code...
+           $param[] = [1,2,7,8];
         }
         $formatted_tags = array();
         $term = trim($request->q);
