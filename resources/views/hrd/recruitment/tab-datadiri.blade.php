@@ -18,7 +18,12 @@
           <span style="color: red">*</span>
         </label>
         <div class="col-sm-10">
-          <input type="text" class="form-control {{ $errors->has('kdlowong') ? 'has-error' : '' }}" id="kdlowong" name="kdlowong" placeholder="Kode Lowongan" value="{{ old('kdlowong')}}" maxlength="7" minlength="7">
+          <select class="form-control {{ $errors->has('kdlowong') ? 'has-error' : '' }}" name="kdlowong" id="kdlowong">
+            <option value="-" selected disabled>-- Kode Lowongan --</option>
+            @foreach ($lowongan as $val)
+              <option value="{{$val->l_code}}" {{(collect(old('kdlowong'))->contains($val->l_code)) ? 'selected':'' }}>{{ $val->l_code}}</option>
+            @endforeach            
+          </select>
           @if ($errors->has('kdlowong'))
             <span style="color: red;" class="col-sm-12">{{$errors->first('kdlowong')}}</span>
           @endif
@@ -101,10 +106,18 @@
           <span style="color: red">*</span>
         </label>
         <div class="col-sm-10">
-          <input type="text" class="form-control {{ $errors->has('pendidikanterakhir') ? 'has-error' : '' }}" id="pendidikanterakhir" name="pendidikanterakhir" placeholder="Pendidikan Terakhir" value="{{ old('pendidikanterakhir')}}">
-          @if ($errors->has('pendidikanterakhir'))
-            <span style="color: red;" class="col-sm-12">{{$errors->first('pendidikanterakhir')}}</span>
-          @endif
+          <select class="form-control" name="pendidikanterakhir" id="pendidikanterakhir">
+            <option value="-" selected disabled>-- Pendidikan Terakhir --</option>
+            <option value="SD" @if (old('pendidikanterakhir') == 'SD') selected="selected" @endif>SD</option>
+            <option value="SMP" @if (old('pendidikanterakhir') == 'SMP') selected="selected" @endif>SMP</option>
+            <option value="SMA" @if (old('pendidikanterakhir') == 'SMA') selected="selected" @endif>SMA</option>
+            <option value="SMK" @if (old('pendidikanterakhir') == 'SMK') selected="selected" @endif>SMK</option>
+            <option value="D1" @if (old('pendidikanterakhir') == 'D1') selected="selected" @endif>D1</option>
+            <option value="D2" @if (old('pendidikanterakhir') == 'D2') selected="selected" @endif>D2</option>
+            <option value="D3" @if (old('pendidikanterakhir') == 'D3') selected="selected" @endif>D3</option>
+            <option value="S1" @if (old('pendidikanterakhir') == 'S1') selected="selected" @endif>S1</option>
+            <option value="S2" @if (old('pendidikanterakhir') == 'S2') selected="selected" @endif>S2</option>
+          </select>
         </div>
       </div>
       <div class="form-group row">

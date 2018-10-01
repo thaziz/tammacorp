@@ -143,7 +143,7 @@
 
                                 <!-- Filter Menu Submenu -->
                                 <span class="hidden">
-                                @if(Auth::user()->punyaAkses('Data Supplier','ma_read'))
+                                    @if(Auth::user()->punyaAkses('Data Supplier','ma_read'))
                                         Data Suplier
                                     @endif
 
@@ -159,9 +159,9 @@
                                         Data Group
                                     @endif
 
-                                    {{-- @if(Auth::user()->punyaAkses('Data Jenis Produksi','ma_read'))
-                                        Data Jenis Produksi
-                                    @endif --}}
+                                    @if(Auth::user()->punyaAkses('Data Jabatan','ma_read'))
+                                        Data Jabatan
+                                    @endif
 
                                     @if(Auth::user()->punyaAkses('Data Pegawai','ma_read'))
                                         Data Pegawai
@@ -169,6 +169,10 @@
 
                                     @if(Auth::user()->punyaAkses('Data Lowongan','ma_read'))
                                         Data Lowongan
+                                    @endif
+
+                                    @if(Auth::user()->punyaAkses('Data Scoreboard','ma_read'))
+                                        Data Scoreboard
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Data Akun Keuangan','ma_read'))
@@ -221,12 +225,13 @@
                                                     class="hidden">Master</span></a>
                                 @endif
 
-                                {{-- @if(Auth::user()->punyaAkses('Data Jenis Produksi','ma_read'))
-                                    <li class="{{ Request::is('master/datajenis/jenis') ? 'active' : '' || Request::is('master/datajenis/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/master/datajenis/jenis') }}"><span class="submenu-title">Data Jenis Produksi</span><span
-                                                    class="hidden">Master</span></a>
+                                @if(Auth::user()->punyaAkses('Data Jabatan','ma_read'))
+                                    <li class="{{ Request::is('master/datajabatan') ? 'active' : '' || Request::is('master/datajabatan/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/master/datajabatan')}}">
+                                            <span class="submenu-title">Data Jabatan</span>
+                                        </a>
                                     </li>
-                                @endif --}}
+                                @endif
 
                                 @if(Auth::user()->punyaAkses('Data Pegawai','ma_read'))
                                     <li class="{{ Request::is('master/datapegawai/pegawai') ? 'active' : '' || Request::is('master/datapegawai/*') ? 'active' : '' }}">
@@ -238,6 +243,13 @@
                                 @if(Auth::user()->punyaAkses('Data Lowongan','ma_read'))
                                     <li class="{{ Request::is('master/datalowongan/index') ? 'active' : '' || Request::is('master/datalowongan/*') ? 'active' : '' }}">
                                         <a href="{{ url('/master/datalowongan/index') }}"><span class="submenu-title">Data Lowongan</span><span
+                                                    class="hidden">Master</span></a>
+                                    </li>
+                                @endif
+
+                                @if(Auth::user()->punyaAkses('Data Scoreboard','ma_read'))
+                                    <li class="{{ Request::is('master/datascore/index') ? 'active' : '' || Request::is('master/datascore/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/master/datascore/index') }}"><span class="submenu-title">Data Scoreboard</span><span
                                                     class="hidden">Master</span></a>
                                     </li>
                                 @endif
@@ -362,10 +374,6 @@
                                         <a href="{{ url('/purchasing/pembayaran_hutang') }}"><span
                                                     class="submenu-title">Pembayaran Hutang</span><span class="hidden">Purchasing</span></a>
                                     </li>
-                                {{-- @endif --}}
-                            <!-- <li class="{{ Request::is('purchasing/belanjasuplier/suplier') ? 'active' : '' || Request::is('purchasing/belanjasuplier/suplier*') ? 'active' : '' }}">
-                                <a href="{{ url('/purchasing/belanjasuplier/suplier') }}"><span class="submenu-title">Belanja Suplier</span></a>
-                                </li> -->
                             </ul>
                         </li>
                     @endif
@@ -525,6 +533,10 @@
                                         Data Actual SPK
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Data Garapan Produksi','ma_read'))
+                                        Data Garapan Produksi
+                                    @endif
+
                             </span>
                             </a>
                             <ul class="nav nav-second-level">
@@ -573,6 +585,14 @@
                                     <li class="{{ Request::is('produksi/waste/waste') ? 'active' : '' || Request::is('produksi/waste/*') ? 'active' : '' }}">
                                         <a href="{{ url('/produksi/waste/waste') }}"><span
                                                     class="submenu-title">Data Actual SPK</span><span
+                                                    class="hidden">Produksi</span></a>
+                                    </li>
+                                @endif
+
+                                @if(Auth::user()->punyaAkses('Data Actual SPK','ma_read'))
+                                    <li class="{{ Request::is('produksi/garapan/index') ? 'active' : '' || Request::is('produksi/garapan/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/produksi/garapan/index') }}"><span
+                                                    class="submenu-title">Data Garapan Produksi</span><span
                                                     class="hidden">Produksi</span></a>
                                     </li>
                                 @endif
@@ -711,20 +731,8 @@
                                 </i><span class="menu-title">HRD</span><span class="fa arrow"></span>
                                 <span class="hidden">
 
-                                    @if(Auth::user()->punyaAkses('Data Karyawan','ma_read'))
-                                        Data Karyawan
-                                    @endif
-
                                     @if(Auth::user()->punyaAkses('Absensi','ma_read'))
                                         Absensi
-                                    @endif
-
-                                    @if(Auth::user()->punyaAkses('Pengajuan Pelatihan','ma_read'))
-                                        Pengajuan Pelatihan
-                                    @endif
-
-                                    @if(Auth::user()->punyaAkses('Data Administrasi Pegawai','ma_read'))
-                                        Data Administrasi Pegawai
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Data Lembur Pegawai','ma_read'))
@@ -739,6 +747,10 @@
                                         Payroll
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Payroll Pegawai Produksi','ma_read'))
+                                        Payroll Pegawai Produksi
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Manajemen KPI Pegawai','ma_read'))
                                         Manajemen KPI Pegawai
                                     @endif
@@ -750,18 +762,14 @@
                                     @if(Auth::user()->punyaAkses('Recruitment','ma_read'))
                                         Recruitment
                                     @endif
+                                    @if(Auth::user()->punyaAkses('Manajemen Surat','ma_read'))
+                                        Manajemen Surat
+                                    @endif
 
                             </span>
                             </a>
                             <ul class="nav nav-second-level">
 
-                                @if(Auth::user()->punyaAkses('Data Karyawan','ma_read'))
-                                    <li class="{{ Request::is('hrd/datajabatan') ? 'active' : '' || Request::is('hrd/datajabatan/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/hrd/datajabatan')}}"><span
-                                                    class="submenu-title">Data Jabatan</span><span
-                                                    class="hidden">HRD</span></a>
-                                    </li>
-                                @endif
                                 @if(Auth::user()->punyaAkses('Absensi','ma_read'))
                                     <li class="{{ Request::is('hrd/absensi/index') ? 'active' : '' || Request::is('hrd/absensi/*') ? 'active' : '' }}">
                                         <a href="{{ url('/hrd/absensi/index')}}"><span
@@ -769,40 +777,34 @@
                                                     class="hidden">HRD</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Pengajuan Pelatihan','ma_read'))
-                                    <li class="{{ Request::is('hrd/pengajuan/index') ? 'active' : '' || Request::is('hrd/pengajuan/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/hrd/pengajuan/index')}}"><span
-                                                    class="submenu-title">Pengajuan Pelatihan</span><span
-                                                    class="hidden">HRD</span></a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->punyaAkses('Data Administrasi Pegawai','ma_read'))
-                                    <li class="{{ Request::is('hrd/dataadministrasi/admin') ? 'active' : '' || Request::is('hrd/dataadministrasi/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/hrd/dataadministrasi/admin')}}"><span class="submenu-title">Data Administrasi Pegawai</span><span
-                                                    class="hidden">HRD</span></a>
-                                    </li>
-                                @endif
                                 @if(Auth::user()->punyaAkses('Data Lembur Pegawai','ma_read'))
-                                    <li class="{{ Request::is('hrd/datalembur/lembur') ? 'active' : '' || Request::is('hrd/datalembur/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/hrd/datalembur/lembur')}}"><span class="submenu-title">Data Lembur Pegawai</span><span
-                                                    class="hidden">HRD</span></a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->punyaAkses('Scoreboard Pegawai Per Hari','ma_read'))
-                                    <li class="{{ Request::is('hrd/scoreboard/score') ? 'active' : '' || Request::is('hrd/scoreboard/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/hrd/scoreboard/score')}}"><span class="submenu-title">Scoreboard Pegawai Per Hari</span><span
+                                    <li class="{{ Request::is('hrd/datalembur/index') ? 'active' : '' || Request::is('hrd/datalembur/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/hrd/datalembur/index')}}"><span class="submenu-title">Data Lembur Pegawai</span><span
                                                     class="hidden">HRD</span></a>
                                     </li>
                                 @endif
                                 @if(Auth::user()->punyaAkses('Payroll','ma_read'))
-                                    <li class="{{ Request::is('hrd/payroll/payroll') ? 'active' : '' || Request::is('hrd/payroll/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/hrd/payroll/payroll') }}"><span
+                                    <li class="{{ Request::is('hrd/payroll/setting-gaji') ? 'active' : '' || Request::is('hrd/payroll/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/hrd/payroll/setting-gaji') }}"><span
                                                     class="submenu-title">Payroll</span><span class="hidden">HRD</span></a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->punyaAkses('Payroll','ma_read'))
+                                    <li class="{{ Request::is('hrd/produksi/payroll') ? 'active' : '' || Request::is('hrd/produksi/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/hrd/produksi/payroll') }}"><span
+                                                    class="submenu-title">Payroll Pegawai Produksi</span>
+                                                    <span class="hidden">HRD</span></a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->punyaAkses('Scoreboard Pegawai Per Hari','ma_read'))
+                                    <li class="{{ Request::is('hrd/inputkpi/index') ? 'active' : '' || Request::is('hrd/inputkpi/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/hrd/inputkpi/index') }}"><span class="submenu-title">Scoreboard Pegawai Per Hari</span><span
+                                                    class="hidden">HRD</span></a>
+                                    </li>
+                                @endif
                                 @if(Auth::user()->punyaAkses('Manajemen KPI Pegawai','ma_read'))
-                                    <li class="{{ Request::is('hrd/manajemenkpipegawai/kpi') ? 'active' : '' || Request::is('hrd/manajemenkpipegawai/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/hrd/manajemenkpipegawai/kpi') }}"><span class="submenu-title">Manajemen KPI Pegawai</span><span
+                                    <li class="{{ Request::is('hrd/manajemenkpipegawai/index') ? 'active' : '' || Request::is('hrd/manajemenkpipegawai/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/hrd/manajemenkpipegawai/index') }}"><span class="submenu-title">Manajemen KPI Pegawai</span><span
                                                     class="hidden">HRD</span></a>
                                     </li>
                                 @endif

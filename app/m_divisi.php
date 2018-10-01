@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class m_divisi extends Model
 {
   protected $table = 'm_divisi';
-  protected $primaryKey = 'd_id';
-  protected $fillable = [ 'd_id',
-                          'd_name'
+  protected $primaryKey = 'c_id';
+  protected $fillable = [ 'c_id',
+                          'c_divisi'
                         ];
 
   public $incrementing = false;
   public $remember_token = false;
   //public $timestamps = false;
   const CREATED_AT = 'created_at';
-  const updated_at = 'i_update';
+  const updated_at = 'updated_at';
 }

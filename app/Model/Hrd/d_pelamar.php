@@ -30,6 +30,7 @@ class d_pelamar extends Model
         'p_apply_statusdt',
         'p_wife_name',
         'p_child',
+        'p_isset_employee',
         'p_created',
         'p_updated'
     ];

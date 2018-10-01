@@ -38,103 +38,120 @@
 
             <div id="alert-tab" class="tab-pane fade in active">
 
-              <div class="row">
+              <div class="row tamma-bg tamma-bg-form-top">
 
-                <div class="col-md-12 col-sm-12 col-xs-12">
+               
                   <form method="POST" class="form" action="{{ url('/hrd/manajemensurat/simpan-phk') }}" enctype="multipart/form-data" style="font-family:Arial;">
                     {{ csrf_field() }}
-                    <table class="table">
-                      <tr>
-                        <td class="col-sm-2">
+                    
+
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+
+                      <div class="row">
+
+                        <div class="col-md-3 col-sm-6 col-xs-12">
                           <label>Kode</label>
-                        </td>
-                        <td class="col-sm-1">
-                          <label>:</label>
-                        </td>
-                        <td>
-                          <div class="col-sm-12">
-                            <input disabled type="text" name="c_kode" value="{{ $kode }}" placeholder="Kode PHK" class="form-control">
+                        </div>
+
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                          <div class="form-group">
+                            <input type="text" name="c_kode" class="form-control input-sm" readonly="" value="{{$kode}}">
                             <input type="hidden" name="c_kode" value="{{ $kode }}" placeholder="Kode PHK" class="form-control">
+
                           </div>
-                        </td>
-                        <td>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6 col-xs-12">
                           <label>Jenis PHK</label>
-                        </td>
-                        <td>
-                          <label>:</label>
-                        </td>
-                        <td>
-                          <div class="col-sm-12">
-                            <select id="jenis" name="c_jenis" class="form-control input-sm">
-                              <option>--pilih jenis--</option>
-                              <option value="1">Pengurangan pegawai</option>
-                              <option value="2">Kesalahan berat</option>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                          <div class="form-group">
+                            <select class="form-control input-sm" name="c_jenis">
+                              <option>--Pilih Jenis--</option>
+                              <option value="1">Pengurangan Pegawai</option>
+                              <option value="2">Kesalahan Berat</option>
+
                             </select>
                           </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6 col-xs-12">
                           <label>Nama</label>
-                        </td>
-                        <td>
-                          <label>:</label>
-                        </td>
-                        <td>
-                          <div class="col-sm-12">
-                            <input type="text" value="" name="c_nama" placeholder="Nama" class="form-control">
+                        </div>
+
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                          <div class="form-group">
+                            <select class="form-control input-sm select2" name="c_nama">
+                              <option>--Pilih Pegawai--</option>
+                            </select>
                           </div>
-                        </td>
-                        <td>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6 col-xs-12">
                           <label>Tanggal</label>
-                        </td>
-                        <td>
-                          <label>:</label>
-                        </td>
-                        <td>
-                          <div class="col-sm-12">
-                            <input id="tgl" type="text" value="" name="c_tgl_phk" placeholder="yyyy-mm-dd" class="form-control">
+                        </div>
+
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                          <div class="form-group">
+                            <input id="tgl" type="text" class="form-control input-sm" name="c_tgl_phk">
                           </div>
-                        </td>
-                      </tr>
-                      <tr id="sejak" hidden>
-                        <td>
-                          <label>Selama bulan terakhir</label>
-                        </td>
-                        <td>
-                          <label>:</label>
-                        </td>
-                        <td>
-                          <div class="col-sm-12">
-                            <input type="integer" value="" name="c_bulan_terakhir" placeholder="Bulan" class="form-control">
+                        </div>
+
+                        <div class="col-md-3 col-sm-6 col-xs-12 sejak" hidden="">
+                          <label>Selama Bulan Terakhir</label>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6 col-xs-12 sejak" hidden="">
+                          <div class="form-group">
+                            <input type="number" min="1" class="form-control input-sm" name="c_bulan_terakhir">
                           </div>
-                        </td>
-                      </tr>
-                    </table>
-                    <div class="col-sm-12">
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12">
                       <input type="submit" value="Simpan" class="btn btn-warning pull-right">
                     </div>
 
                   </form>
-                  <div class="col-md-12 col-sm-12 col-xs-12" align="right" style="margin-top: 10px;">
-                    <div class="table-responsive">
-                      <table id="tbl_phk" class="table tabelan table-hover table-bordered" width="100%" cellspacing="0">
-                        <thead>
-                          <tr>
-                            <th>Kode</th>
-                            <th>Nama</th>
-                            <th>Tanggal PHK</th>
-                            <th>Alasan</th>
-                            <th>Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                      </table>
-                    </div>
+                              
+              </div>
+
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="form-group">
+                    <h3>Hanya Preview</h3>
                   </div>
                 </div>
+                <div class="col-lg-12">
+                  <a class="btn btn-block btn-sm btn-info" target="_blank" href="{{route('surat_phk_print_berat')}}"><i class="fa fa-print"></i> Print Kesalahan Berat</a>
+                  <a class="btn btn-block btn-sm btn-info" target="_blank" href="{{route('surat_phk_print_pengurangan')}}"><i class="fa fa-print"></i> Print Pengurangan Pegawai</a>
+                </div>
               </div>
+                  
+              <div class="table-responsive" style="margin-top: 15px;">
+                <table id="tbl_phk" class="table tabelan table-hover table-bordered" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Kode</th>
+                      <th>Nama</th>
+                      <th>Tanggal PHK</th>
+                      <th>Jenis PHK</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+
+              <div align="right" style="margin-top: 15px;">
+                <a href="{{route('manajemensurat')}}" class="btn btn-default">Kembali</a>
+              </div>
+                  
+              
+            </div>
               <!-- /div alert-tab -->
 
               <!-- div note-tab -->
@@ -167,15 +184,18 @@
 
   <script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
   <script type="text/javascript">
+    $('.select2').select2();
+
     $('#tgl').datepicker({
               autoclose: true,
               format: 'yyyy-mm-dd'
             });
       $('select').on('change', function() {
         if(this.value == 2){
-                 $('#sejak').removeAttr('hidden');
+                 $('.sejak').removeAttr('hidden');
               }else{
-                $('#sejak').attr('hidden','true');
+                $('.sejak').attr('hidden','true');
+                $('.sejak input').val('');
               }
       })
     var extensions = {

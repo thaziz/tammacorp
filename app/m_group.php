@@ -8,9 +8,11 @@ class m_group extends Model
 {
     protected $table = 'm_group';
     protected $primaryKey = 'm_gid';
-    protected $fillable = [ 'm_gid', 
-                            'm_gcode', 
-                            'm_gname'];
+    protected $fillable = [ 'm_gid',
+                            'm_gcode',
+                            'm_gname',
+                            'm_akun_persediaan'
+                          ];
 
     //public $timestamps = false;
     const CREATED_AT = 'm_gcreate';

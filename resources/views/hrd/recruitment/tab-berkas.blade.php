@@ -37,7 +37,7 @@
             <label for="sertifikat" class="col-sm-2 col-form-label font-weight-bold">File Sertifikat</label>
             <div class="col-sm-10">
               <!-- <input type="file" class="form-control" id="sertifikat" name="sertifikat" onchange="loadFile(event)" > -->
-              <input type="file" class="form-control" id="sertifikat" name="sertifikat">
+              <input type="file" class="form-control" id="sertifikat" name="sertifikat" accept="application/pdf">
             </div>
           </div>
         </div>
@@ -45,7 +45,7 @@
           <div class="form-group row">
             <label for="ijazah" class="col-sm-2 col-form-label font-weight-bold">File Ijazah</label>
             <div class="col-sm-10">
-              <input type="file" class="form-control" id="ijazah" name="ijazah">
+              <input type="file" class="form-control" id="ijazah" name="ijazah" accept="application/pdf">
             </div>
           </div>
         </div>
@@ -53,7 +53,7 @@
           <div class="form-group row">
             <label for="file_lain_lain" class="col-sm-2 col-form-label font-weight-bold">File Lain-lain</label>
             <div class="col-sm-10">
-              <input type="file" class="form-control" id="file_lain_lain" name="file_lain_lain" >
+              <input type="file" class="form-control" id="file_lain_lain" name="file_lain_lain" accept="application/pdf">
             </div>
           </div>
         </div>

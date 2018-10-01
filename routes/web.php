@@ -30,77 +30,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datasuplier/suplier', 'MasterController@suplier')->name('suplier');
     /* ari */
     /*---------*/
-//huda
-    Route::get('/hrd/datajabatan', 'Hrd\JabatanController@index');
-    Route::get('/hrd/datajabatan/data-jabatan', 'Hrd\JabatanController@jabatanData');
-    Route::get('/hrd/datajabatan/edit-jabatan/{id}', 'Hrd\JabatanController@editJabatan');
-    Route::get('/hrd/datajabatan/datatable-pegawai/{id}', 'Hrd\JabatanController@pegawaiData');
-    Route::post('/hrd/datajabatan/simpan-jabatan', 'Hrd\JabatanController@simpanJabatan');
-    Route::put('/hrd/datajabatan/update-jabatan/{id}', 'Hrd\JabatanController@updateJabatan');
-    Route::get('/hrd/datajabatan/tambah-jabatan', 'Hrd\JabatanController@tambahJabatan');
-    Route::delete('/hrd/datajabatan/delete-jabatan/{id}', 'Hrd\ManajemenSuratController@deleteJabatan');
-//Mahmud Absensi
-    Route::get('/hrd/absensi/index', 'Hrd\AbsensiController@index');
-    Route::get('/hrd/absensi/table/{tgl1}/{data}', 'Hrd\AbsensiController@table');
-    Route::get('/hrd/absensi/peg/save', 'Hrd\AbsensiController@savePeg');
-    Route::get('/hrd/absensi/detail/{tgl1}/{tgl2}/{tampil}', 'Hrd\AbsensiController@detAbsensi');
-//Mahmud Pengajuan Pelatihan
-    Route::get('/hrd/pengajuan/index', 'Hrd\PengajuanController@index');
-    Route::get('/hrd/Pengajuan/table', 'Hrd\PengajuanController@tablePengajuan');
-//surat
-    Route::get('/hrd/manajemensurat', 'Hrd\ManajemenSuratController@index');
-    Route::get('/hrd/manajemensurat/surat-phk', 'Hrd\ManajemenSuratController@indexPhk');
-    Route::get('/hrd/manajemensurat/data-phk', 'Hrd\ManajemenSuratController@phkData');
-    Route::post('/hrd/manajemensurat/simpan-phk', 'Hrd\ManajemenSuratController@simpanPhk');
-    Route::get('/hrd/manajemensurat/edit-phk/{id}', 'Hrd\ManajemenSuratController@editPhk');
-    Route::put('/hrd/manajemensurat/update-phk/{id}', 'Hrd\ManajemenSuratController@updatePhk');
-    Route::delete('/hrd/manajemensurat/delete-phk/{id}', 'Hrd\ManajemenSuratController@deletePhk');
-//gaji
-    Route::get('/hrd/payroll/payroll', 'Hrd\PayrollController@payroll');
-    Route::get('/hrd/payroll/view/{id}', 'Hrd\PayrollController@viewPayroll');
-    Route::get('/hrd/payroll/tambah/{id}/{peg}', 'Hrd\PayrollController@bayar');
-    Route::post('/hrd/payroll/simpan', 'Hrd\PayrollController@simpanDetail');
-    Route::get('/hrd/payroll/datatable-payroll', 'Hrd\PayrollController@payrollData');
-    Route::get('/hrd/payroll/datatable-view/{id}', 'Hrd\PayrollController@pegawai');
-    Route::get('/hrd/payroll/setting-gaji', 'Hrd\GajiController@settingGajiMan');
-    Route::get('/hrd/payroll/datatable-gaji-man', 'Hrd\GajiController@gajiManData');
-    Route::get('/hrd/payroll/tambah-gaji-man', 'Hrd\GajiController@tambahGajiMan');
-    Route::post('/hrd/payroll/simpan-gaji-man', 'Hrd\GajiController@simpanGajiMan');
-    Route::get('/hrd/payroll/edit-gaji-man/{id}', 'Hrd\GajiController@editGajiMan');
-    Route::put('/hrd/payroll/update-gaji-man/{id}', 'Hrd\GajiController@updateGajiMan');
-    Route::delete('/hrd/payroll/delete-gaji-man/{id}', 'Hrd\GajiController@deleteGajiMan');
-    Route::get('/hrd/payroll/datatable-gaji-pro', 'Hrd\GajiController@gajiProData');
-    Route::get('/hrd/payroll/tambah-gaji-pro', 'Hrd\GajiController@tambahGajiPro');
-    Route::post('/hrd/payroll/simpan-gaji-pro', 'Hrd\GajiController@simpanGajiPro');
-    Route::get('/hrd/payroll/edit-gaji-pro/{id}', 'Hrd\GajiController@editGajiPro');
-    Route::put('/hrd/payroll/update-gaji-pro/{id}', 'Hrd\GajiController@updateGajiPro');
-    Route::delete('/hrd/payroll/delete-gaji-pro/{id}', 'Hrd\GajiController@deleteGajiPro');
-    Route::get('/hrd/payroll/datatable-potongan', 'Hrd\GajiController@potonganData');
-    Route::get('/hrd/payroll/tambah-potongan', 'Hrd\GajiController@tambahPotongan');
-    Route::post('/hrd/payroll/simpan-potongan', 'Hrd\GajiController@simpanPotongan');
-    Route::get('/hrd/payroll/edit-potongan/{id}', 'Hrd\GajiController@editPotongan');
-    Route::put('/hrd/payroll/update-potongan/{id}', 'Hrd\GajiController@updatePotongan');
-    Route::delete('/hrd/payroll/delete-potongan/{id}', 'Hrd\GajiController@deletePotongan');
-//pegawai
-    Route::get('/master/datapegawai/datatable-pegawaipro', 'Master\PegawaiController@pegawaiPro');
-    Route::get('/master/datapegawai/tambah-pegawai-pro', 'Master\PegawaiController@tambahPegawaiPro');
-    Route::post('/master/datapegawai/simpan-pegawai-pro', 'Master\PegawaiController@simpanPegawaiPro');
-    Route::get('/master/datapegawai/edit-pegawai-pro/{id}', 'Master\PegawaiController@editPegawaiPro');
-    Route::put('/master/datapegawai/update-pegawai-pro/{id}', 'Master\PegawaiController@updatePegawaiPro');
-    Route::delete('/master/datapegawai/delete-pegawai-pro/{id}', 'Master\PegawaiController@deletePegawaiPro');
-    Route::post('/master/datapegawai/import-pro', 'Master\PegawaiController@importPegawaiPro');
-    Route::get('/master/datapegawai/master-import-pro', 'Master\PegawaiController@getFilePro');
-    Route::get('/master/datapegawai/pegawai', 'Master\PegawaiController@pegawai')->name('pegawai');
-    Route::get('/master/datapegawai/edit-pegawai/{id}', 'Master\PegawaiController@editPegawai');
-    Route::put('/master/datapegawai/update-pegawai/{id}', 'Master\PegawaiController@updatePegawai');
-    Route::get('/master/datapegawai/datatable-pegawai', 'Master\PegawaiController@pegawaiData');
-    Route::get('/master/datapegawai/tambah-pegawai', 'Master\PegawaiController@tambahPegawai');
-    Route::get('/master/datapegawai/data-jabatan/{id}', 'Master\PegawaiController@jabatanData');
-    Route::post('/master/datapegawai/simpan-pegawai', 'Master\PegawaiController@simpanPegawai');
-    Route::delete('/master/datapegawai/delete-pegawai/{id}', 'Master\PegawaiController@deletePegawai');
-    Route::post('/master/datapegawai/import', 'Master\PegawaiController@importPegawai');
-    Route::get('/master/datapegawai/master-import', 'Master\PegawaiController@getFile');
-    /*Purchasing*/
+/*Purchasing*/
 //rizky
 //rencana bahan baku
     Route::get('/purchasing/rencanabahanbaku/bahan', 'Pembelian\RencanaBahanController@index');
@@ -301,6 +231,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('produksi/spk/lihat-detail', 'Produksi\spkProductionController@lihatFormula');
     Route::get('produksi/spk/input-data', 'Produksi\spkProductionController@inputData');
     Route::get('/produksi/o_produksi/save/actual/{id}', 'Produksi\spkProductionController@saveActual');
+//Data Garapan/
+    Route::get('produksi/garapan/index', 'Produksi\GarapanPegawaiController@index');
+    Route::get('produksi/garapan/table/{rumah}/{item}/{jabatan}/{tgl}', 'Produksi\GarapanPegawaiController@tableGarapan');
+    Route::get('produksi/garapan/save', 'Produksi\GarapanPegawaiController@saveGarapan');
+    Route::get('produksi/garapan/table/data/{rumah}/{item}/{jabatan}/{tgl1}/{tgl2}', 'Produksi\GarapanPegawaiController@tableDataGarapan');
 //mahmud
     Route::get('/produksi/o_produksi/index', 'Produksi\ManOutputProduksiController@OutputProduksi');
     Route::get('/produksi/o_produksi/tabel', 'Produksi\ManOutputProduksiController@tabel');
@@ -481,11 +416,140 @@ Route::group(['middleware' => 'auth'], function () {
 /*HRD*/
     Route::get('/hrd/manajemenkpipegawai/kpi', 'HrdController@kpi');
     Route::get('/hrd/payroll/table', 'HrdController@table');
-    Route::get('/hrd/datajabatan/edit_jabatan', 'HrdController@edit_jabatan');
-    Route::get('/hrd/dataadministrasi/admin', 'HrdController@admin');
     Route::get('/hrd/datalembur/lembur', 'HrdController@lembur');
     Route::get('/hrd/scoreboard/score', 'HrdController@score');
+//Mahmud Absensi
+    Route::get('/hrd/absensi/index', 'Hrd\AbsensiController@index');
+    Route::get('/hrd/absensi/table/{tgl1}/{data}', 'Hrd\AbsensiController@table');
+    Route::get('/hrd/absensi/peg/save', 'Hrd\AbsensiController@savePeg');
+    Route::get('/hrd/absensi/detail/{tgl1}/{tgl2}/{tampil}', 'Hrd\AbsensiController@detAbsensi');
+/*hasil Pengerjaan Produksi*/
+    Route::get('/hrd/hasilproduksi/index', 'Hrd\HproduksiController@index');
+    Route::get('/hrd/hasilproduksi/get-hasil-by-tgl/{tgl1}/{tgl2}', 'Hrd\HproduksiController@getHasilByTgl');
+    Route::get('/hrd/hasilproduksi/get-detail/{id}', 'Hrd\HproduksiController@getDataDetail');
+/*Recruitment*/
+    Route::get('/hrd/recruitment/rekrut', 'HrdController@rekrut')->name('rekrut');
+    Route::get('/hrd/recruitment/get-data-hrd', 'RecruitmentController@getDataHrd');
+    Route::get('/hrd/recruitment/get-data-hrd-diterima', 'RecruitmentController@getDataHrdDiterima');
+    Route::get('/hrd/recruitment/process_rekrut/{id}', 'RecruitmentController@process_rekrut');
+    Route::get('/hrd/recruitment/preview_rekrut/{id}', 'RecruitmentController@preview_rekrut');
+    Route::post('/hrd/recruitment/approval_1', 'RecruitmentController@approval_1');
+    Route::post('/hrd/recruitment/update_approval_1', 'RecruitmentController@update_approval_1');
+    Route::post('/hrd/recruitment/approval_2', 'RecruitmentController@approval_2');
+    Route::post('/hrd/recruitment/update_approval_2', 'RecruitmentController@update_approval_2');
+    Route::post('/hrd/recruitment/approval_3', 'RecruitmentController@approval_3');
+    Route::get('/hrd/recruitment/autocomplete-pic', 'RecruitmentController@autocomplete');
+    Route::get('/hrd/recruitment/get-jadwal-interview/{id}', 'RecruitmentController@getJadwalInterview');
+    Route::post('/hrd/recruitment/proc-jadwal-interview', 'RecruitmentController@procJadwalInterview');
+    Route::get('/hrd/recruitment/get-jadwal-presentasi/{id}', 'RecruitmentController@getJadwalPresentasi');
+    Route::post('/hrd/recruitment/proc-jadwal-presentasi', 'RecruitmentController@procJadwalPresentasi');
+    Route::get('/hrd/recruitment/get-data-set-pegawai/{id}/{id2}', 'RecruitmentController@getDataSetPegawai');
+    Route::post('/hrd/recruitment/simpan-pegawai-baru', 'RecruitmentController@simpanPegawaiBaru');
+    Route::post('/hrd/recruitment/delete-data-pelamar', 'RecruitmentController@deleteDataPelamar');
+    Route::get('/hrd/recruitment/buat_pdf', 'RecruitmentController@buat_pdf');
+//surat
+    Route::get('/hrd/manajemensurat', 'Hrd\ManajemenSuratController@index')->name('manajemensurat');
+    Route::get('/hrd/manajemensurat/surat-phk', 'Hrd\ManajemenSuratController@indexPhk');
+    Route::get('/hrd/manajemensurat/data-phk', 'Hrd\ManajemenSuratController@phkData');
+    Route::post('/hrd/manajemensurat/simpan-phk', 'Hrd\ManajemenSuratController@simpanPhk');
+    Route::get('/hrd/manajemensurat/edit-phk/{id}', 'Hrd\ManajemenSuratController@editPhk');
+    Route::put('/hrd/manajemensurat/update-phk/{id}', 'Hrd\ManajemenSuratController@updatePhk');
+    Route::delete('/hrd/manajemensurat/delete-phk/{id}', 'Hrd\ManajemenSuratController@deletePhk');
 
+// Ari
+    // surat2
+    // form kenaikan gaji
+    Route::get('/hrd/manajemensurat/form_kenaikan_gaji', 'Hrd\ManajemenSuratController@form_kenaikan_gaji')->name('form_kenaikan_gaji');
+    Route::get('/hrd/manajemensurat/form_kenaikan_gaji_print', 'Hrd\ManajemenSuratController@form_kenaikan_gaji_print')->name('form_kenaikan_gaji_print');
+    // form laporan leader
+    Route::get('/hrd/manajemensurat/form_laporan_leader', 'Hrd\ManajemenSuratController@form_laporan_leader')->name('form_laporan_leader');
+    Route::get('/hrd/manajemensurat/form_laporan_leader_print', 'Hrd\ManajemenSuratController@form_laporan_leader_print')->name('form_laporan_leader_print');
+    // form lembur
+    Route::get('/hrd/manajemensurat/form_lembur', 'Hrd\ManajemenSuratController@form_lembur')->name('form_lembur');
+    Route::get('/hrd/manajemensurat/form_lembur_print', 'Hrd\ManajemenSuratController@form_lembur_print')->name('form_lembur_print');
+    // form overhandle
+    Route::get('/hrd/manajemensurat/form_overhandle', 'Hrd\ManajemenSuratController@form_overhandle')->name('form_overhandle');
+    Route::get('/hrd/manajemensurat/form_overhandle_print', 'Hrd\ManajemenSuratController@form_overhandle_print')->name('form_overhandle_print');
+    // form permintaan
+    Route::get('/hrd/manajemensurat/form_permintaan', 'Hrd\ManajemenSuratController@form_permintaan')->name('form_permintaan');
+    Route::get('/hrd/manajemensurat/form_permintaan_print', 'Hrd\ManajemenSuratController@form_permintaan_print')->name('form_permintaan_print');
+    // form keterangan kerja
+    Route::get('/hrd/manajemensurat/form_keterangan_kerja', 'Hrd\ManajemenSuratController@form_keterangan_kerja')->name('form_keterangan_kerja');
+    Route::get('/hrd/manajemensurat/form_keterangan_kerja_print', 'Hrd\ManajemenSuratController@form_keterangan_kerja_print')->name('form_keterangan_kerja_print');
+    // form perintah lembur
+    Route::get('/hrd/manajemensurat/form_perintah_lembur', 'Hrd\ManajemenSuratController@form_perintah_lembur')->name('form_perintah_lembur');
+    Route::get('/hrd/manajemensurat/form_perintah_lembur_print', 'Hrd\ManajemenSuratController@form_perintah_lembur_print')->name('form_perintah_lembur_print');
+    // surat-phk pengurangan pegawai
+    Route::get('/hrd/manajemensurat/surat_phk_print_pengurangan', 'Hrd\ManajemenSuratController@surat_phk_print')->name('surat_phk_print_pengurangan');
+    // surat-phk kesalahan berat
+    Route::get('/hrd/manajemensurat/surat_phk_print_berat', 'Hrd\ManajemenSuratController@surat_phk_print_berat')->name('surat_phk_print_berat');
+    // application form
+    Route::get('/hrd/manajemensurat/form_application_print', 'Hrd\ManajemenSuratController@form_application_print')->name('form_application_print');
+
+
+//gaji
+    Route::get('/hrd/payroll/payroll', 'Hrd\PayrollController@payroll');
+    Route::get('/hrd/payroll/view/{id}', 'Hrd\PayrollController@viewPayroll');
+    Route::get('/hrd/payroll/tambah/{id}/{peg}', 'Hrd\PayrollController@bayar');
+    Route::post('/hrd/payroll/simpan', 'Hrd\PayrollController@simpanDetail');
+    Route::get('/hrd/payroll/datatable-payroll', 'Hrd\PayrollController@payrollData');
+    Route::get('/hrd/payroll/datatable-view/{id}', 'Hrd\PayrollController@pegawai');
+//setting payroll
+    Route::get('/hrd/payroll/setting-gaji', 'Hrd\GajiController@settingGajiMan');
+    Route::get('/hrd/payroll/datatable-gaji-man', 'Hrd\GajiController@gajiManData');
+    Route::get('/hrd/payroll/tambah-gaji-man', 'Hrd\GajiController@tambahGajiMan');
+    Route::post('/hrd/payroll/simpan-gaji-man', 'Hrd\GajiController@simpanGajiMan');
+    Route::get('/hrd/payroll/edit-gaji-man/{id}', 'Hrd\GajiController@editGajiMan');
+    Route::put('/hrd/payroll/update-gaji-man/{id}', 'Hrd\GajiController@updateGajiMan');
+    Route::delete('/hrd/payroll/delete-gaji-man/{id}', 'Hrd\GajiController@deleteGajiMan');
+    Route::get('/hrd/payroll/datatable-gaji-pro', 'Hrd\GajiController@gajiProData');
+    Route::get('/hrd/payroll/tambah-gaji-pro', 'Hrd\GajiController@tambahGajiPro');
+    Route::post('/hrd/payroll/simpan-gaji-pro', 'Hrd\GajiController@simpanGajiPro');
+    Route::get('/hrd/payroll/edit-gaji-pro/{id}', 'Hrd\GajiController@editGajiPro');
+    Route::put('/hrd/payroll/update-gaji-pro/{id}', 'Hrd\GajiController@updateGajiPro');
+    Route::delete('/hrd/payroll/delete-gaji-pro/{id}', 'Hrd\GajiController@deleteGajiPro');
+    Route::get('/hrd/payroll/datatable-potongan', 'Hrd\GajiController@potonganData');
+    Route::get('/hrd/payroll/tambah-potongan', 'Hrd\GajiController@tambahPotongan');
+    Route::post('/hrd/payroll/simpan-potongan', 'Hrd\GajiController@simpanPotongan');
+    Route::get('/hrd/payroll/edit-potongan/{id}', 'Hrd\GajiController@editPotongan');
+    Route::put('/hrd/payroll/update-potongan/{id}', 'Hrd\GajiController@updatePotongan');
+    Route::delete('/hrd/payroll/delete-potongan/{id}', 'Hrd\GajiController@deletePotongan');
+    Route::get('/hrd/payroll/tambah-tunjangan', 'Hrd\GajiController@tambahTunjangan');
+    Route::post('/hrd/payroll/simpan-tunjangan', 'Hrd\GajiController@simpanTunjangan');
+    Route::get('/hrd/payroll/datatable-tunjangan-man', 'Hrd\GajiController@tunjanganManData');
+    Route::get('/hrd/payroll/edit-tunjangan-man/{id}', 'Hrd\GajiController@editTunjangan');
+    Route::post('/hrd/payroll/update-tunjangan/{id}', 'Hrd\GajiController@updateTunjangan');
+    Route::delete('/hrd/payroll/delete-tunjangan/{id}', 'Hrd\GajiController@deleteTunjangan');
+    //payroll produksi Mahmud
+        Route::get('/hrd/produksi/payroll', 'Hrd\PayrollProduksiController@index');
+        Route::get('/hrd/payroll/table/gaji/{rumah}/{jabatan}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@tableDataGarapan');
+        Route::get('/hrd/payroll/lihat-gaji/{id}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@lihatGaji');
+/*Data Lembur*/
+    Route::get('/hrd/datalembur/index', 'Hrd\HlemburController@index');
+    Route::get('/hrd/datalembur/get-lembur-by-tgl/{tgl1}/{tgl2}', 'Hrd\HlemburController@getLemburByTgl');
+    Route::get('/hrd/datalembur/lookup-data-divisi', 'Hrd\HlemburController@lookup_divisi');
+    Route::get('/hrd/datalembur/lookup-data-jabatan', 'Hrd\HlemburController@lookup_jabatan');
+    Route::get('/hrd/datalembur/lookup-data-pegawai', 'Hrd\HlemburController@lookup_pegawai');
+    Route::post('/hrd/datalembur/simpan-lembur', 'Hrd\HlemburController@simpanLembur');
+    Route::get('/hrd/datalembur/get-detail/{id}/{id2}', 'Hrd\HlemburController@getDataDetail');
+    Route::get('/hrd/datalembur/get-edit/{id}/{id2}', 'Hrd\HlemburController@getDataEdit');
+    Route::post('/hrd/datalembur/update-lembur', 'Hrd\HlemburController@updateLembur');
+    Route::post('/hrd/datalembur/delete-lembur', 'Hrd\HlemburController@deleteLembur');
+    Route::get('/hrd/datalembur/print/{id}', 'Hrd\HlemburController@print');
+/*Input KPI*/
+    Route::get('/hrd/inputkpi/index', 'Hrd\DkpiController@index');
+    Route::get('/hrd/inputkpi/get-kpi-by-tgl/{tgl1}/{tgl2}', 'Hrd\DkpiController@getKpiByTgl');
+    Route::get('/hrd/inputkpi/set-field-modal', 'Hrd\DkpiController@setFieldModal');
+    Route::post('/hrd/inputkpi/simpan-data', 'Hrd\DkpiController@simpanData');
+    Route::get('/hrd/inputkpi/get-edit/{id}', 'Hrd\DkpiController@getDataEdit');
+    Route::post('/hrd/inputkpi/update-data', 'Hrd\DkpiController@updateData');
+    Route::post('/hrd/inputkpi/delete-data', 'Hrd\DkpiController@deleteData');
+/*Manajemen KPI*/
+    Route::get('/hrd/manajemenkpipegawai/index', 'Hrd\MankpiController@index');
+    Route::get('/hrd/manajemenkpipegawai/get-kpi-by-tgl/{tgl1}/{tgl2}/{tampil}', 'Hrd\MankpiController@getKpiByTgl');
+    Route::get('/hrd/manajemenkpipegawai/get-edit/{id}', 'Hrd\MankpiController@getDataEdit');
+    Route::post('/hrd/manajemenkpipegawai/update-data', 'Hrd\MankpiController@updateData');
+    Route::post('/hrd/manajemenkpipegawai/ubah-status', 'Hrd\MankpiController@ubahStatus');
     /*Keuangan*/
 
         Route::get('/keuangan/tes_jurnal', function(){
@@ -746,24 +810,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/keuangan/spk/update-status/{id}', 'Keuangan\spkFinancialController@updateStatus');
     Route::get('/hrd/training/training', 'HrdController@training')->name('training');
     Route::get('/hrd/training/form_training', 'HrdController@tambah_training')->name('form_training');
-/*Recruitment*/
-    Route::get('/hrd/recruitment/rekrut', 'HrdController@rekrut')->name('rekrut');
-    Route::get('/hrd/recruitment/get-data-hrd', 'RecruitmentController@getDataHrd');
-    Route::get('/hrd/recruitment/get-data-hrd-diterima', 'RecruitmentController@getDataHrdDiterima');
-    Route::get('/hrd/recruitment/process_rekrut/{id}', 'RecruitmentController@process_rekrut');
-    Route::get('/hrd/recruitment/preview_rekrut/{id}', 'RecruitmentController@preview_rekrut');
-    Route::post('/hrd/recruitment/approval_1', 'RecruitmentController@approval_1');
-    Route::post('/hrd/recruitment/update_approval_1', 'RecruitmentController@update_approval_1');
-    Route::post('/hrd/recruitment/approval_2', 'RecruitmentController@approval_2');
-    Route::post('/hrd/recruitment/update_approval_2', 'RecruitmentController@update_approval_2');
-    Route::post('/hrd/recruitment/approval_3', 'RecruitmentController@approval_3');
-    Route::get('/hrd/recruitment/autocomplete-pic', 'RecruitmentController@autocomplete');
-    Route::get('/hrd/recruitment/get-jadwal-interview/{id}', 'RecruitmentController@getJadwalInterview');
-    Route::post('/hrd/recruitment/proc-jadwal-interview', 'RecruitmentController@procJadwalInterview');
-    Route::get('/hrd/recruitment/get-jadwal-presentasi/{id}', 'RecruitmentController@getJadwalPresentasi');
-    Route::post('/hrd/recruitment/proc-jadwal-presentasi', 'RecruitmentController@procJadwalPresentasi');
-//Master Data Lowongan
-    
+/*Keuangan*/
 // rizky
     Route::get('/keuangan/p_hasilproduksi/pembatalanPenerimaan', 'Keuangan\KeuanganController@pembatalanPenerimaan');
     Route::get('/keuangan/p_hasilproduksi/ubah_status_transaksi/{id}/{id2}', 'Keuangan\KeuanganController@ubahStatusTransaksi');
@@ -856,23 +903,23 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('master/datasuplier/suplier_hapus', 'Master\SuplierController@suplier_hapus');
 //-deny
 //customer
-    Route::get('/master/datacust/cust', 'master\custController@cust')->name('cust');
-    Route::get('/master/datacust/tambah_cust', 'master\custController@tambah_cust')->name('tambah_cust');
-    Route::get('/master/datacust/simpan_cust', 'master\custController@simpan_cust')->name('simpan_cust');
-    Route::get('/master/datacust/hapus_cust', 'master\custController@hapus_cust')->name('hapus_cust');
-    Route::get('/master/datacust/edit_cust', 'master\custController@edit_cust')->name('edit_cust');
-    Route::get('/master/datacust/update_cust', 'master\custController@update_cust')->name('update_cust');
-    Route::get('/master/datacust/datatable_cust', 'master\custController@datatable_cust')->name('datatable_cust');
+    Route::get('/master/datacust/cust', 'Master\custController@cust')->name('cust');
+    Route::get('/master/datacust/tambah_cust', 'Master\custController@tambah_cust')->name('tambah_cust');
+    Route::get('/master/datacust/simpan_cust', 'Master\custController@simpan_cust')->name('simpan_cust');
+    Route::get('/master/datacust/hapus_cust', 'Master\custController@hapus_cust')->name('hapus_cust');
+    Route::get('/master/datacust/edit_cust', 'Master\custController@edit_cust')->name('edit_cust');
+    Route::get('/master/datacust/update_cust', 'Master\custController@update_cust')->name('update_cust');
+    Route::get('/master/datacust/datatable_cust', 'Master\custController@datatable_cust')->name('datatable_cust');
 //barang
-    Route::get('/master/databarang/barang', 'master\barangController@barang')->name('barang');
-    Route::get('/master/databarang/tambah_barang', 'master\barangController@tambah_barang');
-    Route::post('/master/databarang/simpan_barang', 'master\barangController@simpan_barang')->name('simpan_barang');
-    Route::post('/master/databarang/ubah_status_barang', 'master\barangController@ubah_status')->name('ubah_status');
-    Route::get('/master/databarang/edit_barang', 'master\barangController@edit_barang')->name('edit_barang');
-    Route::post('/master/databarang/update_barang', 'master\barangController@update_barang')->name('update_barang');
-    Route::get('/master/databarang/datatable_barang', 'master\barangController@datatable_barang')->name('datatable_barang');
-    Route::get('/master/databarang/kode_barang', 'master\barangController@kode_barang')->name('kode_barang');
-    Route::get('/master/databarang/cari_group_barang', 'master\barangController@cari_group_barang')->name('cari_group_barang');
+    Route::get('/master/databarang/barang', 'Master\barangController@barang')->name('barang');
+    Route::get('/master/databarang/tambah_barang', 'Master\barangController@tambah_barang');
+    Route::post('/master/databarang/simpan_barang', 'Master\barangController@simpan_barang')->name('simpan_barang');
+    Route::post('/master/databarang/ubah_status_barang', 'Master\barangController@ubah_status')->name('ubah_status');
+    Route::get('/master/databarang/edit_barang', 'Master\barangController@edit_barang')->name('edit_barang');
+    Route::post('/master/databarang/update_barang', 'Master\barangController@update_barang')->name('update_barang');
+    Route::get('/master/databarang/datatable_barang', 'Master\barangController@datatable_barang')->name('datatable_barang');
+    Route::get('/master/databarang/kode_barang', 'Master\barangController@kode_barang')->name('kode_barang');
+    Route::get('/master/databarang/cari_group_barang', 'Master\barangController@cari_group_barang')->name('cari_group_barang');
 //itemproduksi mahmud
     Route::get('/master/itemproduksi/index', 'Master\itemProduksiController@index');
     Route::get('/master/tableproduksi/table', 'Master\itemProduksiController@tableProduksi');
@@ -882,13 +929,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/itemproduksi/edit_item/{a}', 'Master\itemProduksiController@editBarang');
     Route::get('/master/itemproduksi/update_item/{a}', 'Master\itemProduksiController@updateItem');
 //bahan baku
-    Route::get('/master/databaku/baku', 'master\bahan_bakuController@baku')->name('baku');
-    Route::get('/master/databaku/tambah_baku', 'master\bahan_bakuController@tambah_baku')->name('tambah_baku');
-    Route::get('/master/databaku/simpan_baku', 'master\bahan_bakuController@simpan_baku')->name('simpan_baku');
-    Route::get('/master/databaku/hapus_baku', 'master\bahan_bakuController@hapus_baku')->name('hapus_baku');
-    Route::get('/master/databaku/edit_baku', 'master\bahan_bakuController@edit_baku')->name('edit_baku');
-    Route::get('/master/databaku/update_baku', 'master\bahan_bakuController@update_baku')->name('update_baku');
-    Route::get('/master/databaku/datatable_baku', 'master\bahan_bakuController@datatable_baku')->name('datatable_baku');
+    Route::get('/master/databaku/baku', 'Master\bahan_bakuController@baku')->name('baku');
+    Route::get('/master/databaku/tambah_baku', 'Master\bahan_bakuController@tambah_baku')->name('tambah_baku');
+    Route::get('/master/databaku/simpan_baku', 'Master\bahan_bakuController@simpan_baku')->name('simpan_baku');
+    Route::get('/master/databaku/hapus_baku', 'Master\bahan_bakuController@hapus_baku')->name('hapus_baku');
+    Route::get('/master/databaku/edit_baku', 'Master\bahan_bakuController@edit_baku')->name('edit_baku');
+    Route::get('/master/databaku/update_baku', 'Master\bahan_bakuController@update_baku')->name('update_baku');
+    Route::get('/master/databaku/datatable_baku', 'Master\bahan_bakuController@datatable_baku')->name('datatable_baku');
 //jenis produksi
     Route::get('/master/datajenis/jenis', 'Master\jenis_produksiController@jenis')->name('jenis');
     Route::get('/master/datajenis/tambah_jenis', 'Master\jenis_produksiController@tambah_jenis')->name('tambah_jenis');
@@ -898,21 +945,21 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datajenis/update_jenis', 'Master\jenis_produksiController@update_jenis')->name('update_jenis');
     Route::get('/master/datajenis/datatable_jenis', 'Master\jenis_produksiController@datatable_jenis')->name('datatable_jenis');
 //satuan
-    Route::get('/master/datasatuan/satuan', 'master\satuanController@satuan')->name('satuan');
-    Route::get('/master/datasatuan/tambah_satuan', 'master\satuanController@tambah_satuan')->name('tambah_satuan');
-    Route::get('/master/datasatuan/simpan_satuan', 'master\satuanController@simpan_satuan')->name('simpan_satuan');
-    Route::get('/master/datasatuan/hapus_satuan', 'master\satuanController@hapus_satuan')->name('hapus_satuan');
-    Route::get('/master/datasatuan/edit_satuan', 'master\satuanController@edit_satuan')->name('edit_satuan');
-    Route::get('/master/datasatuan/update_satuan', 'master\satuanController@update_satuan')->name('update_satuan');
-    Route::get('/master/datasatuan/datatable_satuan', 'master\satuanController@datatable_satuan')->name('datatable_satuan');
+    Route::get('/master/datasatuan/satuan', 'Master\satuanController@satuan')->name('satuan');
+    Route::get('/master/datasatuan/tambah_satuan', 'Master\satuanController@tambah_satuan')->name('tambah_satuan');
+    Route::get('/master/datasatuan/simpan_satuan', 'Master\satuanController@simpan_satuan')->name('simpan_satuan');
+    Route::get('/master/datasatuan/hapus_satuan', 'Master\satuanController@hapus_satuan')->name('hapus_satuan');
+    Route::get('/master/datasatuan/edit_satuan', 'Master\satuanController@edit_satuan')->name('edit_satuan');
+    Route::get('/master/datasatuan/update_satuan', 'Master\satuanController@update_satuan')->name('update_satuan');
+    Route::get('/master/datasatuan/datatable_satuan', 'Master\satuanController@datatable_satuan')->name('datatable_satuan');
 //group
-    Route::get('/master/datagroup/group', 'master\groupController@group')->name('group');
-    Route::get('/master/datagroup/tambah_group', 'master\groupController@tambah_group')->name('tambah_group');
-    Route::get('/master/datagroup/simpan_group', 'master\groupController@simpan_group')->name('simpan_group');
-    Route::get('/master/datagroup/hapus_group', 'master\groupController@hapus_group')->name('hapus_group');
-    Route::get('/master/datagroup/edit_group', 'master\groupController@edit_group')->name('edit_group');
-    Route::get('/master/datagroup/update_group', 'master\groupController@update_group')->name('update_group');
-    Route::get('/master/datagroup/datatable_group', 'master\groupController@datatable_group')->name('datatable_group');
+    Route::get('/master/datagroup/group', 'Master\groupController@group')->name('group');
+    Route::get('/master/datagroup/tambah_group', 'Master\groupController@tambah_group')->name('tambah_group');
+    Route::get('/master/datagroup/simpan_group', 'Master\groupController@simpan_group')->name('simpan_group');
+    Route::get('/master/datagroup/hapus_group/{id}', 'Master\groupController@hapus_group')->name('hapus_group');
+    Route::get('/master/datagroup/edit_group/{id}', 'Master\groupController@edit_group')->name('edit_group');
+    Route::get('/master/datagroup/update_group', 'Master\groupController@update_group')->name('update_group');
+    Route::get('/master/datagroup/datatable_group', 'Master\groupController@datatable_group')->name('datatable_group');
 //-[]-belum-[]-//
 // route Keuangan (Dirga)
 // akun keuangan route
@@ -932,7 +979,61 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datatransaksi/edit', 'Keuangan\transaksiController@edit');
 // transaksi keuangan end
 // Route Keuangan End
+//Mahmud Training
+    Route::get('/hrd/training/form_training', 'Hrd\TrainingContoller@tambah_training')->name('form_training');
+    Route::get('/hrd/training/training', 'Hrd\TrainingContoller@training')->name('training');
+    Route::post('/hrd/training/save', 'Hrd\TrainingContoller@savePengajuan');
+    Route::get('/hrd/training/tablePengajuan/{tgl1}/{tgl2}/{data}', 'Hrd\TrainingContoller@tablePengajuan');
 
+//Master Data Lowongan
+    Route::get('/master/datalowongan/index', 'Master\LowonganController@index');
+    Route::get('/master/datalowongan/datatable-index', 'Master\LowonganController@get_datatable_index');
+    Route::get('/master/datalowongan/tambah_lowongan', 'Master\LowonganController@tambah_data');
+    Route::post('/master/datalowongan/simpan_lowongan', 'Master\LowonganController@simpan_data');
+    Route::post('/master/datalowongan/ubah_status', 'Master\LowonganController@ubah_status');
+    Route::get('/master/datalowongan/edit_lowongan', 'Master\LowonganController@edit_data');
+    Route::post('/master/datalowongan/update_lowongan', 'Master\LowonganController@update_data');
+    Route::get('/master/datalowongan/lookup-data-divisi', 'Master\LowonganController@lookup_divisi');
+    Route::get('/master/datalowongan/lookup-data-level', 'Master\LowonganController@lookup_level');
+    Route::get('/master/datalowongan/lookup-data-jabatan', 'Master\LowonganController@lookup_jabatan');
+//*Data Jabatan*/
+    Route::get('/master/datajabatan', 'Master\JabatanController@index');
+    Route::get('/master/datajabatan/data-jabatan', 'Master\JabatanController@jabatanData');
+    Route::get('/master/datajabatan/edit-jabatan/{id}', 'Master\JabatanController@editJabatan');
+    Route::get('/master/datajabatan/datatable-pegawai/{id}', 'Master\JabatanController@pegawaiData');
+    Route::post('/master/datajabatan/simpan-jabatan', 'Master\JabatanController@simpanJabatan');
+    Route::put('/master/datajabatan/update-jabatan/{id}', 'Master\JabatanController@updateJabatan');
+    Route::get('/master/datajabatan/tambah-jabatan', 'Master\JabatanController@tambahJabatan');
+    Route::delete('/master/datajabatan/delete-jabatan/{id}', 'Master\ManajemenSuratController@deleteJabatan');
+//pegawai
+    Route::get('/master/datapegawai/datatable-pegawaipro', 'Master\PegawaiController@pegawaiPro');
+    Route::get('/master/datapegawai/tambah-pegawai-pro', 'Master\PegawaiController@tambahPegawaiPro');
+    Route::post('/master/datapegawai/simpan-pegawai-pro', 'Master\PegawaiController@simpanPegawaiPro');
+    Route::get('/master/datapegawai/edit-pegawai-pro/{id}', 'Master\PegawaiController@editPegawaiPro');
+    Route::put('/master/datapegawai/update-pegawai-pro/{id}', 'Master\PegawaiController@updatePegawaiPro');
+    Route::delete('/master/datapegawai/delete-pegawai-pro/{id}', 'Master\PegawaiController@deletePegawaiPro');
+    Route::post('/master/datapegawai/import-pro', 'Master\PegawaiController@importPegawaiPro');
+    Route::get('/master/datapegawai/`import-pro', 'Master\PegawaiController@getFilePro');
+    Route::get('/master/datapegawai/pegawai', 'Master\PegawaiController@pegawai')->name('pegawai');
+    Route::get('/master/datapegawai/edit-pegawai/{id}', 'Master\PegawaiController@editPegawai');
+    Route::put('/master/datapegawai/update-pegawai/{id}', 'Master\PegawaiController@updatePegawai');
+    Route::get('/master/datapegawai/datatable-pegawai', 'Master\PegawaiController@pegawaiData');
+    Route::get('/master/datapegawai/tambah-pegawai', 'Master\PegawaiController@tambahPegawai');
+    Route::get('/master/datapegawai/data-jabatan/{id}', 'Master\PegawaiController@jabatanData');
+    Route::post('/master/datapegawai/simpan-pegawai', 'Master\PegawaiController@simpanPegawai');
+    Route::delete('/master/datapegawai/delete-pegawai/{id}', 'Master\PegawaiController@deletePegawai');
+    Route::post('/master/datapegawai/import', 'Master\PegawaiController@importPegawai');
+    Route::get('/master/datapegawai/master-import', 'Master\PegawaiController@getFile');
+//Master data Scoreboard
+    Route::get('/master/datascore/index', 'Master\ScoreController@index');
+    Route::get('/master/datascore/tambah-score', 'Master\ScoreController@tambah_score');
+    Route::get('/master/datascore/datatable-index', 'Master\ScoreController@get_datatable_index');
+    Route::get('/master/datascore/lookup-data-jabatan', 'Master\ScoreController@lookup_jabatan');
+    Route::get('/master/datascore/lookup-data-pegawai', 'Master\ScoreController@lookup_pegawai');
+    Route::post('/master/datascore/simpan-score', 'Master\ScoreController@simpan_score');
+    Route::get('/master/datascore/edit-score', 'Master\ScoreController@edit_score');
+    Route::post('/master/datascore/update-score', 'Master\ScoreController@update_score');
+    Route::post('/master/datascore/delete-score', 'Master\ScoreController@delete_score');
 // Ari
     Route::get('/purchasing/orderpembelian/print/{id}', 'Pembelian\OrderPembelianController@print');
     Route::get('/inventory/p_suplier/print/{id}', 'Inventory\PenerimaanBrgSupController@print');

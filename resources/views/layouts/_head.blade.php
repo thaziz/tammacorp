@@ -4,7 +4,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <link rel="shortcut icon" href="{{ asset ('assets/images/icons/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset ('assets/img/logo.png') }}">
     <link rel="apple-touch-icon" href="{{ asset ('assets/images/icons/favicon.png') }}">
     <link rel="apple-touch-icon" sizes="72x72" href="{{ asset ('assets/images/icons/favicon-72x72.png') }}">
     <link rel="apple-touch-icon" sizes="114x114" href="{{ asset ('assets/images/icons/favicon-114x114.png') }}">
@@ -22,7 +22,7 @@
     <link type="text/css" rel="stylesheet" href="{{ asset ('assets/styles/zabuto_calendar.min.css') }}">
     <link type="text/css" rel="stylesheet" href="{{ asset ('assets/styles/pace.css') }}">
     <link type="text/css" rel="stylesheet" href="{{ asset ('assets/styles/jquery.news-ticker.css') }}">
-    <link type="text/css" rel="stylesheet" href="{{ asset ('assets/styles/bootstrap-datepicker.min.css') }}">
+    <link type="text/css" rel="stylesheet" href="{{ asset ('assets/styles/bootstrap-datepicker.css') }}">
     <link type="text/css" rel="stylesheet" href="{{ asset ('assets/styles/dataTables.bootstrap.css') }}">
     <link type="text/css" rel="stylesheet" href="{{ asset ('assets/styles/jquery.dataTables.css') }}">
     <link type="text/css" rel="stylesheet" href="{{ asset ('assets/styles/jquery.dataTables.min.css') }}">
@@ -58,5 +58,19 @@
         .disabled_select{
             pointer-events: none;
             background-color: #eee;
+        }
+        .tamma-bg-form-top{
+            margin-top: -23px;
+            padding-top: 23px;
+            padding-bottom: 10px;
+            border-radius: unset;
+        }
+        .tamma-bg-form-mid{
+            padding-top: 23px;
+            padding-bottom: 10px;
+            border-radius: unset;
+        }
+        .select2-container{
+            width: 100% !important;
         }
     </style>

@@ -42,10 +42,10 @@
                   <div class="col-md-12 col-sm-12 col-xs-12" align="right" style="margin-bottom: 10px;">
                     <div class="col-md-4 col-sm-12 col-xs-12">
                     </div>
-                    <div class="col-md-6 col-sm-12 col-xs-12">
+                    <!-- <div class="col-md-6 col-sm-12 col-xs-12">
                       <button type="button" class="btn btn-box-tool" data-toggle="modal" data-target="#myModal">Import</button>
-                    </div>
-                    <div class="col-md-2 col-sm-12 col-xs-12">
+                    </div> -->
+                    <div class="col-md-8 col-sm-12 col-xs-12">
                       <a href="{{ url('master/datapegawai/tambah-pegawai') }}">
                         <button type="button" class="btn btn-box-tool" title="Tambahkan Data Item">
                           <i class="fa fa-plus" aria-hidden="true">
@@ -84,10 +84,10 @@
                     <div class="col-md-12 col-sm-12 col-xs-12" align="right" style="margin-bottom: 10px;">
                       <div class="col-md-4 col-sm-12 col-xs-12">
                       </div>
-                      <div class="col-md-6 col-sm-12 col-xs-12">
+                      <!-- <div class="col-md-6 col-sm-12 col-xs-12">
                         <button type="button" class="btn btn-box-tool" data-toggle="modal" data-target="#myModalPro">Import</button>
-                      </div>
-                      <div class="col-md-2 col-sm-12 col-xs-12">
+                      </div> -->
+                      <div class="col-md-8 col-sm-12 col-xs-12">
                         <a href="{{ url('master/datapegawai/tambah-pegawai-pro') }}">
                           <button type="button" class="btn btn-box-tool" title="Tambahkan Data Item">
                             <i class="fa fa-plus" aria-hidden="true">

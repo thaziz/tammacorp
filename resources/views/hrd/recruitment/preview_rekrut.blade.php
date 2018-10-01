@@ -182,7 +182,11 @@
 
                             <div class="col-md-6 col-sm-6 col-xs-12">
                               <div class="form-group">
-                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_status}}">
+                                @if ($data->p_status == 'M')
+                                  <input type="text" class="form-control input-sm" readonly="" name="" value="Menikah">
+                                @else
+                                  <input type="text" class="form-control input-sm" readonly="" name="" value="Belum Menikah">
+                                @endif
                               </div>
                             </div>
 
@@ -205,6 +209,66 @@
                                 <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_child}}">
                               </div>
                             </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12 col-xs-12">
+
+                          <div class="col-md-12 col-sm-12 col-xs-12">
+                              <div class="form-group">
+                                <label class="bold s16 underline">Riwayat Pendidikan Terakhir</label>
+                              </div>
+                            </div>
+
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <label>Nama Sekolah/Universitas</label>
+                          </div>
+
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="form-group">
+                              <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_schoolname}}">
+                            </div>
+                          </div>
+
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <label>Tahun Masuk</label>
+                          </div>
+
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="form-group">
+                              <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_yearin}}">
+                            </div>
+                          </div>
+
+
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <label>Tahun Lulus</label>
+                          </div>
+
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="form-group">
+                              <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_yearout}}">
+                            </div>
+                          </div>
+
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <label>Jurusan</label>
+                          </div>
+
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="form-group">
+                              <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_jurusan}}">
+                            </div>
+                          </div>
+
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <label>Nilai</label>
+                          </div>
+
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="form-group">
+                              <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_nilai}}">
+                            </div>
+                          </div>
+
                         </div>
                         <div class="col-md-6 col-sm-12 col-xs-12">
 
@@ -320,7 +384,7 @@
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                               <div class="form-group">
-                                <input type="text" class="form-control input-sm" readonly="" name="">
+                                <input type="text" class="form-control input-sm" readonly="" name="" value="{{$d_drh}}">
                               </div>
                             </div>
                             <div class="col-md-3 col-sm-3 col-xs-12" align="center">

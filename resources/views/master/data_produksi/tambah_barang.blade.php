@@ -20,12 +20,12 @@
                     <div id="tab-general">
                         <div class="row mbl">
                             <div class="col-lg-12">
-                                
+
                                             <div class="col-md-12">
                                                 <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
                                                 </div>
                                             </div>
-                                
+
                             <ul id="generalTab" class="nav nav-tabs">
                               <li class="active"><a href="#alert-tab" data-toggle="tab">Form Master Data Barang</a></li>
                             <!-- <li><a href="#note-tab" data-toggle="tab">2</a></li>
@@ -43,45 +43,45 @@
                                    <a href="{{ url('/master/itemproduksi/index') }}" class="btn"><i class="fa fa-arrow-left"></i></a>
                                  </div>
                               </div>
-                          
+
 
                         <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-top:15px;">
                             <form id="form-save">
                               <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:5px;padding-top:15px;padding-left:-10px;padding-right: -10px; ">
-                                
+
                                 <div class="col-md-3 col-sm-4 col-xs-12">
-                                 
+
                                       <label class="tebal">Kode Barang</label>
-                                 
+
                                 </div>
                                 <div class="col-md-3 col-sm-8 col-xs-12">
                                   <div class="form-group">
-                                      <input type="text" id="kode_barang" name="kode_barang" placeholder="PILIH GROUP DAHULU" readonly="" class="form-control input-sm">                                  
+                                      <input type="text" id="kode_barang" name="kode_barang" placeholder="PILIH GROUP DAHULU" readonly="" class="form-control input-sm">
                                   </div>
                                 </div>
 
-                                
+
 
                                 <div class="col-md-3 col-sm-4 col-xs-12">
-                                  
+
                                       <label class="tebal">Nama<font color="red">*</font></label>
-                                 
+
                                 </div>
                                 <div class="col-md-3 col-sm-8 col-xs-12">
                                   <div class="form-group">
-                                      <input type="text" id="nama" name="nama" class="form-control input-sm">                               
+                                      <input type="text" id="nama" name="nama" class="form-control input-sm">
                                   </div>
                                 </div>
 
                                 <div class="col-md-3 col-sm-4 col-xs-12">
-                                 
+
                                     <label class="tebal">Kelompok<font color="red">*</font></label>
-                                 
+
                                 </div>
 
                                 <div class="col-md-3 col-sm-8 col-xs-12">
                                   <div class="form-group">
-                                      <select class="input-sm form-control" name="code_group" id="code_group"> 
+                                      <select class="input-sm form-control" name="code_group" id="code_group">
                                         <option selected value="">- Pilih -</option>
                                         @foreach ($group as $g)
                                           <option value="{{ $g->m_gcode }}" data-val="{{ $g->m_gname }}" >{{ $g->m_gcode }} - {{ $g->m_gname }}</option>
@@ -90,23 +90,23 @@
                                   </div>
                                 </div>
 
-                                <input type="hidden" name="group" id="group">                              
-                                
+                                <input type="hidden" name="group" id="group">
+
                                 <div class="col-md-3 col-sm-4 col-xs-12">
-                                  
+
                                       <label class="tebal">Min Stock</label>
-                                 
+
                                 </div>
                                 <div class="col-md-3 col-sm-8 col-xs-12">
                                   <div class="form-group">
-                                      <input type="text" id="min_stock" name="min_stock" class="form-control input-sm">                               
+                                      <input type="text" id="min_stock" name="min_stock" class="form-control input-sm">
                                   </div>
                                 </div>
 
                               <div class="col-md-3 col-sm-4 col-xs-12">
-                                 
+
                                     <label class="tebal">Satuan Utama<font color="red">*</font></label>
-                                 
+
                                 </div>
 
                                 <div class="col-md-9 col-sm-8 col-xs-12">
@@ -116,15 +116,15 @@
                                         @foreach ($satuan as $element)
                                           <option value="{{ $element->m_sid }}">{{ $element->m_scode }} - {{ $element->m_sname }}</option>
                                         @endforeach
-                           
+
                                       </select>
                                   </div>
                                 </div>
 
                                 <div class="col-md-3 col-sm-4 col-xs-12">
-                                 
+
                                     <label class="tebal">Satuan Alternatif 1</label>
-                                 
+
                                 </div>
 
                                 <div class="col-md-9 col-sm-8 col-xs-12">
@@ -134,16 +134,16 @@
                                         @foreach ($satuan as $element)
                                           <option value="{{ $element->m_sid }}">{{ $element->m_scode }} - {{ $element->m_sname }}</option>
                                         @endforeach
-                                 
+
                                       </select>
                                   </div>
                                 </div>
 
 
                                 <div class="col-md-3 col-sm-4 col-xs-12">
-                                 
+
                                     <label class="tebal">Satuan Alternatif 2</label>
-                                 
+
                                 </div>
 
                                 <div class="col-md-9 col-sm-8 col-xs-12">
@@ -153,34 +153,35 @@
                                         @foreach ($satuan as $element)
                                           <option value="{{ $element->m_sid }}">{{ $element->m_scode }} - {{ $element->m_sname }}</option>
                                         @endforeach
-                                
+
                                       </select>
                                   </div>
                                 </div>
 
                                 <div class="col-xs-12">
-                                  
+
                                       <label class="tebal"></label>
-                                 
+
                                 </div>
 
-                        </div> 
-                        
-                          <div align="right" id="change_function">
-                            <button name="tambah_data" id="save_item" class="btn btn-primary" onclick="simpanItem()">Simpan Data</button> 
+                        </div>
+
+                          <div align="right">
+                            {{-- <button name="tambah_data" id="save_item" class="btn btn-primary" onclick="simpanItem()">Simpan Data</button> --}}
+                            <button type="button" name="button" id="save_item" class="btn btn-primary" onclick="simpanItem()">Simpan Data</button>
                           </div>
-                                  
+
                       </form>
                 </div>
              </div>
            </div>
          </div>
 
-                            
+
 @endsection
 @section("extra_scripts")
 <script src="{{ asset("js/inputmask/inputmask.jquery.js") }}"></script>
-<script type="text/javascript">     
+<script type="text/javascript">
 
     $( document ).ready(function() {
         //mask money
@@ -208,10 +209,10 @@
              data: {id},
              success: function(data){
               $('#kode_barang').val(data);
-             
+
              },
              error: function(){
-            
+
              },
              async: false
           });
@@ -253,12 +254,13 @@
 
 
   function simpanItem(){
+    // alert('s');
     $.ajaxSetup({
       headers: {
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
               }
       });
-    $('#status').attr('disabled','disabled');
+    $('#save_item').attr('disabled','disabled');
     var a = $('#form-save').serialize();
     $.ajax({
       url : baseUrl + "/master/itemproduksi/simpan_item",
@@ -266,18 +268,18 @@
       data: a,
       success:function(response){
         if (response.status=='sukses') {
-          iziToast.success({timeout: 5000, 
+          iziToast.success({timeout: 5000,
                           position: "topRight",
-                          icon: 'fa fa-chrome', 
-                          title: '', 
+                          icon: 'fa fa-chrome',
+                          title: '',
                           message: 'Item Produksi tersimpan.'});
           $('#form-save')[0].reset();
-          $('#status').removeAttr('disabled','disabled');
+          $('#save_item').removeAttr('disabled','disabled');
         }else{
           iziToast.error({position: "topRight",
-                        title: '', 
+                        title: '',
                         message: 'Mohon melengkapi data.'});
-          $('#status').removeAttr('disabled','disabled');
+          $('#save_item').removeAttr('disabled','disabled');
         }
       }
      })
@@ -298,7 +300,7 @@
               $('#code_group').html(array_change);
              },
              error: function(){
-            
+
              },
              async: false
            });

@@ -78,7 +78,7 @@
                         <div class="col-md-5 col-sm-3 col-xs-12" align="right">
                             <select name="tampilData" id="tampil_data" onchange="getTanggal()" class="form-control input-sm">
                               @foreach ($devisi as $divisi)
-                                <option value="{{$divisi->d_id}}" class="form-control input-sm">{{$divisi->d_name}}</option>
+                                <option value="{{$divisi->c_id}}" class="form-control input-sm">{{$divisi->c_divisi}}</option>
                               @endforeach
                             </select>
                         </div>
