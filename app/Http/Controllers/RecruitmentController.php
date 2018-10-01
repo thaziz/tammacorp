@@ -191,12 +191,12 @@ class RecruitmentController extends Controller
         $status = null;
 
         if ($request->status == 'menikah') { $status = 'M'; } else { $status = 'S'; }
-
+        $id_lowong = DB::table('d_lowongan')->select('l_id')->where('l_code', $request->kdlowong)->first();
         //d_pelamar
         $data = new d_pelamar;
             $data->p_id = $id;
             $data->p_date = date('Y-m-d');
-            $data->p_vacancyid = $request->kdlowong;
+            $data->p_vacancyid = $id_lowong->l_id;
             $data->p_name = $request->nama;
             $data->p_nip = $request->noktp;
             $data->p_address = $request->alamat;
