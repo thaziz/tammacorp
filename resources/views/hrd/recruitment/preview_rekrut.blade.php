@@ -209,6 +209,16 @@
                                 <input type="text" class="form-control input-sm" readonly="" name="" value="{{$data->p_child}}">
                               </div>
                             </div>
+
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                              <label>Promo dari pelamar</label>
+                            </div>
+
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                              <div class="form-group">
+                                <textarea cols="30" rows="7" class="form-control input-sm" readonly>{{$data->p_promo}}</textarea>
+                              </div>
+                            </div>
                         </div>
                         <div class="col-md-6 col-sm-12 col-xs-12">
 
@@ -417,7 +427,7 @@
                           <div class="col-md-12 col-sm-12 col-xs-12">
                             <div class="col-md-3 col-sm-3 col-xs-12">
                               <?php $d_serti = $serti[0]['bks_name']; ?>
-                              <label>Sertifikat</label>
+                              <label>KTP</label>
                             </div>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                               <div class="form-group">
