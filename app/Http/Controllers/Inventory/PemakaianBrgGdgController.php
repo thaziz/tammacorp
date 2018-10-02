@@ -13,6 +13,7 @@ use Auth;
 use App\d_pakai_barang;
 use App\d_pakai_barangdt;
 use App\d_stock_mutation;
+use App\d_gudangcabang;
 use App\lib\mutasi;
 
 class PemakaianBrgGdgController extends Controller
@@ -36,14 +37,21 @@ class PemakaianBrgGdgController extends Controller
     {
         $id_peg = Auth::user()->m_pegawai_id;
         $d_peg = DB::table('m_pegawai_man')->select('c_divisi_id', 'c_jabatan_id')->where('c_id', $id_peg)->first();
-        if ($d_peg->c_divisi_id == '5' && $d_peg->c_jabatan_id == '24') {
-           $param[] = [1,2,7,8];
+
+        if ($d_peg->c_divisi_id == '5') {
+            $param = [1,2,7,8];
+        }elseif($d_peg->c_divisi_id == '4'){
+            $param = [3,6];
         }
+
         $formatted_tags = array();
         $term = trim($request->q);
         if (empty($term)) 
         {
-            $data = DB::table('d_gudangcabang')->limit(10)->get();
+            for ($x=0; $x < count($param); $x++) { 
+                $data[] = d_gudangcabang::select('cg_id', 'cg_cabang')->where('cg_id', '=', $param[$x])->first();
+            }
+            
             foreach ($data as $val) 
             {
                 $formatted_tags[] = ['id' => $val->cg_id, 'text' => $val->cg_cabang];
@@ -52,11 +60,15 @@ class PemakaianBrgGdgController extends Controller
         }
         else
         {
-            $data = DB::table('d_gudangcabang')->where('cg_cabang', 'LIKE', '%'.$term.'%')->limit(10)->get();
-
+            for ($x=0; $x < count($param); $x++) { 
+                $data[] = d_gudangcabang::select('cg_id', 'cg_cabang')->where('cg_cabang', 'LIKE', '%'.$term.'%')->where('cg_id', '=', $param[$x])->first();
+            }
+            
             foreach ($data as $val) 
             {
-                $formatted_tags[] = ['id' => $val->cg_id, 'text' => $val->cg_cabang];
+                if ($val != null) {
+                    $formatted_tags[] = ['id' => $val->cg_id, 'text' => $val->cg_cabang];
+                }
             }
 
           return Response::json($formatted_tags);  
