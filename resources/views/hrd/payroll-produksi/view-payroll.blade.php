@@ -78,15 +78,10 @@
           </div>
         </div>
 
-        <div class="modal-footer">
-          <button type="button" class="btn btn-warning">Print</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <div class="modal-footer" id="btn-modal">
+          
         </div>
 
 
 <!-- end detail order-->
 
-<script type="text/javascript">
-  $('#detailFormula').dataTable();
-  $('#detailFormul').dataTable();
-</script>

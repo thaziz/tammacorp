@@ -524,6 +524,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/hrd/produksi/payroll', 'Hrd\PayrollProduksiController@index');
         Route::get('/hrd/payroll/table/gaji/{rumah}/{jabatan}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@tableDataGarapan');
         Route::get('/hrd/payroll/lihat-gaji/{id}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@lihatGaji');
+    // print payroll produksi
+        Route::get('/hrd/payroll/print-gaji/{id}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@print_gaji')->name('print_gaji_produksi');
 /*Data Lembur*/
     Route::get('/hrd/datalembur/index', 'Hrd\HlemburController@index');
     Route::get('/hrd/datalembur/get-lembur-by-tgl/{tgl1}/{tgl2}', 'Hrd\HlemburController@getLemburByTgl');

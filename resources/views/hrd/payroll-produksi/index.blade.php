@@ -292,9 +292,17 @@
                             type: "get",
                             success: function(response){
                               $('#view-payroll').html(response);
+                              $('#btn-modal').html(
+                                '<a href="'+ baseUrl +'/hrd/payroll/print-gaji/'+ id +'/'+ tgl1 +'/'+ tgl2 +'" target="_blank" class="btn btn-info"><i class="fa fa-print"></i>Print</a>'+
+                                '<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>');
                             }
                           })
                         }
 
                     </script>
+<script type="text/javascript">
+  $('#detailFormula').dataTable();
+  $('#detailFormul').dataTable();
+</script>
+
 @endsection()
