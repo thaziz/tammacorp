@@ -633,7 +633,7 @@ class POSRetailController extends Controller
         {
             return '<div>Rp.
                       <span class="pull-right">
-                        '.number_format( $data->s_gross ,2,',','.').'
+                        '.number_format( $data->s_net ,2,',','.').'
                       </span>
                     </div>';
         })
