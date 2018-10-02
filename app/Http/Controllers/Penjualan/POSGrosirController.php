@@ -63,7 +63,7 @@ class POSGrosirController extends Controller
         ->join('m_item','m_item.i_id','=','d_sales_dt.sd_item')
         ->join('m_price','m_price.m_pitem', '=','d_sales_dt.sd_item')
         ->join('m_satuan','m_satuan.m_sid','=','i_sat1')
-        ->join('d_sales_payment','d_sales.s_id','=','sp_sales')
+        ->leftJoin('d_sales_payment','d_sales.s_id','=','sp_sales')
         ->leftjoin('d_stock',function($join){
           $join->on('i_id', '=', 's_item');
           $join->on('s_comp', '=', 's_position');
@@ -724,7 +724,7 @@ class POSGrosirController extends Controller
         {
             return '<div>Rp.
                       <span class="pull-right">
-                        '.number_format( $data->s_gross ,2,',','.').'
+                        '.number_format( $data->s_net ,2,',','.').'
                       </span>
                     </div>';
         })
@@ -756,14 +756,7 @@ class POSGrosirController extends Controller
         else
         {
          return '<div class="text-center">
-                    <button
-                       type="button"
-                       class="btn btn-success btn-sm glyphicon glyphicon-check"
-                       title="Ubah Status"
-                       data-toggle="modal"
-                       onclick="ubahStatus('."'".$data->s_id."'".','."'".$data->s_status."'".')"
-                       data-target="#modalStatus" disabled>
-                    </button>
+          
                   </div>';
         }
       })
@@ -771,26 +764,40 @@ class POSGrosirController extends Controller
       {
         if ($data->s_status == 'FN') { $attr = 'disabled'; } else { $attr = ''; };
         $linkEdit = URL::to('/penjualan/POSgrosir/grosir/edit_sales/'.$data->s_id);
+        if ($data->s_status == 'FN' || $data->s_status == 'SN' || $data->s_status == 'PC' || $data->s_status == 'RC')
+        {
+          return '<div class="text-center">
+                    <button type="button"
+                      class="btn btn-success fa fa-eye btn-sm"
+                      title="detail"
+                      data-toggle="modal"
+                      onclick="lihatDetail('."'".$data->s_id."'".')"
+                      data-target="#myItem">
+                    </button>
 
-        return '<div class="text-center">
-                  <button type="button"
-                    class="btn btn-success fa fa-eye btn-sm"
-                    title="detail"
-                    data-toggle="modal"
-                    onclick="lihatDetail('."'".$data->s_id."'".')"
-                    data-target="#myItem">
-                  </button>
-                  <a href="'.$linkEdit.'"
-                    class="btn btn-warning btn-sm"
-                    title="Edit" '.$attr.'>
-                    <i class="fa fa-pencil"></i>
-                  </a>
-                  <a onclick="distroyNota('.$data->s_id.')"
-                    class="btn btn-danger btn-sm"
-                    title="Hapus" '.$attr.'>
-                    <i class="fa fa-trash-o"></i>
-                  </a>
-                </div>';
+                  </div>';
+        }else{
+          return '<div class="text-center">
+                    <button type="button"
+                      class="btn btn-success fa fa-eye btn-sm"
+                      title="detail"
+                      data-toggle="modal"
+                      onclick="lihatDetail('."'".$data->s_id."'".')"
+                      data-target="#myItem">
+                    </button>
+                    <a href="'.$linkEdit.'"
+                      class="btn btn-warning btn-sm"
+                      title="Edit" '.$attr.'>
+                      <i class="fa fa-pencil"></i>
+                    </a>
+                    <a onclick="distroyNota('.$data->s_id.')"
+                      class="btn btn-danger btn-sm"
+                      title="Hapus" '.$attr.'>
+                      <i class="fa fa-trash-o"></i>
+                    </a>
+                  </div>';
+        }
+
       })
       //inisisai column status agar kode html digenerate ketika ditampilkan
       ->rawColumns(['action', 'action2','sGross'])
