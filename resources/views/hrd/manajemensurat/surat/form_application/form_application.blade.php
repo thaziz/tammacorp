@@ -183,6 +183,10 @@
 			width: 3cm;
 			border: 1px solid;
 		}
+		input[type="radio"]{
+			height: 15px;
+			width: 15px;
+		}
 	</style>
 </head>
 <body>
@@ -382,7 +386,7 @@
 
 							</tr>
 							<tr>
-								<td colspan="3">RT&nbsp;&nbsp;&nbsp;..........&nbsp;&nbsp;&nbsp;RW&nbsp;&nbsp;&nbsp;..........</label></td>
+								<td colspan="3">RT&nbsp;&nbsp;&nbsp;..........&nbsp;&nbsp;&nbsp;RW&nbsp;&nbsp;&nbsp;..........</td>
 								
 							</tr>
 							<tr>
@@ -422,7 +426,28 @@
 			</footer>
 	</div>
 	<div class="page-break-after">
-		
+		<div class="div-width-background">
+		</div>
+		<header>
+			<img width="100%" src="{{asset('assets/img/header-tammafood-surat.png')}}">
+		</header>
+
+		<div class="div-width">
+			<table class="border-none" width="100%">
+				<tr>
+					<td class="bold"  colspan="5">Alamat Sementara
+					</td>
+				</tr>
+				<tr>
+					<td>
+						
+					</td>
+				</tr>
+			</table>
+		</div>
+		<footer>
+				<img width="100%" src="{{asset('assets/img/footer-tammafood-surat.png')}}">
+			</footer>
 	</div>
 </body>
 </html>
