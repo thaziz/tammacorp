@@ -421,42 +421,42 @@
 
         $.dobPicker({
           yearSelector: '#dob_pend_awal1',
-          yearDefault: 'Tahun',
+          yearDefault: 'Tahun Masuk',
           minimumAge: 0,
           maximumAge: 20
         });
 
         $.dobPicker({
           yearSelector: '#dob_pend_akhir1',
-          yearDefault: 'Tahun',
+          yearDefault: 'Tahun Lulus',
           minimumAge: 0,
           maximumAge: 20
         });
 
         $.dobPicker({
           yearSelector: '#dob_cv_awal1',
-          yearDefault: 'Tahun',
+          yearDefault: 'Tahun Masuk',
           minimumAge: 0,
           maximumAge: 20
         });
 
         $.dobPicker({
           yearSelector: '#dob_cv_awal2',
-          yearDefault: 'Tahun',
+          yearDefault: 'Tahun Keluar',
           minimumAge: 0,
           maximumAge: 20
         });
 
         $.dobPicker({
           yearSelector: '#dob_cv_akhir1',
-          yearDefault: 'Tahun',
+          yearDefault: 'Tahun masuk',
           minimumAge: 0,
           maximumAge: 20
         });
 
         $.dobPicker({
           yearSelector: '#dob_cv_akhir2',
-          yearDefault: 'Tahun',
+          yearDefault: 'Tahun Keluar',
           minimumAge: 0,
           maximumAge: 20
         });
@@ -512,6 +512,7 @@
                 $('#status').attr('disabled', false);
                 $('#partner_name').attr('readonly', false);
                 $('#anak').attr('readonly', false);
+                $('#promo').attr('readonly', false);
               }
               else
               {

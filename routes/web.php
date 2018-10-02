@@ -1034,6 +1034,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/master/datascore/edit-score', 'Master\ScoreController@edit_score');
     Route::post('/master/datascore/update-score', 'Master\ScoreController@update_score');
     Route::post('/master/datascore/delete-score', 'Master\ScoreController@delete_score');
+//Master data KPI
+    Route::get('/master/datakpi/index', 'Master\KpiController@index');
+    Route::get('/master/datakpi/tambah-kpi', 'Master\KpiController@tambahKpi');
+    Route::post('/master/datakpi/simpan-kpi', 'Master\KpiController@simpanKpi');
+    Route::get('/master/datakpi/datatable-index', 'Master\KpiController@getDatatableKpi');
+    Route::get('/master/datakpi/edit-kpi', 'Master\KpiController@editKpi');
+    Route::post('/master/datakpi/update-kpi', 'Master\KpiController@updateKpi');
+    Route::post('/master/datakpi/delete-kpi', 'Master\KpiController@deleteKpi');
 // Ari
     Route::get('/purchasing/orderpembelian/print/{id}', 'Pembelian\OrderPembelianController@print');
     Route::get('/inventory/p_suplier/print/{id}', 'Inventory\PenerimaanBrgSupController@print');

@@ -124,11 +124,11 @@
         <label for="email" class="col-sm-2 col-form-label font-weight-bold">Email
           <span style="color: red">*</span>
         </label>
-        <div class="col-sm-9">
+        <div class="col-sm-8">
           <input type="text" class="form-control" id="email" name="email" placeholder="ex : abcd@gmail.com" value="{{ old('email')}}">
         </div>
-        <div class="col-sm-1">
-          <button type="button" class="btn btn-md btn-success" id="btn_cekemail"><i class="fa fa-check"></i></button>
+        <div class="col-sm-2" align="right">
+          <button type="button" class="btn btn-md btn-info" id="btn_cekemail" title="Cek email Dahulu untuk Lanjut">Cek Email</button>
         </div>
         @if ($errors->has('email'))
           <span style="color: red;" class="col-sm-12">{{$errors->first('email')}}</span>
@@ -138,11 +138,11 @@
         <label for="notlp" class="col-sm-2 col-form-label font-weight-bold">No Telp/WA
           <span style="color: red">*</span>
         </label>
-        <div class="col-sm-9">
+        <div class="col-sm-8">
           <input type="text" class="form-control numberinput" id="notlp" name="notlp" placeholder="ex : 081234567890" value="{{ old('notlp')}}" readonly>
         </div>
-        <div class="col-sm-1">
-          <button type="button" class="btn btn-md btn-success" id="btn_cekwa" disabled><i class="fa fa-check"></i></button>
+        <div class="col-sm-2" align="right">
+          <button type="button" class="btn btn-md btn-info" id="btn_cekwa" title="Cek Telp/Wa Dahulu untuk Lanjut" disabled>Cek Telp/Wa</button>
         </div>
         @if ($errors->has('notlp'))
           <span style="color: red;" class="col-sm-12">{{$errors->first('notlp')}}</span>
@@ -194,6 +194,14 @@
           <input type="number" class="form-control" id="anak" name="anak" placeholder="Jumlah Anak" value="{{ old('anak')}}" readonly>
         </div>
       </div>
+
+      <div class="form-group row">
+        <label for="promo" class="col-sm-2 col-form-label font-weight-bold">Deskripsikan diri anda</label>
+          <div class="col-sm-10">
+            <textarea name="promo" id="promo" maxlength="300" cols="30" rows="4" class="form-control" placeholder="Promosikan diri anda, Kenapa kami harus memilih anda (Maks : 300 Karakter)" readonly>{{ old('promo')}}</textarea>
+          </div>
+      </div>
+
       <div class="form-group row">
         <label class="tebal" style="color: red; float: left;">Keterangan : * Wajib diisi.</label>
       </div>

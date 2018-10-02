@@ -175,6 +175,10 @@
                                         Data Scoreboard
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Data KPI','ma_read'))
+                                        Data KPI
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Data Akun Keuangan','ma_read'))
                                         Data Akun Keuangan
                                     @endif
@@ -250,6 +254,13 @@
                                 @if(Auth::user()->punyaAkses('Data Scoreboard','ma_read'))
                                     <li class="{{ Request::is('master/datascore/index') ? 'active' : '' || Request::is('master/datascore/*') ? 'active' : '' }}">
                                         <a href="{{ url('/master/datascore/index') }}"><span class="submenu-title">Data Scoreboard</span><span
+                                                    class="hidden">Master</span></a>
+                                    </li>
+                                @endif
+
+                                @if(Auth::user()->punyaAkses('Data KPI','ma_read'))
+                                    <li class="{{ Request::is('master/datakpi/index') ? 'active' : '' || Request::is('master/datakpi/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/master/datakpi/index') }}"><span class="submenu-title">Data KPI</span><span
                                                     class="hidden">Master</span></a>
                                     </li>
                                 @endif

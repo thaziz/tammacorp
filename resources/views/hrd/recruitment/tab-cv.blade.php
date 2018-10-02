@@ -43,7 +43,7 @@
             <span style="color: red">*</span>
           </label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" id="nilai" name="nilai" placeholder="Nilai / IPK pada ijasah" value="{{ old('nilai')}}">
+            <input type="text" class="form-control" id="nilai" name="nilai" placeholder="misal : ( 3.80 untuk IPK )" value="{{ old('nilai')}}">
           </div>
         </div>
       </div>
