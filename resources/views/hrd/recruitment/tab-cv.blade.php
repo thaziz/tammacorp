@@ -120,7 +120,7 @@
 
         <div class="col-lg-10 mx-auto">
           <div class="form-group row">
-            <label class="tebal" style="color: black; float: left;">Skip Halaman ini apabila anda Fresh Graduate.</label>
+            <label class="tebal" style="color: black; float: left;">Abaikan inputan pengalaman kerja apabila anda Fresh Graduate.</label>
           </div>
         </div>
     </div>

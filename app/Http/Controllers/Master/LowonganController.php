@@ -35,7 +35,7 @@ class LowonganController extends Controller
 
             $akronim = DB::table('m_divisi')->select('c_divisi_akronim')->where('c_id', $request->divisi)->first();
             $code = $this->kode_lowongan($akronim->c_divisi_akronim);
-
+            
             DB::table('d_lowongan')
                 ->insert([
                     'l_id'=>$id,
@@ -64,7 +64,7 @@ class LowonganController extends Controller
 
     public function kode_lowongan($akronim)
     {
-        $kode = DB::select(DB::raw("SELECT MAX(RIGHT(l_code,3)) as kode_max from d_lowongan"));
+        $kode = DB::select(DB::raw("SELECT MAX(RIGHT(l_code,3)) as kode_max from d_lowongan where l_code like '%$akronim%'"));
         $kd = "";
 
         if(count($kode)>0)

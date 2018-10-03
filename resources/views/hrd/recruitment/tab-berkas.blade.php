@@ -34,10 +34,10 @@
 
         <div class="col-lg-10 mx-auto">
           <div class="form-group row">
-            <label for="sertifikat" class="col-sm-2 col-form-label font-weight-bold">File Sertifikat</label>
+            <label for="KTP" class="col-sm-2 col-form-label font-weight-bold">File KTP</label>
             <div class="col-sm-10">
               <!-- <input type="file" class="form-control" id="sertifikat" name="sertifikat" onchange="loadFile(event)" > -->
-              <input type="file" class="form-control" id="sertifikat" name="sertifikat" accept="application/pdf">
+              <input type="file" class="form-control" id="sertifikat" name="sertifikat" accept="image/jpeg,image/png,application/pdf">
             </div>
           </div>
         </div>
@@ -60,8 +60,15 @@
         
         <div class="col-lg-10 mx-auto">
           <div class="form-group row">
-            <label class="tebal" style="color: red; float: left;">Keterangan : * Wajib diisi.</label>
-            <label class="tebal" style="color: blue; float: left;">Untuk File Sertifikat, Ijasah dan lain-lain wajib dengan file PDF. Semakin Lengkap data anda, menjadi nilai plus bagi kami.</label>
+            <div class="col-lg-12">
+              <label class="tebal" style="color: red; float: left;">Keterangan : * Wajib diisi.</label>  
+            </div>
+            <div class="col-lg-12">
+              <label class="tebal" style="color: blue; float: left;">File KTP Dapat menggunakan file PDF/Image (Jpg, Jpeg dan Png)</label>
+            </div>
+            <div class="col-lg-12">
+              <label class="tebal" style="color: blue; float: left;">Untuk File Ijasah dan lain-lain wajib dengan file PDF. Semakin Lengkap data anda, menjadi nilai plus bagi kami.</label>
+            </div>
           </div>
         </div>
 

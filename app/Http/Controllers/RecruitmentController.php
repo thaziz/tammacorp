@@ -104,8 +104,8 @@ class RecruitmentController extends Controller
         $berkas = d_berkas_pelamar::where('bks_pid', $id)->where('bks_type', 'D')->get();
         foreach ($berkas as $value)
         {
-            if ($value->bks_dtype == 'ST') {
-                $result = d_berkas_pelamar::where('bks_pid', $id)->where('bks_dtype', 'ST')->limit(1)->get()->toArray();
+            if ($value->bks_dtype == 'KT') {
+                $result = d_berkas_pelamar::where('bks_pid', $id)->where('bks_dtype', 'KT')->limit(1)->get()->toArray();
                 $serti = array_replace($serti, $result);
             }
             else if ($value->bks_dtype == 'IJ')
@@ -153,7 +153,8 @@ class RecruitmentController extends Controller
             'notlp' => 'required|min:7',
             'agama' => 'required',
             'status' => 'required',
-            'sertifikat' => "mimes:pdf|max:5000",
+            'promo' => 'required',
+            'sertifikat' => "mimes:pdf,jpeg,png,jpg|max:5000",
             'ijazah' => "mimes:pdf|max:5000",
             'file_lain_lain' => "mimes:pdf|max:5000",
             'image' => 'required|image|mimes:jpeg,png,jpg|max:2048'
@@ -181,6 +182,7 @@ class RecruitmentController extends Controller
             'notlp.min' => ' Nomor Telepon Minimal harus 7 karakter',
             'agama.required' => ' Agama tidak boleh kosong',
             'status.required' => ' Status Telepon tidak boleh kosong',
+            'promo' => ' Maaf anda wajib mempromosikan diri anda',
             'image.required' => ' Anda Wajib Upload data Foto',
         ]);
 
@@ -213,6 +215,7 @@ class RecruitmentController extends Controller
             $data->p_tlp = $request->notlp;
             $data->p_religion = $request->agama;
             $data->p_status = $status;
+            $data->p_promo = $request->promo;
             $data->p_child = $request->anak;
             $data->p_wife_name = $request->partner_name;
             $data->p_created = Carbon::now('Asia/Jakarta');
@@ -265,12 +268,12 @@ class RecruitmentController extends Controller
             $berkas = new d_berkas_pelamar;
             $sertifikat = $request->file('sertifikat');
             $path = public_path(). '/assets/berkas/dokumen-pelamar';
-            $filename = $request->nama.'_'.$id.'_sertifikat' . '.' . $sertifikat->getClientOriginalExtension();
+            $filename = $request->nama.'_'.$id.'_ktp' . '.' . $sertifikat->getClientOriginalExtension();
             $sertifikat->move($path, $filename);
             // set field to table
             $berkas->bks_name = $filename;
             $berkas->bks_type = 'D';
-            $berkas->bks_dtype = 'ST';
+            $berkas->bks_dtype = 'KT';
             $berkas->bks_pid = $id;
             $savedSertifikat = $berkas->save();
         }
@@ -311,7 +314,6 @@ class RecruitmentController extends Controller
         // return redirect('/recruitment#apply')->with(['sukses' => 'Data berhasil disimpan, Anda Akan dihubungi apabila lolos administrasi. Terima Kasih']);
         $request->session()->flash('sukses', 'Data berhasil disimpan, Anda Akan dihubungi apabila lolos administrasi. Terima Kasih');
         return redirect('/recruitment#apply');
-        
     }
 
     public function cekEmail(Request $request)
@@ -725,7 +727,7 @@ class RecruitmentController extends Controller
                     ->where('m_pegawai_man.c_ktp', '=', 'KTP ('.$d_lamar->p_nip.')')
                     ->first();
 
-        if (count($pegawai) > 0 ) {
+        if (!empty($data) || isset($data)) {
             //delete pegawai manajemen
             DB::table('m_pegawai_man')->where('c_id', $pegawai->c_id)->delete();
         }
