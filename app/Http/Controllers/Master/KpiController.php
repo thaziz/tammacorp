@@ -32,6 +32,14 @@ class KpiController extends Controller
                     ->get();
         return Datatables::of($data)
         ->addIndexColumn()
+        ->addColumn('deadline', function ($data) 
+        {  
+           if ($data->kpix_deadline != null || $data->kpix_deadline != '') {
+                return '<div style="text-align:center;">' .$data->kpix_deadline. '</div>';
+           }else{
+                return '<div style="text-align:center;"> - </div>';
+           }
+        })
         ->addColumn('action', function ($data) 
         {  
             return  '<button id="edit" onclick=edit("'.$data->kpix_id.'") class="btn btn-warning btn-sm" title="Edit">
@@ -41,7 +49,7 @@ class KpiController extends Controller
                         <i class="fa fa-times-circle"></i>
                     </button>';
         })
-        ->rawColumns(['action','opsi'])
+        ->rawColumns(['action','deadline'])
         ->make(true);
     }
 
@@ -58,6 +66,7 @@ class KpiController extends Controller
             $kpix->kpix_id = $id;
             $kpix->kpix_name = $request->indikator;
             $kpix->kpix_bobot = $request->bobot;
+            $kpix->kpix_deadline = date('Y-m-d',strtotime($request->deadline));
             $kpix->kpix_target = $request->targetkpi;
             $kpix->kpix_p_id = $request->pegawai;
             $kpix->kpix_div_id = $request->divisi;
@@ -100,6 +109,7 @@ class KpiController extends Controller
             $kpix = m_kpix::find($request->kode_old);
             $kpix->kpix_name = $request->e_nama;
             $kpix->kpix_bobot = $request->e_bobot;
+            $kpix->kpix_deadline = date('Y-m-d',strtotime($request->e_deadline));
             $kpix->kpix_target = $request->e_target;
             $kpix->kpix_p_id = $request->e_pegawai;
             $kpix->kpix_div_id = $request->e_divisi;
