@@ -58,15 +58,6 @@
                   <form method="POST" id="form-save" name="formTambah">
                     {{ csrf_field() }}
                     <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:5px;padding-top:15px;padding-left:-10px;padding-right: -10px; ">
-                      <div class="col-md-3 col-sm-4 col-xs-12">
-                        <label class="tebal">Kode <span style="color: red">*</span></label>
-                      </div>
-
-                      <div class="col-md-9 col-sm-8 col-xs-12">
-                        <div class="form-group">
-                          <input type="text" id="ip_kode" name="kode" class="form-control input-sm" readonly value="{{$kode}}">
-                        </div>
-                      </div>
 
                       <div class="col-md-3 col-sm-4 col-xs-12">
                         <label class="tebal">Divisi<span style="color: red">*</span></label>

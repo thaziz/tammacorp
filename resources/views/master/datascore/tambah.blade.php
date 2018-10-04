@@ -326,7 +326,7 @@
               onClosing: function(instance, toast, closedBy){
                 $('#div_kpi').removeClass('has-error');
                 $('#jbtn_kpi').removeClass('has-error');
-                $('#peg_kpi').removeClass('has-error');s('has-error');
+                $('#peg_kpi').removeClass('has-error');
               }
             });
           } //end check valid

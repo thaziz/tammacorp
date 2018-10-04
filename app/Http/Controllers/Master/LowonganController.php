@@ -21,9 +21,7 @@ class LowonganController extends Controller
 
     public function tambah_data()
     {
-    	
-        $kode = $this->kode_lowongan();
-        return view('master.datalowongan.tambah',compact('kode'));
+        return view('master.datalowongan.tambah');
     }
 
     public function simpan_data(Request $request)
@@ -35,15 +33,17 @@ class LowonganController extends Controller
         	$id = DB::table('d_lowongan')->select('l_id')->max('l_id');
         	if ($id == 0 || $id == '') { $id  = 1; } else { $id++; }
 
-            $tanggal = date("Y-m-d h:i:s");
+            $akronim = DB::table('m_divisi')->select('c_divisi_akronim')->where('c_id', $request->divisi)->first();
+            $code = $this->kode_lowongan($akronim->c_divisi_akronim);
+            
             DB::table('d_lowongan')
                 ->insert([
                     'l_id'=>$id,
-                    'l_code' => $request->kode,
+                    'l_code' => $code,
                     'l_divisi' => $request->divisi,
                     'l_subdivisi' => $request->level,
                     'l_jabatan' => $request->jabatan,
-                    'l_created'=>$tanggal
+                    'l_created'=> Carbon::now('Asia/Jakarta')
                 ]);
 
             DB::commit();
@@ -62,9 +62,9 @@ class LowonganController extends Controller
         }
     }
 
-    public function kode_lowongan()
+    public function kode_lowongan($akronim)
     {
-        $kode = DB::select(DB::raw("SELECT MAX(RIGHT(l_code,3)) as kode_max from d_lowongan"));
+        $kode = DB::select(DB::raw("SELECT MAX(RIGHT(l_code,3)) as kode_max from d_lowongan where l_code like '%$akronim%'"));
         $kd = "";
 
         if(count($kode)>0)
@@ -80,7 +80,7 @@ class LowonganController extends Controller
             $kd = "001";
         }
 
-        return $code = 'LWG-'.$kd;
+        return $code = 'LWG'.'/'.$akronim.'/'.$kd;
     } 
 
     public function get_datatable_index()
@@ -161,15 +161,12 @@ class LowonganController extends Controller
         DB::beginTransaction();
         try 
         {   
-            $tanggal = date("Y-m-d h:i:s");
             DB::table('d_lowongan')
                 ->where('l_id','=',$request->kode_old)
                 ->update([
-                    'l_code' => $request->kode,
-                    'l_divisi' => $request->divisi,
                     'l_subdivisi' => $request->level,
                     'l_jabatan' => $request->jabatan,
-                    'l_updated' => $tanggal,
+                    'l_updated' => Carbon::now('Asia/Jakarta')
                 ]);
 
             DB::commit();

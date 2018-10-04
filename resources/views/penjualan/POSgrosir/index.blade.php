@@ -989,7 +989,7 @@
                 diskon = 0;
                 $('input.discvalue:text:eq(' + getIndex + ')').val(0);
             }
-            hasil = hasil - diskon;
+            hasil = hasil - diskon * qty;
             hasil = convertToRupiah(hasil);
             $('input.hasil:text:eq(' + getIndex + ')').val(hasil);
             UpdateTotal();

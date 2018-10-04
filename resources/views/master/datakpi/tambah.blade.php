@@ -1,12 +1,15 @@
 @extends('main')
 @section('content')
+<!-- style for jquery validation error -->
 <style>
-  .error {
-    border: 1px solid #f00;
+  .ui-autocomplete { z-index:2147483647; }
+  .error { border: 1px solid #f00; }
+  .valid { border: 1px solid #8080ff; }
+  .has-error .select2-selection {
+    border: 1px solid #f00 !important;
   }
-
-  .valid {
-      border: 1px solid #8080ff;
+  .has-valid .select2-selection {
+    border: 1px solid #8080ff !important;
   }
 </style>
 <!--BEGIN PAGE WRAPPER-->
@@ -14,60 +17,47 @@
   <!--BEGIN TITLE & BREADCRUMB PAGE-->
   <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
     <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
-      <div class="page-title">Form Edit Master Scoreboard</div>
+      <div class="page-title">Form Master Data KPI</div>
     </div>
-    
+
     <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
       <li><i class="fa fa-home"></i>&nbsp;<a href="{{ url('/home') }}">Home</a>&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
       <li><i></i>&nbsp;Master&nbsp;&nbsp;<i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
-      <li class="active">Master Master Scoreboard</li><li><i class="fa fa-angle-right"></i>&nbsp;Form Edit Master Scoreboard&nbsp;&nbsp;</i>&nbsp;&nbsp;</li>
+      <li class="active">Master Data KPI</li><li><i class="fa fa-angle-right"></i>&nbsp;Form Master Data KPI&nbsp;&nbsp;</i>&nbsp;&nbsp;</li>
     </ol>
-    
+
     <div class="clearfix"></div>
   </div>
-
   <div class="page-content fadeInRight">
     <div id="tab-general">
       <div class="row mbl">
         <div class="col-lg-12">
-
+                  
           <div class="col-md-12">
             <div id="area-chart-spline" style="width: 100%; height: 300px; display: none;">
             </div>
           </div>
-                      
+                  
           <ul id="generalTab" class="nav nav-tabs">
-            <li class="active"><a href="#alert-tab" data-toggle="tab">Form Edit Master Scoreboard</a></li>
+            <li class="active"><a href="#alert-tab" data-toggle="tab">Form Master Data KPI</a></li>
           </ul>
-          
+
           <div id="generalTabContent" class="tab-content responsive">
             <div id="alert-tab" class="tab-pane fade in active">
               <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top:-10px;margin-bottom: 15px;">
                   <div class="col-md-5 col-sm-6 col-xs-8">
-                    <h4>Form Edit Master Scoreboard</h4>
+                    <h4>Form Master Data KPI</h4>
                   </div>
-                  
                   <div class="col-md-7 col-sm-6 col-xs-4" align="right" style="margin-top:5px;margin-right: -25px;">
-                    <a href="{{ url('master/datascore/index') }}" class="btn"><i class="fa fa-arrow-left"></i></a>
+                    <a href="{{ url('master/datakpi/index') }}" class="btn"><i class="fa fa-arrow-left"></i></a>
                   </div>
                 </div>
-                
+            
                 <div class="col-md-12 col-sm-12 col-xs-12 " style="margin-top:15px;">
-                  <form method="POST" id="form-save" name="formSave">  
+                  <form method="POST" id="form-save" name="formSave">
                     {{ csrf_field() }}
-                    <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="margin-bottom: 20px; padding-bottom:5px;padding-top:15px;padding-left:-10px;padding-right: -10px; ">
-                      <input type="hidden" name="kode_old" value="{{ $data->kpi_id }}">
-
-                      <div class="col-md-3 col-sm-4 col-xs-12">
-                        <label class="tebal">Nama Parameter<span style="color: red">*</span></label>
-                      </div>
-
-                      <div class="col-md-9 col-sm-8 col-xs-12">
-                        <div class="form-group">
-                          <input type="text" id="nama_kpi" name="nama_kpi" class="form-control input-sm" value="{{ $data->kpi_name }}">
-                        </div>
-                      </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg div-form-area" style="margin-bottom: 20px; padding-bottom:5px;padding-top:15px;padding-left:-10px;padding-right: -10px; ">
 
                       <div class="col-md-3 col-sm-4 col-xs-12">
                         <label class="tebal">Divisi<span style="color: red">*</span></label>
@@ -75,9 +65,7 @@
 
                       <div class="col-md-9 col-sm-8 col-xs-12">
                         <div class="form-group" id="divSelectDivisi">
-                          <input type="hidden" id="h_divisi" name="h_divisi" value="{{ $data->c_divisi }}" class="form-control input-sm" readonly> 
-                          <input type="hidden" id="h_divisiid" name="h_divisiid" value="{{ $data->kpi_div_id }}" class="form-control input-sm" readonly> 
-                          <select class="form-control input-sm select2" id="div_kpi" name="div_kpi" style="width: 100% !important;">
+                          <select class="form-control input-sm select2" id="divisi" name="divisi" style="width: 100% !important;">
                           </select>
                         </div> 
                       </div>
@@ -88,9 +76,7 @@
 
                       <div class="col-md-9 col-sm-8 col-xs-12">
                         <div class="form-group" id="divSelectJabatan">
-                          <input type="hidden" id="h_jabatan" name="h_jabatan" value="{{ $data->c_posisi }}" class="form-control input-sm" readonly> 
-                          <input type="hidden" id="h_jabatanid" name="h_jabatanid" value="{{ $data->kpi_jabatan_id }}" class="form-control input-sm" readonly> 
-                          <select class="form-control input-sm select2" id="jbtn_kpi" name="jbtn_kpi" style="width: 100% !important;">
+                          <select class="form-control input-sm select2" id="jabatan" name="jabatan" style="width: 100% !important;" disabled>
                           </select>
                         </div> 
                       </div>
@@ -100,24 +86,53 @@
                       </div>
 
                       <div class="col-md-9 col-sm-8 col-xs-12">
-                        <div class="form-group" id="divSelectJabatan">
-                          <input type="hidden" id="h_pegawai" name="h_pegawai" value="{{ $data->c_nama }}" class="form-control input-sm" readonly> 
-                          <input type="hidden" id="h_pegawaiid" name="h_pegawaiid" value="{{ $data->kpi_p_id }}" class="form-control input-sm" readonly> 
-                          <select class="form-control input-sm select2" id="peg_kpi" name="peg_kpi" style="width: 100% !important;">
+                        <div class="form-group" id="divSelectPegawai">
+                          <select class="form-control input-sm select2" id="pegawai" name="pegawai" style="width: 100% !important;" disabled>
                           </select>
                         </div> 
                       </div>
 
-                      <div class="col-md-12 col-sm-12 col-xs-12" align="right" id="change_function">
-                        <input type="button" name="tambah_data" value="Update Data" id="btn_simpan" class="btn btn-primary" onclick="updateData()">
+                      <div class="col-md-3 col-sm-4 col-xs-12">
+                        <label class="tebal">Nama Indikator<span style="color: red">*</span></label>
                       </div>
-                    </div>
 
-                    <div class="col-md-12 col-sm-4 col-xs-12">
-                      <label class="tebal" style="color: red">Keterangan : * Wajib diisi.</label>
+                      <div class="col-md-9 col-sm-8 col-xs-12">
+                        <div class="form-group">
+                          <input type="text" id="indikator" name="indikator" class="form-control input-sm" value="">
+                        </div>
+                      </div>
+
+                      <div class="col-md-3 col-sm-4 col-xs-12">
+                        <label class="tebal">Bobot KPI<span style="color: red">*</span></label>
+                      </div>
+
+                      <div class="col-md-9 col-sm-8 col-xs-12">
+                        <div class="form-group">
+                          <input type="text" id="bobot" name="bobot" class="form-control input-sm" value="">
+                        </div>
+                      </div>
+
+                      <div class="col-md-3 col-sm-4 col-xs-12">
+                        <label class="tebal">Target<span style="color: red">*</span></label>
+                      </div>
+
+                      <div class="col-md-9 col-sm-8 col-xs-12">
+                        <div class="form-group">
+                          <input type="text" id="targetkpi" name="targetkpi" class="form-control input-sm" value="">
+                        </div>
+                      </div>
+
+                      <div class="col-md-12 col-sm-12 col-xs-12">
+                        <label class="tebal" style="color: red; float: left;">Keterangan : * Wajib diisi.</label>
+                      </div>
+
+                      <div class="col-md-12 col-sm-12 col-xs-12" align="right" id="change_function">
+                        <button type="button" id="btn_simpan" class="btn btn-primary" onclick="simpanData()">Simpan Data</button>
+                      </div>
                     </div>
                   </form>
                 </div>
+
               </div>
             </div>
           </div>
@@ -126,12 +141,14 @@
       </div>
     </div>
   </div>
-
-</div>                     
+<!--END PAGE WRAPPER-->
+</div>                         
 @endsection
 @section("extra_scripts")
+<script src="{{ asset ('assets/script/icheck.min.js') }}"></script>
 <script src="{{ asset("js/inputmask/inputmask.jquery.js") }}"></script>
-<script type="text/javascript">
+<script type="text/javascript">     
+
   $( document ).ready(function() {
     //fix to issue select2 on modal when opening in firefox
     $.fn.modal.Constructor.prototype.enforceFocus = function() {};
@@ -143,21 +160,12 @@
     $.extend($.fn.dataTableExt.oStdClasses, extensions);
     // Used when bJQueryUI is true
     $.extend($.fn.dataTableExt.oJUIClasses, extensions);
-    
+
+    //select2
     $('.select2').select2({
     });
 
-    //select2 option selected
-    $selectedDivisi = $("<option></option>").val($('#h_divisiid').val()).text($('#h_divisi').val());
-    $("#div_kpi").append($selectedDivisi);
-
-    $selectedJabatan = $("<option></option>").val($('#h_jabatanid').val()).text($('#h_jabatan').val());
-    $("#jbtn_kpi").append($selectedJabatan);
-
-    $selectedPegawai = $("<option></option>").val($('#h_pegawaiid').val()).text($('#h_pegawai').val());
-    $("#peg_kpi").append($selectedPegawai);
-
-    $( "#div_kpi" ).select2({
+    $( "#divisi" ).select2({
       placeholder: "Pilih Divisi...",
       ajax: {
         url: baseUrl + '/master/datalowongan/lookup-data-divisi',
@@ -176,20 +184,20 @@
       }, 
     });
 
-    $('#div_kpi').change(function() 
+    $('#divisi').change(function() 
     {
       if($(this).val() != ""){
-        $('#div_kpi').removeClass('has-error').addClass('has-valid');
-        $('#jbtn_kpi').empty().attr('disabled', false);
-        $('#peg_kpi').empty().attr('disabled', false);
+        $('#divSelectDivisi').removeClass('has-error').addClass('has-valid');
+        $('#jabatan').empty().attr('disabled', false);
+        $('#pegawai').empty().attr('disabled', false);
       }else{
-        $('#div_kpi').addClass('has-error').removeClass('has-valid');
-        $('#jbtn_kpi').empty().attr('disabled', true);
-        $('#peg_kpi').empty().attr('disabled', true);
+        $('#divSelectDivisi').addClass('has-error').removeClass('has-valid');
+        $('#jabatan').empty().attr('disabled', true);
+        $('#pegawai').empty().attr('disabled', true);
       }
 
-      var divisi = $('#div_kpi').val();
-      $("#jbtn_kpi").select2({
+      var divisi = $('#divisi').val();
+      $("#jabatan").select2({
         placeholder: "Pilih Jabatan...",
         ajax: {
           url: baseUrl + '/master/datascore/lookup-data-jabatan',
@@ -210,19 +218,19 @@
       });
     });
 
-    $('#jbtn_kpi').change(function() 
+    $('#jabatan').change(function() 
     {
       if($(this).val() != ""){
-        $('#jbtn_kpi').removeClass('has-error').addClass('has-valid');
-        $('#peg_kpi').empty().attr('disabled', false);
+        $('#divSelectJabatan').removeClass('has-error').addClass('has-valid');
+        $('#pegawai').empty().attr('disabled', false);
       }else{
-        $('#div_kpi').addClass('has-error').removeClass('has-valid');
-        $('#peg_kpi').empty().attr('disabled', true);
+        $('#divSelectDivisi').addClass('has-error').removeClass('has-valid');
+        $('#pegawai').empty().attr('disabled', true);
       }
 
-      var divisi = $('#div_kpi').val();
-      var jabatan = $('#jbtn_kpi').val();
-      $("#peg_kpi").select2({
+      var divisi = $('#divisi').val();
+      var jabatan = $('#jabatan').val();
+      $("#pegawai").select2({
         placeholder: "Pilih Pegawai...",
         ajax: {
           url: baseUrl + '/master/datascore/lookup-data-pegawai',
@@ -243,15 +251,17 @@
         }, 
       });
     });
-
+    
     //validasi
     $("#form-save").validate({
       // Specify validation rules
       rules:{
-          nama_kpi : "required",
-          div_kpi : "required",
-          jbtn_kpi : "required",
-          peg_kpi : "required"
+          divisi : "required",
+          jabatan : "required",
+          pegawai : "required",
+          indikator : "required",
+          bobot : "required",
+          targetkpi : "required",
       },
       errorPlacement: function() {
           return false;
@@ -264,16 +274,17 @@
     $(document).on('click', '.btn_remove', function(){
       var button_id = $(this).attr('id');
       $('#row'+button_id+'').remove();
-    });  
-  }); //end jquery
+    });
 
-  function updateData() {
+  }); //end jquery
+  
+  function simpanData() {
     iziToast.question({
       close: false,
       overlay: true,
       displayMode: 'once',
       //zindex: 999,
-      title: 'Update Data Master Scoreboard',
+      title: 'Simpan Data Master KPI',
       message: 'Apakah anda yakin ?',
       position: 'center',
       buttons: [
@@ -281,13 +292,19 @@
           var IsValid = $("form[name='formSave']").valid();
           if(IsValid)
           {
-            $('#div_kpi').removeClass('has-error');
-            $('#jbtn_kpi').removeClass('has-error');
-            $('#peg_kpi').removeClass('has-error');
+            $('.div-form-area input, .div-form-area select').each(
+              function(index){  
+                var input = $(this);
+                $('#'+input.attr('id')).removeClass('has-error');
+                $('#divSelectDivisi').removeClass('has-error');
+                $('#divSelectJabatan').removeClass('has-error');
+                $('#divSelectPegawai').removeClass('has-error');
+              }
+            );
             $('#btn_simpan').text('Saving...');
             $('#btn_simpan').attr('disabled',true);
             $.ajax({
-              url : baseUrl + "/master/datascore/update-score",
+              url : baseUrl + "/master/datakpi/simpan-kpi",
               type: "POST",
               dataType: "JSON",
               data: $('#form-save').serialize(),
@@ -303,7 +320,7 @@
                     onClosing: function(instance, toast, closedBy){
                       $('#btn_simpan').text('Submit'); //change button text
                       $('#btn_simpan').attr('disabled',false); //set button enable
-                      window.location.href = baseUrl+"/master/datascore/index";
+                      window.location.href = baseUrl+"/master/datakpi/index";
                     }
                   });
                 }
@@ -317,7 +334,7 @@
                     onClosing: function(instance, toast, closedBy){
                       $('#btn_simpan').text('Submit'); //change button text
                       $('#btn_simpan').attr('disabled',false); //set button enable
-                      window.location.href = baseUrl+"/master/datascore/index";
+                      window.location.href = baseUrl+"/master/datakpi/index";
                     }
                   }); 
                 }
@@ -339,9 +356,15 @@
               position: 'center',
               message: "Mohon Lengkapi data form !",
               onClosing: function(instance, toast, closedBy){
-                $('#div_kpi').removeClass('has-error');
-                $('#jbtn_kpi').removeClass('has-error');
-                $('#peg_kpi').removeClass('has-error');
+                $('.div-form-area input, .div-form-area select').each(
+                  function(index){  
+                    var input = $(this);
+                    $('#'+input.attr('id')).addClass('has-error');
+                    $('#divSelectDivisi').addClass('has-error');
+                    $('#divSelectJabatan').addClass('has-error');
+                    $('#divSelectPegawai').addClass('has-error');
+                  }
+                );
               }
             });
           } //end check valid
@@ -352,7 +375,7 @@
       ]
     });
   }
-
+  
   function randString(angka) 
   {
     var text = "";
@@ -364,4 +387,4 @@
     return text;
   }
 </script>
-@endsection                            
+@endsection

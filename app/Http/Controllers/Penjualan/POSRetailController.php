@@ -633,7 +633,7 @@ class POSRetailController extends Controller
         {
             return '<div>Rp.
                       <span class="pull-right">
-                        '.number_format( $data->s_gross ,2,',','.').'
+                        '.number_format( $data->s_net ,2,',','.').'
                       </span>
                     </div>';
         })
@@ -652,24 +652,37 @@ class POSRetailController extends Controller
         {
           if ($data->s_status == 'FN') { $attr = 'disabled'; } else { $attr = ''; };
           $linkEdit = URL::to('/penjualan/POSretail/retail/edit_sales/'.$data->s_id);
-          return  '<div class="text-center">
-                      <button type="button"
-                          class="btn btn-success fa fa-eye btn-sm"
-                          title="detail"
-                          data-toggle="modal"
-                          onclick="lihatDetail('."'".$data->s_id."'".')"
-                          data-target="#myItem">
-                      </button>
-                      <a href="'.$linkEdit.'"
-                          class="btn btn-warning btn-sm"
-                          title="Edit" '.$attr.'>
-                          <i class="fa fa-pencil"></i>
-                      </a>
-                      <a  onclick="distroyNota('.$data->s_id.')"
-                          class="btn btn-danger btn-sm"
-                          title="Hapus" '.$attr.'>
-                          <i class="fa fa-trash-o"></i></a>
-                    </div>';
+          if ($data->s_status == 'DR'){
+            return  '<div class="text-center">
+                        <button type="button"
+                            class="btn btn-success fa fa-eye btn-sm"
+                            title="detail"
+                            data-toggle="modal"
+                            onclick="lihatDetail('."'".$data->s_id."'".')"
+                            data-target="#myItem">
+                        </button>
+                        <a href="'.$linkEdit.'"
+                            class="btn btn-warning btn-sm"
+                            title="Edit" '.$attr.'>
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                        <a  onclick="distroyNota('.$data->s_id.')"
+                            class="btn btn-danger btn-sm"
+                            title="Hapus" '.$attr.'>
+                            <i class="fa fa-trash-o"></i></a>
+                      </div>';
+          }else{
+            return  '<div class="text-center">
+                        <button type="button"
+                            class="btn btn-success fa fa-eye btn-sm"
+                            title="detail"
+                            data-toggle="modal"
+                            onclick="lihatDetail('."'".$data->s_id."'".')"
+                            data-target="#myItem">
+                        </button>
+                      </div>';
+          }
+
           })
         //inisisai column status agar kode html digenerate ketika ditampilkan
         ->rawColumns(['action','sGross'])
