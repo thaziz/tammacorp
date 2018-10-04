@@ -275,10 +275,53 @@ class PenerimaanBrgSupController extends Controller
 
     public function simpanPenerimaan(Request $request)
     {
-        dd($request->all());
+        // return json_encode("okeee");
+        // dd($request->all());
+
         DB::beginTransaction();
         try 
         {
+            // Cek Jurnal 
+
+            $err = true; $acc = []; $total = 0;
+
+            foreach($request->fieldItemId as $acc_key => $data){
+                $cek = DB::table('m_item')
+                    ->join('m_group', 'm_group.m_gcode', '=', 'm_item.i_code_group')
+                    ->where('i_id', $data)
+                    ->select('m_group.m_akun_persediaan', 'm_group.m_gid')
+                    ->first();
+
+                if(!$cek){
+                    $err = false;
+                }else{
+                    $acc[$acc_key] = [
+                        'td_acc'    => $cek->m_akun_persediaan,
+                        'td_posisi' => 'D',
+                        'value'     => $request->fieldHargaTotalRaw[$acc_key]
+                    ];
+
+                    $total += $request->fieldHargaTotalRaw[$acc_key];
+                }
+            }
+
+            if(!$err){
+                return response()->json([
+                    'status' => 'gagal',
+                    'pesan'  => 'Tidak Bisa Melakukan Jurnal Pada Penerimaan Ini Karena Salah Satu Dari Item Belum Berelasi Dengan Akun Persediaan.'
+                ]);
+            }
+
+            $acc[count($acc)] = [
+                'td_acc'    => '301.01',
+                'td_posisi' => 'K',
+                'value'     => $total
+            ];
+
+            // return json_encode($acc);
+
+            // cek jurnal end
+
             //code penerimaan
             $kode = $this->kodePenerimaanAuto();
             //insert to table d_terimapembelian
@@ -409,10 +452,6 @@ class PenerimaanBrgSupController extends Controller
             $this->cek_status_purchasing($request->headNotaPurchase);
             
             DB::commit();
-            return response()->json([
-                'status' => 'sukses',
-                'pesan' => 'Data Penerimaan Pembelian Berhasil Disimpan'
-            ]);
         } 
         catch (\Exception $e) 
         {
@@ -422,8 +461,14 @@ class PenerimaanBrgSupController extends Controller
               'pesan' => $e->getMessage()."\n at file: ".$e->getFile()."\n line: ".$e->getLine()
           ]);
         }
-    }
 
+        $state_jurnal = _initiateJournal_self_detail($request->headNotaTxt, 'MM', date('Y-m-d', strtotime($request->headTglTerima)), 'Pembelian Bahan Persediaan Dari '.$request->headSupplier.' '.date('d/m/Y', strtotime($request->headTglTerima)), $acc);
+
+        return response()->json([
+            'status' => 'sukses',
+            'pesan' => 'Data Penerimaan Pembelian Berhasil Disimpan'
+        ]);
+    }
     public function deletePenerimaan(Request $request)
     {
         //dd($request->all());
