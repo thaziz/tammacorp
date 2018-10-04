@@ -561,6 +561,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/inputkpix/get-edit/{id}', 'Hrd\DkpixController@getDataEdit');
     Route::post('/hrd/inputkpix/update-data', 'Hrd\DkpixController@updateData');
     Route::post('/hrd/inputkpix/delete-data', 'Hrd\DkpixController@deleteData');
+/*Manajemen SCOREBOARD & KPI FINAL*/
+    Route::get('/hrd/manscorekpi/index', 'Hrd\ManscorekpiController@index');
+    Route::get('/hrd/manscorekpi/get-kpi-by-tgl/{tgl1}/{tgl2}/{tampil}', 'Hrd\ManscorekpiController@getKpiByTgl');
+    Route::get('/hrd/manscorekpi/get-edit/{id}', 'Hrd\ManscorekpiController@getDataEdit');
+    Route::post('/hrd/manscorekpi/update-data', 'Hrd\ManscorekpiController@updateData');
+    Route::post('/hrd/manscorekpi/ubah-status', 'Hrd\ManscorekpiController@ubahStatus');
+    Route::get('/hrd/manscorekpi/get-score-by-tgl/{tgl1}/{tgl2}/{tampil}', 'Hrd\ManscorekpiController@getScoreByTgl');
     
     
     
