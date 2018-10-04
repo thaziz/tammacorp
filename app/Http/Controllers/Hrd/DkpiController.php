@@ -174,7 +174,7 @@ class DkpiController extends Controller
             DB::commit();
             return response()->json([
                 'status' => 'sukses',
-                'pesan' => 'Data KPI Berhasil Disimpan'
+                'pesan' => 'Data Scoreboard Berhasil Disimpan'
             ]);
         } 
         catch (\Exception $e) 
@@ -259,7 +259,7 @@ class DkpiController extends Controller
             DB::commit();
             return response()->json([
               'status' => 'sukses',
-              'pesan' => 'Data Input KPI Berhasil Diupdate'
+              'pesan' => 'Data Input Scoreboard Berhasil Diupdate'
             ]);
         } 
         catch (\Exception $e) 
@@ -282,7 +282,7 @@ class DkpiController extends Controller
         DB::commit();
         return response()->json([
             'status' => 'sukses',
-            'pesan' => 'Data Input KPI Berhasil Dihapus'
+            'pesan' => 'Data Input Scoreboard Berhasil Dihapus'
         ]);
       } 
       catch (\Exception $e) 

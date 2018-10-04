@@ -111,6 +111,16 @@
                       </div>
 
                       <div class="col-md-3 col-sm-4 col-xs-12">
+                        <label class="tebal">Deadline KPI</label>
+                      </div>
+
+                      <div class="col-md-9 col-sm-8 col-xs-12">
+                        <div class="form-group">
+                          <input type="text" id="e_deadline" name="e_deadline" class="form-control input-sm datepicker2" value="{{ date('d-m-Y',strtotime($data->kpix_deadline)) }}">
+                        </div>
+                      </div>
+
+                      <div class="col-md-3 col-sm-4 col-xs-12">
                         <label class="tebal">Bobot KPI<span style="color: red">*</span></label>
                       </div>
 
@@ -165,6 +175,11 @@
     $.extend($.fn.dataTableExt.oStdClasses, extensions);
     // Used when bJQueryUI is true
     $.extend($.fn.dataTableExt.oJUIClasses, extensions);
+
+    $('.datepicker2').datepicker({
+      autoclose: true,
+      format:"dd-mm-yyyy"
+    });
     
     $('.select2').select2({
     });

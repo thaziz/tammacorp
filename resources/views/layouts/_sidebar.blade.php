@@ -754,6 +754,10 @@
                                         Scoreboard Pegawai Per Hari
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Input Data KPI','ma_read'))
+                                        Input Data KPI
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Payroll','ma_read'))
                                         Payroll
                                     @endif
@@ -810,6 +814,12 @@
                                 @if(Auth::user()->punyaAkses('Scoreboard Pegawai Per Hari','ma_read'))
                                     <li class="{{ Request::is('hrd/inputkpi/index') ? 'active' : '' || Request::is('hrd/inputkpi/*') ? 'active' : '' }}">
                                         <a href="{{ url('/hrd/inputkpi/index') }}"><span class="submenu-title">Scoreboard Pegawai Per Hari</span><span
+                                                    class="hidden">HRD</span></a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->punyaAkses('Input data KPI','ma_read'))
+                                    <li class="{{ Request::is('hrd/inputkpix/index') ? 'active' : '' || Request::is('hrd/inputkpix/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/hrd/inputkpix/index') }}"><span class="submenu-title">Input Data KPI</span><span
                                                     class="hidden">HRD</span></a>
                                     </li>
                                 @endif
