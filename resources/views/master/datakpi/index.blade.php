@@ -69,10 +69,11 @@
       },
       "columns" : [
         {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
-        {"data" : "kpix_name", "width" : "30%"},
+        {"data" : "kpix_name", "width" : "25%"},
+        {"data" : "deadline", "width" : "10%"},
         {"data" : "kpix_bobot", "width" : "10%"},
         {"data" : "kpix_target", "width" : "15%"},
-        {"data" : "c_nama", "width" : "15%"},
+        {"data" : "c_nama", "width" : "10%"},
         {"data" : "c_posisi", "width" : "15%"},
         {"data" : "action", orderable: false, searchable: false, "width" : "10%"}
       ],

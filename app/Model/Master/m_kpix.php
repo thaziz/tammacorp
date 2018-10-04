@@ -15,6 +15,7 @@ class m_kpix extends Model
         'kpix_id', 
         'kpix_name',
         'kpix_bobot',
+        'kpix_deadline',
         'kpix_target',
         'kpix_p_id',
         'kpix_div_id',

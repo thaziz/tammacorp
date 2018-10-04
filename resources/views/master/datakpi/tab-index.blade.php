@@ -23,6 +23,7 @@
             <tr>
               <th class="wd-15p" width="5%">NO</th>
               <th class="wd-15p" width="5%">Indikator</th>
+              <th class="wd-15p" width="5%">Deadline</th>
               <th class="wd-15p" width="5%">Bobot</th>
               <th class="wd-15p" width="5%">Target</th>
               <th class="wd-15p" width="5%">Pegawai</th>

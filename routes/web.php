@@ -536,7 +536,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/hrd/datalembur/update-lembur', 'Hrd\HlemburController@updateLembur');
     Route::post('/hrd/datalembur/delete-lembur', 'Hrd\HlemburController@deleteLembur');
     Route::get('/hrd/datalembur/print/{id}', 'Hrd\HlemburController@print');
-/*Input KPI*/
+/*Input SCOREBOARD*/
     Route::get('/hrd/inputkpi/index', 'Hrd\DkpiController@index');
     Route::get('/hrd/inputkpi/get-kpi-by-tgl/{tgl1}/{tgl2}', 'Hrd\DkpiController@getKpiByTgl');
     Route::get('/hrd/inputkpi/set-field-modal', 'Hrd\DkpiController@setFieldModal');
@@ -544,12 +544,26 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/inputkpi/get-edit/{id}', 'Hrd\DkpiController@getDataEdit');
     Route::post('/hrd/inputkpi/update-data', 'Hrd\DkpiController@updateData');
     Route::post('/hrd/inputkpi/delete-data', 'Hrd\DkpiController@deleteData');
-/*Manajemen KPI*/
+/*Manajemen SCOREBOARD*/
     Route::get('/hrd/manajemenkpipegawai/index', 'Hrd\MankpiController@index');
     Route::get('/hrd/manajemenkpipegawai/get-kpi-by-tgl/{tgl1}/{tgl2}/{tampil}', 'Hrd\MankpiController@getKpiByTgl');
     Route::get('/hrd/manajemenkpipegawai/get-edit/{id}', 'Hrd\MankpiController@getDataEdit');
     Route::post('/hrd/manajemenkpipegawai/update-data', 'Hrd\MankpiController@updateData');
     Route::post('/hrd/manajemenkpipegawai/ubah-status', 'Hrd\MankpiController@ubahStatus');
+/*Input KPI*/
+    Route::get('/hrd/inputkpix/index', 'Hrd\DkpixController@index');
+    Route::get('/hrd/inputkpix/tambah-data', 'Hrd\DkpixController@tambahData');
+    Route::get('/hrd/inputkpix/lookup-data-jabatan', 'Hrd\DkpixController@lookupJabatan');
+    Route::get('/hrd/inputkpix/lookup-data-pegawai', 'Hrd\DkpixController@lookupPegawai');
+    Route::get('/hrd/inputkpix/set-field-modal/{id}', 'Hrd\DkpixController@setFieldModal');
+    Route::post('/hrd/inputkpix/simpan-data', 'Hrd\DkpixController@simpanData');
+    Route::get('/hrd/inputkpix/get-kpi-by-tgl/{tgl1}/{tgl2}', 'Hrd\DkpixController@getKpixByTgl');
+    Route::get('/hrd/inputkpix/get-edit/{id}', 'Hrd\DkpixController@getDataEdit');
+    Route::post('/hrd/inputkpix/update-data', 'Hrd\DkpixController@updateData');
+    Route::post('/hrd/inputkpix/delete-data', 'Hrd\DkpixController@deleteData');
+    
+    
+    
     /*Keuangan*/
 
         Route::get('/keuangan/tes_jurnal', function(){

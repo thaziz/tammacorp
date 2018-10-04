@@ -29,15 +29,15 @@ class MankpiController extends Controller
         $tanggal2 = date('Y-m-d',strtotime($tgl2));
         $d_pegawai = DB::table('m_pegawai_man')->where('c_id', $id_peg)->first();
         
-        if ($d_pegawai->c_divisi_id == '1' && $d_pegawai->c_jabatan_id == '1') {
+        if ($d_pegawai->c_divisi_id == '1') {
             $div_id = $d_pegawai->c_divisi_id;
-        }elseif($d_pegawai->c_divisi_id == '2' && $d_pegawai->c_jabatan_id == '6'){
+        }elseif($d_pegawai->c_divisi_id == '2'){
             $div_id = $d_pegawai->c_divisi_id;
-        }elseif($d_pegawai->c_divisi_id == '3' && $d_pegawai->c_jabatan_id == '9'){
+        }elseif($d_pegawai->c_divisi_id == '3'){
             $div_id = $d_pegawai->c_divisi_id;
-        }elseif($d_pegawai->c_divisi_id == '4' && $d_pegawai->c_jabatan_id == '14'){
+        }elseif($d_pegawai->c_divisi_id == '4'){
             $div_id = $d_pegawai->c_divisi_id;
-        }elseif($d_pegawai->c_divisi_id == '5' && $d_pegawai->c_jabatan_id == '24'){
+        }elseif($d_pegawai->c_divisi_id == '5'){
             $div_id = $d_pegawai->c_divisi_id;
         }
         
