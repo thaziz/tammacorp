@@ -766,8 +766,8 @@
                                         Payroll Pegawai Produksi
                                     @endif
 
-                                    @if(Auth::user()->punyaAkses('Manajemen KPI Pegawai','ma_read'))
-                                        Manajemen KPI Pegawai
+                                    @if(Auth::user()->punyaAkses('Manajemen Scoreboard','ma_read'))
+                                        Manajemen Scoreboard
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Training Pegawai','ma_read'))
@@ -823,9 +823,9 @@
                                                     class="hidden">HRD</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Manajemen KPI Pegawai','ma_read'))
+                                @if(Auth::user()->punyaAkses('Manajemen Scoreboard','ma_read'))
                                     <li class="{{ Request::is('hrd/manajemenkpipegawai/index') ? 'active' : '' || Request::is('hrd/manajemenkpipegawai/*') ? 'active' : '' }}">
-                                        <a href="{{ url('/hrd/manajemenkpipegawai/index') }}"><span class="submenu-title">Manajemen KPI Pegawai</span><span
+                                        <a href="{{ url('/hrd/manajemenkpipegawai/index') }}"><span class="submenu-title">Manajemen Scoreboard</span><span
                                                     class="hidden">HRD</span></a>
                                     </li>
                                 @endif
