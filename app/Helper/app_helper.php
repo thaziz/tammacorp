@@ -194,4 +194,27 @@
 		return 'true';
 	}
 
+	function count_neraca($array, $id_group, $status, $tanggal){
+		$total = 0;
+
+		foreach ($array as $key => $data) {
+			if($data->id_group == $id_group){
+				foreach ($data->akun_neraca as $key => $detail) {
+					$mutasi = (count($detail->mutasi_bank_debet) > 0) ? $detail->mutasi_bank_debet[0]->total : 0;
+					$saldo = $detail->opening_balance;
+
+					if($status == 'aktiva' && $detail->posisi_akun == 'K'){
+						$mutasi = $mutasi * -1;
+					}elseif($status == 'pasiva' && $detail->posisi_akun == 'D'){
+						$mutasi = $mutasi * -1;
+					}
+
+					$total += ($saldo + $mutasi);
+				}
+			}
+		}
+
+		return $total;
+	}
+
 ?>
