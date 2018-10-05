@@ -16,7 +16,7 @@
   <!--BEGIN TITLE & BREADCRUMB PAGE-->
   <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
     <div class="page-header pull-left" style="font-family: 'Raleway', sans-serif;">
-      <div class="page-title">Manajemen Scoreboard</div>
+      <div class="page-title">Manajemen Scoreboard & KPI</div>
     </div>
     <ol class="breadcrumb page-breadcrumb pull-right" style="font-family: 'Raleway', sans-serif;">
       <li>
@@ -26,7 +26,7 @@
       <li>
         <i></i>&nbsp;HRD&nbsp;&nbsp;
         <i class="fa fa-angle-right"></i>&nbsp;&nbsp;</li>
-      <li class="active">Manajemen Scoreboard</li>
+      <li class="active">Manajemen Scoreboard & KPI</li>
     </ol>
     <div class="clearfix">
     </div>
@@ -43,24 +43,25 @@
 
           <ul id="generalTab" class="nav nav-tabs">
             <li class="active">
-              <a href="#index-tab" data-toggle="tab">Konfirmasi Scoreboard</a>
+              <a href="#index-tab" data-toggle="tab">Konfirmasi KPI</a>
             </li>
-            <!-- <li><a href="#laporan-tab" data-toggle="tab" onclick="lihatLaporanByTgl()">Laporan Data KPI</a></li> -->
+            <li><a href="#score-tab" data-toggle="tab" onclick="lihatScoreByTgl()">Data Scoreboard</a></li>
           </ul>
 
           <div id="generalTabContent" class="tab-content responsive">
             <!-- /div alert-tab -->
-            @include('hrd.manajemenkpi.tab-index')
-            @include('hrd.manajemenkpi.tab-laporan')
+            @include('hrd.manajemenkpix.tab-index')
+            @include('hrd.manajemenkpix.tab-score')
           </div>
 
         </div>
       </div>
     </div>
   </div> 
-  @include('hrd.manajemenkpi.modal')
-  @include('hrd.manajemenkpi.modal-detail')
-  @include('hrd.manajemenkpi.modal-edit')
+  @include('hrd.manajemenkpix.modal')
+  @include('hrd.manajemenkpix.modal-detail')
+  @include('hrd.manajemenkpix.modal-detail-score')
+  @include('hrd.manajemenkpix.modal-edit')
 </div>
 @endsection 
 @section("extra_scripts")
@@ -105,6 +106,8 @@
         $('#appending div').remove();
         $('#e_appending div').remove();
         $('#d_appending div').remove();
+        $('#ds_appending div').remove();
+        $('tr').remove('.tbl_modal_detail_row');
         //remove class all jquery validation error
         $('.form-group').find('.error').removeClass('error');
         $('.form-group').removeClass('has-valid has-error');
@@ -112,6 +115,7 @@
         $('#form-input-kpi')[0].reset();
         $('#form-edit-kpi')[0].reset();
         $('#form-detail-kpi')[0].reset();
+        $('#form-detail-score')[0].reset();
       });
 
       //select2
@@ -190,13 +194,51 @@
     {
       var tgl1 = $('#tanggal1').val();
       var tgl2 = $('#tanggal2').val();
-      var tampil = $('#s_confirm').val();
+      var tampil = $('#k_confirm').val();
       $('#tbl-index').dataTable({
         "destroy": true,
         "processing" : true,
         "serverside" : true,
         "ajax" : {
-          url: baseUrl + "/hrd/manajemenkpipegawai/get-kpi-by-tgl/"+tgl1+"/"+tgl2+"/"+tampil,
+          url: baseUrl + "/hrd/manscorekpi/get-kpi-by-tgl/"+tgl1+"/"+tgl2+"/"+tampil,
+          type: 'GET'
+        },
+        "columns" : [
+          {"data" : "DT_Row_Index", orderable: true, searchable: false, "width" : "5%"}, //memanggil column row
+          {"data" : "tglBuat", "width" : "10%"},
+          {"data" : "d_kpix_code", "width" : "10%"},
+          {"data" : "c_nama", "width" : "19%"},
+          {"data" : "status", "width" : "15%"},
+          {"data" : "tglConfirm", "width" : "15%"},
+          {"data" : "d_kpix_scoretotal", "width" : "10%"},
+          {"data" : "action", orderable: false, searchable: false, "width" : "15%"}
+        ],
+        "language": {
+          "searchPlaceholder": "Cari Data",
+          "emptyTable": "Tidak ada data",
+          "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
+          "sSearch": '<i class="fa fa-search"></i>',
+          "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
+          "infoEmpty": "",
+          "paginate": {
+                "previous": "Sebelumnya",
+                "next": "Selanjutnya",
+          }
+        }
+      });
+    }
+
+    function lihatScoreByTgl()
+    {
+      var tgl1 = $('#tanggal3').val();
+      var tgl2 = $('#tanggal4').val();
+      var tampil = $('#s_confirm').val();
+      $('#tbl-score').dataTable({
+        "destroy": true,
+        "processing" : true,
+        "serverside" : true,
+        "ajax" : {
+          url: baseUrl + "/hrd/manscorekpi/get-score-by-tgl/"+tgl1+"/"+tgl2+"/"+tampil,
           type: 'GET'
         },
         "columns" : [
@@ -226,39 +268,51 @@
     function confirmKpi(id) 
     {
       $.ajax({
-        url : baseUrl + "/hrd/manajemenkpipegawai/get-edit/"+id,
+        url : baseUrl + "/hrd/manscorekpi/get-edit/"+id,
         type: "GET",
         dataType: "JSON",
         success: function(response)
         {
-          var date = response.data[0].d_kpi_date;
-          if(date != null) { var newDueDate = date.split("-").reverse().join("-"); }
+          var date = response.data[0].d_kpix_date;
+          if(date != null) { var newTglKpix = date.split("-").reverse().join("-"); }
 
-          $('#e_old').val(response.data[0].d_kpi_id);
-          $('#e_idpegawai').val(response.data[0].d_kpi_pid);
-          $('#e_pegawai').val(response.pegawai.c_nama);
-          $('#e_tgl_kpi').val(newDueDate);
+          $('#e_old').val(response.data[0].d_kpix_id);
+          $('#e_tgl_kpix').val(newTglKpix);
           $('#e_divisi').val(response.pegawai.c_divisi);
-          $('#e_iddivisi').val(response.data[0].kpi_div_id);
+          $('#e_iddivisi').val(response.data[0].kpix_div_id);
           $('#e_jabatan').val(response.pegawai.c_posisi);
-          $('#e_idjabatan').val(response.data[0].kpi_jabatan_id);
+          $('#e_idjabatan').val(response.data[0].kpix_div_id);
+          $('#e_pegawai').val(response.pegawai.c_nama);
+          $('#e_idpegawai').val(response.data[0].d_kpix_pid);
           
           var i = randString(5);
           var key = 1;
+          var tgl = "";
           //loop data
           Object.keys(response.data).forEach(function()
           {
+            tgl = response.data[key-1].kpix_deadline;
+            if(tgl != null) { var newTgl = tgl.split("-").reverse().join("-"); }
             $('#e_appending').append(
-              '<div class="col-md-12 col-sm-12 col-xs-12">'
-                +'<label class="tebal">'+response.data[key-1].kpi_name+'</label>'
-              +'</div>'
-              +'<div class="col-md-12 col-sm-12 col-xs-12" id="row'+i+'">'
-                +'<div class="form-group">'
-                  +'<textarea class="form-control input-sm" id="e_value_kpi" name="e_value_kpi[]" rows="3">'+response.data[key-1].d_kpidt_value+'</textarea>'
-                  +'<input type="hidden" id="e_index_kpi" name="e_index_kpi[]" class="form-control input-sm" value="'+response.data[key-1].kpi_id+'">'
-                   +'<input type="hidden" id="e_dt" name="e_index_dt[]" class="form-control input-sm" value="'+response.data[key-1].d_kpidt_id+'">'
+                '<div class="col-md-9 col-sm-9 col-xs-9">'
+                  +'<label class="tebal">'+response.data[key-1].kpix_name+' | Bobot : <span style="color:#8080ff;">'+response.data[key-1].kpix_bobot+'</span> | Target : <span style="color:#8080ff;">'+response.data[key-1].kpix_target+'</span> | Deadline : <span style="color:#8080ff;">'+newTgl+'</span></label>'
                 +'</div>'
-              +'</div>');
+                +'<div class="col-md-3 col-sm-3 col-xs-3">'
+                  +'<label class="tebal">Score</span></label>'
+                +'</div>'
+                +'<div class="col-md-9 col-sm-9 col-xs-9">'
+                  +'<div class="form-group">'
+                    +'<input type="text" id="e_value_kpi" name="e_value_kpix[]" class="form-control input-sm" value="'+response.data[key-1].d_kpixdt_value+'">'
+                    +'<input type="hidden" id="e_index_kpi" name="e_index_kpix[]" class="form-control input-sm" value="'+response.data[key-1].kpix_id+'">'
+                    +'<input type="hidden" id="e_dt" name="e_index_dt[]" class="form-control input-sm" value="'+response.data[key-1].d_kpixdt_id+'">'
+                  +'</div>'
+                +'</div>'
+                +'<div class="col-md-3 col-sm-3 col-xs-3">'
+                  +'<div class="form-group">'
+                    +'<input type="text" id="e_score_kpi" name="e_score_kpix[]" class="form-control input-sm" value="'+response.scoreKpi[key-1]+'">'
+                     +'<input type="hidden" id="e_bobot_kpi" name="e_bobot_kpix[]" class="form-control input-sm" value="'+response.data[key-1].kpix_bobot+'">'
+                  +'</div>'
+                +'</div>');
             i = randString(5);
             key++;
           });
@@ -274,33 +328,46 @@
     function detailKpi(id) 
     {
       $.ajax({
-        url : baseUrl + "/hrd/manajemenkpipegawai/get-edit/"+id,
+        url : baseUrl + "/hrd/manscorekpi/get-edit/"+id,
         type: "GET",
         dataType: "JSON",
         success: function(response)
         {
-          var date = response.data[0].d_kpi_date;
-          if(date != null) { var newDueDate = date.split("-").reverse().join("-"); }
+          var date = response.data[0].d_kpix_date;
+          if(date != null) { var newKpixDate = date.split("-").reverse().join("-"); }
 
-          $('#d_old').val(response.data[0].d_kpi_id);
-          $('#d_pegawai').text(response.pegawai.c_nama);
-          $('#d_tgl_kpi').text(newDueDate);
+          $('#d_tanggal').text(newKpixDate);
           $('#d_divisi').text(response.pegawai.c_divisi);
           $('#d_jabatan').text(response.pegawai.c_posisi);
+          $('#d_pegawai').text(response.pegawai.c_nama);
           
           var i = randString(5);
           var key = 1;
+          var totBobot = 0;
+          var totScore = 0;
           //loop data
           Object.keys(response.data).forEach(function()
           {
             $('#d_appending').append(
-              '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-top:10px">'
-                +'<label class="tebal">'+response.data[key-1].kpi_name+' :</label>'
-                +'<span id="d_value_kpi"> '+response.data[key-1].d_kpidt_value+'</span>'
-              +'</div>');
+                '<tr class="tbl_modal_detail_row">'
+                  +'<td>'+key+'</td>'
+                  +'<td>'+response.data[key-1].kpix_bobot+'</td>'
+                  +'<td>'+response.data[key-1].kpix_name+'</td>'
+                  +'<td>'+response.data[key-1].kpix_target+'</td>'
+                  +'<td>'+response.data[key-1].d_kpixdt_value+'</td>'
+                  +'<td>'+response.data[key-1].d_kpixdt_score+'</td>'
+                  +'<td>'+response.data[key-1].d_kpixdt_scoreakhir+'</td>'
+                +'</tr>');
+            totBobot += parseInt(response.data[key-1].kpix_bobot);
+            totScore += parseFloat(response.data[key-1].d_kpixdt_scoreakhir);
             i = randString(5);
             key++;
           });
+          $('#d_appending').append(
+                '<tr class="tbl_modal_detail_row">'
+                  +'<td colspan = "2" align="center"><strong>Total Bobot : '+totBobot+'</strong></td>'
+                  +'<td colspan = "5" align="center"><strong>Total Skor Akhir : '+totScore+'</strong></td>'
+                +'</tr>');
           $('#modal_detail_data').modal('show');
         },
         error: function (jqXHR, textStatus, errorThrown)
@@ -310,7 +377,53 @@
       });
     }
 
-    function updateKpi() 
+    function detailScore(id) {
+      $.ajax({
+        url : baseUrl + "/hrd/manajemenkpipegawai/get-edit/"+id,
+        type: "GET",
+        dataType: "JSON",
+        success: function(response)
+        {
+          var date = response.data[0].d_kpi_date;
+          if(date != null) { var newDueDate = date.split("-").reverse().join("-"); }
+
+          $('#ds_old').val(response.data[0].d_kpi_id);
+          $('#ds_idpegawai').val(response.data[0].d_kpi_pid);
+          $('#ds_pegawai').val(response.pegawai.c_nama);
+          $('#ds_tgl_kpi').val(newDueDate);
+          $('#ds_divisi').val(response.pegawai.c_divisi);
+          $('#ds_iddivisi').val(response.data[0].kpi_div_id);
+          $('#ds_jabatan').val(response.pegawai.c_posisi);
+          $('#ds_idjabatan').val(response.data[0].kpi_jabatan_id);
+          
+          var i = randString(5);
+          var key = 1;
+          //loop data
+          Object.keys(response.data).forEach(function()
+          {
+            $('#ds_appending').append(
+                '<div class="col-md-12 col-sm-12 col-xs-12">'
+                  +'<label class="tebal">'+response.data[key-1].kpi_name+'</label>'
+                +'</div>'
+                +'<div class="col-md-12 col-sm-12 col-xs-12" id="row'+i+'">'
+                  +'<div class="form-group">'
+                    +'<textarea class="form-control input-sm" id="ds_value_kpi" name="ds_value_kpi[]" rows="3" readonly>'+response.data[key-1].d_kpidt_value+'</textarea>'
+                    +'<input type="hidden" id="ds_index_kpi" name="ds_index_kpi[]" class="form-control input-sm" value="'+response.data[key-1].kpi_id+'" readonly>'
+                  +'</div>'
+                +'</div>');
+            i = randString(5);
+            key++;
+          });
+          $('#modal_detail_datascore').modal('show');
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            alert('Error get data from ajax');
+        }
+      });
+    }
+
+    function updateKpix() 
     {
       iziToast.question({
         close: false,
@@ -328,7 +441,7 @@
               $('#btn_update').text('Confirm...');
               $('#btn_update').attr('disabled',true);
               $.ajax({
-                url : baseUrl + "/hrd/manajemenkpipegawai/update-data",
+                url : baseUrl + "/hrd/manscorekpi/update-data",
                 type: "POST",
                 dataType: "JSON",
                 data: $('#form-edit-kpi').serialize(),
@@ -410,7 +523,7 @@
         buttons: [
           ['<button><b>Ya</b></button>', function (instance, toast) {
             $.ajax({
-              url : baseUrl + "/hrd/manajemenkpipegawai/ubah-status",
+              url : baseUrl + "/hrd/manscorekpi/ubah-status",
               type: "POST",
               dataType: "JSON",
               data: {id:id, status:status, "_token": "{{ csrf_token() }}"},
@@ -473,9 +586,9 @@
       $('#tbl-index').DataTable().ajax.reload();
     }
 
-    function refreshTabelLaporan() 
+    function refreshTabelScore() 
     {
-      $('#tbl-laporan').DataTable().ajax.reload();
+      $('#tbl-score').DataTable().ajax.reload();
     }
     
   </script> 
