@@ -598,7 +598,7 @@ Route::group(['middleware' => 'auth'], function () {
             // return _initiateJournal_self_detail('Hanya Coba 1', 'KK', '2018-09-02', 'Tes Self_detail', $cek);
             // return _initiateJournal_from_transaksi('Hanya Coba 2', '2019-08-01', 'Test From Transaksi', 1, [25000000, 20000000, 5000000]);
             // return _updateJournal_from_transaksi('Hanya Coba 2', '2018-08-02', 'Setelah Update FT 4', 1, [10000000, 5000000, 5000000]);
-            // return  _updateJournal_self_detail('Hanya Coba 1', 'BM', '2018-09-01', 'Tes Self_detail', $cek);
+            // return _updateJournal_self_detail('Hanya Coba 1', 'BM', '2018-09-01', 'Tes Self_detail', $cek);
             // return _delete_jurnal('Hanya Coba 2');
         });
 
