@@ -147,6 +147,7 @@
         $('#i_divisi').empty();
         $('#i_jabatan').empty();
         $('#i_pegawai').empty();
+        $('#btn_proses').attr('disabled', true);
       });
 
       //select2
@@ -183,7 +184,7 @@
           $('.i_jabatan').empty().attr('disabled', true);
           $('.i_pegawai').empty().attr('disabled', true);
         }
-        $('#dobmonth_i').val("");
+        $('#btn_proses').attr('disabled', true);
         divisi = $(this).val();
 
         $(".i_jabatan").select2({
@@ -216,7 +217,7 @@
           $('.divPegawai').addClass('has-error').removeClass('has-valid');
           $('.i_pegawai').empty().attr('disabled', true);
         }
-        $('#dobmonth_i').val("");
+        $('#btn_proses').attr('disabled', true);
         jabatan = $(this).val();
 
         $(".i_pegawai").select2({
@@ -243,32 +244,11 @@
 
       $('.i_pegawai').change(function() 
       {
-        $('#dobmonth_i').val("");
-        pegawai = $(this).val();
-      });
-
-      $('#dobmonth_i').change(function() 
-      {
-        var bulan = $(this).val();
-
-        $.ajax({
-          url : baseUrl + "/hrd/payrollman/set-field-modal",
-          type: "GET",
-          dataType: "JSON",
-          data: {divisi:divisi, pegawai:pegawai, jabatan:jabatan, bulan:bulan},
-          success: function(response)
-          {
-
-          },
-          error: function(){
-            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-            iziToast.warning({
-              icon: 'fa fa-times',
-              message: 'Terjadi Kesalahan!'
-            });
-          },
-          async: false
-        });
+        if($(this).val() != ""){
+          $('#btn_proses').attr('disabled', false);
+        }else{
+          $('#btn_proses').attr('disabled', true);
+        }
       });
 
       //validasi
@@ -298,7 +278,7 @@
 
       //lihatPayrollByTgl();
     });//end jquery
-
+  
     function lihatPayrollByTgl()
     {
       var bln = $('#dobmonth').val();
@@ -335,6 +315,32 @@
                 "next": "Selanjutnya",
           }
         }
+      });
+    }
+
+    function setFieldModal()
+    {
+      pegawai = $('.i_pegawai').val();
+      var sDate = $('#i_tgl1').val();
+      var lDate = $('#i_tgl2').val();
+     
+      $.ajax({
+        url : baseUrl + "/hrd/payrollman/set-field-modal",
+        type: "GET",
+        dataType: "JSON",
+        data: {divisi:divisi, pegawai:pegawai, jabatan:jabatan, sDate:sDate, lDate:lDate},
+        success: function(response)
+        {
+
+        },
+        error: function(){
+          instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+          iziToast.warning({
+            icon: 'fa fa-times',
+            message: 'Terjadi Kesalahan!'
+          });
+        },
+        async: false
       });
     }
 

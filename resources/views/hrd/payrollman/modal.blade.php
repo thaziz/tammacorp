@@ -7,53 +7,62 @@
       <div class="modal-content">
         <div class="modal-header" style="background-color: #e77c38;">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title" style="color: white;">Input Data KPI</h4>
+          <h4 class="modal-title" style="color: white;">Input Data Payroll Manajemen</h4>
         </div>
 
         <div class="modal-body">
           <div class="col-md-12 col-sm-12 col-xs-12 tamma-bg" style="padding-bottom: 10px;margin-bottom: 15px;">
-              <div class="col-md-6 col-sm-6 col-xs-6">
-                <label class="tebal">Divisi</label>
-              </div>
 
-              <div class="col-md-6 col-sm-6 col-xs-6">
-                <label class="tebal">Jabatan</label>
-              </div>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <label class="tebal">Periode</label>
+            </div>
 
-              <div class="col-md-6 col-sm-6 col-xs-6">
-                <div class="form-group divDivisi">
-                    <select class="form-control input-sm select2 i_divisi" id="i_divisi" name="i_divisi" style="width: 100% !important;">
-                    </select>
-                  </div>  
-              </div>
-
-              <div class="col-md-6 col-sm-6 col-xs-6">
-                <div class="form-group divJabtan">
-                    <select class="form-control input-sm select2 i_jabatan" id="i_jabatan" name="i_jabatan" style="width: 100% !important;" disabled="">
-                    </select>
-                  </div>  
-              </div>
-
-              <div class="col-md-6 col-sm-6 col-xs-6">
-                <label class="tebal">Nama Pegawai</label>
-              </div>
-
-              <div class="col-md-6 col-sm-6 col-xs-6">
-                <label class="tebal">Bulan</label>
-              </div>
-
-              <div class="col-md-6 col-sm-6 col-xs-6">
-                <div class="form-group divPegawai">
-                    <select class="form-control input-sm select2 i_pegawai" id="i_pegawai" name="i_pegawai" style="width: 100% !important;" disabled="">
-                    </select>
-                  </div>  
-              </div>
-
-              <div class="col-md-6 col-sm-6 col-xs-6">
-                <div class="form-group">
-                  <select id="dobmonth_i" class="form-control input-sm" style="width: 100% !important;" name="i_bulan"></select>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="form-group" style="display: ">
+                <div class="input-daterange input-group">
+                  <input id="i_tgl1" data-provide="datepicker" class="form-control input-sm datepicker1" name="i_tgl1" type="text">
+                  <span class="input-group-addon">-</span>
+                  <input id="i_tgl2" data-provide="datepicker" class="input-sm form-control datepicker2" name="i_tgl2" type="text" value="{{ date('d-m-Y') }}">
                 </div>
               </div>
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <label class="tebal">Divisi</label>
+            </div>
+
+             <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="form-group divDivisi">
+                  <select class="form-control input-sm select2 i_divisi" id="i_divisi" name="i_divisi" style="width: 100% !important;">
+                  </select>
+                </div>  
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <label class="tebal">Jabatan</label>
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="form-group divJabtan">
+                  <select class="form-control input-sm select2 i_jabatan" id="i_jabatan" name="i_jabatan" style="width: 100% !important;" disabled="">
+                  </select>
+                </div>  
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <label class="tebal">Nama Pegawai</label>
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="form-group divPegawai">
+                  <select class="form-control input-sm select2 i_pegawai" id="i_pegawai" name="i_pegawai" style="width: 100% !important;" disabled="">
+                  </select>
+                </div>  
+            </div>
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <button type="button" class="btn btn-primary col-md-12 col-sm-12 col-xs-12" onclick="setFieldModal()" id="btn_proses" disabled>Proses Data</button>
+            </div>
                         
           </div>
 
