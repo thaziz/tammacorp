@@ -24,9 +24,12 @@ class pembayaran_hutang_controller extends Controller
     	// return json_encode($request->all());
 
     	$data = DB::table('d_purchasing')
-    				->where('d_sisapayment', '!=', '0')
-    				->where('d_pcs_status', 'CF')
+                    ->where('d_pcs_status', 'CF')
+    				->where('d_pcs_sisapayment', '!=', '0')
     				->where('s_id', $request->supplier)
+                    ->orWhere('d_pcs_status', 'RC')
+                    ->where('d_pcs_sisapayment', '!=', '0')
+                    ->where('s_id', $request->supplier)
     				->get();
 
     	return json_encode($data);
@@ -60,11 +63,11 @@ class pembayaran_hutang_controller extends Controller
     	$purchase = DB::table('d_purchasing')
     					->where('d_pcs_code', $request->nomor_po)->first();
 
-    	$payment = $purchase->d_payment + str_replace('.', '', explode(',', $request->nominal_pembayaran)[0]);
+    	$payment = $purchase->d_pcs_payment + str_replace('.', '', explode(',', $request->nominal_pembayaran)[0]);
 
     	DB::table('d_purchasing')->where('d_pcs_id', $purchase->d_pcs_id)->update([
-    		'd_payment'			=> $payment,
-    		'd_sisapayment'		=> $purchase->d_pcs_total_net - $payment,
+    		'd_pcs_payment'			=> $payment,
+    		'd_pcs_sisapayment'		=> $purchase->d_pcs_total_net - $payment,
     	]);
 
     	return json_encode([
@@ -129,8 +132,8 @@ class pembayaran_hutang_controller extends Controller
     	]);
 
     	$purchase->update([
-    		'd_payment'			=> $purchase->first()->d_payment + $update_payment,
-    		'd_sisapayment'		=> $purchase->first()->d_pcs_total_net - ($purchase->first()->d_payment + $update_payment),
+    		'd_pcs_payment'			=> $purchase->first()->d_pcs_payment + $update_payment,
+    		'd_pcs_sisapayment'		=> $purchase->first()->d_pcs_total_net - ($purchase->first()->d_pcs_payment + $update_payment),
     	]);
 
     	return json_encode([
@@ -158,8 +161,8 @@ class pembayaran_hutang_controller extends Controller
     		DB::table('d_jurnal_dt')->where('jrdt_jurnal', $jurnal->first()->jr_id)->delete();
 
     	$purchase->update([
-    		'd_payment'		=> $purchase->first()->d_payment - $transaksi->first()->payment_value,
-    		'd_sisapayment'	=> $purchase->first()->d_pcs_total_net - ($purchase->first()->d_payment - $transaksi->first()->payment_value),
+    		'd_pcs_payment'		=> $purchase->first()->d_pcs_payment - $transaksi->first()->payment_value,
+    		'd_pcs_sisapayment'	=> $purchase->first()->d_pcs_total_net - ($purchase->first()->d_pcs_payment - $transaksi->first()->payment_value),
     	]);
 
     	$transaksi->delete();
