@@ -520,6 +520,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/hrd/payroll/edit-tunjangan-man/{id}', 'Hrd\GajiController@editTunjangan');
     Route::post('/hrd/payroll/update-tunjangan/{id}', 'Hrd\GajiController@updateTunjangan');
     Route::delete('/hrd/payroll/delete-tunjangan/{id}', 'Hrd\GajiController@deleteTunjangan');
+    Route::get('/hrd/payroll/set-tunjangan-pegawai-man', 'Hrd\GajiController@setTunjanganPegMan');
+    Route::get('/hrd/payroll/datatable-tunjangan-pegman', 'Hrd\GajiController@tunjanganPegManData');
+    Route::get('/hrd/payroll/edit-tunjangan-pegman/{id}', 'Hrd\GajiController@editPegManData');
+    Route::post('/hrd/payroll/update-tunjangan-peg/{id}', 'Hrd\GajiController@updateTunjanganPeg');
     //payroll produksi Mahmud
         Route::get('/hrd/produksi/payroll', 'Hrd\PayrollProduksiController@index');
         Route::get('/hrd/payroll/table/gaji/{rumah}/{jabatan}/{tgl1}/{tgl2}', 'Hrd\PayrollProduksiController@tableDataGarapan');

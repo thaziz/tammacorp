@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\abs_pegawai_man;
 use App\m_pegawai_man;
 use App\Model\Hrd\d_payroll_man;
+use App\Model\Hrd\d_lembur;
 use Response;
 use DB;
 use DataTables;
@@ -170,11 +171,25 @@ class PayrollmanController extends Controller
     {
         //pertanggalan
         $tahun = date("Y");
-        $jml_hari_raw = cal_days_in_month(CAL_GREGORIAN, $request->bulan, $tahun);
-        $jml_hari = $jml_hari_raw - 1;
-        $tanggal_a = $tahun . '-' . $request->bulan . '-01';
-        $tanggal_b = date("Y-m-d", strtotime($tanggal_a."+".$jml_hari." days"));
+        $tanggal_a = date('Y-m-d',strtotime($request->sDate));
+        $tanggal_b = date('Y-m-d',strtotime($request->lDate));
+        //tgl minggu dalam periode yang ditentukan
+        $tgl_minggu = $this->cariMinggu($tanggal_a, $tanggal_b);
+        //hitung jumlah lembur pada hari minggu
+        $jml_lembur_minggu = 0;
+        $datalembur = d_lembur::select('d_lembur_id', 'd_lembur_date')->where('d_lembur_jenispeg', 'MAN')->where('d_lembur_pid', $request->pegawai)->whereBetween('d_lembur_date', [$tanggal_a, $tanggal_b])->get();
+        foreach ($datalembur as $aa) {
+            for ($i=0; $i <count($tgl_minggu); $i++) {
+                if ($aa->d_lembur_date != $tgl_minggu[$i]) {
+                    $jml_lembur_minggu += 0; 
+                } else {
+                    $jml_lembur_minggu += 1; 
+                }
+            }
+        }
 
+        //jumlah hari periode terpilih
+        //$jml_hari = (int)$this->hitungSelisihTanggal($tanggal_a, $tanggal_b);
         //data pegawai
         $d_pegawai = m_pegawai_man::select('c_anak','c_nikah','c_pendidikan')->where('c_id', $request->pegawai)->first();
 
@@ -189,7 +204,7 @@ class PayrollmanController extends Controller
         $gj = DB::table('m_gaji_man')->select($akronim_title)->first();
         $gapok = (int)$gj->$akronim_title;
 
-        //title
+        //level pegawai
         $lp = DB::table('m_jabatan')->select('c_sub_divisi_id')->where('c_id', $request->jabatan)->where('c_divisi_id', $request->divisi)->first();
         $lvl_peg = $lp->c_sub_divisi_id;
 
@@ -199,12 +214,12 @@ class PayrollmanController extends Controller
         //kelola tunjangan
         if (count($d_absen) > 0) {
             foreach ($d_absen as $val) {
-                if ($val->apm_absent != null) { $hadir[] = $val->apm_absent; } else { $alpha[] = $val->apm_absent; }
+                if ($val->apm_absent != null) { $alpha[] = $val->apm_absent; } else { $hadir[] = $val->apm_absent; }
                 if ($val->apm_lembur != null) { $lembur[] = $val->apm_lembur; } else { $lembur[] = "00:00:00"; }
             }
         }
 
-        //hitung lembur
+        //hitung lembur jam reguler
         $jam_lembur = 0;
         for ($i=0; $i < count($lembur); $i++) {
             $d_lembur = explode(':', $lembur[$i]);
@@ -222,10 +237,10 @@ class PayrollmanController extends Controller
             {
                 if ($value->tman_id == '2') { 
                     //$t_kehadiran = str_replace('.', '', $value->tman_value * ($jml_hari-count($alpha)));
-                    $t_kehadiran = (int)$value->tman_value * ($jml_hari-count($alpha)); 
+                    $t_kehadiran = (int)$value->tman_value * count($hadir); 
                 }
                 if ($value->tman_id == '4') {
-                    $t_uang_makan = (int)$value->tman_value * ($jml_hari-count($alpha)); 
+                    $t_uang_makan = (int)$value->tman_value * count($hadir); 
                 }
                 if ($value->tman_id == '6') {
                     $t_anak = (int)$value->tman_value * $d_pegawai->c_anak; 
@@ -237,14 +252,14 @@ class PayrollmanController extends Controller
                    $t_kesehatan = (int)$value->tman_value; 
                 }
                 if ($value->tman_id == '10') {
-                   $t_transport = (int)$value->tman_value * ($jml_hari-count($alpha)); 
+                   $t_transport = (int)$value->tman_value * count($hadir); 
                 }
                 if ($value->tman_id == '11') {
                    $t_lembur_jam = (int)$value->tman_value * $jam_lembur; 
                 }
-                /*if ($value->tman_id == '12') {
-                   $t_lembur_mingguan = (int)$value->tman_value * $jam_lembur; 
-                }*/
+                if ($value->tman_id == '12') {
+                   $t_lembur_mingguan = (int)$value->tman_value * $jml_lembur_minggu; 
+                }
             }
         }
         else
@@ -254,10 +269,10 @@ class PayrollmanController extends Controller
             {
                 if ($value->tman_id == '3') { 
                     //$t_kehadiran = str_replace('.', '', $value->tman_value * ($jml_hari-count($alpha)));
-                    $t_kehadiran = (int)$value->tman_value * ($jml_hari-count($alpha)); 
+                    $t_kehadiran = (int)$value->tman_value * count($hadir); 
                 }
                 if ($value->tman_id == '4') {
-                    $t_uang_makan = (int)$value->tman_value * ($jml_hari-count($alpha)); 
+                    $t_uang_makan = (int)$value->tman_value * count($hadir); 
                 }
                 if ($value->tman_id == '6') {
                     $t_anak = (int)$value->tman_value * $d_pegawai->c_anak; 
@@ -269,44 +284,81 @@ class PayrollmanController extends Controller
                    $t_kesehatan = (int)$value->tman_value; 
                 }
                 if ($value->tman_id == '10') {
-                   $t_transport = (int)$value->tman_value * ($jml_hari-count($alpha)); 
+                   $t_transport = (int)$value->tman_value * count($hadir); 
                 }
                 if ($value->tman_id == '11') {
                    $t_lembur_jam = (int)$value->tman_value * $jam_lembur; 
                 }
-                /*if ($value->tman_id == '13') {
-                   $t_lembur_mingguan = (int)$value->tman_value * $jam_lembur; 
-                }*/
+                if ($value->tman_id == '13') {
+                   $t_lembur_mingguan = (int)$value->tman_value * $jml_lembur_minggu; 
+                }
             }
         }
-        $arr_income = array($gapok, $t_kehadiran,$t_uang_makan ,$t_anak, $t_istri, $t_kesehatan, $t_transport, $t_lembur_jam);
+        //dd($t_kehadiran);
+        $arr_income = array($gapok, $t_kehadiran,$t_uang_makan ,$t_anak, $t_istri, $t_kesehatan, $t_transport, $t_lembur_jam, $t_lembur_mingguan);
         $total_income = array_sum($arr_income);
-        //dd($tunjangan);
-        dd($gapok, $t_kehadiran,$t_uang_makan ,$t_anak, $t_istri, $t_kesehatan, $t_transport, $t_lembur_jam, $total_income);
+        dd($tunjangan);
+        dd($gapok, $t_kehadiran,$t_uang_makan ,$t_anak, $t_istri, $t_kesehatan, $t_transport, $t_lembur_jam, $t_lembur_mingguan, $total_income);
 
-        $data = DB::table('m_pegawai_man')
-            ->join('m_divisi', 'm_pegawai_man.c_divisi_id', '=', 'm_divisi.c_id')
-            ->join('m_jabatan', 'm_pegawai_man.c_jabatan_id', '=', 'm_jabatan.c_id')
-            ->select(
-                'm_pegawai_man.c_nama',
-                'm_pegawai_man.c_divisi_id',
-                'm_pegawai_man.c_jabatan_id',
-                'm_divisi.c_divisi',
-                'm_jabatan.c_posisi')
-            ->where('m_pegawai_man.c_id', '=', $id_peg)->first();
-
-        $kpi = m_kpi::where('kpi_p_id', '=', $id_peg)->get();
-        return response()->json([
+        /*return response()->json([
             'status' => 'sukses',
             'id_peg' => $id_peg,
             'data' => $data,
             'kpi' => $kpi
-        ]);
+        ]);*/
     }
 
 
 
     //=====================================================================================================================
+
+    /*public function cariMinggu($tahun,$bulan)
+    { 
+        $date = "$tahun-$bulan-01";
+        $first_day = date('N',strtotime($date));
+        $first_day = 7 - $first_day + 1;
+        $last_day =  date('t',strtotime($date));
+        $days = array();
+        for($i=$first_day; $i <= $last_day; $i=$i+7 )
+        {
+            $ymd[] = date('Y-m-d', strtotime($tahun.'-'.$bulan.'-'.$i));
+        }
+        return  $ymd;
+    }*/
+
+    function cariMinggu($start, $end) 
+    {
+        $timestamp1 = strtotime($start);
+        $timestamp2 = strtotime($end);
+        $sundays    = array();
+        $oneDay     = 60*60*24;
+
+        for($i = $timestamp1; $i <= $timestamp2; $i += $oneDay) {
+            $day = date('N', $i);
+            // If sunday
+            if($day == 7) {
+                // Save sunday in format YYYY-MM-DD, if you need just timestamp
+                // save only $i
+                $sundays[] = date('Y-m-d', $i);
+
+                // Since we know it is sunday, we can simply skip 
+                // next 6 days so we get right to next sunday
+                $i += 6 * $oneDay;
+            }
+        }
+
+        return $sundays;
+    }
+
+    function hitungSelisihTanggal($tgl1, $tgl2) 
+    {
+        $datetime1 = date_create($tgl1);
+        $datetime2 = date_create($tgl2);
+        $interval = date_diff($datetime1, $datetime2);
+        return $interval->format('%d%');
+    }
+
+
 
     public function tambahData($id)
     {
