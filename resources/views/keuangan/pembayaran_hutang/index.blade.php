@@ -744,8 +744,8 @@
 
           this.single_data.nomor_po = this.list_purchase[idx].d_pcs_code;
           $('#total_tagihan').val(this.list_purchase[idx].d_pcs_total_net);
-          $('#sudah_dibayar').val(this.list_purchase[idx].d_payment);
-          $('#sisa_tagihan').val(this.list_purchase[idx].d_pcs_total_net - this.list_purchase[idx].d_payment); 
+          $('#sudah_dibayar').val(this.list_purchase[idx].d_pcs_payment);
+          $('#sisa_tagihan').val(this.list_purchase[idx].d_pcs_total_net - this.list_purchase[idx].d_pcs_payment); 
           $('#data-form').data('bootstrapValidator').resetForm();
 
           $('.overlay.data_po').fadeOut(200);
@@ -764,8 +764,8 @@
 
           $('#nominal_pembayaran').val(this.list_transaksi[idx].payment_value);
           $('#total_tagihan').val(this.list_transaksi[idx].d_pcs_total_net);
-          $('#sudah_dibayar').val(this.list_transaksi[idx].d_payment);
-          $('#sisa_tagihan').val(this.list_transaksi[idx].d_pcs_total_net - this.list_transaksi[idx].d_payment); 
+          $('#sudah_dibayar').val(this.list_transaksi[idx].d_pcs_payment);
+          $('#sisa_tagihan').val(this.list_transaksi[idx].d_pcs_total_net - this.list_transaksi[idx].d_pcs_payment); 
           $('#data-form').data('bootstrapValidator').resetForm();
 
           this.state = 'update';
