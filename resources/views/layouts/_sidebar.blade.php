@@ -766,6 +766,10 @@
                                         Payroll Pegawai Produksi
                                     @endif
 
+                                    @if(Auth::user()->punyaAkses('Payroll Pegawai Manajemen','ma_read'))
+                                        Payroll Pegawai Manajemen
+                                    @endif
+
                                     @if(Auth::user()->punyaAkses('Manajemen Scoreboard','ma_read'))
                                         Manajemen Scoreboard
                                     @endif
@@ -808,10 +812,17 @@
                                                     class="submenu-title">Payroll</span><span class="hidden">HRD</span></a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->punyaAkses('Payroll','ma_read'))
+                                @if(Auth::user()->punyaAkses('Payroll Pegawai Produksi','ma_read'))
                                     <li class="{{ Request::is('hrd/produksi/payroll') ? 'active' : '' || Request::is('hrd/produksi/*') ? 'active' : '' }}">
                                         <a href="{{ url('/hrd/produksi/payroll') }}"><span
                                                     class="submenu-title">Payroll Pegawai Produksi</span>
+                                                    <span class="hidden">HRD</span></a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->punyaAkses('Payroll Pegawai Manajemen','ma_read'))
+                                    <li class="{{ Request::is('hrd/payrollman/index') ? 'active' : '' || Request::is('hrd/payrollman/*') ? 'active' : '' }}">
+                                        <a href="{{ url('/hrd/payrollman/index') }}"><span
+                                                    class="submenu-title">Payroll Pegawai Manajemen</span>
                                                     <span class="hidden">HRD</span></a>
                                     </li>
                                 @endif
